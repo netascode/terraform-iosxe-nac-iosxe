@@ -1,7 +1,7 @@
 locals {
   ospf_configurations = flatten([
     for device in local.devices : [
-      for ospf in try(local.device_config[device.name].configuration.routing.ospf_processes, []) : {
+      for ospf in try(local.device_config[device.name].routing.ospf_processes, []) : {
         key    = format("%s/%s", device.name, ospf.id)
         device = device.name
 
