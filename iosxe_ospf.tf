@@ -47,7 +47,7 @@ locals {
           nssa_no_summary                                = try(area.nssa_no_summary, local.defaults.iosxe.configuration.routing.ospf_processes.areas.nssa_no_summary, null)
           nssa_no_redistribution                         = try(area.nssa_no_redistribution, local.defaults.iosxe.configuration.routing.ospf_processes.areas.nssa_no_redistribution, null)
         }]
-      } if try(ospf.vrf, local.defaults.iosxe.configuration.routing.ospf_processes.vrf, "") != ""
+      } if try(ospf.vrf, local.defaults.iosxe.configuration.routing.ospf_processes.vrf, null) != null && try(ospf.vrf, local.defaults.iosxe.configuration.routing.ospf_processes.vrf, "") != ""
     ]
   ])
 
@@ -98,13 +98,15 @@ locals {
           nssa_no_summary                                = try(area.nssa_no_summary, local.defaults.iosxe.configuration.routing.ospf_processes.areas.nssa_no_summary, null)
           nssa_no_redistribution                         = try(area.nssa_no_redistribution, local.defaults.iosxe.configuration.routing.ospf_processes.areas.nssa_no_redistribution, null)
         }]
-      } if try(ospf.vrf, local.defaults.iosxe.configuration.routing.ospf_processes.vrf, "") == ""
+      } if try(ospf.vrf, local.defaults.iosxe.configuration.routing.ospf_processes.vrf, null) == null || try(ospf.vrf, local.defaults.iosxe.configuration.routing.ospf_processes.vrf, "") == ""
     ]
   ])
 }
 
 resource "iosxe_ospf" "ospf" {
-  for_each = { for o in local.ospf_configurations_without_vrf : o.key => o }
+  for_each = { for o in local.ospf_configurations_without_vrf : o.key => o
+    if o.vrf == null || o.vrf == ""
+  }
 
   device                               = each.value.device
   process_id                           = each.value.process_id
@@ -128,7 +130,9 @@ resource "iosxe_ospf" "ospf" {
 }
 
 resource "iosxe_ospf_vrf" "ospf" {
-  for_each = { for o in local.ospf_configurations_with_vrf : o.key => o }
+  for_each = { for o in local.ospf_configurations_with_vrf : o.key => o
+    if o.vrf != null || o.vrf != ""
+  }
 
   device                               = each.value.device
   vrf                                  = each.value.vrf
