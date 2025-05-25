@@ -47,7 +47,7 @@ locals {
           nssa_no_summary                                = try(area.nssa_no_summary, local.defaults.iosxe.configuration.routing.ospf_processes.areas.nssa_no_summary, null)
           nssa_no_redistribution                         = try(area.nssa_no_redistribution, local.defaults.iosxe.configuration.routing.ospf_processes.areas.nssa_no_redistribution, null)
         }]
-      } if try(ospf.vrf, local.defaults.iosxe.configuration.routing.ospf_processes.vrf, null) != null
+      } if try(ospf.vrf, local.defaults.iosxe.configuration.routing.ospf_processes.vrf, "") != ""
     ]
   ])
 
@@ -98,7 +98,7 @@ locals {
           nssa_no_summary                                = try(area.nssa_no_summary, local.defaults.iosxe.configuration.routing.ospf_processes.areas.nssa_no_summary, null)
           nssa_no_redistribution                         = try(area.nssa_no_redistribution, local.defaults.iosxe.configuration.routing.ospf_processes.areas.nssa_no_redistribution, null)
         }]
-      } if try(ospf.vrf, local.defaults.iosxe.configuration.routing.ospf_processes.vrf, null) == null
+      } if try(ospf.vrf, local.defaults.iosxe.configuration.routing.ospf_processes.vrf, "") == ""
     ]
   ])
 }
