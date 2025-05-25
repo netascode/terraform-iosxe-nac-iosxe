@@ -103,6 +103,14 @@ locals {
   ])
 }
 
+output "ospf_configurations_with_vrf" {
+  value = local.ospf_configurations_with_vrf
+}
+
+output "ospf_configurations_without_vrf" {
+  value = local.ospf_configurations_without_vrf
+}
+
 resource "iosxe_ospf" "ospf" {
   for_each = { for o in local.ospf_configurations_without_vrf : o.key => o
     if o.vrf == null || o.vrf == ""
