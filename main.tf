@@ -73,5 +73,6 @@ resource "iosxe_save_config" "save_config" {
     iosxe_banner.banner,
     iosxe_bfd.bfd,
     iosxe_ospf_vrf.ospf,
+    iosxe_ospf.ospf,
   ]
 }
