@@ -139,6 +139,7 @@ resource "iosxe_ospf" "ospf" {
 resource "iosxe_ospf_vrf" "ospf" {
   for_each = { for o in local.ospf_configurations_with_vrf : o.key => o }
 
+  depends_on = [iosxe_vrf.vrfs]
 
   device                               = each.value.device
   vrf                                  = each.value.vrf
