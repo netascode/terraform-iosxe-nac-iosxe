@@ -13,6 +13,7 @@ locals {
 
         vpn_id = try(vrf.vpn_id, local.defaults.iosxe.configuration.vrfs.vpn_id, null)
 
+        # Regular route targets
         route_target_import = [
           for rt in try(vrf.import_route_targets, []) : {
             value     = rt.value
@@ -28,6 +29,56 @@ locals {
             stitching = try(rt.stitching, local.defaults.iosxe.configuration.vrfs.export_route_targets.stitching, null)
             ipv4      = try(rt.ipv4, local.defaults.iosxe.configuration.vrfs.export_route_targets.ipv4, null)
             ipv6      = try(rt.ipv6, local.defaults.iosxe.configuration.vrfs.export_route_targets.ipv6, null)
+          }
+        ]
+
+        # IPv4 specific route targets
+        ipv4_route_target_import = [
+          for rt in try(vrf.ipv4_route_target_import, []) : {
+            value = rt.value
+          }
+        ]
+
+        ipv4_route_target_import_stitching = [
+          for rt in try(vrf.ipv4_route_target_import_stitching, []) : {
+            value = rt.value
+          }
+        ]
+
+        ipv4_route_target_export = [
+          for rt in try(vrf.ipv4_route_target_export, []) : {
+            value = rt.value
+          }
+        ]
+
+        ipv4_route_target_export_stitching = [
+          for rt in try(vrf.ipv4_route_target_export_stitching, []) : {
+            value = rt.value
+          }
+        ]
+
+        # IPv6 specific route targets
+        ipv6_route_target_import = [
+          for rt in try(vrf.ipv6_route_target_import, []) : {
+            value = rt.value
+          }
+        ]
+
+        ipv6_route_target_import_stitching = [
+          for rt in try(vrf.ipv6_route_target_import_stitching, []) : {
+            value = rt.value
+          }
+        ]
+
+        ipv6_route_target_export = [
+          for rt in try(vrf.ipv6_route_target_export, []) : {
+            value = rt.value
+          }
+        ]
+
+        ipv6_route_target_export_stitching = [
+          for rt in try(vrf.ipv6_route_target_export_stitching, []) : {
+            value = rt.value
           }
         ]
       }
@@ -52,7 +103,19 @@ resource "iosxe_vrf" "vrfs" {
   address_family_ipv6 = each.value.address_family_ipv6
 
   vpn_id = each.value.vpn_id
-
+  # Regular route targets
   route_target_import = each.value.route_target_import
   route_target_export = each.value.route_target_export
+
+  # IPv4 specific route targets
+  ipv4_route_target_import           = each.value.ipv4_route_target_import
+  ipv4_route_target_import_stitching = each.value.ipv4_route_target_import_stitching
+  ipv4_route_target_export           = each.value.ipv4_route_target_export
+  ipv4_route_target_export_stitching = each.value.ipv4_route_target_export_stitching
+
+  # IPv6 specific route targets
+  ipv6_route_target_import           = each.value.ipv6_route_target_import
+  ipv6_route_target_import_stitching = each.value.ipv6_route_target_import_stitching
+  ipv6_route_target_export           = each.value.ipv6_route_target_export
+  ipv6_route_target_export_stitching = each.value.ipv6_route_target_export_stitching
 }
