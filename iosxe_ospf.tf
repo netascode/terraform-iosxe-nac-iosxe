@@ -226,8 +226,12 @@ locals {
       process_ids = flatten([
         for pid in try(intf.ospf.process_ids, local.defaults.iosxe.configuration.interfaces.ospf.process_ids, []) : [
           {
-            id    = try(pid.id, null)
-            areas = try(pid.areas, [])
+            id = try(pid.id, null)
+            areas = [
+              for a in try(pid.areas, []) : {
+                area_id = a
+              }
+            ]
           }
         ]
       ])
