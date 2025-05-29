@@ -276,6 +276,10 @@ locals {
   }
 }
 
+output "iosxe_interface_ospf_attributes" {
+  value = local.iosxe_interface_ospf_attributes
+}
+
 resource "null_resource" "stub_interface_config" {
   provisioner "local-exec" {
     command = "echo 'Simulating interface configuration'"
