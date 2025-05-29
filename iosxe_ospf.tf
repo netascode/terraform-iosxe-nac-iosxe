@@ -165,42 +165,51 @@ resource "iosxe_ospf_vrf" "ospf" {
 
 locals {
   iosxe_interfaces = flatten([
-    [for ethernet in try(local.device_config.interfaces.ethernets, []) : {
-      type = ethernet.type
-      name = ethernet.name
-      ospf = try(ethernet.ospf, null)
-    }],
-
-    [for loopback in try(local.device_config.interfaces.loopbacks, []) : {
-      type = "Loopback"
-      name = tostring(loopback.id)
-      ospf = try(loopback.ospf, null)
-    }],
-
-    [for vlan in try(local.device_config.interfaces.vlans, []) : {
-      type = "Vlan"
-      name = tostring(vlan.id)
-      ospf = try(vlan.ospf, null)
-    }],
-
-    [for pc in try(local.device_config.interfaces.port_channels, []) :
-      concat(
-        [{
-          type = "Port-channel"
-          name = tostring(pc.name)
-          ospf = try(pc.ospf, null)
-        }],
-        [for subif in try(pc.subinterfaces, []) : {
-          type = "Port-channel"
-          name = "${pc.name}.${subif.name}"
-          ospf = try(subif.ospf, null)
-        }]
-      )
-    ]
+    for device in local.devices : concat(
+      [for ethernet in try(local.device_config[device.name].interfaces.ethernets, []) : {
+        type   = ethernet.type
+        name   = ethernet.name
+        ospf   = try(ethernet.ospf, null)
+        device = device.name
+        key    = format("%s/%s", device.name, ethernet.name)
+      }],
+      [for loopback in try(local.device_config[device.name].interfaces.loopbacks, []) : {
+        type   = "Loopback"
+        name   = tostring(loopback.id)
+        ospf   = try(loopback.ospf, null)
+        device = device.name
+        key    = format("%s/Loopback%s", device.name, loopback.id)
+      }],
+      [for vlan in try(local.device_config[device.name].interfaces.vlans, []) : {
+        type   = "Vlan"
+        name   = tostring(vlan.id)
+        ospf   = try(vlan.ospf, null)
+        device = device.name
+        key    = format("%s/Vlan%s", device.name, vlan.id)
+      }],
+      [for pc in try(local.device_config[device.name].interfaces.port_channels, []) :
+        concat(
+          [{
+            type   = "Port-channel"
+            name   = tostring(pc.name)
+            ospf   = try(pc.ospf, null)
+            device = device.name
+            key    = format("%s/Port-channel%s", device.name, pc.name)
+          }],
+          [for subif in try(pc.subinterfaces, []) : {
+            type   = "Port-channel"
+            name   = "${pc.name}.${subif.name}"
+            ospf   = try(subif.ospf, null)
+            device = device.name
+            key    = format("%s/Port-channel%s.%s", device.name, pc.name, subif.name)
+          }]
+        )
+      ]
+    )
   ])
 
   iosxe_interface_ospf_attributes = {
-    for intf in local.iosxe_interfaces : "${intf.type}_${intf.name}" => {
+    for intf in local.iosxe_interfaces : intf.key => {
       type                             = intf.type
       name                             = intf.name
       cost                             = try(intf.ospf.cost, local.defaults.iosxe.configuration.interfaces.ospf.cost, null)
@@ -245,7 +254,6 @@ resource "null_resource" "stub_interface_config" {
 resource "iosxe_interface_ospf" "interface" {
   for_each = local.iosxe_interface_ospf_attributes
 
-  # TODO: Replace with actual interface module once available
   depends_on = [null_resource.stub_interface_config]
 
   type                             = each.value.type
