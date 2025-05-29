@@ -162,3 +162,104 @@ resource "iosxe_ospf_vrf" "ospf" {
   summary_address = each.value.summary_address
   areas           = each.value.areas
 }
+
+locals {
+  iosxe_interfaces = flatten([
+    [for ethernet in try(local.device_config.interfaces.ethernets, []) : {
+      type = ethernet.type
+      name = ethernet.name
+      ospf = try(ethernet.ospf, null)
+    }],
+
+    [for loopback in try(local.device_config.interfaces.loopbacks, []) : {
+      type = "Loopback"
+      name = tostring(loopback.id)
+      ospf = try(loopback.ospf, null)
+    }],
+
+    [for vlan in try(local.device_config.interfaces.vlans, []) : {
+      type = "Vlan"
+      name = tostring(vlan.id)
+      ospf = try(vlan.ospf, null)
+    }],
+
+    [for pc in try(local.device_config.interfaces.port_channels, []) :
+      concat(
+        [{
+          type = "Port-channel"
+          name = tostring(pc.name)
+          ospf = try(pc.ospf, null)
+        }],
+        [for subif in try(pc.subinterfaces, []) : {
+          type = "Port-channel"
+          name = "${pc.name}.${subif.name}"
+          ospf = try(subif.ospf, null)
+        }]
+      )
+    ]
+  ])
+
+  iosxe_interface_ospf_attributes = {
+    for intf in local.iosxe_interfaces : "${intf.type}_${intf.name}" => {
+      type                             = intf.type
+      name                             = intf.name
+      cost                             = try(intf.ospf.cost, local.defaults.iosxe.configuration.interfaces.ospf.cost, null)
+      dead_interval                    = try(intf.ospf.dead_interval, local.defaults.iosxe.configuration.interfaces.ospf.dead_interval, null)
+      hello_interval                   = try(intf.ospf.hello_interval, local.defaults.iosxe.configuration.interfaces.ospf.hello_interval, null)
+      mtu_ignore                       = try(intf.ospf.mtu_ignore, local.defaults.iosxe.configuration.interfaces.ospf.mtu_ignore, null)
+      network_type_broadcast           = try(intf.ospf.network_type_broadcast, local.defaults.iosxe.configuration.interfaces.ospf.network_type_broadcast, null)
+      network_type_non_broadcast       = try(intf.ospf.network_type_non_broadcast, local.defaults.iosxe.configuration.interfaces.ospf.network_type_non_broadcast, null)
+      network_type_point_to_multipoint = try(intf.ospf.network_type_point_to_multipoint, local.defaults.iosxe.configuration.interfaces.ospf.network_type_point_to_multipoint, null)
+      network_type_point_to_point      = try(intf.ospf.network_type_point_to_point, local.defaults.iosxe.configuration.interfaces.ospf.network_type_point_to_point, null)
+      priority                         = try(intf.ospf.priority, local.defaults.iosxe.configuration.interfaces.ospf.priority, null)
+      ttl_security_hops                = try(intf.ospf.ttl_security_hops, local.defaults.iosxe.configuration.interfaces.ospf.ttl_security_hops, null)
+
+      process_ids = flatten([
+        for pid in try(intf.ospf.process_ids, local.defaults.iosxe.configuration.interfaces.ospf.process_ids, []) : [
+          {
+            id    = try(pid.id, null)
+            areas = try(pid.areas, [])
+          }
+        ]
+      ])
+
+      message_digest_keys = flatten([
+        for key in try(intf.ospf.message_digest_keys, local.defaults.iosxe.configuration.interfaces.ospf.message_digest_keys, []) : [
+          {
+            id            = try(key.id, null)
+            md5_auth_key  = try(key.md5_auth_key, null)
+            md5_auth_type = try(key.md5_auth_type, null)
+          }
+        ]
+      ])
+    } if intf.ospf != null || length(try(local.defaults.iosxe.configuration.interfaces.ospf, {})) > 0
+  }
+}
+
+resource "null_resource" "stub_interface_config" {
+  provisioner "local-exec" {
+    command = "echo 'Simulating interface configuration'"
+  }
+}
+
+resource "iosxe_interface_ospf" "interface" {
+  for_each = local.iosxe_interface_ospf_attributes
+
+  # TODO: Replace with actual interface module once available
+  depends_on = [null_resource.stub_interface_config]
+
+  type                             = each.value.type
+  name                             = each.value.name
+  cost                             = each.value.cost
+  dead_interval                    = each.value.dead_interval
+  hello_interval                   = each.value.hello_interval
+  mtu_ignore                       = each.value.mtu_ignore
+  network_type_broadcast           = each.value.network_type_broadcast
+  network_type_non_broadcast       = each.value.network_type_non_broadcast
+  network_type_point_to_multipoint = each.value.network_type_point_to_multipoint
+  network_type_point_to_point      = each.value.network_type_point_to_point
+  priority                         = each.value.priority
+  ttl_security_hops                = each.value.ttl_security_hops
+  process_ids                      = each.value.process_ids
+  message_digest_keys              = each.value.message_digest_keys
+}
