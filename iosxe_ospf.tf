@@ -170,6 +170,7 @@ locals {
         type   = ethernet.type
         name   = ethernet.name
         ospf   = try(ethernet.ospf, null)
+        ospfv3 = try(ethernet.ospfv3, null)
         device = device.name
         key    = format("%s/%s", device.name, ethernet.name)
       }],
@@ -177,13 +178,23 @@ locals {
         type   = "Loopback"
         name   = tostring(loopback.id)
         ospf   = try(loopback.ospf, null)
+        ospfv3 = try(loopback.ospfv3, null)
         device = device.name
         key    = format("%s/Loopback%s", device.name, loopback.id)
+      }],
+      [for tunnel in try(local.device_config[device.name].interfaces.tunnels, []) : {
+        type   = "Tunnel"
+        name   = tostring(tunnel.name)
+        ospf   = try(tunnel.ospf, null)
+        ospfv3 = try(tunnel.ospfv3, null)
+        device = device.name
+        key    = format("%s/Tunnel%s", device.name, tunnel.name)
       }],
       [for vlan in try(local.device_config[device.name].interfaces.vlans, []) : {
         type   = "Vlan"
         name   = tostring(vlan.id)
         ospf   = try(vlan.ospf, null)
+        ospfv3 = try(vlan.ospfv3, null)
         device = device.name
         key    = format("%s/Vlan%s", device.name, vlan.id)
       }],
@@ -193,6 +204,7 @@ locals {
             type   = "Port-channel"
             name   = tostring(pc.name)
             ospf   = try(pc.ospf, null)
+            ospfv3 = try(pc.ospfv3, null)
             device = device.name
             key    = format("%s/Port-channel%s", device.name, pc.name)
           }],
@@ -200,6 +212,7 @@ locals {
             type   = "Port-channel-subinterface"
             name   = "${pc.name}.${subif.name}"
             ospf   = try(subif.ospf, null)
+            ospfv3 = try(subif.ospfv3, null)
             device = device.name
             key    = format("%s/Port-channel%s.%s", device.name, pc.name, subif.name)
           }]
@@ -210,6 +223,7 @@ locals {
 
   iosxe_interface_ospf_attributes = {
     for intf in local.iosxe_interfaces : intf.key => {
+      device                           = intf.device
       type                             = intf.type
       name                             = intf.name
       cost                             = try(intf.ospf.cost, local.defaults.iosxe.configuration.interfaces.ospf.cost, null)
@@ -247,6 +261,19 @@ locals {
       ])
     } if intf.ospf != null || length(try(local.defaults.iosxe.configuration.interfaces.ospf, {})) > 0
   }
+
+  iosxe_interface_ospfv3_attributes = {
+    for intf in local.iosxe_interfaces : intf.key => {
+      device                           = intf.device
+      type                             = intf.type
+      name                             = intf.name
+      cost                             = try(intf.ospfv3.cost, local.defaults.iosxe.configuration.interfaces.ospfv3.cost, null)
+      network_type_broadcast           = try(intf.ospfv3.network_type_broadcast, local.defaults.iosxe.configuration.interfaces.ospfv3.network_type_broadcast, null)
+      network_type_non_broadcast       = try(intf.ospfv3.network_type_non_broadcast, local.defaults.iosxe.configuration.interfaces.ospfv3.network_type_non_broadcast, null)
+      network_type_point_to_multipoint = try(intf.ospfv3.network_type_point_to_multipoint, local.defaults.iosxe.configuration.interfaces.ospfv3.network_type_point_to_multipoint, null)
+      network_type_point_to_point      = try(intf.ospfv3.network_type_point_to_point, local.defaults.iosxe.configuration.interfaces.ospfv3.network_type_point_to_point, null)
+    } if intf.ospfv3 != null || length(try(local.defaults.iosxe.configuration.interfaces.ospfv3, {})) > 0
+  }
 }
 
 resource "null_resource" "stub_interface_config" {
@@ -260,11 +287,11 @@ resource "iosxe_interface_ospf" "interface" {
 
   depends_on = [
     null_resource.stub_interface_config,
-    iosxe_ospf.ospf,
-    iosxe_ospf_vrf.ospf
+    iosxe_ospf.ospf[each.value.device],
+    iosxe_ospf_vrf.ospf[each.value.device]
   ]
 
-
+  device                           = each.value.device
   type                             = each.value.type
   name                             = each.value.name
   cost                             = each.value.cost
@@ -279,4 +306,34 @@ resource "iosxe_interface_ospf" "interface" {
   ttl_security_hops                = each.value.ttl_security_hops
   process_ids                      = each.value.process_ids
   message_digest_keys              = each.value.message_digest_keys
+}
+
+
+output "iosxe_interface_ospfv3_attributes" {
+  value = local.iosxe_interface_ospfv3_attributes
+}
+
+resource "null_resource" "ospfv3_interface_dependency" {
+  provisioner "local-exec" {
+    command = "echo 'Preparing for OSPFv3 interface configuration'"
+  }
+}
+
+resource "iosxe_interface_ospfv3" "interface" {
+  for_each = local.iosxe_interface_ospfv3_attributes
+
+  depends_on = [
+    null_resource.ospfv3_interface_dependency,
+    iosxe_ospf.ospf[each.value.device],
+    iosxe_ospf_vrf.ospf[each.value.device]
+  ]
+
+  device                           = each.value.device
+  type                             = each.value.type
+  name                             = each.value.name
+  cost                             = each.value.cost
+  network_type_broadcast           = each.value.network_type_broadcast
+  network_type_non_broadcast       = each.value.network_type_non_broadcast
+  network_type_point_to_multipoint = each.value.network_type_point_to_multipoint
+  network_type_point_to_point      = each.value.network_type_point_to_point
 }
