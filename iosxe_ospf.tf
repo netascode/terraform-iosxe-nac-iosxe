@@ -258,7 +258,12 @@ resource "null_resource" "stub_interface_config" {
 resource "iosxe_interface_ospf" "interface" {
   for_each = local.iosxe_interface_ospf_attributes
 
-  depends_on = [null_resource.stub_interface_config]
+  depends_on = [
+    null_resource.stub_interface_config,
+    iosxe_ospf.ospf,
+    iosxe_ospf_vrf.ospf
+  ]
+
 
   type                             = each.value.type
   name                             = each.value.name
