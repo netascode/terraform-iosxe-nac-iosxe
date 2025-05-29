@@ -294,7 +294,6 @@ resource "iosxe_interface_ospf" "interface" {
     iosxe_ospf.ospf,
     iosxe_ospf_vrf.ospf
   ]
-
   device                           = each.value.device
   type                             = each.value.type
   name                             = each.value.name
@@ -331,7 +330,6 @@ resource "iosxe_interface_ospfv3" "interface" {
     iosxe_ospf.ospf,
     iosxe_ospf_vrf.ospf
   ]
-
   device                           = each.value.device
   type                             = each.value.type
   name                             = each.value.name
