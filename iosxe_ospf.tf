@@ -291,8 +291,8 @@ resource "iosxe_interface_ospf" "interface" {
 
   depends_on = [
     null_resource.stub_interface_config,
-    iosxe_ospf.ospf[each.value.device],
-    iosxe_ospf_vrf.ospf[each.value.device]
+    iosxe_ospf.ospf,
+    iosxe_ospf_vrf.ospf
   ]
 
   device                           = each.value.device
@@ -328,8 +328,8 @@ resource "iosxe_interface_ospfv3" "interface" {
 
   depends_on = [
     null_resource.ospfv3_interface_dependency,
-    iosxe_ospf.ospf[each.value.device],
-    iosxe_ospf_vrf.ospf[each.value.device]
+    iosxe_ospf.ospf,
+    iosxe_ospf_vrf.ospf
   ]
 
   device                           = each.value.device
