@@ -197,7 +197,7 @@ locals {
             key    = format("%s/Port-channel%s", device.name, pc.name)
           }],
           [for subif in try(pc.subinterfaces, []) : {
-            type   = "Port-channel"
+            type   = "Port-channel-subinterface"
             name   = "${pc.name}.${subif.name}"
             ospf   = try(subif.ospf, null)
             device = device.name
