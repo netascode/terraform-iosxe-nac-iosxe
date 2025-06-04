@@ -32,59 +32,59 @@ locals {
           }
         ]
 
-        # IPv4 specific route targets
         ipv4_route_target_import = [
-          for rt in try(vrf.ipv4_route_target_import, []) : {
+          for rt in try(vrf.ipv4_route_target_imports, []) : {
             value = rt.value
-          }
+          } if try(rt.stitching, false) == false
         ]
 
         ipv4_route_target_import_stitching = [
-          for rt in try(vrf.ipv4_route_target_import_stitching, []) : {
+          for rt in try(vrf.ipv4_route_target_imports, []) : {
             value = rt.value
-          }
+          } if try(rt.stitching, false) == true
         ]
 
         ipv4_route_target_export = [
-          for rt in try(vrf.ipv4_route_target_export, []) : {
+          for rt in try(vrf.ipv4_route_target_exports, []) : {
             value = rt.value
-          }
+          } if try(rt.stitching, false) == false
         ]
 
         ipv4_route_target_export_stitching = [
-          for rt in try(vrf.ipv4_route_target_export_stitching, []) : {
+          for rt in try(vrf.ipv4_route_target_exports, []) : {
             value = rt.value
-          }
+          } if try(rt.stitching, false) == true
         ]
 
-        # IPv6 specific route targets
         ipv6_route_target_import = [
-          for rt in try(vrf.ipv6_route_target_import, []) : {
+          for rt in try(vrf.ipv6_route_target_imports, []) : {
             value = rt.value
-          }
+          } if try(rt.stitching, false) == false
         ]
 
         ipv6_route_target_import_stitching = [
-          for rt in try(vrf.ipv6_route_target_import_stitching, []) : {
+
+          for rt in try(vrf.ipv6_route_target_imports, []) : {
             value = rt.value
-          }
+          } if try(rt.stitching, false) == true
         ]
 
         ipv6_route_target_export = [
-          for rt in try(vrf.ipv6_route_target_export, []) : {
+          for rt in try(vrf.ipv6_route_target_exports, []) : {
             value = rt.value
-          }
+          } if try(rt.stitching, false) == false
         ]
 
         ipv6_route_target_export_stitching = [
-          for rt in try(vrf.ipv6_route_target_export_stitching, []) : {
+          for rt in try(vrf.ipv6_route_target_exports, []) : {
             value = rt.value
-          }
+          } if try(rt.stitching, false) == true
         ]
       }
     ]
   ])
 }
+
 
 output "vrf_configurations" {
   value = local.vrf_configurations
