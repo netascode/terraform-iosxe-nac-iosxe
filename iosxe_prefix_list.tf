@@ -6,8 +6,8 @@ locals {
         device = device.name
 
         prefixes = [for e in try(prefix_list.seqs, []) : {
-          name   = try(prefix_list.name, local.defaults.iosxe.configuration.prefix_lists.name, null)
-          seq    = try(e.seq, local.defaults.iosxe.configuration.prefix_lists.seqs.seq, null)
+          name   = prefix_list.name
+          seq    = e.seq
           action = try(e.action, local.defaults.iosxe.configuration.prefix_lists.seqs.action, null)
           ip     = try(e.ip, local.defaults.iosxe.configuration.prefix_lists.seqs.ip, null)
           ge     = try(e.greater_equal, local.defaults.iosxe.configuration.prefix_lists.seqs.greater_equal, null)
@@ -15,7 +15,7 @@ locals {
         }]
 
         prefix_list_description = [for e in try(prefix_list.seqs, []) : {
-          name        = try(prefix_list.name, local.defaults.iosxe.configuration.prefix_lists.name, null)
+          name        = prefix_list.name
           description = try(prefix_list.description, local.defaults.iosxe.configuration.prefix_lists.description, null)
         }]
       }
