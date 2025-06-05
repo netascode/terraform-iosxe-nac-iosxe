@@ -5,9 +5,9 @@ locals {
         key    = format("%s/%s", device.name, route_map.name)
         device = device.name
 
-        name = try(route_map.name, local.defaults.iosxe.configuration.route_maps.name, "null")
+        name = route_map.name
         entries = [for e in try(route_map.entries, []) : {
-          seq                                        = try(e.seq, local.defaults.iosxe.configuration.route_maps.entries.seq, null)
+          seq                                        = e.seq
           operation                                  = try(e.operation, local.defaults.iosxe.configuration.route_maps.entries.operation, null)
           description                                = try(e.description, local.defaults.iosxe.configuration.route_maps.entries.description, null)
           continue                                   = try(e.continue, local.defaults.iosxe.configuration.route_maps.entries.continue, null)
