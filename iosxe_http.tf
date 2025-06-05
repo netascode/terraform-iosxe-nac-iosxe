@@ -19,7 +19,7 @@ resource "iosxe_system" "http" {
 
   ip_http_authentication_aaa_command_authorization = [
     for cmd in try(local.device_config[each.value.name].system.http.authentication_aaa_command_authorization, []) : {
-      level = try(cmd.level, null)
+      level = cmd.level
       name  = try(cmd.name, null)
     }
   ]

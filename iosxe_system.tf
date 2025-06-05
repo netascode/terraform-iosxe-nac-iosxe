@@ -21,7 +21,7 @@ resource "iosxe_system" "system" {
 
   multicast_routing_vrfs = [
     for mrv in try(local.device_config[each.value.name].system.multicast_routing_vrfs, []) : {
-      vrf         = try(mrv.vrf, null)
+      vrf         = mrv.vrf
       distributed = try(mrv.distributed, null)
     }
   ]
