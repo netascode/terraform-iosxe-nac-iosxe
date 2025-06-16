@@ -8,7 +8,6 @@ locals {
         name           = community_list.name
         deny_entries   = try(community_list.deny_entries, local.defaults.iosxe.configuration.community_lists.standard.deny_entries, null)
         permit_entries = try(community_list.permit_entries, local.defaults.iosxe.configuration.community_lists.standard.permit_entries, null)
-
       }
     ]
   ])
@@ -21,7 +20,6 @@ resource "iosxe_community_list_standard" "community_list_standard" {
   name           = each.value.name
   deny_entries   = each.value.deny_entries
   permit_entries = each.value.permit_entries
-
 }
 
 locals {
@@ -47,6 +45,4 @@ resource "iosxe_community_list_expanded" "community_list_expanded" {
 
   name    = each.value.name
   entries = each.value.entries
-
 }
-
