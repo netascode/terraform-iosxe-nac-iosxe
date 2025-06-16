@@ -1,5 +1,5 @@
 locals {
-  standard = flatten([
+  community_lists_standard = flatten([
     for device in local.devices : [
       for community_list in try(local.device_config[device.name].community_lists.standard, []) : {
         key    = format("%s/%s", device.name, community_list.name)
@@ -15,7 +15,7 @@ locals {
 }
 
 resource "iosxe_community_list_standard" "community_list_standard" {
-  for_each = { for e in local.standard : e.key => e }
+  for_each = { for e in local.community_lists_standard : e.key => e }
   device   = each.value.device
 
   name           = each.value.name
@@ -25,7 +25,7 @@ resource "iosxe_community_list_standard" "community_list_standard" {
 }
 
 locals {
-  expanded = flatten([
+  community_lists_expanded = flatten([
     for device in local.devices : [
       for community_list in try(local.device_config[device.name].community_lists.expanded, []) : {
         key    = format("%s/%s", device.name, community_list.name)
@@ -42,7 +42,7 @@ locals {
 }
 
 resource "iosxe_community_list_expanded" "community_list_expanded" {
-  for_each = { for e in local.expanded : e.key => e }
+  for_each = { for e in local.community_lists_expanded : e.key => e }
   device   = each.value.device
 
   name    = each.value.name
