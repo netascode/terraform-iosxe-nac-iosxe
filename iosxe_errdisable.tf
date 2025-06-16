@@ -1,5 +1,5 @@
 resource "iosxe_errdisable" "errdisable" {
-  for_each = { for device in local.devices : device.name => device if try(local.device_config[device.name].errdisable, null) != null || try(local.defaults.iosxe.configuration.errdiable, null) != null }
+  for_each = { for device in local.devices : device.name => device if try(local.device_config[device.name].errdisable, null) != null || try(local.defaults.iosxe.configuration.errdisable, null) != null }
   device   = each.value.name
 
   detect_cause_all                              = try(local.device_config[each.value.name].errdisable.detect_cause.all, local.defaults.iosxe.configuration.errdisable.detect_cause.all, null)
