@@ -42,7 +42,7 @@ resource "iosxe_system" "system" {
   ip_http_tls_version                             = try(local.device_config[each.value.name].system.http.tls_version, local.defaults.iosxe.configuration.system.http.tls_version, null)
 
   ip_http_authentication_aaa_command_authorization = [
-    for cmd in try(local.device_config[each.value.name].system.http.authentication_aaa_command_authorization, []) : {
+    for cmd in try(local.device_config[each.value.name].system.http.authentication_aaa_command_authorizations, []) : {
       level = cmd.level
       name  = try(cmd.name, null)
     }
