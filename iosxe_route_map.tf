@@ -7,7 +7,7 @@ locals {
 
         name = route_map.name
         entries = [for e in try(route_map.entries, []) : {
-          seq                                      = e.seq
+          seq                                        = e.seq
           operation                                  = try(e.operation, local.defaults.iosxe.configuration.route_maps.entries.operation, null)
           description                                = try(e.description, local.defaults.iosxe.configuration.route_maps.entries.description, null)
           continue                                   = try(e.continue, local.defaults.iosxe.configuration.route_maps.entries.continue, null)
