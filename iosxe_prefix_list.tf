@@ -14,10 +14,12 @@ locals {
           le     = try(e.less_equal, local.defaults.iosxe.configuration.prefix_lists.seqs.less_equal, null)
         }]
 
-        prefix_list_description = [for e in try(prefix_list, []) : {
-          name        = prefix_list.name
-          description = try(prefix_list.description, local.defaults.iosxe.configuration.prefix_lists.description, null)
-        }]
+        prefix_list_description = try(prefix_list.description != null ?
+          [{
+            name        = prefix_list.name
+            description = prefix_list.description
+          }] : null, null
+        )
       }
     ]
   ])
