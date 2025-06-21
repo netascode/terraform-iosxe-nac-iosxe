@@ -1,0 +1,31 @@
+version: '>= 0.14.0'
+
+formatter: markdown table
+
+content: |-
+  # Terraform *Network as Code* IOS-XE Model Module
+
+  This module can be used to create a single YAML file including all rendered device configurations. This can be useful to run validations against the full model.
+
+  ## Examples
+
+  ```hcl
+  {{ include "./examples/model_file/main.tf" }}
+  ```
+
+  {{ .Requirements }}
+
+  {{ .Providers }}
+
+  {{ .Inputs }}
+
+  {{ .Outputs }}
+
+  {{ .Resources }}
+
+output:
+  file: README.md
+  mode: replace
+
+sort:
+  enabled: false
