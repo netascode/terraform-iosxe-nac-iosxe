@@ -13,8 +13,8 @@ locals {
         service_policy_input                           = try(template.service_policy_input, local.defaults.iosxe.configuration.templates.service_policy_input, null)
         service_policy_output                          = try(template.service_policy_output, local.defaults.iosxe.configuration.templates.service_policy_output, null)
         source_template                                = try(template.source_template, local.defaults.iosxe.configuration.templates.source_template, null)
-        switchport_mode_trunk                          = try(template.switchport.mode_trunk, local.defaults.iosxe.configuration.templates.switchport.mode_trunk, null)
-        switchport_mode_access                         = try(template.switchport.mode_access, local.defaults.iosxe.configuration.templates.switchport.mode_access, null)
+        switchport_mode_trunk                          = try(template.switchport.mode, local.defaults.iosxe.configuration.templates.switchport.mode, null) == "trunk" ? true : false
+        switchport_mode_access                         = try(template.switchport.mode, local.defaults.iosxe.configuration.templates.switchport.mode, null) == "access" ? true : false
         switchport_nonegotiate                         = try(template.switchport.nonegotiate, local.defaults.iosxe.configuration.templates.switchport.nonegotiate, null)
         switchport_block_unicast                       = try(template.switchport.block_unicast, local.defaults.iosxe.configuration.templates.switchport.block_unicast, null)
         switchport_port_security                       = try(template.switchport.port_security, local.defaults.iosxe.configuration.templates.switchport.port_security, null)
