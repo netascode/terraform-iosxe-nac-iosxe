@@ -38,7 +38,7 @@ locals {
         switchport_trunk_allowed_vlans_none                      = try(template.switchport.trunk_allowed_vlans_none, local.defaults.iosxe.configuration.templates.switchport.trunk_allowed_vlans_none, null)
         switchport_trunk_allowed_vlans_all                       = try(template.switchport.trunk_allowed_vlans_all, local.defaults.iosxe.configuration.templates.switchport.trunk_allowed_vlans_all, null)
         switchport_trunk_native_vlan_tag                         = try(template.switchport.trunk_native_vlan_tag, local.defaults.iosxe.configuration.templates.switchport.trunk_native_vlan_tag, null)
-        switchport_trunk_native_vlan_vlan_id                     = try(template.switchport.trunk_native_vlan_id, local.defaults.iosxe.configuration.templates.switchport.trunk_native_vlan_id, null)
+        switchport_trunk_native_vlan_vlan_id                     = try(template.switchport.trunk_native_vlan, local.defaults.iosxe.configuration.templates.switchport.trunk_native_vlan, null)
         mab                                                      = try(template.mab, local.defaults.iosxe.configuration.templates.mab, null)
         mab_eap                                                  = try(template.mab_eap, local.defaults.iosxe.configuration.templates.mab_eap, null)
         access_session_closed                                    = try(template.access_session_closed, local.defaults.iosxe.configuration.templates.access_session_closed, null)
