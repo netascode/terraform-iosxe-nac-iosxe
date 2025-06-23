@@ -1,10 +1,10 @@
 locals {
-  iosxe         = try(local.model.iosxe, {})
-  global        = try(local.iosxe.global, [])
-  devices       = try(local.iosxe.devices, [])
-  device_groups = try(local.iosxe.device_groups, [])
-  //interface_groups        = try(local.iosxe.interface_groups, [])
+  iosxe                   = try(local.model.iosxe, {})
+  global                  = try(local.iosxe.global, [])
+  devices                 = try(local.iosxe.devices, [])
+  device_groups           = try(local.iosxe.device_groups, [])
   configuration_templates = try(local.iosxe.configuration_templates, [])
+  interface_groups        = try(local.iosxe.interface_groups, [])
 
   device_group_config_template_variables = { for dg in local.device_groups :
     dg.name => merge(concat(
@@ -58,6 +58,19 @@ locals {
         }
       ]
     }
+  }
+
+  interfaces_ethernets_group = flatten([
+    for device in local.devices : [
+      for int in try(local.device_config[device.name].interfaces.ethernets, []) : {
+        key           = format("%s/%s", device.name, int.id)
+        configuration = yamldecode(provider::utils::yaml_merge([for g in try(int.interface_groups, []) : try([for ig in local.interface_groups : yamlencode(ig.configuration) if ig.name == g][0], "")]))
+      }
+    ]
+  ])
+
+  interfaces_ethernets_group_config = {
+    for int in local.interfaces_ethernets_group : int.key => int.configuration
   }
 }
 
