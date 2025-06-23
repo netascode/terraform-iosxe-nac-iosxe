@@ -65,13 +65,13 @@ locals {
           destination_port_lesser_than  = try(e.destination.port_type, local.defaults.iosxe.configuration.access_lists.extended.entries.destination.port_type, null) == "lesser_than" ? try(e.destination.port, null) : null
           destination_port_range_from   = try(e.destination.port_type, local.defaults.iosxe.configuration.access_lists.extended.entries.destination.port_type, null) == "range" ? try(e.destination.port_from, null) : null
           destination_port_range_to     = try(e.destination.port_type, local.defaults.iosxe.configuration.access_lists.extended.entries.destination.port_type, null) == "range" ? try(e.destination.port_to, null) : null
-          ack                           = try(e.flags.ack, local.defaults.iosxe.configuration.access_lists.extended.entries.flags.ack, null)
-          fin                           = try(e.flags.fin, local.defaults.iosxe.configuration.access_lists.extended.entries.flags.fin, null)
-          psh                           = try(e.flags.psh, local.defaults.iosxe.configuration.access_lists.extended.entries.flags.psh, null)
-          rst                           = try(e.flags.rst, local.defaults.iosxe.configuration.access_lists.extended.entries.flags.rst, null)
-          syn                           = try(e.flags.syn, local.defaults.iosxe.configuration.access_lists.extended.entries.flags.syn, null)
-          urg                           = try(e.flags.urg, local.defaults.iosxe.configuration.access_lists.extended.entries.flags.urg, null)
-          established                   = try(e.flags.established, local.defaults.iosxe.configuration.access_lists.extended.entries.flags.established, null)
+          ack                           = try(e.ack, local.defaults.iosxe.configuration.access_lists.extended.entries.ack, null)
+          fin                           = try(e.fin, local.defaults.iosxe.configuration.access_lists.extended.entries.fin, null)
+          psh                           = try(e.psh, local.defaults.iosxe.configuration.access_lists.extended.entries.psh, null)
+          rst                           = try(e.rst, local.defaults.iosxe.configuration.access_lists.extended.entries.rst, null)
+          syn                           = try(e.syn, local.defaults.iosxe.configuration.access_lists.extended.entries.syn, null)
+          urg                           = try(e.urg, local.defaults.iosxe.configuration.access_lists.extended.entries.urg, null)
+          established                   = try(e.established, local.defaults.iosxe.configuration.access_lists.extended.entries.established, null)
           dscp                          = try(e.dscp, local.defaults.iosxe.configuration.access_lists.extended.entries.dscp, null)
           fragments                     = try(e.fragments, local.defaults.iosxe.configuration.access_lists.extended.entries.fragments, null)
           precedence                    = try(e.precedence, local.defaults.iosxe.configuration.access_lists.extended.entries.precedence, null)
