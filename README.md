@@ -93,6 +93,10 @@ module "iosxe" {
 | [iosxe_community_list_standard.community_list_standard](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/community_list_standard) | resource |
 | [iosxe_errdisable.errdisable](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/errdisable) | resource |
 | [iosxe_interface_ethernet.ethernet](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_ethernet) | resource |
+| [iosxe_interface_mpls.ethernet_mpls](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_mpls) | resource |
+| [iosxe_interface_ospf.ethernet_ospf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_ospf) | resource |
+| [iosxe_interface_ospfv3.ethernet_ospfv3](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_ospfv3) | resource |
+| [iosxe_interface_pim.example](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_pim) | resource |
 | [iosxe_interface_switchport.ethernet_switchport](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_switchport) | resource |
 | [iosxe_prefix_list.prefix_list](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/prefix_list) | resource |
 | [iosxe_route_map.route_map](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/route_map) | resource |
