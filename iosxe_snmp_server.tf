@@ -163,9 +163,9 @@ resource "iosxe_snmp_server" "snmp_server" {
   views = [for e in try(local.device_config[each.value.name].snmp_server.views, []) : {
     name    = e.name
     mib     = e.mib
-    inc_exl = try((e.include == true ? "included" : (e.exclude == true ? "excluded" : null)), null)
+    inc_exl = try((e.include == true ? "included" : (e.exclude == true ? "excluded" : null)), (local.defaults.iosxe.configuration.snmp_server.views.include == true ? "included" : (local.defaults.iosxe.configuration.snmp_server.views.exclude == true ? "excluded" : null)), null)
   }]
-  delete_mode = try("all", null)
+  delete_mode = "all"
 }
 
 locals {
@@ -225,7 +225,7 @@ locals {
         v3_auth_access_ipv6_acl               = try(user.v3_auth_access_ipv6_acl, local.defaults.iosxe.configuration.snmp_server.users.v3_auth_access_ipv6_acl, null)
         v3_auth_access_standard_acl           = try(user.v3_auth_access_standard_acl, local.defaults.iosxe.configuration.snmp_server.users.v3_auth_access_standard_acl, null)
         v3_auth_access_acl_name               = try(user.v3_auth_access_acl_name, local.defaults.iosxe.configuration.snmp_server.users.v3_auth_access_acl_name, null)
-        delete_mode                           = try("all", null)
+        delete_mode                           = "all"
       }
     ]
   ])
