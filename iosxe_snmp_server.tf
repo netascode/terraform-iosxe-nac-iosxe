@@ -49,7 +49,7 @@ resource "iosxe_snmp_server" "snmp_server" {
   enable_traps_ike_policy_delete                     = try(local.device_config[each.value.name].snmp_server.traps.ike_policy_delete, local.defaults.iosxe.configuration.snmp_server.traps.ike_policy_delete, null)
   enable_traps_ike_tunnel_start                      = try(local.device_config[each.value.name].snmp_server.traps.ike_tunnel_start, local.defaults.iosxe.configuration.snmp_server.traps.ike_tunnel_start, null)
   enable_traps_ike_tunnel_stop                       = try(local.device_config[each.value.name].snmp_server.traps.ike_tunnel_stop, local.defaults.iosxe.configuration.snmp_server.traps.ike_tunnel_stop, null)
-  enable_traps_ipmulticast                           = try(local.device_config[each.value.name].snmp_server.traps.ipmulticast, local.defaults.iosxe.configuration.snmp_server.traps.ipmulticast, null)
+  enable_traps_ipmulticast                           = try(local.device_config[each.value.name].snmp_server.traps.ip_multicast, local.defaults.iosxe.configuration.snmp_server.traps.ip_multicast, null)
   enable_traps_ipsec_cryptomap_add                   = try(local.device_config[each.value.name].snmp_server.traps.ipsec_cryptomap_add, local.defaults.iosxe.configuration.snmp_server.traps.ipsec_cryptomap_add, null)
   enable_traps_ipsec_cryptomap_attach                = try(local.device_config[each.value.name].snmp_server.traps.ipsec_cryptomap_attach, local.defaults.iosxe.configuration.snmp_server.traps.ipsec_cryptomap_attach, null)
   enable_traps_ipsec_cryptomap_delete                = try(local.device_config[each.value.name].snmp_server.traps.ipsec_cryptomap_delete, local.defaults.iosxe.configuration.snmp_server.traps.ipsec_cryptomap_delete, null)
@@ -120,7 +120,7 @@ resource "iosxe_snmp_server" "snmp_server" {
   enable_traps_vtp                                   = try(local.device_config[each.value.name].snmp_server.traps.vtp, local.defaults.iosxe.configuration.snmp_server.traps.vtp, null)
   ifindex_persist                                    = try(local.device_config[each.value.name].snmp_server.ifindex_persist, local.defaults.iosxe.configuration.snmp_server.ifindex_persist, null)
   location                                           = try(local.device_config[each.value.name].snmp_server.location, local.defaults.iosxe.configuration.snmp_server.location, null)
-  packetsize                                         = try(local.device_config[each.value.name].snmp_server.packetsize, local.defaults.iosxe.configuration.snmp_server.packetsize, null)
+  packetsize                                         = try(local.device_config[each.value.name].snmp_server.packet_size, local.defaults.iosxe.configuration.snmp_server.packet_size, null)
   queue_length                                       = try(local.device_config[each.value.name].snmp_server.queue_length, local.defaults.iosxe.configuration.snmp_server.queue_length, null)
   source_interface_informs_forty_gigabit_ethernet    = try(local.device_config[each.value.name].snmp_server.source_interface_informs_forty_gigabit_ethernet, local.defaults.iosxe.configuration.snmp_server.source_interface_informs_forty_gigabit_ethernet, null)
   source_interface_informs_gigabit_ethernet          = try(local.device_config[each.value.name].snmp_server.source_interface_informs_gigabit_ethernet, local.defaults.iosxe.configuration.snmp_server.source_interface_informs_gigabit_ethernet, null)
@@ -163,7 +163,7 @@ resource "iosxe_snmp_server" "snmp_server" {
   views = [for e in try(local.device_config[each.value.name].snmp_server.views, []) : {
     name    = e.name
     mib     = e.mib
-    inc_exl = try((e.include == true ? "included" : (e.exclude == true ? "excluded" : null)), (local.defaults.iosxe.configuration.snmp_server.views.include == true ? "included" : (local.defaults.iosxe.configuration.snmp_server.views.exclude == true ? "excluded" : null)), null)
+    inc_exl = try(e.include, local.defaults.iosxe.configuration.snmp_server.views.include, null)
   }]
   delete_mode = "all"
 }
