@@ -74,7 +74,10 @@ locals {
                   {
                     "ethernets" = [
                       for ethernet in try(device.configuration.interfaces.ethernets, []) : merge(
-                        yamldecode(provider::utils::yaml_merge(concat([for g in try(ethernet.interface_groups, []) : try([for ig in local.interface_groups : yamlencode(ig.configuration) if ig.name == g][0], "")], [yamlencode(ethernet)])))
+                        yamldecode(provider::utils::yaml_merge(concat(
+                          [for g in try(ethernet.interface_groups, []) : try([for ig in local.interface_groups : yamlencode(ig.configuration) if ig.name == g][0], "")],
+                          [yamlencode(ethernet)]
+                        )))
                       )
                     ]
                   }
