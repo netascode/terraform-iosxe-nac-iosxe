@@ -60,17 +60,31 @@ locals {
     }
   }
 
-  interfaces_ethernets_group = flatten([
-    for device in local.devices : [
-      for int in try(local.device_config[device.name].interfaces.ethernets, []) : {
-        key           = format("%s/%s", device.name, int.id)
-        configuration = yamldecode(provider::utils::yaml_merge([for g in try(int.interface_groups, []) : try([for ig in local.interface_groups : yamlencode(ig.configuration) if ig.name == g][0], "")]))
-      }
-    ]
-  ])
-
-  interfaces_ethernets_group_config = {
-    for int in local.interfaces_ethernets_group : int.key => int.configuration
+  iosxe_devices_interfaces = {
+    iosxe = {
+      devices = [
+        for device in try(local.iosxe_devices.iosxe.devices, []) : merge(
+          { for k, v in device : k => v if k != "configuration" },
+          {
+            configuration = merge(
+              { for k, v in try(device.configuration, {}) : k => v if k != "interfaces" },
+              {
+                interfaces = merge(
+                  { for k, v in try(device.configuration.interfaces, {}) : k => v if k != "ethernets" },
+                  {
+                    "ethernets" = [
+                      for ethernet in try(device.configuration.interfaces.ethernets, []) : merge(
+                        yamldecode(provider::utils::yaml_merge(concat([for g in try(ethernet.interface_groups, []) : try([for ig in local.interface_groups : yamlencode(ig.configuration) if ig.name == g][0], "")], [yamlencode(ethernet)])))
+                      )
+                    ]
+                  }
+                )
+              }
+            )
+          }
+        )
+      ]
+    }
   }
 }
 

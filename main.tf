@@ -9,11 +9,10 @@ module "model" {
 }
 
 locals {
-  model             = module.model.model
-  defaults          = module.model.default_values
-  iosxe             = try(local.model.iosxe, {})
-  devices           = try(local.iosxe.devices, [])
-  interfaces_config = try(local.model.iosxe.interfaces_ethernets_group_config, [])
+  model    = module.model.model
+  defaults = module.model.default_values
+  iosxe    = try(local.model.iosxe, {})
+  devices  = try(local.iosxe.devices, [])
 
   device_config = { for device in try(local.iosxe.devices, []) :
     device.name => try(device.configuration, {})
