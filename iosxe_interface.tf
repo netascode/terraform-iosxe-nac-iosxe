@@ -300,7 +300,7 @@ resource "iosxe_interface_ospfv3" "ethernet_ospfv3" {
   ]
 }
 
-resource "iosxe_interface_pim" "example" {
+resource "iosxe_interface_pim" "ethernet_pim" {
   for_each = { for v in local.interfaces_ethernets : v.key => v if v.pim }
 
   device            = each.value.device
