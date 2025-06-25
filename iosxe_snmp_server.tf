@@ -163,7 +163,7 @@ resource "iosxe_snmp_server" "snmp_server" {
   views = [for e in try(local.device_config[each.value.name].snmp_server.views, []) : {
     name    = e.name
     mib     = e.mib
-    inc_exl = try(e.include, local.defaults.iosxe.configuration.snmp_server.views.include, null)
+    inc_exl = try(e.scope, local.defaults.iosxe.configuration.snmp_server.views.scope, null)
   }]
   delete_mode = "all"
 }
