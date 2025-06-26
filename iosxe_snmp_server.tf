@@ -165,7 +165,6 @@ resource "iosxe_snmp_server" "snmp_server" {
     mib     = e.mib
     inc_exl = try(e.scope, local.defaults.iosxe.configuration.snmp_server.views.scope, null)
   }]
-  delete_mode = "all"
 }
 
 locals {
@@ -225,7 +224,6 @@ locals {
         v3_auth_access_ipv6_acl               = try(user.v3_auth_access_ipv6_acl, local.defaults.iosxe.configuration.snmp_server.users.v3_auth_access_ipv6_acl, null)
         v3_auth_access_standard_acl           = try(user.v3_auth_access_standard_acl, local.defaults.iosxe.configuration.snmp_server.users.v3_auth_access_standard_acl, null)
         v3_auth_access_acl_name               = try(user.v3_auth_access_acl_name, local.defaults.iosxe.configuration.snmp_server.users.v3_auth_access_acl_name, null)
-        delete_mode                           = "all"
       }
     ]
   ])
@@ -255,5 +253,4 @@ resource "iosxe_snmp_server_user" "snmp_server_user" {
   v3_auth_access_ipv6_acl               = each.value.v3_auth_access_ipv6_acl
   v3_auth_access_standard_acl           = each.value.v3_auth_access_standard_acl
   v3_auth_access_acl_name               = each.value.v3_auth_access_acl_name
-  delete_mode                           = each.value.delete_mode
 }
