@@ -92,11 +92,13 @@ module "iosxe" {
 | [iosxe_community_list_expanded.community_list_expanded](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/community_list_expanded) | resource |
 | [iosxe_community_list_standard.community_list_standard](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/community_list_standard) | resource |
 | [iosxe_errdisable.errdisable](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/errdisable) | resource |
+| [iosxe_line.line](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/line) | resource |
 | [iosxe_prefix_list.prefix_list](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/prefix_list) | resource |
 | [iosxe_route_map.route_map](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/route_map) | resource |
 | [iosxe_save_config.save_config](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/save_config) | resource |
 | [iosxe_service.service](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/service) | resource |
 | [iosxe_system.system](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/system) | resource |
+| [iosxe_template.template](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/template) | resource |
 ## Modules
 
 | Name | Source | Version |
