@@ -72,21 +72,21 @@ locals {
                 interfaces = merge(
                   { for k, v in try(device.configuration.interfaces, {}) : k => v if k != "ethernets" && k != "loopbacks" },
                   {
-                    "loopbacks" = [
-                      for loopback in try(device.configuration.interfaces.loopbacks, []) : merge(
-                        yamldecode(provider::utils::yaml_merge(concat(
-                          [for g in try(loopback.interface_groups, []) : try([for ig in local.interface_groups : yamlencode(ig.configuration) if ig.name == g][0], "")],
-                          [yamlencode(loopback)]
-                        )))
-                      )
-                    ]
-                  },
-                  {
                     "ethernets" = [
                       for ethernet in try(device.configuration.interfaces.ethernets, []) : merge(
                         yamldecode(provider::utils::yaml_merge(concat(
                           [for g in try(ethernet.interface_groups, []) : try([for ig in local.interface_groups : yamlencode(ig.configuration) if ig.name == g][0], "")],
                           [yamlencode(ethernet)]
+                        )))
+                      )
+                    ]
+                  },
+                  {
+                    "loopbacks" = [
+                      for loopback in try(device.configuration.interfaces.loopbacks, []) : merge(
+                        yamldecode(provider::utils::yaml_merge(concat(
+                          [for g in try(loopback.interface_groups, []) : try([for ig in local.interface_groups : yamlencode(ig.configuration) if ig.name == g][0], "")],
+                          [yamlencode(loopback)]
                         )))
                       )
                     ]

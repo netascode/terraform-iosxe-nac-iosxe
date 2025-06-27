@@ -124,104 +124,135 @@ locals {
           areas = [for area in try(pid.areas, []) : {
           area_id = area }]
         }]
-        ospfv3                                  = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.network_type, null) != null ? true : false
-        ospfv3_network_type_broadcast           = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.network_type, null) == "broadcast" ? true : null
-        ospfv3_network_type_non_broadcast       = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.network_type, null) == "non-broadcast" ? true : null
-        ospfv3_network_type_point_to_multipoint = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.network_type, null) == "point-to-multipoint" ? true : null
-        ospfv3_network_type_point_to_point      = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.network_type, null) == "point-to-point" ? true : null
-        ospfv3_cost                             = try(int.ospfv3.cost, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.cost, null)
-        pim                                     = try(int.pim.passive, int.pim.dense_mode, int.pim.sparse_mode, int.pim.sparse_dense_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.dense_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.sparse_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.sparse_dense_mode, null) != null ? true : false
-        pim_passive                             = try(int.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.passive, null)
-        pim_dense_mode                          = try(int.pim.dense_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.dense_mode, null)
-        pim_sparse_mode                         = try(int.pim.sparse_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.sparse_mode, null)
-        pim_sparse_dense_mode                   = try(int.pim.sparse_dense_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.sparse_dense_mode, null)
-        pim_bfd                                 = try(int.pim.bfd, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.bfd, null)
-        pim_border                              = try(int.pim.border, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.border, null)
-        pim_bsr_border                          = try(int.pim.bsr_border, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.bsr_border, null)
-        pim_dr_priority                         = try(int.pim.dr_priority, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.dr_priority, null)
+        ospfv3                                     = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.network_type, null) != null ? true : false
+        ospfv3_network_type_broadcast              = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.network_type, null) == "broadcast" ? true : null
+        ospfv3_network_type_non_broadcast          = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.network_type, null) == "non-broadcast" ? true : null
+        ospfv3_network_type_point_to_multipoint    = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.network_type, null) == "point-to-multipoint" ? true : null
+        ospfv3_network_type_point_to_point         = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.network_type, null) == "point-to-point" ? true : null
+        ospfv3_cost                                = try(int.ospfv3.cost, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.cost, null)
+        pim                                        = try(int.pim.passive, int.pim.dense_mode, int.pim.sparse_mode, int.pim.sparse_dense_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.dense_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.sparse_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.sparse_dense_mode, null) != null ? true : false
+        pim_passive                                = try(int.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.passive, null)
+        pim_dense_mode                             = try(int.pim.dense_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.dense_mode, null)
+        pim_sparse_mode                            = try(int.pim.sparse_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.sparse_mode, null)
+        pim_sparse_dense_mode                      = try(int.pim.sparse_dense_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.sparse_dense_mode, null)
+        pim_bfd                                    = try(int.pim.bfd, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.bfd, null)
+        pim_border                                 = try(int.pim.border, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.border, null)
+        pim_bsr_border                             = try(int.pim.bsr_border, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.bsr_border, null)
+        pim_dr_priority                            = try(int.pim.dr_priority, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.dr_priority, null)
+        authentication_periodic                    = try(int.network_access_control.authentication_periodic, local.defaults.iosxe.devices.configuration.interfaces.ethernets.network_access_control.authentication_periodic, null)
+        authentication_timer_reauthenticate        = try(int.network_access_control.authentication_timer_reauthenticate, local.defaults.iosxe.devices.configuration.interfaces.ethernets.network_access_control.authentication_timer_reauthenticate, null)
+        authentication_timer_reauthenticate_server = try(int.network_access_control.authentication_timer_reauthenticate_server, local.defaults.iosxe.devices.configuration.interfaces.ethernets.network_access_control.authentication_timer_reauthenticate_server, null)
+        mab                                        = try(int.network_access_control.mab, local.defaults.iosxe.devices.configuration.interfaces.ethernets.network_access_control.mab, null)
+        mab_eap                                    = try(int.network_access_control.mab_eap, local.defaults.iosxe.devices.configuration.interfaces.ethernets.network_access_control.mab_eap, null)
+        dot1x_pae                                  = try(int.network_access_control.dot1x_pae, local.defaults.iosxe.devices.configuration.interfaces.ethernets.network_access_control.dot1x_pae, null)
+        dot1x_timeout_auth_period                  = try(int.network_access_control.dot1x_timeout_auth_period, local.defaults.iosxe.devices.configuration.interfaces.ethernets.network_access_control.dot1x_timeout_auth_period, null)
+        dot1x_timeout_held_period                  = try(int.network_access_control.dot1x_timeout_held_period, local.defaults.iosxe.devices.configuration.interfaces.ethernets.network_access_control.dot1x_timeout_held_period, null)
+        dot1x_timeout_quiet_period                 = try(int.network_access_control.dot1x_timeout_quiet_period, local.defaults.iosxe.devices.configuration.interfaces.ethernets.network_access_control.dot1x_timeout_quiet_period, null)
+        dot1x_timeout_ratelimit_period             = try(int.network_access_control.dot1x_timeout_ratelimit_period, local.defaults.iosxe.devices.configuration.interfaces.ethernets.network_access_control.dot1x_timeout_ratelimit_period, null)
+        dot1x_timeout_server_timeout               = try(int.network_access_control.dot1x_timeout_server_timeout, local.defaults.iosxe.devices.configuration.interfaces.ethernets.network_access_control.dot1x_timeout_server_timeout, null)
+        dot1x_timeout_start_period                 = try(int.network_access_control.dot1x_timeout_start_period, local.defaults.iosxe.devices.configuration.interfaces.ethernets.network_access_control.dot1x_timeout_start_period, null)
+        dot1x_timeout_supp_timeout                 = try(int.network_access_control.dot1x_timeout_supp_timeout, local.defaults.iosxe.devices.configuration.interfaces.ethernets.network_access_control.dot1x_timeout_supp_timeout, null)
+        dot1x_timeout_tx_period                    = try(int.network_access_control.dot1x_timeout_tx_period, local.defaults.iosxe.devices.configuration.interfaces.ethernets.network_access_control.dot1x_timeout_tx_period, null)
+        dot1x_max_reauth_req                       = try(int.network_access_control.dot1x_max_reauth_req, local.defaults.iosxe.devices.configuration.interfaces.ethernets.network_access_control.dot1x_max_reauth_req, null)
+        dot1x_max_req                              = try(int.network_access_control.dot1x_max_req, local.defaults.iosxe.devices.configuration.interfaces.ethernets.network_access_control.dot1x_max_req, null)
       }
     ]
   ])
 }
 
 resource "iosxe_interface_ethernet" "ethernet" {
-  for_each                         = { for v in local.interfaces_ethernets : v.key => v }
-  device                           = each.value.device
-  type                             = each.value.type
-  name                             = each.value.id
-  media_type                       = each.value.media_type
-  bandwidth                        = each.value.bandwidth
-  description                      = each.value.description
-  shutdown                         = each.value.shutdown
-  vrf_forwarding                   = each.value.vrf_forwarding
-  ipv4_address                     = each.value.ipv4_address
-  ipv4_address_mask                = each.value.ipv4_address_mask
-  ip_proxy_arp                     = each.value.ip_proxy_arp
-  ip_arp_inspection_trust          = each.value.ip_arp_inspection_trust
-  ip_arp_inspection_limit_rate     = each.value.ip_arp_inspection_limit_rate
-  ip_dhcp_snooping_trust           = each.value.ip_dhcp_snooping_trust
-  ip_dhcp_relay_source_interface   = each.value.ip_dhcp_relay_source_interface
-  helper_addresses                 = each.value.helper_addresses
-  ip_access_group_in               = each.value.ip_access_group_in
-  ip_access_group_in_enable        = each.value.ip_access_group_in_enable
-  ip_access_group_out              = each.value.ip_access_group_out
-  ip_access_group_out_enable       = each.value.ip_access_group_out_enable
-  ip_flow_monitors                 = each.value.ip_flow_monitors
-  ip_redirects                     = each.value.ip_redirects
-  ip_unreachables                  = each.value.ip_unreachables
-  unnumbered                       = each.value.unnumbered
-  ipv6_address_autoconfig_default  = each.value.ipv6_address_autoconfig_default
-  ipv6_address_dhcp                = each.value.ipv6_address_dhcp
-  ipv6_addresses                   = each.value.ipv6_addresses
-  ipv6_enable                      = each.value.ipv6_enable
-  ipv6_link_local_addresses        = each.value.ipv6_link_local_addresses
-  ipv6_mtu                         = each.value.ipv6_mtu
-  ipv6_nd_ra_suppress_all          = each.value.ipv6_nd_ra_suppress_all
-  bfd_enable                       = each.value.bfd_enable
-  bfd_template                     = each.value.bfd_template
-  bfd_local_address                = each.value.bfd_local_address
-  bfd_interval                     = each.value.bfd_interval
-  bfd_interval_min_rx              = each.value.bfd_interval_min_rx
-  bfd_interval_multiplier          = each.value.bfd_interval_multiplier
-  bfd_echo                         = each.value.bfd_echo
-  spanning_tree_guard              = each.value.spanning_tree_guard
-  spanning_tree_link_type          = each.value.spanning_tree_link_type
-  spanning_tree_portfast_trunk     = each.value.spanning_tree_portfast_trunk
-  speed_100                        = each.value.speed_100
-  speed_1000                       = each.value.speed_1000
-  speed_2500                       = each.value.speed_2500
-  speed_5000                       = each.value.speed_5000
-  speed_10000                      = each.value.speed_10000
-  speed_25000                      = each.value.speed_25000
-  speed_40000                      = each.value.speed_40000
-  speed_100000                     = each.value.speed_100000
-  speed_nonegotiate                = each.value.speed_nonegotiate
-  channel_group_number             = each.value.channel_group_number
-  channel_group_mode               = each.value.channel_group_mode
-  source_template                  = each.value.source_templates
-  arp_timeout                      = each.value.arp_timeout
-  negotiation_auto                 = each.value.negotiation_auto
-  service_policy_input             = each.value.service_policy_input
-  service_policy_output            = each.value.service_policy_output
-  load_interval                    = each.value.load_interval
-  snmp_trap_link_status            = each.value.snmp_trap_link_status
-  logging_event_link_status_enable = each.value.logging_event_link_status_enable
-  switchport                       = each.value.switchport
-  auto_qos_classify                = each.value.auto_qos_classify
-  auto_qos_classify_police         = each.value.auto_qos_classify_police
-  auto_qos_trust                   = each.value.auto_qos_trust
-  auto_qos_trust_cos               = each.value.auto_qos_trust_cos
-  auto_qos_trust_dscp              = each.value.auto_qos_trust_dscp
-  auto_qos_video_cts               = each.value.auto_qos_video_cts
-  auto_qos_video_ip_camera         = each.value.auto_qos_video_ip_camera
-  auto_qos_video_media_player      = each.value.auto_qos_video_media_player
-  auto_qos_voip                    = each.value.auto_qos_voip
-  auto_qos_voip_cisco_phone        = each.value.auto_qos_voip_cisco_phone
-  auto_qos_voip_cisco_softphone    = each.value.auto_qos_voip_cisco_softphone
-  auto_qos_voip_trust              = each.value.auto_qos_voip_trust
-  trust_device                     = each.value.trust_device
+  for_each                                   = { for v in local.interfaces_ethernets : v.key => v }
+  device                                     = each.value.device
+  type                                       = each.value.type
+  name                                       = each.value.id
+  media_type                                 = each.value.media_type
+  bandwidth                                  = each.value.bandwidth
+  description                                = each.value.description
+  shutdown                                   = each.value.shutdown
+  vrf_forwarding                             = each.value.vrf_forwarding
+  ipv4_address                               = each.value.ipv4_address
+  ipv4_address_mask                          = each.value.ipv4_address_mask
+  ip_proxy_arp                               = each.value.ip_proxy_arp
+  ip_arp_inspection_trust                    = each.value.ip_arp_inspection_trust
+  ip_arp_inspection_limit_rate               = each.value.ip_arp_inspection_limit_rate
+  ip_dhcp_snooping_trust                     = each.value.ip_dhcp_snooping_trust
+  ip_dhcp_relay_source_interface             = each.value.ip_dhcp_relay_source_interface
+  helper_addresses                           = each.value.helper_addresses
+  ip_access_group_in                         = each.value.ip_access_group_in
+  ip_access_group_in_enable                  = each.value.ip_access_group_in_enable
+  ip_access_group_out                        = each.value.ip_access_group_out
+  ip_access_group_out_enable                 = each.value.ip_access_group_out_enable
+  ip_flow_monitors                           = each.value.ip_flow_monitors
+  ip_redirects                               = each.value.ip_redirects
+  ip_unreachables                            = each.value.ip_unreachables
+  unnumbered                                 = each.value.unnumbered
+  ipv6_address_autoconfig_default            = each.value.ipv6_address_autoconfig_default
+  ipv6_address_dhcp                          = each.value.ipv6_address_dhcp
+  ipv6_addresses                             = each.value.ipv6_addresses
+  ipv6_enable                                = each.value.ipv6_enable
+  ipv6_link_local_addresses                  = each.value.ipv6_link_local_addresses
+  ipv6_mtu                                   = each.value.ipv6_mtu
+  ipv6_nd_ra_suppress_all                    = each.value.ipv6_nd_ra_suppress_all
+  bfd_enable                                 = each.value.bfd_enable
+  bfd_template                               = each.value.bfd_template
+  bfd_local_address                          = each.value.bfd_local_address
+  bfd_interval                               = each.value.bfd_interval
+  bfd_interval_min_rx                        = each.value.bfd_interval_min_rx
+  bfd_interval_multiplier                    = each.value.bfd_interval_multiplier
+  bfd_echo                                   = each.value.bfd_echo
+  spanning_tree_guard                        = each.value.spanning_tree_guard
+  spanning_tree_link_type                    = each.value.spanning_tree_link_type
+  spanning_tree_portfast_trunk               = each.value.spanning_tree_portfast_trunk
+  speed_100                                  = each.value.speed_100
+  speed_1000                                 = each.value.speed_1000
+  speed_2500                                 = each.value.speed_2500
+  speed_5000                                 = each.value.speed_5000
+  speed_10000                                = each.value.speed_10000
+  speed_25000                                = each.value.speed_25000
+  speed_40000                                = each.value.speed_40000
+  speed_100000                               = each.value.speed_100000
+  speed_nonegotiate                          = each.value.speed_nonegotiate
+  channel_group_number                       = each.value.channel_group_number
+  channel_group_mode                         = each.value.channel_group_mode
+  source_template                            = each.value.source_templates
+  arp_timeout                                = each.value.arp_timeout
+  negotiation_auto                           = each.value.negotiation_auto
+  service_policy_input                       = each.value.service_policy_input
+  service_policy_output                      = each.value.service_policy_output
+  load_interval                              = each.value.load_interval
+  snmp_trap_link_status                      = each.value.snmp_trap_link_status
+  logging_event_link_status_enable           = each.value.logging_event_link_status_enable
+  switchport                                 = each.value.switchport
+  auto_qos_classify                          = each.value.auto_qos_classify
+  auto_qos_classify_police                   = each.value.auto_qos_classify_police
+  auto_qos_trust                             = each.value.auto_qos_trust
+  auto_qos_trust_cos                         = each.value.auto_qos_trust_cos
+  auto_qos_trust_dscp                        = each.value.auto_qos_trust_dscp
+  auto_qos_video_cts                         = each.value.auto_qos_video_cts
+  auto_qos_video_ip_camera                   = each.value.auto_qos_video_ip_camera
+  auto_qos_video_media_player                = each.value.auto_qos_video_media_player
+  auto_qos_voip                              = each.value.auto_qos_voip
+  auto_qos_voip_cisco_phone                  = each.value.auto_qos_voip_cisco_phone
+  auto_qos_voip_cisco_softphone              = each.value.auto_qos_voip_cisco_softphone
+  auto_qos_voip_trust                        = each.value.auto_qos_voip_trust
+  trust_device                               = each.value.trust_device
+  authentication_periodic                    = each.value.authentication_periodic
+  authentication_timer_reauthenticate        = each.value.authentication_timer_reauthenticate
+  authentication_timer_reauthenticate_server = each.value.authentication_timer_reauthenticate_server
+  mab                                        = each.value.mab
+  mab_eap                                    = each.value.mab_eap
+  dot1x_pae                                  = each.value.dot1x_pae
+  dot1x_timeout_auth_period                  = each.value.dot1x_timeout_auth_period
+  dot1x_timeout_held_period                  = each.value.dot1x_timeout_held_period
+  dot1x_timeout_quiet_period                 = each.value.dot1x_timeout_quiet_period
+  dot1x_timeout_ratelimit_period             = each.value.dot1x_timeout_ratelimit_period
+  dot1x_timeout_server_timeout               = each.value.dot1x_timeout_server_timeout
+  dot1x_timeout_start_period                 = each.value.dot1x_timeout_start_period
+  dot1x_timeout_supp_timeout                 = each.value.dot1x_timeout_supp_timeout
+  dot1x_timeout_tx_period                    = each.value.dot1x_timeout_tx_period
+  dot1x_max_reauth_req                       = each.value.dot1x_max_reauth_req
+  dot1x_max_req                              = each.value.dot1x_max_req
 }
-
 resource "iosxe_interface_switchport" "ethernet_switchport" {
   for_each = { for v in local.interfaces_ethernets : v.key => v if v.switchport == true }
 
