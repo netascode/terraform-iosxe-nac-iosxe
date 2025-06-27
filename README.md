@@ -89,6 +89,7 @@ module "iosxe" {
 | [iosxe_class_map.class_map](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/class_map) | resource |
 | [iosxe_community_list_expanded.community_list_expanded](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/community_list_expanded) | resource |
 | [iosxe_community_list_standard.community_list_standard](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/community_list_standard) | resource |
+| [iosxe_dot1x.dot1x](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/dot1x) | resource |
 | [iosxe_errdisable.errdisable](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/errdisable) | resource |
 | [iosxe_route_map.route_map](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/route_map) | resource |
 | [iosxe_save_config.save_config](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/save_config) | resource |
