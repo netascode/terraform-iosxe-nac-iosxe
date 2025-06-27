@@ -107,10 +107,10 @@ module "iosxe" {
 | [iosxe_prefix_list.prefix_list](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/prefix_list) | resource |
 | [iosxe_route_map.route_map](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/route_map) | resource |
 | [iosxe_save_config.save_config](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/save_config) | resource |
+| [iosxe_service.service](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/service) | resource |
 | [iosxe_snmp_server.snmp_server](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/snmp_server) | resource |
 | [iosxe_snmp_server_group.snmp_server_group](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/snmp_server_group) | resource |
 | [iosxe_snmp_server_user.snmp_server_user](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/snmp_server_user) | resource |
-| [iosxe_service.service](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/service) | resource |
 | [iosxe_system.system](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/system) | resource |
 | [iosxe_template.template](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/template) | resource |
 ## Modules
