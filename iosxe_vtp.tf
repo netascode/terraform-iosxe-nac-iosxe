@@ -23,5 +23,4 @@ resource "iosxe_vtp" "vtp" {
   password_secret          = try(local.device_config[each.value.name].vtp.password_secret, local.defaults.iosxe.configuration.vtp.password_secret, null)
   pruning                  = try(local.device_config[each.value.name].vtp.pruning, local.defaults.iosxe.configuration.vtp.pruning, null)
   version                  = try(local.device_config[each.value.name].vtp.version, local.defaults.iosxe.configuration.vtp.version, null)
-  delete_mode              = "all"
 }
