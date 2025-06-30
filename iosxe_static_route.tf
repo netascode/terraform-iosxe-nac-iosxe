@@ -5,8 +5,8 @@ locals {
         device_name = device.name
         prefix      = try(static_route.prefix, local.defaults.iosxe.configuration.routing.static_routes.prefix, null)
         mask        = try(static_route.mask, local.defaults.iosxe.configuration.routing.static_routes.mask, null)
-        next_hops = [for e in try(static_route.next_hops, local.defaults.iosxe.configuration.routing.static_routes.next_hops, []) : {
-          next_hop = try(e.next_hop, local.defaults.iosxe.configuration.routing.static_routes.next_hops.next_hop, null)
+        next_hops = [for hop in try(static_route.next_hops, local.defaults.iosxe.configuration.routing.static_routes.next_hops, []) : {
+          next_hop = try(hop.next_hop, local.defaults.iosxe.configuration.routing.static_routes.next_hops.next_hop, null)
         }]
         key = format("%s/%s/%s", device.name,
           try(static_route.prefix, local.defaults.iosxe.configuration.routing.static_routes.prefix, null),
