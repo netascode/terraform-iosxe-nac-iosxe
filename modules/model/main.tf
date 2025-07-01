@@ -70,7 +70,7 @@ locals {
               { for k, v in try(device.configuration, {}) : k => v if k != "interfaces" },
               {
                 interfaces = merge(
-                  { for k, v in try(device.configuration.interfaces, {}) : k => v if k != "ethernets" && k != "vlans" },
+                  { for k, v in try(device.configuration.interfaces, {}) : k => v if k != "ethernets" && k != "loopbacks" && k != "vlans"},
                   {
                     "ethernets" = [
                       for ethernet in try(device.configuration.interfaces.ethernets, []) : merge(
@@ -87,6 +87,16 @@ locals {
                         yamldecode(provider::utils::yaml_merge(concat(
                           [for g in try(vlan.interface_groups, []) : try([for ig in local.interface_groups : yamlencode(ig.configuration) if ig.name == g][0], "")],
                           [yamlencode(vlan)]
+                        )))
+                      )
+                    ]
+                  },
+                  {
+                    "loopbacks" = [
+                      for loopback in try(device.configuration.interfaces.loopbacks, []) : merge(
+                        yamldecode(provider::utils::yaml_merge(concat(
+                          [for g in try(loopback.interface_groups, []) : try([for ig in local.interface_groups : yamlencode(ig.configuration) if ig.name == g][0], "")],
+                          [yamlencode(loopback)]
                         )))
                       )
                     ]

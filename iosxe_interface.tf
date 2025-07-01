@@ -351,6 +351,183 @@ resource "iosxe_interface_pim" "ethernet_pim" {
   ]
 }
 
+##### LOOPBACKS #####
+
+locals {
+  interfaces_loopbacks = flatten([
+    for device in local.devices : [
+      for int in try(local.device_config[device.name].interfaces.loopbacks, []) : {
+        key                        = format("%s/%s", device.name, int.id)
+        device                     = device.name
+        id                         = int.id
+        description                = try(int.description, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.description, null)
+        shutdown                   = try(int.shutdown, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.shutdown, false)
+        vrf_forwarding             = try(int.vrf_forwarding, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.vrf_forwarding, null)
+        ipv4_address               = try(int.ipv4.address, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ipv4.address, null)
+        ipv4_address_mask          = try(int.ipv4.address_mask, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ipv4.address_mask, null)
+        ip_proxy_arp               = try(int.ipv4.proxy_arp, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ipv4.proxy_arp, null)
+        ip_access_group_in         = try(int.ipv4.access_group_in, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ipv4.access_group_in, null)
+        ip_access_group_in_enable  = try(int.ipv4.access_group_in, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ipv4.access_group_in, null) != null ? true : false
+        ip_access_group_out        = try(int.ipv4.access_group_out, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ipv4.access_group_out, null)
+        ip_access_group_out_enable = try(int.ipv4.access_group_out, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ipv4.access_group_out, null) != null ? true : false
+        ip_redirects               = try(int.ipv4.redirects, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ipv4.redirects, null)
+        ip_unreachables            = try(int.ipv4.unreachables, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ipv4.unreachables, null)
+        source_template            = try(int.source_template, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.source_template, [])
+        ipv6_enable                = try(int.ipv6.enable, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ipv6.enable, null)
+        ipv6_addresses = [for addr in try(int.ipv6.addresses, []) : {
+          prefix = "${addr.prefix}/${addr.prefix_length}"
+          eui64  = try(addr.eui64, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ipv6.addresses.eui64, null)
+        }]
+        ipv6_link_local_addresses = [for addr in try(int.ipv6.link_local_addresses, []) : {
+          address    = addr
+          link_local = true
+        }]
+        ipv6_address_autoconfig_default = try(int.ipv6.address_autoconfig_default, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ipv6.address_autoconfig_default, null)
+        ipv6_address_dhcp               = try(int.ipv6.address_dhcp, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ipv6.address_dhcp, null)
+        ipv6_mtu                        = try(int.ipv6.mtu, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ipv6.mtu, null)
+        ipv6_nd_ra_suppress_all         = try(int.ipv6.nd_ra_suppress_all, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ipv6.nd_ra_suppress_all, null)
+        source_templates = [for st in try(int.source_templates, []) : {
+          template_name = st.name
+          merge         = try(st.merge, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.source_templates.merge, null)
+        }]
+        arp_timeout                           = try(int.arp_timeout, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.arp_timeout, null)
+        load_interval                         = try(int.load_interval, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.load_interval, null)
+        mpls_ip                               = try(int.mpls.ip, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.mpls.ip, null)
+        mpls_mtu                              = try(int.mpls.mtu, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.mpls.mtu, null)
+        ospf_cost                             = try(int.ospf.cost, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospf.cost, null)
+        ospf_dead_interval                    = try(int.ospf.dead_interval, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospf.dead_interval, null)
+        ospf_hello_interval                   = try(int.ospf.hello_interval, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospf.hello_interval, null)
+        ospf_mtu_ignore                       = try(int.ospf.mtu_ignore, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospf.mtu_ignore, null)
+        ospf                                  = try(int.ospf.network_type, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospf.network_type, null) != null ? true : false
+        ospf_network_type_broadcast           = try(int.ospf.network_type, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospf.network_type, null) == "broadcast" ? true : null
+        ospf_network_type_non_broadcast       = try(int.ospf.network_type, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospf.network_type, null) == "non-broadcast" ? true : null
+        ospf_network_type_point_to_multipoint = try(int.ospf.network_type, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospf.network_type, null) == "point-to-multipoint" ? true : null
+        ospf_network_type_point_to_point      = try(int.ospf.network_type, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospf.network_type, null) == "point-to-point" ? true : null
+        ospf_priority                         = try(int.ospf.priority, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospf.priority, null)
+        ospf_ttl_security_hops                = try(int.ospf.ttl_security_hops, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospf.ttl_security_hops, null)
+        ospf_process_ids = [for pid in try(int.ospf.process_ids, []) : {
+          id = pid.id
+          areas = [for area in try(pid.areas, []) : {
+          area_id = area }]
+        }]
+        ospfv3                                  = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospfv3.network_type, null) != null ? true : false
+        ospfv3_network_type_broadcast           = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospfv3.network_type, null) == "broadcast" ? true : null
+        ospfv3_network_type_non_broadcast       = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospfv3.network_type, null) == "non-broadcast" ? true : null
+        ospfv3_network_type_point_to_multipoint = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospfv3.network_type, null) == "point-to-multipoint" ? true : null
+        ospfv3_network_type_point_to_point      = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospfv3.network_type, null) == "point-to-point" ? true : null
+        ospfv3_cost                             = try(int.ospfv3.cost, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospfv3.cost, null)
+        pim                                     = try(int.pim.passive, int.pim.dense_mode, int.pim.sparse_mode, int.pim.sparse_dense_mode, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.pim.dense_mode, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.pim.sparse_mode, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.pim.sparse_dense_mode, null) != null ? true : false
+        pim_passive                             = try(int.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.pim.passive, null)
+        pim_dense_mode                          = try(int.pim.dense_mode, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.pim.dense_mode, null)
+        pim_sparse_mode                         = try(int.pim.sparse_mode, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.pim.sparse_mode, null)
+        pim_sparse_dense_mode                   = try(int.pim.sparse_dense_mode, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.pim.sparse_dense_mode, null)
+        pim_bfd                                 = try(int.pim.bfd, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.pim.bfd, null)
+        pim_border                              = try(int.pim.border, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.pim.border, null)
+        pim_bsr_border                          = try(int.pim.bsr_border, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.pim.bsr_border, null)
+        pim_dr_priority                         = try(int.pim.dr_priority, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.pim.dr_priority, null)
+      }
+    ]
+  ])
+}
+
+resource "iosxe_interface_loopback" "loopback" {
+  for_each                        = { for v in local.interfaces_loopbacks : v.key => v }
+  device                          = each.value.device
+  name                            = each.value.id
+  description                     = each.value.description
+  shutdown                        = each.value.shutdown
+  vrf_forwarding                  = each.value.vrf_forwarding
+  ipv4_address                    = each.value.ipv4_address
+  ipv4_address_mask               = each.value.ipv4_address_mask
+  ip_proxy_arp                    = each.value.ip_proxy_arp
+  ip_access_group_in              = each.value.ip_access_group_in
+  ip_access_group_in_enable       = each.value.ip_access_group_in_enable
+  ip_access_group_out             = each.value.ip_access_group_out
+  ip_access_group_out_enable      = each.value.ip_access_group_out_enable
+  ip_redirects                    = each.value.ip_redirects
+  ip_unreachables                 = each.value.ip_unreachables
+  ipv6_enable                     = each.value.ipv6_enable
+  ipv6_addresses                  = each.value.ipv6_addresses
+  ipv6_link_local_addresses       = each.value.ipv6_link_local_addresses
+  ipv6_address_autoconfig_default = each.value.ipv6_address_autoconfig_default
+  ipv6_address_dhcp               = each.value.ipv6_address_dhcp
+  ipv6_mtu                        = each.value.ipv6_mtu
+  ipv6_nd_ra_suppress_all         = each.value.ipv6_nd_ra_suppress_all
+}
+
+resource "iosxe_interface_mpls" "loopback_mpls" {
+  for_each = { for v in local.interfaces_loopbacks : v.key => v if v.mpls_ip == true || v.mpls_mtu != null }
+
+  device = each.value.device
+  type   = "Loopback"
+  name   = each.value.id
+  ip     = each.value.mpls_ip
+  mtu    = each.value.mpls_mtu
+
+  depends_on = [
+    iosxe_interface_loopback.loopback
+  ]
+}
+
+resource "iosxe_interface_ospf" "loopback_ospf" {
+  for_each = { for v in local.interfaces_loopbacks : v.key => v if v.ospf }
+
+  device                           = each.value.device
+  type                             = "Loopback"
+  name                             = each.value.id
+  cost                             = each.value.ospf_cost
+  dead_interval                    = each.value.ospf_dead_interval
+  hello_interval                   = each.value.ospf_hello_interval
+  mtu_ignore                       = each.value.ospf_mtu_ignore
+  network_type_broadcast           = each.value.ospf_network_type_broadcast
+  network_type_non_broadcast       = each.value.ospf_network_type_non_broadcast
+  network_type_point_to_multipoint = each.value.ospf_network_type_point_to_multipoint
+  network_type_point_to_point      = each.value.ospf_network_type_point_to_point
+  priority                         = each.value.ospf_priority
+  ttl_security_hops                = each.value.ospf_ttl_security_hops
+  process_ids                      = each.value.ospf_process_ids
+
+  depends_on = [
+    iosxe_interface_loopback.loopback
+  ]
+}
+
+resource "iosxe_interface_ospfv3" "loopback_ospfv3" {
+  for_each = { for v in local.interfaces_loopbacks : v.key => v if v.ospfv3 }
+
+  device                           = each.value.device
+  type                             = "Loopback"
+  name                             = each.value.id
+  network_type_broadcast           = each.value.ospfv3_network_type_broadcast
+  network_type_non_broadcast       = each.value.ospfv3_network_type_non_broadcast
+  network_type_point_to_multipoint = each.value.ospfv3_network_type_point_to_multipoint
+  network_type_point_to_point      = each.value.ospfv3_network_type_point_to_point
+  cost                             = each.value.ospfv3_cost
+
+  depends_on = [
+    iosxe_interface_loopback.loopback
+  ]
+}
+
+resource "iosxe_interface_pim" "loopback_pim" {
+  for_each = { for v in local.interfaces_loopbacks : v.key => v if v.pim }
+
+  device            = each.value.device
+  type              = "Loopback"
+  name              = each.value.id
+  passive           = each.value.pim_passive
+  dense_mode        = each.value.pim_dense_mode
+  sparse_mode       = each.value.pim_sparse_mode
+  sparse_dense_mode = each.value.pim_sparse_dense_mode
+  bfd               = each.value.pim_bfd
+  border            = each.value.pim_border
+  bsr_border        = each.value.pim_bsr_border
+  dr_priority       = each.value.pim_dr_priority
+
+  depends_on = [
+    iosxe_interface_loopback.loopback
+  ]
+}
 
 ####### INTERFACE VLANS #######
 
