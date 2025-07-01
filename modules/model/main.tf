@@ -70,7 +70,7 @@ locals {
               { for k, v in try(device.configuration, {}) : k => v if k != "interfaces" },
               {
                 interfaces = merge(
-                  { for k, v in try(device.configuration.interfaces, {}) : k => v if k != "ethernets" && k != "loopbacks" && k != "vlans"},
+                  { for k, v in try(device.configuration.interfaces, {}) : k => v if k != "ethernets" && k != "loopbacks" && k != "vlans" },
                   {
                     "ethernets" = [
                       for ethernet in try(device.configuration.interfaces.ethernets, []) : merge(
