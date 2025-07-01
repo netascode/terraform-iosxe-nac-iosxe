@@ -26,9 +26,20 @@ locals {
         service_policy_qos_output  = try(service_template.service_policy_qos_output, local.defaults.iosxe.configuration.service_template.name.service_policy_qos_output, null)
 
         # Lists
-        access_groups       = try(service_template.access_groups, [])
-        interface_templates = try(service_template.interface_templates, [])
-        tags                = try(service_template.tags, [])
+        access_groups = [for group_name in try(service_template.access_groups, []) : {
+          name = group_name
+          }
+        ]
+
+        interface_templates = [for template_name in try(service_template.interface_templates, []) : {
+          name = template_name
+          }
+        ]
+
+        tags = [for tag_name in try(service_template.tags, []) : {
+          name = tag_name
+          }
+        ]
 
       }
     ]
@@ -60,18 +71,7 @@ resource "iosxe_service_template" "service_templates" {
   service_policy_qos_output  = each.value.service_policy_qos_output
 
   # Lists
-  access_groups = [for group_name in try(each.value.access_groups, []) : {
-    name = group_name
-    }
-  ]
-
-  interface_templates = [for template_name in try(each.value.interface_templates, []) : {
-    name = template_name
-    }
-  ]
-
-  tags = [for tag_name in try(each.value.tags, []) : {
-    name = tag_name
-    }
-  ]
+  access_groups       = each.value.access_groups
+  interface_templates = each.value.interface_templates
+  tags                = each.value.tags
 }
