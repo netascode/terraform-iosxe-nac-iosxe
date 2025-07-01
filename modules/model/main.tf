@@ -1,10 +1,10 @@
 locals {
-  iosxe         = try(local.model.iosxe, {})
-  global        = try(local.iosxe.global, [])
-  devices       = try(local.iosxe.devices, [])
-  device_groups = try(local.iosxe.device_groups, [])
-  //interface_groups        = try(local.iosxe.interface_groups, [])
+  iosxe                   = try(local.model.iosxe, {})
+  global                  = try(local.iosxe.global, [])
+  devices                 = try(local.iosxe.devices, [])
+  device_groups           = try(local.iosxe.device_groups, [])
   configuration_templates = try(local.iosxe.configuration_templates, [])
+  interface_groups        = try(local.iosxe.interface_groups, [])
 
   device_group_config_template_variables = { for dg in local.device_groups :
     dg.name => merge(concat(
@@ -56,6 +56,56 @@ locals {
           managed       = try(device.managed, local.defaults.iosxe.devices.managed, true)
           configuration = try(local.device_config[device.name], {})
         }
+      ]
+    }
+  }
+
+  iosxe_devices_interfaces = {
+    iosxe = {
+      devices = [
+        for device in try(local.iosxe_devices.iosxe.devices, []) : merge(
+          { for k, v in device : k => v if k != "configuration" },
+          {
+            configuration = merge(
+              { for k, v in try(device.configuration, {}) : k => v if k != "interfaces" },
+              {
+                interfaces = merge(
+                  { for k, v in try(device.configuration.interfaces, {}) : k => v if k != "ethernets" && k != "loopbacks" && k != "vlans" },
+                  {
+                    "ethernets" = [
+                      for ethernet in try(device.configuration.interfaces.ethernets, []) : merge(
+                        yamldecode(provider::utils::yaml_merge(concat(
+                          [for g in try(ethernet.interface_groups, []) : try([for ig in local.interface_groups : yamlencode(ig.configuration) if ig.name == g][0], "")],
+                          [yamlencode(ethernet)]
+                        )))
+                      )
+                    ]
+                  },
+                  {
+                    "vlans" = [
+                      for vlan in try(device.configuration.interfaces.vlans, []) : merge(
+                        yamldecode(provider::utils::yaml_merge(concat(
+                          [for g in try(vlan.interface_groups, []) : try([for ig in local.interface_groups : yamlencode(ig.configuration) if ig.name == g][0], "")],
+                          [yamlencode(vlan)]
+                        )))
+                      )
+                    ]
+                  },
+                  {
+                    "loopbacks" = [
+                      for loopback in try(device.configuration.interfaces.loopbacks, []) : merge(
+                        yamldecode(provider::utils::yaml_merge(concat(
+                          [for g in try(loopback.interface_groups, []) : try([for ig in local.interface_groups : yamlencode(ig.configuration) if ig.name == g][0], "")],
+                          [yamlencode(loopback)]
+                        )))
+                      )
+                    ]
+                  }
+                )
+              }
+            )
+          }
+        )
       ]
     }
   }
