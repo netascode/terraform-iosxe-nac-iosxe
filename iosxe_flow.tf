@@ -87,7 +87,7 @@ resource "iosxe_flow_monitor" "flow_monitors" {
   exporters            = each.value.exporters
   cache_timeout_active = each.value.cache_timeout_active
   record               = each.value.record
-  depends_on = [ iosxe_flow_exporter.flow_exporter, iosxe_flow_record.flow_records ]
+  depends_on           = [iosxe_flow_exporter.flow_exporter, iosxe_flow_record.flow_records]
 }
 
 
