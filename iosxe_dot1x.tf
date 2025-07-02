@@ -13,13 +13,13 @@ resource "iosxe_dot1x" "dot1x" {
 
   credentials = [
     for cred in try(local.device_config[each.value.name].dot1x.credentials, []) : {
-      profile_name   = cred.profile_name
-      description    = try(cred.description, null)
-      username       = try(cred.username, null)
-      password_type  = try(cred.password_type, null)
-      password       = try(cred.password, null)
-      pki_trustpoint = try(cred.pki_trustpoint, null)
-      anonymous_id   = try(cred.anonymous_id, null)
+      profile_name   = try(cred.profile_name, local.defaults.iosxe.configuration.dot1x.credentials.profile_name, null)
+      description    = try(cred.description, local.defaults.iosxe.configuration.dot1x.credentials.description, null)
+      username       = try(cred.username, local.defaults.iosxe.configuration.dot1x.credentials.username, null)
+      password_type  = try(cred.password_type, local.defaults.iosxe.configuration.dot1x.credentials.password_type, null)
+      password       = try(cred.password, local.defaults.iosxe.configuration.dot1x.credentials.password, null)
+      pki_trustpoint = try(cred.pki_trustpoint, local.defaults.iosxe.configuration.dot1x.credentials.pki_trustpoint, null)
+      anonymous_id   = try(cred.anonymous_id, local.defaults.iosxe.configuration.dot1x.credentials.anonymous_id, null)
     }
   ]
 
