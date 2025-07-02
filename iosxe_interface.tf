@@ -430,7 +430,6 @@ locals {
   ])
 }
 
-
 resource "iosxe_interface_loopback" "loopback" {
   for_each                        = { for v in local.interfaces_loopbacks : v.key => v }
   device                          = each.value.device
@@ -455,7 +454,6 @@ resource "iosxe_interface_loopback" "loopback" {
   ipv6_mtu                        = each.value.ipv6_mtu
   ipv6_nd_ra_suppress_all         = each.value.ipv6_nd_ra_suppress_all
 }
-
 
 resource "iosxe_interface_mpls" "loopback_mpls" {
   for_each = { for v in local.interfaces_loopbacks : v.key => v if v.mpls_ip == true || v.mpls_mtu != null }
@@ -528,5 +526,206 @@ resource "iosxe_interface_pim" "loopback_pim" {
 
   depends_on = [
     iosxe_interface_loopback.loopback
+  ]
+}
+
+####### INTERFACE VLANS #######
+
+locals {
+  interfaces_vlans = flatten([
+    for device in local.devices : [
+      for int in try(local.device_config[device.name].interfaces.vlans, []) : {
+        key                            = format("%s/%s", device.name, int.id)
+        device                         = device.name
+        id                             = int.id
+        type                           = try(int.type, local.defaults.iosxe.devices.configuration.interfaces.vlans.type, null)
+        description                    = try(int.description, local.defaults.iosxe.devices.configuration.interfaces.vlans.description, null)
+        shutdown                       = try(int.shutdown, local.defaults.iosxe.devices.configuration.interfaces.vlans.shutdown, false)
+        vrf_forwarding                 = try(int.vrf_forwarding, local.defaults.iosxe.devices.configuration.interfaces.vlans.vrf_forwarding, null)
+        ipv4_address                   = try(int.ipv4.address, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.address, null)
+        ipv4_address_mask              = try(int.ipv4.address_mask, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.address_mask, null)
+        ip_proxy_arp                   = try(int.ipv4.proxy_arp, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.proxy_arp, null)
+        ip_dhcp_relay_source_interface = try(int.ipv4.dhcp_relay_source_interface, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.dhcp_relay_source_interface, null)
+        helper_addresses = [for ha in try(int.ipv4.helper_addresses, []) : {
+          address = ha.address
+          global  = try(ha.global, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.helper_addresses.global, null)
+          vrf     = try(ha.vrf, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.helper_addresses.vrf, null)
+        }]
+        ip_access_group_in         = try(int.ipv4.access_group_in, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.access_group_in, null)
+        ip_access_group_in_enable  = try(int.ipv4.access_group_in, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.access_group_in, null) != null ? true : false
+        ip_access_group_out        = try(int.ipv4.access_group_out, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.access_group_out, null)
+        ip_access_group_out_enable = try(int.ipv4.access_group_out, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.access_group_out, null) != null ? true : false
+        ip_redirects               = try(int.ipv4.redirects, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.redirects, null)
+        ip_unreachables            = try(int.ipv4.unreachables, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.unreachables, null)
+        unnumbered                 = try(int.ipv4.unnumbered, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.unnumbered, null)
+        ipv6_enable                = try(int.ipv6.enable, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv6.enable, null)
+        ipv6_addresses = [for addr in try(int.ipv6.addresses, []) : {
+          prefix = "${addr.prefix}/${addr.prefix_length}"
+          eui64  = try(addr.eui64, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv6.addresses.eui64, null)
+        }]
+        ipv6_link_local_addresses = [for addr in try(int.ipv6.link_local_addresses, []) : {
+          address    = addr
+          link_local = true
+        }]
+        ipv6_address_autoconfig_default       = try(int.ipv6.address_autoconfig_default, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv6.address_autoconfig_default, null)
+        ipv6_address_dhcp                     = try(int.ipv6.address_dhcp, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv6.address_dhcp, null)
+        ipv6_mtu                              = try(int.ipv6.mtu, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv6.mtu, null)
+        ipv6_nd_ra_suppress_all               = try(int.ipv6.nd_ra_suppress_all, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv6.nd_ra_suppress_all, null)
+        bfd_enable                            = try(int.bfd.enable, local.defaults.iosxe.devices.configuration.interfaces.vlans.bfd.enable, null)
+        bfd_template                          = try(int.bfd.template, local.defaults.iosxe.devices.configuration.interfaces.vlans.bfd.template, null)
+        bfd_local_address                     = try(int.bfd.local_address, local.defaults.iosxe.devices.configuration.interfaces.vlans.bfd.local_address, null)
+        bfd_interval                          = try(int.bfd.interval, local.defaults.iosxe.devices.configuration.interfaces.vlans.bfd.interval, null)
+        bfd_interval_min_rx                   = try(int.bfd.interval_min_rx, local.defaults.iosxe.devices.configuration.interfaces.vlans.bfd.interval_min_rx, null)
+        bfd_interval_multiplier               = try(int.bfd.interval_multiplier, local.defaults.iosxe.devices.configuration.interfaces.vlans.bfd.interval_multiplier, null)
+        bfd_echo                              = try(int.bfd.echo, local.defaults.iosxe.devices.configuration.interfaces.vlans.bfd.echo, null)
+        arp_timeout                           = try(int.arp_timeout, local.defaults.iosxe.devices.configuration.interfaces.vlans.arp_timeout, null)
+        load_interval                         = try(int.load_interval, local.defaults.iosxe.devices.configuration.interfaces.vlans.load_interval, null)
+        snmp_trap_link_status                 = try(int.snmp_trap_link_status, local.defaults.iosxe.devices.configuration.interfaces.vlans.snmp_trap_link_status, null)
+        logging_event_link_status_enable      = try(int.logging_event_link_status, local.defaults.iosxe.devices.configuration.interfaces.vlans.logging_event_link_status, null)
+        mpls_ip                               = try(int.mpls.ip, local.defaults.iosxe.devices.configuration.interfaces.vlans.mpls.ip, null)
+        mpls_mtu                              = try(int.mpls.mtu, local.defaults.iosxe.devices.configuration.interfaces.vlans.mpls.mtu, null)
+        ospf_cost                             = try(int.ospf.cost, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospf.cost, null)
+        ospf_dead_interval                    = try(int.ospf.dead_interval, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospf.dead_interval, null)
+        ospf_hello_interval                   = try(int.ospf.hello_interval, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospf.hello_interval, null)
+        ospf_mtu_ignore                       = try(int.ospf.mtu_ignore, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospf.mtu_ignore, null)
+        ospf                                  = try(int.ospf.network_type, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospf.network_type, null) != null ? true : false
+        ospf_network_type_broadcast           = try(int.ospf.network_type, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospf.network_type, null) == "broadcast" ? true : null
+        ospf_network_type_non_broadcast       = try(int.ospf.network_type, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospf.network_type, null) == "non-broadcast" ? true : null
+        ospf_network_type_point_to_multipoint = try(int.ospf.network_type, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospf.network_type, null) == "point-to-multipoint" ? true : null
+        ospf_network_type_point_to_point      = try(int.ospf.network_type, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospf.network_type, null) == "point-to-point" ? true : null
+        ospf_priority                         = try(int.ospf.priority, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospf.priority, null)
+        ospf_ttl_security_hops                = try(int.ospf.ttl_security_hops, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospf.ttl_security_hops, null)
+        ospf_process_ids = [for pid in try(int.ospf.process_ids, []) : {
+          id = pid.id
+          areas = [for area in try(pid.areas, []) : {
+          area_id = area }]
+        }]
+        ospfv3                                  = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospfv3.network_type, null) != null ? true : false
+        ospfv3_network_type_broadcast           = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospfv3.network_type, null) == "broadcast" ? true : null
+        ospfv3_network_type_non_broadcast       = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospfv3.network_type, null) == "non-broadcast" ? true : null
+        ospfv3_network_type_point_to_multipoint = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospfv3.network_type, null) == "point-to-multipoint" ? true : null
+        ospfv3_network_type_point_to_point      = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospfv3.network_type, null) == "point-to-point" ? true : null
+        ospfv3_cost                             = try(int.ospfv3.cost, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospfv3.cost, null)
+        pim                                     = try(int.pim.passive, int.pim.dense_mode, int.pim.sparse_mode, int.pim.sparse_dense_mode, local.defaults.iosxe.devices.configuration.interfaces.vlans.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.vlans.pim.dense_mode, local.defaults.iosxe.devices.configuration.interfaces.vlans.pim.sparse_mode, local.defaults.iosxe.devices.configuration.interfaces.vlans.pim.sparse_dense_mode, null) != null ? true : false
+        pim_passive                             = try(int.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.vlans.pim.passive, null)
+        pim_dense_mode                          = try(int.pim.dense_mode, local.defaults.iosxe.devices.configuration.interfaces.vlans.pim.dense_mode, null)
+        pim_sparse_mode                         = try(int.pim.sparse_mode, local.defaults.iosxe.devices.configuration.interfaces.vlans.pim.sparse_mode, null)
+        pim_sparse_dense_mode                   = try(int.pim.sparse_dense_mode, local.defaults.iosxe.devices.configuration.interfaces.vlans.pim.sparse_dense_mode, null)
+        pim_bfd                                 = try(int.pim.bfd, local.defaults.iosxe.devices.configuration.interfaces.vlans.pim.bfd, null)
+        pim_border                              = try(int.pim.border, local.defaults.iosxe.devices.configuration.interfaces.vlans.pim.border, null)
+        pim_bsr_border                          = try(int.pim.bsr_border, local.defaults.iosxe.devices.configuration.interfaces.vlans.pim.bsr_border, null)
+        pim_dr_priority                         = try(int.pim.dr_priority, local.defaults.iosxe.devices.configuration.interfaces.vlans.pim.dr_priority, null)
+      }
+    ]
+  ])
+}
+
+resource "iosxe_interface_vlan" "interface_vlan" {
+  for_each                        = { for v in local.interfaces_vlans : v.key => v }
+  device                          = each.value.device
+  name                            = each.value.id
+  description                     = each.value.description
+  shutdown                        = each.value.shutdown
+  vrf_forwarding                  = each.value.vrf_forwarding
+  ipv4_address                    = each.value.ipv4_address
+  ipv4_address_mask               = each.value.ipv4_address_mask
+  ip_proxy_arp                    = each.value.ip_proxy_arp
+  ip_dhcp_relay_source_interface  = each.value.ip_dhcp_relay_source_interface
+  helper_addresses                = each.value.helper_addresses
+  ip_access_group_in              = each.value.ip_access_group_in
+  ip_access_group_in_enable       = each.value.ip_access_group_in_enable
+  ip_access_group_out             = each.value.ip_access_group_out
+  ip_access_group_out_enable      = each.value.ip_access_group_out_enable
+  ip_redirects                    = each.value.ip_redirects
+  ip_unreachables                 = each.value.ip_unreachables
+  unnumbered                      = each.value.unnumbered
+  ipv6_address_autoconfig_default = each.value.ipv6_address_autoconfig_default
+  ipv6_address_dhcp               = each.value.ipv6_address_dhcp
+  ipv6_addresses                  = each.value.ipv6_addresses
+  ipv6_enable                     = each.value.ipv6_enable
+  ipv6_link_local_addresses       = each.value.ipv6_link_local_addresses
+  ipv6_mtu                        = each.value.ipv6_mtu
+  ipv6_nd_ra_suppress_all         = each.value.ipv6_nd_ra_suppress_all
+  bfd_enable                      = each.value.bfd_enable
+  bfd_template                    = each.value.bfd_template
+  bfd_local_address               = each.value.bfd_local_address
+  bfd_interval                    = each.value.bfd_interval
+  bfd_interval_min_rx             = each.value.bfd_interval_min_rx
+  bfd_interval_multiplier         = each.value.bfd_interval_multiplier
+  bfd_echo                        = each.value.bfd_echo
+  load_interval                   = each.value.load_interval
+}
+
+resource "iosxe_interface_mpls" "vlan_mpls" {
+  for_each = { for v in local.interfaces_vlans : v.key => v if v.mpls_ip == true || v.mpls_mtu != null }
+
+  device = each.value.device
+  type   = "Vlan"
+  name   = each.value.id
+  ip     = each.value.mpls_ip
+  mtu    = each.value.mpls_mtu
+
+  depends_on = [
+    iosxe_interface_vlan.interface_vlan
+  ]
+}
+
+resource "iosxe_interface_ospf" "vlan_ospf" {
+  for_each = { for v in local.interfaces_vlans : v.key => v if v.ospf }
+
+  device                           = each.value.device
+  type                             = "Vlan"
+  name                             = each.value.id
+  cost                             = each.value.ospf_cost
+  dead_interval                    = each.value.ospf_dead_interval
+  hello_interval                   = each.value.ospf_hello_interval
+  mtu_ignore                       = each.value.ospf_mtu_ignore
+  network_type_broadcast           = each.value.ospf_network_type_broadcast
+  network_type_non_broadcast       = each.value.ospf_network_type_non_broadcast
+  network_type_point_to_multipoint = each.value.ospf_network_type_point_to_multipoint
+  network_type_point_to_point      = each.value.ospf_network_type_point_to_point
+  priority                         = each.value.ospf_priority
+  ttl_security_hops                = each.value.ospf_ttl_security_hops
+  process_ids                      = each.value.ospf_process_ids
+
+  depends_on = [
+    iosxe_interface_vlan.interface_vlan
+  ]
+}
+
+resource "iosxe_interface_ospfv3" "vlan_ospfv3" {
+  for_each = { for v in local.interfaces_vlans : v.key => v if v.ospfv3 }
+
+  device                           = each.value.device
+  type                             = "Vlan"
+  name                             = each.value.id
+  network_type_broadcast           = each.value.ospfv3_network_type_broadcast
+  network_type_non_broadcast       = each.value.ospfv3_network_type_non_broadcast
+  network_type_point_to_multipoint = each.value.ospfv3_network_type_point_to_multipoint
+  network_type_point_to_point      = each.value.ospfv3_network_type_point_to_point
+  cost                             = each.value.ospfv3_cost
+
+  depends_on = [
+    iosxe_interface_vlan.interface_vlan
+  ]
+}
+
+resource "iosxe_interface_pim" "vlan_pim" {
+  for_each = { for v in local.interfaces_vlans : v.key => v if v.pim }
+
+  device            = each.value.device
+  type              = "Vlan"
+  name              = each.value.id
+  passive           = each.value.pim_passive
+  dense_mode        = each.value.pim_dense_mode
+  sparse_mode       = each.value.pim_sparse_mode
+  sparse_dense_mode = each.value.pim_sparse_dense_mode
+  bfd               = each.value.pim_bfd
+  border            = each.value.pim_border
+  bsr_border        = each.value.pim_bsr_border
+  dr_priority       = each.value.pim_dr_priority
+
+  depends_on = [
+    iosxe_interface_vlan.interface_vlan
   ]
 }
