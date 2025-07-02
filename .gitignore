@@ -5,3 +5,4 @@ terraform.tfstate
 terraform.tfstate.backup
 .envrc
 tflint.hcl
+.idea/
