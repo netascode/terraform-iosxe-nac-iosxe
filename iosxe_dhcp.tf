@@ -8,9 +8,4 @@ resource "iosxe_dhcp" "dhcp" {
   relay_information_option_vpn                          = try(local.device_config[each.value.name].dhcp.relay_information_option_vpn, local.defaults.iosexe.configuration.dhcp.relay_information_option_vpn, null)
   snooping                                              = try(local.device_config[each.value.name].dhcp.snooping, local.defaults.iosexe.configuration.dhcp.snooping, null)
   snooping_information_option_format_remote_id_hostname = try(local.device_config[each.value.name].dhcp.snooping_information_option_format_remote_id_hostname, local.defaults.iosexe.configuration.dhcp.snooping_information_option_format_remote_id_hostname, null)
-  #snooping_vlans = [for sv in try(local.device_config[each.value.name].dhcp.snooping_vlans, []) : {
-  #vlan_id = sv
-
-  #}
-  #]
 }
