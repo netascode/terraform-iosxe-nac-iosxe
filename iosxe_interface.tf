@@ -164,7 +164,7 @@ resource "iosxe_interface_ethernet" "ethernet" {
   for_each                                   = { for v in local.interfaces_ethernets : v.key => v }
   device                                     = each.value.device
   type                                       = each.value.type
-  name                                       = each.value.name
+  name                                       = each.value.id
   media_type                                 = each.value.media_type
   bandwidth                                  = each.value.bandwidth
   description                                = each.value.description
@@ -258,7 +258,7 @@ resource "iosxe_interface_switchport" "ethernet_switchport" {
 
   device                        = each.value.device
   type                          = each.value.type
-  name                          = each.value.name
+  name                          = each.value.id
   mode_access                   = each.value.switchport_mode_access
   mode_trunk                    = each.value.switchport_mode_trunk
   mode_dot1q_tunnel             = each.value.switchport_mode_dot1q_tunnel
@@ -282,7 +282,7 @@ resource "iosxe_interface_mpls" "ethernet_mpls" {
 
   device = each.value.device
   type   = each.value.type
-  name   = each.value.name
+  name   = each.value.id
   ip     = each.value.mpls_ip
   mtu    = each.value.mpls_mtu
 
@@ -296,7 +296,7 @@ resource "iosxe_interface_ospf" "ethernet_ospf" {
 
   device                           = each.value.device
   type                             = each.value.type
-  name                             = each.value.name
+  name                             = each.value.id
   cost                             = each.value.ospf_cost
   dead_interval                    = each.value.ospf_dead_interval
   hello_interval                   = each.value.ospf_hello_interval
@@ -319,7 +319,7 @@ resource "iosxe_interface_ospfv3" "ethernet_ospfv3" {
 
   device                           = each.value.device
   type                             = each.value.type
-  name                             = each.value.name
+  name                             = each.value.id
   network_type_broadcast           = each.value.ospfv3_network_type_broadcast
   network_type_non_broadcast       = each.value.ospfv3_network_type_non_broadcast
   network_type_point_to_multipoint = each.value.ospfv3_network_type_point_to_multipoint
@@ -336,7 +336,7 @@ resource "iosxe_interface_pim" "ethernet_pim" {
 
   device            = each.value.device
   type              = each.value.type
-  name              = each.value.name
+  name              = each.value.id
   passive           = each.value.pim_passive
   dense_mode        = each.value.pim_dense_mode
   sparse_mode       = each.value.pim_sparse_mode
