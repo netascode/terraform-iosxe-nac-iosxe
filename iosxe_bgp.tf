@@ -97,11 +97,11 @@ resource "iosxe_bgp_address_family_ipv4" "bgp_address_family_ipv4" {
     ipv4_address = try(agg.address, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.aggregate_addresses.address, null)
     ipv4_mask    = try(agg.mask, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.aggregate_addresses.mask, null)
   }]
-  ipv4_unicast_networks_mask = [for net in try(local.device_config[each.value.name].routing.bgp.address_family.ipv4_unicast.networks_mask, []) : {
-    network   = try(net.network, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.networks_mask.network, null)
+  ipv4_unicast_networks_mask = [for net in try(local.device_config[each.value.name].routing.bgp.address_family.ipv4_unicast.networks, []) : {
+    network   = try(net.network, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.networks.network, null)
     mask      = try(net.mask, null)
-    route_map = try(net.route_map, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.networks_mask.route_map, null)
-    backdoor  = try(net.backdoor, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.networks_mask.backdoor, null)
+    route_map = try(net.route_map, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.networks.route_map, null)
+    backdoor  = try(net.backdoor, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.networks.backdoor, null)
   } if try(net.mask, null) != null]
   ipv4_unicast_networks = [for net in try(local.device_config[each.value.name].routing.bgp.address_family.ipv4_unicast.networks, []) : {
     network   = try(net.network, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.networks.network, null)
@@ -149,11 +149,11 @@ resource "iosxe_bgp_address_family_ipv4_vrf" "bgp_address_family_ipv4_vrf" {
       ipv4_mask    = try(agg.mask, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.aggregate_addresses.mask, null)
     }]
     ipv4_unicast_redistribute_static = try(vrf.redistribute_static, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.redistribute_static, null)
-    ipv4_unicast_networks_mask = [for net in try(vrf.networks_mask, []) : {
-      network   = try(net.network, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.networks_mask.network, null)
+    ipv4_unicast_networks_mask = [for net in try(vrf.networks, []) : {
+      network   = try(net.network, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.networks.network, null)
       mask      = try(net.mask, null)
-      route_map = try(net.route_map, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.networks_mask.route_map, null)
-      backdoor  = try(net.backdoor, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.networks_mask.backdoor, null)
+      route_map = try(net.route_map, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.networks.route_map, null)
+      backdoor  = try(net.backdoor, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.networks.backdoor, null)
     } if try(net.mask, null) != null]
     ipv4_unicast_networks = [for net in try(vrf.networks, []) : {
       network   = try(net.network, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.networks.network, null)
