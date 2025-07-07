@@ -101,6 +101,7 @@ module "iosxe" {
 | [iosxe_interface_mpls.ethernet_mpls](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_mpls) | resource |
 | [iosxe_interface_mpls.loopback_mpls](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_mpls) | resource |
 | [iosxe_interface_mpls.vlan_mpls](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_mpls) | resource |
+| [iosxe_interface_nve.nves](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_nve) | resource |
 | [iosxe_interface_ospf.ethernet_ospf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_ospf) | resource |
 | [iosxe_interface_ospf.loopback_ospf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_ospf) | resource |
 | [iosxe_interface_ospf.vlan_ospf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_ospf) | resource |
