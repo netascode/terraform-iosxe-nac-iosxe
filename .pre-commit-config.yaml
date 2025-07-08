@@ -12,6 +12,10 @@ repos:
     rev: v0.18.0
     hooks:
       - id: terraform-docs-system
+        args: ["./modules/model"]
+      - id: terraform-docs-system
+        args: ["./modules/model/examples/model_file"]
+      - id: terraform-docs-system
         args: ["./examples/system"]
       - id: terraform-docs-system
         args: ["."]
