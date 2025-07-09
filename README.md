@@ -126,6 +126,11 @@ module "iosxe" {
 | [iosxe_system.system](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/system) | resource |
 | [iosxe_template.template](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/template) | resource |
 | [iosxe_udld.udld](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/udld) | resource |
+| [iosxe_vlan.vlan](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/vlan) | resource |
+| [iosxe_vlan_access_map.vlan_access_maps](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/vlan_access_map) | resource |
+| [iosxe_vlan_configuration.vlan_vn_config](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/vlan_configuration) | resource |
+| [iosxe_vlan_filter.vlan_filter](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/vlan_filter) | resource |
+| [iosxe_vlan_group.vlan_group](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/vlan_group) | resource |
 | [iosxe_vtp.vtp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/vtp) | resource |
 ## Modules
 
