@@ -16,12 +16,6 @@ variable "model" {
   default     = {}
 }
 
-variable "save_config" {
-  description = "Write changes to startup-config on all devices."
-  type        = bool
-  default     = false
-}
-
 variable "write_default_values_file" {
   description = "Write all default values to a YAML file. Value is a path pointing to the file to be created."
   type        = string
@@ -30,6 +24,6 @@ variable "write_default_values_file" {
 
 variable "write_model_file" {
   type        = string
-  description = "Write the full model including all resolved templates to a single YAML file. Value is a path pointing to the file to be created."
+  description = "Write the rendered device model to a single YAML file. Value is a path pointing to the file to be created."
   default     = ""
 }
