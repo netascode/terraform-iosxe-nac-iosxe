@@ -2,10 +2,23 @@ locals {
   logging_host_vrf = flatten([
     for device in local.devices : [
       for host in try(local.device_config[device.name].logging.hosts, []) : {
+        key    = format("%s", host.ip)
+        device = device.name
+
         logging_ipv4_hosts     = (can(regex(":", tostring(host.ip))) == false && (try(host.vrf, null) != null) == false) ? { ipv4 = host.ip } : null
         logging_ipv4_vrf_hosts = (can(regex(":", tostring(host.ip))) == false && (try(host.vrf, null) != null) == true) ? { ipv4 = host.ip, vrf = host.vrf } : null
         logging_ipv6_hosts     = (can(regex(":", tostring(host.ip))) == true && (try(host.vrf, null) != null) == false) ? { ipv6 = host.ip } : null
         logging_ipv6_vrf_hosts = (can(regex(":", tostring(host.ip))) == true && (try(host.vrf, null) != null) == true) ? { ipv6 = host.ip, vrf = host.vrf } : null
+
+        transport_udp_ports = [for u in try(host.transport_udp_ports, []) : {
+          port_number = u
+        }]
+        transport_tcp_ports = [for t in try(host.transport_tcp_ports, []) : {
+          port_number = t
+        }]
+        transport_tls_ports = [for l in try(host.transport_tls_ports, []) : {
+          port_number = l.port
+        }]
       }
     ]
   ])
@@ -50,4 +63,44 @@ resource "iosxe_logging" "logging" {
 
 }
 
+resource "iosxe_logging_ipv4_host_transport" "logging_ipv4_host_transport" {
+  for_each = { for host_entry in local.logging_host_vrf : host_entry.key => host_entry if host_entry.logging_ipv4_hosts != null }
+  device   = each.value.device
 
+  ipv4_host           = each.value.logging_ipv4_hosts.ipv4
+  transport_udp_ports = try(each.value.transport_udp_ports, [])
+  transport_tcp_ports = try(each.value.transport_tcp_ports, [])
+  transport_tls_ports = try(each.value.transport_tls_ports, [])
+}
+
+resource "iosxe_logging_ipv4_host_vrf_transport" "logging_ipv4_host_vrf_transport" {
+  for_each = { for host_entry in local.logging_host_vrf : host_entry.key => host_entry if host_entry.logging_ipv4_vrf_hosts != null }
+  device   = each.value.device
+
+  ipv4_host           = each.value.logging_ipv4_vrf_hosts.ipv4
+  vrf                 = each.value.logging_ipv4_vrf_hosts.vrf
+  transport_udp_ports = try(each.value.transport_udp_ports, [])
+  transport_tcp_ports = try(each.value.transport_tcp_ports, [])
+  transport_tls_ports = try(each.value.transport_tls_ports, [])
+}
+
+resource "iosxe_logging_ipv6_host_transport" "logging_ipv6_host_transport" {
+  for_each = { for host_entry in local.logging_host_vrf : host_entry.key => host_entry if host_entry.logging_ipv6_hosts != null }
+  device   = each.value.device
+
+  ipv6_host           = each.value.logging_ipv6_hosts.ipv6
+  transport_udp_ports = try(each.value.transport_udp_ports, [])
+  transport_tcp_ports = try(each.value.transport_tcp_ports, [])
+  transport_tls_ports = try(each.value.transport_tls_ports, [])
+}
+
+resource "iosxe_logging_ipv6_host_vrf_transport" "logging_ipv6_host_vrf_transport" {
+  for_each = { for host_entry in local.logging_host_vrf : host_entry.key => host_entry if host_entry.logging_ipv6_vrf_hosts != null }
+  device   = each.value.device
+
+  ipv6_host           = each.value.logging_ipv6_vrf_hosts.ipv6
+  vrf                 = each.value.logging_ipv6_vrf_hosts.vrf
+  transport_udp_ports = try(each.value.transport_udp_ports, [])
+  transport_tcp_ports = try(each.value.transport_tcp_ports, [])
+  transport_tls_ports = try(each.value.transport_tls_ports, [])
+}

@@ -115,6 +115,10 @@ module "iosxe" {
 | [iosxe_interface_vlan.interface_vlan](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_vlan) | resource |
 | [iosxe_line.line](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/line) | resource |
 | [iosxe_logging.logging](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/logging) | resource |
+| [iosxe_logging_ipv4_host_transport.logging_ipv4_host_transport](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/logging_ipv4_host_transport) | resource |
+| [iosxe_logging_ipv4_host_vrf_transport.logging_ipv4_host_vrf_transport](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/logging_ipv4_host_vrf_transport) | resource |
+| [iosxe_logging_ipv6_host_transport.logging_ipv6_host_transport](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/logging_ipv6_host_transport) | resource |
+| [iosxe_logging_ipv6_host_vrf_transport.logging_ipv6_host_vrf_transport](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/logging_ipv6_host_vrf_transport) | resource |
 | [iosxe_prefix_list.prefix_list](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/prefix_list) | resource |
 | [iosxe_route_map.route_map](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/route_map) | resource |
 | [iosxe_save_config.save_config](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/save_config) | resource |
