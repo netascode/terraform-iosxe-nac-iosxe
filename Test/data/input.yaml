@@ -1,0 +1,25 @@
+iosxe:
+  devices:
+    - name: devnet_sandbox_1
+      url: https://10.10.20.48
+      configuration:
+        policy:
+          class_maps:
+            - name: "CLASS1"
+              #type: "traffic"
+              prematch: "match-all"
+              description: "My first class-map for QoS"
+              match_dscp: ["0"]
+          policy_maps:
+            - name: "POLICY1"
+              description: "My first policy-map"
+              #type: "queueing"
+              classes:
+                - name: "CLASS1"
+                  actions:
+                    - type: "bandwidth"
+                      bandwidth_percent: 10
+
+
+
+              
