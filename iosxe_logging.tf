@@ -2,7 +2,7 @@ locals {
   logging_host_vrf = flatten([
     for device in local.devices : [
       for host in try(local.device_config[device.name].logging.hosts, []) : {
-        key    = format("%s", host.ip)
+        key    = format("%s/%s", device.name, host.ip)
         device = device.name
 
         logging_ipv4_hosts     = (can(regex(":", tostring(host.ip))) == false && (try(host.vrf, null) != null) == false) ? { ipv4 = host.ip } : null
