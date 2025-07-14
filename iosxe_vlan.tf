@@ -1,7 +1,7 @@
 locals {
   vlans = flatten([
     for device in local.devices : [
-      for vlan in try(local.device_config[device.name].vlan.vlans, []) : {
+      for vlan in try(local.device_config[device.name].vlan.vlans, local.defaults.iosxe.configuration.vlan.vlans, []) : {
         key                      = format("%s/%s", device.name, vlan.id)
         device                   = device.name
         id                       = try(vlan.id, null)
@@ -35,7 +35,7 @@ resource "iosxe_vlan" "vlan" {
 locals {
   vlan_config = flatten([
     for device in local.devices : [
-      for vlan in try(local.device_config[device.name].vlan.vlans, []) : {
+      for vlan in try(local.device_config[device.name].vlan.vlans, local.defaults.iosxe.configuration.vlan.vlans, []) : {
         key               = format("%s/%s", device.name, vlan.id)
         device            = device.name
         id                = try(vlan.id, null)
@@ -63,7 +63,7 @@ resource "iosxe_vlan_configuration" "vlan_vn_config" {
 locals {
   vlan_access_maps = flatten([
     for device in local.devices : [
-      for amap in try(local.device_config[device.name].vlan.access_maps, []) : {
+      for amap in try(local.device_config[device.name].vlan.access_maps, local.defaults.iosxe.configuration.vlan.access_maps, []) : {
         key                = format("%s/%s", device.name, amap.name)
         device             = device.name
         name               = try(amap.name, null)
@@ -90,7 +90,7 @@ resource "iosxe_vlan_access_map" "vlan_access_maps" {
 locals {
   vlan_filters = flatten([
     for device in local.devices : [
-      for filter in try(local.device_config[device.name].vlan.filters, []) : {
+      for filter in try(local.device_config[device.name].vlan.filters, local.defaults.iosxe.configuration.vlan.filters, []) : {
         key        = format("%s/%s", device.name, filter.word)
         device     = device.name
         word       = try(filter.word, null)
@@ -111,7 +111,7 @@ resource "iosxe_vlan_filter" "vlan_filter" {
 locals {
   vlan_groups = flatten([
     for device in local.devices : [
-      for group in try(local.device_config[device.name].vlan.groups, []) : {
+      for group in try(local.device_config[device.name].vlan.groups, local.defaults.iosxe.configuration.vlan.groups, []) : {
         key        = format("%s/%s", device.name, group.name)
         device     = device.name
         name       = try(group.name, null)
