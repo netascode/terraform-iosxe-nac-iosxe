@@ -116,6 +116,8 @@ module "iosxe" {
 | [iosxe_line.line](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/line) | resource |
 | [iosxe_pim.pim](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/pim) | resource |
 | [iosxe_prefix_list.prefix_list](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/prefix_list) | resource |
+| [iosxe_radius.radius](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/radius) | resource |
+| [iosxe_radius_server.radius_server](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/radius_server) | resource |
 | [iosxe_route_map.route_map](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/route_map) | resource |
 | [iosxe_save_config.save_config](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/save_config) | resource |
 | [iosxe_service.service](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/service) | resource |
@@ -125,6 +127,7 @@ module "iosxe" {
 | [iosxe_snmp_server_user.snmp_server_user](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/snmp_server_user) | resource |
 | [iosxe_static_route.static_routes](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/static_route) | resource |
 | [iosxe_system.system](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/system) | resource |
+| [iosxe_tacacs_server.tacacs_server](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/tacacs_server) | resource |
 | [iosxe_template.template](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/template) | resource |
 | [iosxe_udld.udld](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/udld) | resource |
 | [iosxe_vtp.vtp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/vtp) | resource |

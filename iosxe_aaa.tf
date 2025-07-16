@@ -11,6 +11,16 @@ resource "iosxe_aaa" "aaa" {
   }]
   group_server_radius = [for e in try(local.device_config[each.value.name].aaa.radius_groups, []) : {
     name = try(e.name, local.defaults.iosxe.configuration.aaa.radius_groups.name, null)
+
+    ip_radius_source_interface_loopback                     = e.source_interface_type == "Loopback" ? e.source_interface_id : try(local.defaults.iosxe.configuration.aaa.radius_groups.ip_radius_source_interface_loopback, null)
+    ip_radius_source_interface_vlan                         = e.source_interface_type == "Vlan" ? e.source_interface_id : try(local.defaults.iosxe.configuration.aaa.radius_groups.ip_radius_source_interface_vlan, null)
+    ip_radius_source_interface_gigabit_ethernet             = e.source_interface_type == "GigabitEthernet" ? e.source_interface_id : try(local.defaults.iosxe.configuration.aaa.radius_groups.ip_radius_source_interface_gigabit_ethernet, null)
+    ip_radius_source_interface_two_gigabit_ethernet         = e.source_interface_type == "TwoGigabitEthernet" ? e.source_interface_id : try(local.defaults.iosxe.configuration.aaa.radius_groups.ip_radius_source_interface_two_gigabit_ethernet, null)
+    ip_radius_source_interface_five_gigabit_ethernet        = e.source_interface_type == "FiveGigabitEthernet" ? e.source_interface_id : try(local.defaults.iosxe.configuration.aaa.radius_groups.ip_radius_source_interface_five_gigabit_ethernet, null)
+    ip_radius_source_interface_ten_gigabit_ethernet         = e.source_interface_type == "TenGigabitEthernet" ? e.source_interface_id : try(local.defaults.iosxe.configuration.aaa.radius_groups.ip_radius_source_interface_ten_gigabit_ethernet, null)
+    ip_radius_source_interface_twenty_five_gigabit_ethernet = e.source_interface_type == "TwentyFiveGigabitEthernet" ? e.source_interface_id : try(local.defaults.iosxe.configuration.aaa.radius_groups.ip_radius_source_interface_twenty_five_gigabit_ethernet, null)
+    ip_radius_source_interface_forty_gigabit_ethernet       = e.source_interface_type == "FortyGigabitEthernet" ? e.source_interface_id : try(local.defaults.iosxe.configuration.aaa.radius_groups.ip_radius_source_interface_forty_gigabit_ethernet, null)
+    ip_radius_source_interface_hundred_gigabit_ethernet     = e.source_interface_type == "HundredGigabitEthernet" ? e.source_interface_id : try(local.defaults.iosxe.configuration.aaa.radius_groups.ip_radius_source_interface_hundred_gigabit_ethernet, null)
     server_names = [for s in try(e.server_names, []) : {
       name = s.name
     }]
@@ -152,3 +162,102 @@ resource "iosxe_aaa_authorization" "aaa_authorization" {
   }]
 }
 
+
+locals {
+  radius_servers = flatten([
+    for device in local.devices : [
+      for server in try(local.device_config[device.name].aaa.radius.servers, []) : {
+        tag                              = format("%s/%s", device.name, try(server.name, local.defaults.iosxe.configuration.aaa.radius.servers.name, null))
+        device_name                      = device.name
+        name                             = try(server.name, local.defaults.iosxe.configuration.aaa.radius.servers.name, null)
+        ipv4_address                     = try(server.ip, local.defaults.iosxe.configuration.aaa.radius.servers.ip, null)
+        authentication_port              = try(server.authentication_port, local.defaults.iosxe.configuration.aaa.radius.servers.authentication_port, null)
+        accounting_port                  = try(server.accounting_port, local.defaults.iosxe.configuration.aaa.radius.servers.accounting_port, null)
+        timeout                          = try(server.timeout, local.defaults.iosxe.configuration.aaa.radius.servers.timeout, null)
+        retransmit                       = try(server.retransmit, local.defaults.iosxe.configuration.aaa.radius.servers.retransmit, null)
+        key                              = try(server.key, local.defaults.iosxe.configuration.aaa.radius.servers.key, null)
+        automate_tester_username         = try(server.automate_tester_username, local.defaults.iosxe.configuration.aaa.radius.servers.automate_tester_username, null)
+        automate_tester_ignore_acct_port = try(server.automate_tester_ignore_acct_port, local.defaults.iosxe.configuration.aaa.radius.servers.automate_tester_ignore_acct_port, null)
+        automate_tester_probe_on_config  = try(server.automate_tester_probe_on_config, local.defaults.iosxe.configuration.aaa.radius.servers.automate_tester_probe_on_config, null)
+        pac_key                          = try(server.pac_key, local.defaults.iosxe.configuration.aaa.radius.servers.pac_key, null)
+        pac_key_encryption               = try(server.pac_key_encryption, local.defaults.iosxe.configuration.aaa.radius.servers.pac_key_encryption, null)
+      }
+    ]
+  ])
+}
+
+resource "iosxe_radius" "radius" {
+
+  for_each = {
+    for server in local.radius_servers : server.tag => server
+  }
+  device                           = each.value.device_name
+  name                             = each.value.name
+  ipv4_address                     = each.value.ipv4_address
+  timeout                          = each.value.timeout
+  key                              = each.value.key
+  authentication_port              = each.value.authentication_port
+  accounting_port                  = each.value.accounting_port
+  retransmit                       = each.value.retransmit
+  automate_tester_username         = each.value.automate_tester_username
+  automate_tester_ignore_acct_port = each.value.automate_tester_ignore_acct_port
+  automate_tester_probe_on_config  = each.value.automate_tester_probe_on_config
+  pac_key                          = each.value.pac_key
+  pac_key_encryption               = each.value.pac_key_encryption
+}
+
+
+
+resource "iosxe_radius_server" "radius_server" {
+  for_each = { for device in local.devices : device.name => device if try(local.device_config[device.name].aaa.radius, null) != null || try(local.defaults.iosxe.configuration.aaa.radius, null) != null }
+  device   = each.value.name
+
+  dead_criteria_time  = try(local.device_config[each.value.name].aaa.radius.dead_criteria_time, local.defaults.iosxe.configuration.aaa.radius.dead_criteria_time, null)
+  dead_criteria_tries = try(local.device_config[each.value.name].aaa.radius.dead_criteria_tries, local.defaults.iosxe.configuration.aaa.radius.dead_criteria_tries, null)
+  deadtime            = try(local.device_config[each.value.name].aaa.radius.deadtime, local.defaults.iosxe.configuration.aaa.radius.deadtime, null)
+
+  attributes = [for attr in try(local.device_config[each.value.name].aaa.radius.attributes, local.defaults.iosxe.configuration.aaa.radius.attributes, []) :
+    {
+      number                 = try(attr.number, null)
+      access_request_include = try(attr.access_request_include, null)
+      send_attributes        = try(attr.send_attributes, null)
+      attribute_31_parameters = [for param in try(attr.attribute_31_parameters, []) :
+        {
+          calling_station_id      = try(param.calling_station_id, null)
+          id_mac_format           = try(param.id_mac_format, null)
+          id_mac_lu_case          = try(param.id_mac_lu_case, null)
+          id_send_mac_only        = try(param.id_send_mac_only, null)
+          id_send_nas_port_detail = try(param.id_send_nas_port_detail, null)
+        }
+      ]
+    }
+  ]
+}
+
+locals {
+  tacacs_servers = flatten([
+    for device in local.devices : [
+      for server in try(local.device_config[device.name].aaa.tacacs_servers, []) : {
+        device_name  = device.name
+        name         = try(server.name, local.defaults.iosxe.configuration.aaa.tacacs_servers.name, null)
+        address_ipv4 = try(server.ip, local.defaults.iosxe.configuration.aaa.tacacs_servers.ip, null)
+        timeout      = try(server.timeout, local.defaults.iosxe.configuration.aaa.tacacs_servers.timeout, null)
+        encryption   = try(server.encryption, local.defaults.iosxe.configuration.aaa.tacacs_servers.encryption, null)
+        key          = try(server.key, local.defaults.iosxe.configuration.aaa.tacacs_servers.key, null)
+        tag          = format("%s/%s", device.name, try(server.name, local.defaults.iosxe.configuration.aaa.tacacas_servers.name, null))
+      }
+    ]
+  ])
+}
+
+resource "iosxe_tacacs_server" "tacacs_server" {
+  for_each = {
+    for server in local.tacacs_servers : server.tag => server
+  }
+  device       = each.value.device_name
+  name         = each.value.name
+  address_ipv4 = each.value.address_ipv4
+  timeout      = each.value.timeout
+  encryption   = each.value.encryption
+  key          = each.value.key
+}
