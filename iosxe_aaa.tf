@@ -12,13 +12,13 @@ resource "iosxe_aaa" "aaa" {
   group_server_radius = [for e in try(local.device_config[each.value.name].aaa.radius_groups, []) : {
     name = try(e.name, local.defaults.iosxe.configuration.aaa.radius_groups.name, null)
     server_names = [for s in try(e.server_names, []) : {
-      name = s.name
+      name = s
     }]
   }]
   group_server_tacacsplus = [for e in try(local.device_config[each.value.name].aaa.tacacs_groups, []) : {
     name = try(e.name, local.defaults.iosxe.configuration.aaa.tacacs_groups.name, null)
     server_names = [for s in try(e.server_names, []) : {
-      name = s.name
+      name = s
     }]
   }]
 }
@@ -46,7 +46,7 @@ resource "iosxe_aaa_accounting" "aaa_accounting" {
     start_stop_group1 = try(e.start_stop_groups[0], local.defaults.iosxe.configuration.aaa.accounting.execs.start_stop_groups[0], null)
   }]
   networks = [for e in try(local.device_config[each.value.name].aaa.accounting.networks, []) : {
-    name              = try(e.name, local.defaults.iosxe.configuration.aaa.accounting.networks.name, null)
+    id                = try(e.name, local.defaults.iosxe.configuration.aaa.accounting.networks.name, null)
     start_stop_group1 = try(e.start_stop_groups[0], local.defaults.iosxe.configuration.aaa.accounting.networks.start_stop_groups[0], null)
     start_stop_group2 = try(e.start_stop_groups[1], local.defaults.iosxe.configuration.aaa.accounting.networks.start_stop_groups[1], null)
   }]
@@ -140,7 +140,7 @@ resource "iosxe_aaa_authorization" "aaa_authorization" {
   }]
 
   networks = [for e in try(local.device_config[each.value.name].aaa.authorization.networks, []) : {
-    name     = try(e.name, local.defaults.iosxe.configuration.aaa.authorization.networks.name, null)
+    id       = try(e.name, local.defaults.iosxe.configuration.aaa.authorization.networks.name, null)
     a1_local = try(e.methods[0], local.defaults.iosxe.configuration.aaa.authorization.networks.methods[0], null) == "local" ? true : false
     a1_group = try(!contains(["local"], try(e.methods[0], local.defaults.iosxe.configuration.aaa.authorization.networks.methods[0])), false) ? try(e.methods[0], local.defaults.iosxe.configuration.aaa.authorization.networks.methods[0]) : null
     a2_local = try(e.methods[1], local.defaults.iosxe.configuration.aaa.authorization.networks.methods[1], null) == "local" ? true : false
