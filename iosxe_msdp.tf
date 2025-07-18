@@ -26,10 +26,19 @@ locals {
 
 resource "iosxe_msdp" "msdp" {
 
-  for_each      = { for device in local.devices : device.name => device if try(local.device_config[device.name].msdp, null) != null || try(local.defaults.iosxe.configuration.msdp, null) != null }
+  for_each      = { for device in local.devices : device.name => device if (try(local.device_config[device.name].msdp, null) != null || try(local.defaults.iosxe.configuration.msdp, null) != null) && try(local.device_config[device.name].msdp.vrf, null) == null || (try(local.defaults.iosxe.configuration.msdp.vrf, null) == null)}
   device        = each.value.name
   originator_id = try(local.device_config[each.value.name].msdp.originator_id, local.defaults.iosxe.configuration.msdp.originator_id, null)
+  passwords     = length(local.msdp_passwords) > 0 ? local.msdp_passwords : null
+  peers         = length(local.msdp_peers) > 0 ? local.msdp_peers : null
+}
 
+resource "iosxe_msdp_vrf" "msdp_vrf" {
+  for_each      = { for device in local.devices : device.name => device if (try(local.device_config[device.name].msdp, null) != null || try(local.defaults.iosxe.configuration.msdp, null) != null) && try(local.device_config[device.name].msdp.vrf, null) != null || (try(local.defaults.iosxe.configuration.msdp.vrf, null) != null)}
+  device   = each.value.name
+
+  vrf           = local.device_config[each.value.name].msdp.vrf
+  originator_id = try(local.device_config[each.value.name].msdp.originator_id, local.defaults.iosxe.configuration.msdp.originator_id, null)
   passwords     = length(local.msdp_passwords) > 0 ? local.msdp_passwords : null
   peers         = length(local.msdp_peers) > 0 ? local.msdp_peers : null
 }
