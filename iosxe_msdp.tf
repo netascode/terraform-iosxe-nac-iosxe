@@ -1,5 +1,5 @@
 locals {
-  msdp_passwords = flatten ([
+  msdp_passwords = flatten([
     for device in local.devices : [
       for password in try(local.device_config[device.name].msdp.passwords, []) : {
         key    = format("%s/%s", device.name, password.addr)
@@ -11,7 +11,7 @@ locals {
     }]
   ])
 
-  msdp_peers = flatten ([
+  msdp_peers = flatten([
     for device in local.devices : [
       for peer in try(local.device_config[device.name].msdp.peers, []) : {
         key    = format("%s/%s", device.name, peer.addr)
@@ -26,7 +26,7 @@ locals {
 
 resource "iosxe_msdp" "msdp" {
 
-  for_each      = { for device in local.devices : device.name => device if (try(local.device_config[device.name].msdp, null) != null || try(local.defaults.iosxe.configuration.msdp, null) != null) && try(local.device_config[device.name].msdp.vrf, null) == null || (try(local.defaults.iosxe.configuration.msdp.vrf, null) == null)}
+  for_each      = { for device in local.devices : device.name => device if(try(local.device_config[device.name].msdp, null) != null || try(local.defaults.iosxe.configuration.msdp, null) != null) && try(local.device_config[device.name].msdp.vrf, null) == null || (try(local.defaults.iosxe.configuration.msdp.vrf, null) == null) }
   device        = each.value.name
   originator_id = try(local.device_config[each.value.name].msdp.originator_id, local.defaults.iosxe.configuration.msdp.originator_id, null)
   passwords     = length(local.msdp_passwords) > 0 ? local.msdp_passwords : null
@@ -34,7 +34,7 @@ resource "iosxe_msdp" "msdp" {
 }
 
 resource "iosxe_msdp_vrf" "msdp_vrf" {
-  for_each      = { for device in local.devices : device.name => device if (try(local.device_config[device.name].msdp, null) != null || try(local.defaults.iosxe.configuration.msdp, null) != null) && try(local.device_config[device.name].msdp.vrf, null) != null || (try(local.defaults.iosxe.configuration.msdp.vrf, null) != null)}
+  for_each = { for device in local.devices : device.name => device if(try(local.device_config[device.name].msdp, null) != null || try(local.defaults.iosxe.configuration.msdp, null) != null) && try(local.device_config[device.name].msdp.vrf, null) != null || (try(local.defaults.iosxe.configuration.msdp.vrf, null) != null) }
   device   = each.value.name
 
   vrf           = local.device_config[each.value.name].msdp.vrf
