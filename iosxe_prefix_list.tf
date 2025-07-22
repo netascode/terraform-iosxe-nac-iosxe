@@ -9,7 +9,7 @@ locals {
           name   = prefix_list.name
           seq    = e.seq
           action = try(e.action, local.defaults.iosxe.configuration.prefix_lists.seqs.action, null)
-          ip     = try(e.ip, local.defaults.iosxe.configuration.prefix_lists.seqs.ip, null)
+          ip     = try(e.prefix, local.defaults.iosxe.configuration.prefix_lists.seqs.prefix, null)
           ge     = try(e.greater_equal, local.defaults.iosxe.configuration.prefix_lists.seqs.greater_equal, null)
           le     = try(e.less_equal, local.defaults.iosxe.configuration.prefix_lists.seqs.less_equal, null)
         }]
