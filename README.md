@@ -91,6 +91,13 @@ module "iosxe" {
 | [iosxe_clock.clock](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/clock) | resource |
 | [iosxe_community_list_expanded.community_list_expanded](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/community_list_expanded) | resource |
 | [iosxe_community_list_standard.community_list_standard](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/community_list_standard) | resource |
+| [iosxe_crypto_ikev2.crypto_ikev2](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/crypto_ikev2) | resource |
+| [iosxe_crypto_ikev2_keyring.crypto_ikev2_keyring](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/crypto_ikev2_keyring) | resource |
+| [iosxe_crypto_ikev2_policy.crypto_ikev2_policy](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/crypto_ikev2_policy) | resource |
+| [iosxe_crypto_ikev2_profile.crypto_ikev2_profile](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/crypto_ikev2_profile) | resource |
+| [iosxe_crypto_ikev2_proposal.crypto_ikev2_proposal](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/crypto_ikev2_proposal) | resource |
+| [iosxe_crypto_ipsec_profile.crypto_ipsec_profile](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/crypto_ipsec_profile) | resource |
+| [iosxe_crypto_ipsec_transform_set.crypto_ipsec_transform_set](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/crypto_ipsec_transform_set) | resource |
 | [iosxe_dhcp.dhcp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/dhcp) | resource |
 | [iosxe_dot1x.dot1x](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/dot1x) | resource |
 | [iosxe_errdisable.errdisable](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/errdisable) | resource |
