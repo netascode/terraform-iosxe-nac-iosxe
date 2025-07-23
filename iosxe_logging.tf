@@ -48,18 +48,18 @@ resource "iosxe_logging" "logging" {
 
   ipv4_hosts = try([for h in try(local.logging_host_vrf, []) : {
     ipv4_host = h.logging_ipv4_hosts.ipv4
-  }], null)
+  } if h.device == each.value.name], null)
   ipv4_vrf_hosts = try([for h in try(local.logging_host_vrf, []) : {
     ipv4_host = h.logging_ipv4_vrf_hosts.ipv4
     vrf       = h.logging_ipv4_vrf_hosts.vrf
-  }], null)
+  } if h.device == each.value.name], null)
   ipv6_hosts = try([for h in try(local.logging_host_vrf, []) : {
     ipv6_host = h.logging_ipv6_hosts.ipv6
-  }], null)
+  } if h.device == each.value.name], null)
   ipv6_vrf_hosts = try([for h in try(local.logging_host_vrf, []) : {
     ipv6_host = h.logging_ipv6_vrf_hosts.ipv6
     vrf       = h.logging_ipv6_vrf_hosts.vrf
-  }], null)
+  } if h.device == each.value.name], null)
 
 }
 
