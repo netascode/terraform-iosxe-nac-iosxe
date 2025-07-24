@@ -101,6 +101,8 @@ module "iosxe" {
 | [iosxe_dhcp.dhcp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/dhcp) | resource |
 | [iosxe_dot1x.dot1x](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/dot1x) | resource |
 | [iosxe_errdisable.errdisable](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/errdisable) | resource |
+| [iosxe_evpn.evpn](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/evpn) | resource |
+| [iosxe_evpn_instance.evpn_instance](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/evpn_instance) | resource |
 | [iosxe_flow_exporter.flow_exporter](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/flow_exporter) | resource |
 | [iosxe_flow_monitor.flow_monitors](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/flow_monitor) | resource |
 | [iosxe_flow_record.flow_records](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/flow_record) | resource |
