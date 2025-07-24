@@ -131,6 +131,7 @@ module "iosxe" {
 | [iosxe_logging_ipv6_host_vrf_transport.logging_ipv6_host_vrf_transport](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/logging_ipv6_host_vrf_transport) | resource |
 | [iosxe_msdp.msdp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/msdp) | resource |
 | [iosxe_msdp_vrf.msdp_vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/msdp_vrf) | resource |
+| [iosxe_ntp.ntp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/ntp) | resource |
 | [iosxe_pim.pim](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/pim) | resource |
 | [iosxe_prefix_list.prefix_list](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/prefix_list) | resource |
 | [iosxe_radius.radius](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/radius) | resource |
