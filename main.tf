@@ -45,8 +45,6 @@ resource "iosxe_save_config" "save_config" {
     iosxe_bfd.bfd,
     iosxe_ospf_vrf.ospf,
     iosxe_ospf.ospf,
-    iosxe_vrf.vrfs,
-    iosxe_interface_ospf.interface,
-    iosxe_interface_ospfv3.interface
+    iosxe_vrf.vrfs
   ]
 }
