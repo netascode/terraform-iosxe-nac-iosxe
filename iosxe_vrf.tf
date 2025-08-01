@@ -85,12 +85,6 @@ locals {
   ])
 }
 
-
-output "vrf_configurations" {
-  value = local.vrf_configurations
-}
-
-
 resource "iosxe_vrf" "vrfs" {
   for_each = { for vrf in local.vrf_configurations : vrf.key => vrf }
 

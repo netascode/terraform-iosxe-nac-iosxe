@@ -124,6 +124,11 @@ locals {
           areas = [for area in try(pid.areas, []) : {
           area_id = area }]
         }]
+        ospf_message_digest_keys = [for key in try(int.ospf.message_digest_keys, []) : {
+          id            = try(key.id, null)
+          md5_auth_key  = try(key.md5_auth_key, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospf.message_digest_keys.md5_auth_key, null)
+          md5_auth_type = try(key.md5_auth_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospf.message_digest_keys.md5_auth_type, null)
+        }]
         ospfv3                                     = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.network_type, null) != null ? true : false
         ospfv3_network_type_broadcast              = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.network_type, null) == "broadcast" ? true : null
         ospfv3_network_type_non_broadcast          = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.network_type, null) == "non-broadcast" ? true : null
@@ -308,9 +313,12 @@ resource "iosxe_interface_ospf" "ethernet_ospf" {
   priority                         = each.value.ospf_priority
   ttl_security_hops                = each.value.ospf_ttl_security_hops
   process_ids                      = each.value.ospf_process_ids
+  message_digest_keys              = each.value.ospf_message_digest_keys
 
   depends_on = [
-    iosxe_interface_ethernet.ethernet
+    iosxe_interface_ethernet.ethernet,
+    iosxe_ospf.ospf,
+    iosxe_ospf_vrf.ospf
   ]
 }
 
@@ -327,7 +335,9 @@ resource "iosxe_interface_ospfv3" "ethernet_ospfv3" {
   cost                             = each.value.ospfv3_cost
 
   depends_on = [
-    iosxe_interface_ethernet.ethernet
+    iosxe_interface_ethernet.ethernet,
+    iosxe_ospf.ospf,
+    iosxe_ospf_vrf.ospf
   ]
 }
 
@@ -410,6 +420,11 @@ locals {
           areas = [for area in try(pid.areas, []) : {
           area_id = area }]
         }]
+        ospf_message_digest_keys = [for key in try(int.ospf.message_digest_keys, []) : {
+          id            = try(key.id, null)
+          md5_auth_key  = try(key.md5_auth_key, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospf.message_digest_keys.md5_auth_key, null)
+          md5_auth_type = try(key.md5_auth_type, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospf.message_digest_keys.md5_auth_type, null)
+        }]
         ospfv3                                  = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospfv3.network_type, null) != null ? true : false
         ospfv3_network_type_broadcast           = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospfv3.network_type, null) == "broadcast" ? true : null
         ospfv3_network_type_non_broadcast       = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospfv3.network_type, null) == "non-broadcast" ? true : null
@@ -486,9 +501,12 @@ resource "iosxe_interface_ospf" "loopback_ospf" {
   priority                         = each.value.ospf_priority
   ttl_security_hops                = each.value.ospf_ttl_security_hops
   process_ids                      = each.value.ospf_process_ids
+  message_digest_keys              = each.value.ospf_message_digest_keys
 
   depends_on = [
-    iosxe_interface_loopback.loopback
+    iosxe_interface_loopback.loopback,
+    iosxe_ospf.ospf,
+    iosxe_ospf_vrf.ospf
   ]
 }
 
@@ -505,7 +523,9 @@ resource "iosxe_interface_ospfv3" "loopback_ospfv3" {
   cost                             = each.value.ospfv3_cost
 
   depends_on = [
-    iosxe_interface_loopback.loopback
+    iosxe_interface_loopback.loopback,
+    iosxe_ospf.ospf,
+    iosxe_ospf_vrf.ospf
   ]
 }
 
@@ -600,6 +620,11 @@ locals {
           areas = [for area in try(pid.areas, []) : {
           area_id = area }]
         }]
+        ospf_message_digest_keys = [for key in try(int.ospf.message_digest_keys, []) : {
+          id            = try(key.id, null)
+          md5_auth_key  = try(key.md5_auth_key, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospf.message_digest_keys.md5_auth_key, null)
+          md5_auth_type = try(key.md5_auth_type, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospf.message_digest_keys.md5_auth_type, null)
+        }]
         ospfv3                                  = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospfv3.network_type, null) != null ? true : false
         ospfv3_network_type_broadcast           = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospfv3.network_type, null) == "broadcast" ? true : null
         ospfv3_network_type_non_broadcast       = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospfv3.network_type, null) == "non-broadcast" ? true : null
@@ -687,9 +712,12 @@ resource "iosxe_interface_ospf" "vlan_ospf" {
   priority                         = each.value.ospf_priority
   ttl_security_hops                = each.value.ospf_ttl_security_hops
   process_ids                      = each.value.ospf_process_ids
+  message_digest_keys              = each.value.ospf_message_digest_keys
 
   depends_on = [
-    iosxe_interface_vlan.interface_vlan
+    iosxe_interface_vlan.interface_vlan,
+    iosxe_ospf.ospf,
+    iosxe_ospf_vrf.ospf
   ]
 }
 
@@ -706,7 +734,9 @@ resource "iosxe_interface_ospfv3" "vlan_ospfv3" {
   cost                             = each.value.ospfv3_cost
 
   depends_on = [
-    iosxe_interface_vlan.interface_vlan
+    iosxe_interface_vlan.interface_vlan,
+    iosxe_ospf.ospf,
+    iosxe_ospf_vrf.ospf
   ]
 }
 
