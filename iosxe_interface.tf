@@ -166,7 +166,10 @@ locals {
 }
 
 resource "iosxe_interface_ethernet" "ethernet" {
-  for_each                                   = { for v in local.interfaces_ethernets : v.key => v }
+  for_each = { for v in local.interfaces_ethernets : v.key => v }
+
+  depends_on = [iosxe_vrf.vrfs]
+
   device                                     = each.value.device
   type                                       = each.value.type
   name                                       = each.value.id
@@ -446,7 +449,10 @@ locals {
 }
 
 resource "iosxe_interface_loopback" "loopback" {
-  for_each                        = { for v in local.interfaces_loopbacks : v.key => v }
+  for_each = { for v in local.interfaces_loopbacks : v.key => v }
+
+  depends_on = [iosxe_vrf.vrfs]
+
   device                          = each.value.device
   name                            = each.value.id
   description                     = each.value.description
@@ -646,7 +652,10 @@ locals {
 }
 
 resource "iosxe_interface_vlan" "interface_vlan" {
-  for_each                        = { for v in local.interfaces_vlans : v.key => v }
+  for_each = { for v in local.interfaces_vlans : v.key => v }
+
+  depends_on = [iosxe_vrf.vrfs]
+
   device                          = each.value.device
   name                            = each.value.id
   description                     = each.value.description
