@@ -2,9 +2,9 @@ locals {
   interfaces_ethernets = flatten([
     for device in local.devices : [
       for int in try(local.device_config[device.name].interfaces.ethernets, []) : {
-        key                            = format("%s/%s", device.name, int.id)
+        key                            = format("%s/%s", device.name, int.name)
         device                         = device.name
-        id                             = int.id
+        id                             = int.name
         type                           = try(int.type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.type, null)
         media_type                     = try(int.media_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.media_type, null)
         bandwidth                      = try(int.bandwidth, local.defaults.iosxe.devices.configuration.interfaces.ethernets.bandwidth, null)
