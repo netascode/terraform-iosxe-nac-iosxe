@@ -2,9 +2,9 @@ locals {
   interfaces_ethernets = flatten([
     for device in local.devices : [
       for int in try(local.device_config[device.name].interfaces.ethernets, []) : {
-        key                            = format("%s/%s", device.name, int.id)
+        key                            = format("%s/%s", device.name, int.name)
         device                         = device.name
-        id                             = int.id
+        id                             = int.name
         type                           = try(int.type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.type, null)
         media_type                     = try(int.media_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.media_type, null)
         bandwidth                      = try(int.bandwidth, local.defaults.iosxe.devices.configuration.interfaces.ethernets.bandwidth, null)
@@ -112,11 +112,11 @@ locals {
         ospf_dead_interval                       = try(int.ospf.dead_interval, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospf.dead_interval, null)
         ospf_hello_interval                      = try(int.ospf.hello_interval, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospf.hello_interval, null)
         ospf_mtu_ignore                          = try(int.ospf.mtu_ignore, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospf.mtu_ignore, null)
-        ospf                                     = try(int.ospf.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospf.network_type, null) != null ? true : false
-        ospf_network_type_broadcast              = try(int.ospf.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospf.network_type, null) == "broadcast" ? true : null
-        ospf_network_type_non_broadcast          = try(int.ospf.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospf.network_type, null) == "non-broadcast" ? true : null
-        ospf_network_type_point_to_multipoint    = try(int.ospf.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospf.network_type, null) == "point-to-multipoint" ? true : null
-        ospf_network_type_point_to_point         = try(int.ospf.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospf.network_type, null) == "point-to-point" ? true : null
+        ospf                                     = try(int.ospf, null) != null ? true : false
+        ospf_network_type_broadcast              = try(int.ospf.network_type_broadcast, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospf.network_type_broadcast, null)
+        ospf_network_type_non_broadcast          = try(int.ospf.network_type_non_broadcast, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospf.network_type_non_broadcast, null)
+        ospf_network_type_point_to_multipoint    = try(int.ospf.network_type_point_to_multipoint, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospf.network_type_point_to_multipoint, null)
+        ospf_network_type_point_to_point         = try(int.ospf.network_type_point_to_point, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospf.network_type_point_to_point, null)
         ospf_priority                            = try(int.ospf.priority, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospf.priority, null)
         ospf_ttl_security_hops                   = try(int.ospf.ttl_security_hops, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospf.ttl_security_hops, null)
         ospf_process_ids = [for pid in try(int.ospf.process_ids, []) : {
@@ -124,11 +124,16 @@ locals {
           areas = [for area in try(pid.areas, []) : {
           area_id = area }]
         }]
-        ospfv3                                     = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.network_type, null) != null ? true : false
-        ospfv3_network_type_broadcast              = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.network_type, null) == "broadcast" ? true : null
-        ospfv3_network_type_non_broadcast          = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.network_type, null) == "non-broadcast" ? true : null
-        ospfv3_network_type_point_to_multipoint    = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.network_type, null) == "point-to-multipoint" ? true : null
-        ospfv3_network_type_point_to_point         = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.network_type, null) == "point-to-point" ? true : null
+        ospf_message_digest_keys = [for key in try(int.ospf.message_digest_keys, []) : {
+          id            = try(key.id, null)
+          md5_auth_key  = try(key.md5_auth_key, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospf.message_digest_keys.md5_auth_key, null)
+          md5_auth_type = try(key.md5_auth_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospf.message_digest_keys.md5_auth_type, null)
+        }]
+        ospfv3                                     = try(int.ospfv3, null) != null ? true : false
+        ospfv3_network_type_broadcast              = try(int.ospfv3.network_type_broadcast, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.network_type_broadcast, null)
+        ospfv3_network_type_non_broadcast          = try(int.ospfv3.network_type_non_broadcast, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.network_type_non_broadcast, null)
+        ospfv3_network_type_point_to_multipoint    = try(int.ospfv3.network_type_point_to_multipoint, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.network_type_point_to_multipoint, null)
+        ospfv3_network_type_point_to_point         = try(int.ospfv3.network_type_point_to_point, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.network_type_point_to_point, null)
         ospfv3_cost                                = try(int.ospfv3.cost, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.cost, null)
         pim                                        = try(int.pim.passive, int.pim.dense_mode, int.pim.sparse_mode, int.pim.sparse_dense_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.dense_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.sparse_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.sparse_dense_mode, null) != null ? true : false
         pim_passive                                = try(int.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.passive, null)
@@ -161,7 +166,10 @@ locals {
 }
 
 resource "iosxe_interface_ethernet" "ethernet" {
-  for_each                                   = { for v in local.interfaces_ethernets : v.key => v }
+  for_each = { for v in local.interfaces_ethernets : v.key => v }
+
+  depends_on = [iosxe_vrf.vrfs]
+
   device                                     = each.value.device
   type                                       = each.value.type
   name                                       = each.value.id
@@ -308,9 +316,12 @@ resource "iosxe_interface_ospf" "ethernet_ospf" {
   priority                         = each.value.ospf_priority
   ttl_security_hops                = each.value.ospf_ttl_security_hops
   process_ids                      = each.value.ospf_process_ids
+  message_digest_keys              = each.value.ospf_message_digest_keys
 
   depends_on = [
-    iosxe_interface_ethernet.ethernet
+    iosxe_interface_ethernet.ethernet,
+    iosxe_ospf.ospf,
+    iosxe_ospf_vrf.ospf
   ]
 }
 
@@ -327,7 +338,9 @@ resource "iosxe_interface_ospfv3" "ethernet_ospfv3" {
   cost                             = each.value.ospfv3_cost
 
   depends_on = [
-    iosxe_interface_ethernet.ethernet
+    iosxe_interface_ethernet.ethernet,
+    iosxe_ospf.ospf,
+    iosxe_ospf_vrf.ospf
   ]
 }
 
@@ -398,11 +411,11 @@ locals {
         ospf_dead_interval                    = try(int.ospf.dead_interval, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospf.dead_interval, null)
         ospf_hello_interval                   = try(int.ospf.hello_interval, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospf.hello_interval, null)
         ospf_mtu_ignore                       = try(int.ospf.mtu_ignore, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospf.mtu_ignore, null)
-        ospf                                  = try(int.ospf.network_type, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospf.network_type, null) != null ? true : false
-        ospf_network_type_broadcast           = try(int.ospf.network_type, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospf.network_type, null) == "broadcast" ? true : null
-        ospf_network_type_non_broadcast       = try(int.ospf.network_type, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospf.network_type, null) == "non-broadcast" ? true : null
-        ospf_network_type_point_to_multipoint = try(int.ospf.network_type, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospf.network_type, null) == "point-to-multipoint" ? true : null
-        ospf_network_type_point_to_point      = try(int.ospf.network_type, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospf.network_type, null) == "point-to-point" ? true : null
+        ospf                                  = try(int.ospf, null) != null ? true : false
+        ospf_network_type_broadcast           = try(int.ospf.network_type_broadcast, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospf.network_type_broadcast, null)
+        ospf_network_type_non_broadcast       = try(int.ospf.network_type_non_broadcast, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospf.network_type_non_broadcast, null)
+        ospf_network_type_point_to_multipoint = try(int.ospf.network_type_point_to_multipoint, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospf.network_type_point_to_multipoint, null)
+        ospf_network_type_point_to_point      = try(int.ospf.network_type_point_to_point, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospf.network_type_point_to_point, null)
         ospf_priority                         = try(int.ospf.priority, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospf.priority, null)
         ospf_ttl_security_hops                = try(int.ospf.ttl_security_hops, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospf.ttl_security_hops, null)
         ospf_process_ids = [for pid in try(int.ospf.process_ids, []) : {
@@ -410,11 +423,16 @@ locals {
           areas = [for area in try(pid.areas, []) : {
           area_id = area }]
         }]
-        ospfv3                                  = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospfv3.network_type, null) != null ? true : false
-        ospfv3_network_type_broadcast           = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospfv3.network_type, null) == "broadcast" ? true : null
-        ospfv3_network_type_non_broadcast       = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospfv3.network_type, null) == "non-broadcast" ? true : null
-        ospfv3_network_type_point_to_multipoint = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospfv3.network_type, null) == "point-to-multipoint" ? true : null
-        ospfv3_network_type_point_to_point      = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospfv3.network_type, null) == "point-to-point" ? true : null
+        ospf_message_digest_keys = [for key in try(int.ospf.message_digest_keys, []) : {
+          id            = try(key.id, null)
+          md5_auth_key  = try(key.md5_auth_key, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospf.message_digest_keys.md5_auth_key, null)
+          md5_auth_type = try(key.md5_auth_type, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospf.message_digest_keys.md5_auth_type, null)
+        }]
+        ospfv3                                  = try(int.ospfv3, null) != null ? true : false
+        ospfv3_network_type_broadcast           = try(int.ospfv3.network_type_broadcast, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospfv3.network_type_broadcast, null)
+        ospfv3_network_type_non_broadcast       = try(int.ospfv3.network_type_non_broadcast, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospfv3.network_type_non_broadcast, null)
+        ospfv3_network_type_point_to_multipoint = try(int.ospfv3.network_type_point_to_multipoint, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospfv3.network_type_point_to_multipoint, null)
+        ospfv3_network_type_point_to_point      = try(int.ospfv3.network_type_point_to_point, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospfv3.network_type_point_to_point, null)
         ospfv3_cost                             = try(int.ospfv3.cost, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospfv3.cost, null)
         pim                                     = try(int.pim.passive, int.pim.dense_mode, int.pim.sparse_mode, int.pim.sparse_dense_mode, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.pim.dense_mode, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.pim.sparse_mode, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.pim.sparse_dense_mode, null) != null ? true : false
         pim_passive                             = try(int.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.pim.passive, null)
@@ -431,7 +449,10 @@ locals {
 }
 
 resource "iosxe_interface_loopback" "loopback" {
-  for_each                        = { for v in local.interfaces_loopbacks : v.key => v }
+  for_each = { for v in local.interfaces_loopbacks : v.key => v }
+
+  depends_on = [iosxe_vrf.vrfs]
+
   device                          = each.value.device
   name                            = each.value.id
   description                     = each.value.description
@@ -486,9 +507,12 @@ resource "iosxe_interface_ospf" "loopback_ospf" {
   priority                         = each.value.ospf_priority
   ttl_security_hops                = each.value.ospf_ttl_security_hops
   process_ids                      = each.value.ospf_process_ids
+  message_digest_keys              = each.value.ospf_message_digest_keys
 
   depends_on = [
-    iosxe_interface_loopback.loopback
+    iosxe_interface_loopback.loopback,
+    iosxe_ospf.ospf,
+    iosxe_ospf_vrf.ospf
   ]
 }
 
@@ -505,7 +529,9 @@ resource "iosxe_interface_ospfv3" "loopback_ospfv3" {
   cost                             = each.value.ospfv3_cost
 
   depends_on = [
-    iosxe_interface_loopback.loopback
+    iosxe_interface_loopback.loopback,
+    iosxe_ospf.ospf,
+    iosxe_ospf_vrf.ospf
   ]
 }
 
@@ -588,11 +614,11 @@ locals {
         ospf_dead_interval                    = try(int.ospf.dead_interval, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospf.dead_interval, null)
         ospf_hello_interval                   = try(int.ospf.hello_interval, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospf.hello_interval, null)
         ospf_mtu_ignore                       = try(int.ospf.mtu_ignore, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospf.mtu_ignore, null)
-        ospf                                  = try(int.ospf.network_type, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospf.network_type, null) != null ? true : false
-        ospf_network_type_broadcast           = try(int.ospf.network_type, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospf.network_type, null) == "broadcast" ? true : null
-        ospf_network_type_non_broadcast       = try(int.ospf.network_type, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospf.network_type, null) == "non-broadcast" ? true : null
-        ospf_network_type_point_to_multipoint = try(int.ospf.network_type, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospf.network_type, null) == "point-to-multipoint" ? true : null
-        ospf_network_type_point_to_point      = try(int.ospf.network_type, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospf.network_type, null) == "point-to-point" ? true : null
+        ospf                                  = try(int.ospf, null) != null ? true : false
+        ospf_network_type_broadcast           = try(int.ospf.network_type_broadcast, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospf.network_type_broadcast, null)
+        ospf_network_type_non_broadcast       = try(int.ospf.network_type_non_broadcast, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospf.network_type_non_broadcast, null)
+        ospf_network_type_point_to_multipoint = try(int.ospf.network_type_point_to_multipoint, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospf.network_type_point_to_multipoint, null)
+        ospf_network_type_point_to_point      = try(int.ospf.network_type_point_to_point, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospf.network_type_point_to_point, null)
         ospf_priority                         = try(int.ospf.priority, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospf.priority, null)
         ospf_ttl_security_hops                = try(int.ospf.ttl_security_hops, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospf.ttl_security_hops, null)
         ospf_process_ids = [for pid in try(int.ospf.process_ids, []) : {
@@ -600,11 +626,16 @@ locals {
           areas = [for area in try(pid.areas, []) : {
           area_id = area }]
         }]
-        ospfv3                                  = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospfv3.network_type, null) != null ? true : false
-        ospfv3_network_type_broadcast           = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospfv3.network_type, null) == "broadcast" ? true : null
-        ospfv3_network_type_non_broadcast       = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospfv3.network_type, null) == "non-broadcast" ? true : null
-        ospfv3_network_type_point_to_multipoint = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospfv3.network_type, null) == "point-to-multipoint" ? true : null
-        ospfv3_network_type_point_to_point      = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospfv3.network_type, null) == "point-to-point" ? true : null
+        ospf_message_digest_keys = [for key in try(int.ospf.message_digest_keys, []) : {
+          id            = try(key.id, null)
+          md5_auth_key  = try(key.md5_auth_key, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospf.message_digest_keys.md5_auth_key, null)
+          md5_auth_type = try(key.md5_auth_type, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospf.message_digest_keys.md5_auth_type, null)
+        }]
+        ospfv3                                  = try(int.ospfv3, null) != null ? true : false
+        ospfv3_network_type_broadcast           = try(int.ospfv3.network_type_broadcast, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospfv3.network_type_broadcast, null)
+        ospfv3_network_type_non_broadcast       = try(int.ospfv3.network_type_non_broadcast, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospfv3.network_type_non_broadcast, null)
+        ospfv3_network_type_point_to_multipoint = try(int.ospfv3.network_type_point_to_multipoint, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospfv3.network_type_point_to_multipoint, null)
+        ospfv3_network_type_point_to_point      = try(int.ospfv3.network_type_point_to_point, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospfv3.network_type_point_to_point, null)
         ospfv3_cost                             = try(int.ospfv3.cost, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospfv3.cost, null)
         pim                                     = try(int.pim.passive, int.pim.dense_mode, int.pim.sparse_mode, int.pim.sparse_dense_mode, local.defaults.iosxe.devices.configuration.interfaces.vlans.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.vlans.pim.dense_mode, local.defaults.iosxe.devices.configuration.interfaces.vlans.pim.sparse_mode, local.defaults.iosxe.devices.configuration.interfaces.vlans.pim.sparse_dense_mode, null) != null ? true : false
         pim_passive                             = try(int.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.vlans.pim.passive, null)
@@ -621,7 +652,10 @@ locals {
 }
 
 resource "iosxe_interface_vlan" "interface_vlan" {
-  for_each                        = { for v in local.interfaces_vlans : v.key => v }
+  for_each = { for v in local.interfaces_vlans : v.key => v }
+
+  depends_on = [iosxe_vrf.vrfs]
+
   device                          = each.value.device
   name                            = each.value.id
   description                     = each.value.description
@@ -687,9 +721,12 @@ resource "iosxe_interface_ospf" "vlan_ospf" {
   priority                         = each.value.ospf_priority
   ttl_security_hops                = each.value.ospf_ttl_security_hops
   process_ids                      = each.value.ospf_process_ids
+  message_digest_keys              = each.value.ospf_message_digest_keys
 
   depends_on = [
-    iosxe_interface_vlan.interface_vlan
+    iosxe_interface_vlan.interface_vlan,
+    iosxe_ospf.ospf,
+    iosxe_ospf_vrf.ospf
   ]
 }
 
@@ -706,7 +743,9 @@ resource "iosxe_interface_ospfv3" "vlan_ospfv3" {
   cost                             = each.value.ospfv3_cost
 
   depends_on = [
-    iosxe_interface_vlan.interface_vlan
+    iosxe_interface_vlan.interface_vlan,
+    iosxe_ospf.ospf,
+    iosxe_ospf_vrf.ospf
   ]
 }
 
