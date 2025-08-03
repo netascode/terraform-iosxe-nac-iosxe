@@ -20,7 +20,7 @@ locals {
         shutdown                             = try(ospf.shutdown, local.defaults.iosxe.configuration.routing.ospf_processes.shutdown, null)
         passive_interface_default            = try(ospf.passive_interface_default, local.defaults.iosxe.configuration.routing.ospf_processes.passive_interface_default, null)
         auto_cost_reference_bandwidth        = try(ospf.auto_cost_reference_bandwidth, local.defaults.iosxe.configuration.routing.ospf_processes.auto_cost_reference_bandwidth, null)
-        passive_interface                    = tolist(try([for p in ospf.passive_interface : tostring(p)], try([for p in local.defaults.iosxe.configuration.routing.ospf_processes.passive_interface : tostring(p)], [])))
+        passive_interface                    = tolist([for p in try(ospf.passive_interface, try(local.defaults.iosxe.configuration.routing.ospf_processes.passive_interface, [])) : tostring(p)])
 
         neighbor = [for neighbor in try(ospf.neighbors, []) : {
           ip       = try(neighbor.ip, null)
@@ -73,8 +73,7 @@ locals {
         shutdown                             = try(ospf.shutdown, local.defaults.iosxe.configuration.routing.ospf_processes.shutdown, null)
         passive_interface_default            = try(ospf.passive_interface_default, local.defaults.iosxe.configuration.routing.ospf_processes.passive_interface_default, null)
         auto_cost_reference_bandwidth        = try(ospf.auto_cost_reference_bandwidth, local.defaults.iosxe.configuration.routing.ospf_processes.auto_cost_reference_bandwidth, null)
-        passive_interface                    = tolist(try([for p in ospf.passive_interface : tostring(p)], try([for p in local.defaults.iosxe.configuration.routing.ospf_processes.passive_interface : tostring(p)], [])))
-
+        passive_interface                    = tolist([for p in try(ospf.passive_interface, try(local.defaults.iosxe.configuration.routing.ospf_processes.passive_interface, [])) : tostring(p)])
 
         neighbors = [for neighbor in try(ospf.neighbors, []) : {
           ip       = try(neighbor.ip, null)
