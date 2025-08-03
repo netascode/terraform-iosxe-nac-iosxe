@@ -19,6 +19,8 @@ locals {
         router_id                            = try(ospf.router_id, local.defaults.iosxe.configuration.routing.ospf_processes.router_id, null)
         shutdown                             = try(ospf.shutdown, local.defaults.iosxe.configuration.routing.ospf_processes.shutdown, null)
         passive_interface_default            = try(ospf.passive_interface_default, local.defaults.iosxe.configuration.routing.ospf_processes.passive_interface_default, null)
+        auto_cost_reference_bandwidth        = try(ospf.auto_cost_reference_bandwidth, local.defaults.iosxe.configuration.routing.ospf_processes.auto_cost_reference_bandwidth, null)
+        passive_interface                    = try([for p in ospf.passive_interface : tostring(p)], try([for p in local.defaults.iosxe.configuration.routing.ospf_processes.passive_interface : tostring(p)], []))
 
         neighbor = [for neighbor in try(ospf.neighbors, []) : {
           ip       = try(neighbor.ip, null)
@@ -70,6 +72,8 @@ locals {
         router_id                            = try(ospf.router_id, local.defaults.iosxe.configuration.routing.ospf_processes.router_id, null)
         shutdown                             = try(ospf.shutdown, local.defaults.iosxe.configuration.routing.ospf_processes.shutdown, null)
         passive_interface_default            = try(ospf.passive_interface_default, local.defaults.iosxe.configuration.routing.ospf_processes.passive_interface_default, null)
+        auto_cost_reference_bandwidth        = try(ospf.auto_cost_reference_bandwidth, local.defaults.iosxe.configuration.routing.ospf_processes.auto_cost_reference_bandwidth, null)
+        passive_interface                    = try([for p in ospf.passive_interface : tostring(p)], try([for p in local.defaults.iosxe.configuration.routing.ospf_processes.passive_interface : tostring(p)], []))
 
         neighbors = [for neighbor in try(ospf.neighbors, []) : {
           ip       = try(neighbor.ip, null)
@@ -122,6 +126,8 @@ resource "iosxe_ospf" "ospf" {
   default_information_originate        = each.value.default_information_originate
   default_information_originate_always = each.value.default_information_originate_always
   passive_interface_default            = each.value.passive_interface_default
+  auto_cost_reference_bandwidth        = each.value.auto_cost_reference_bandwidth
+  passive_interface                    = each.value.passive_interface
 
   neighbors         = each.value.neighbors
   networks          = each.value.networks
@@ -149,6 +155,8 @@ resource "iosxe_ospf_vrf" "ospf" {
   default_information_originate        = each.value.default_information_originate
   default_information_originate_always = each.value.default_information_originate_always
   passive_interface_default            = each.value.passive_interface_default
+  auto_cost_reference_bandwidth        = each.value.auto_cost_reference_bandwidth
+  passive_interface                    = each.value.passive_interface
 
   neighbor        = each.value.neighbor
   network         = each.value.network
