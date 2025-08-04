@@ -15,9 +15,9 @@ locals {
 
         receivers = [
           for r in try(sub.receivers, local.defaults.iosxe.configuration.mdt_subscriptions.receivers, []) : {
-            address  = r.address
-            port     = r.port
-            protocol = r.protocol
+            address  = try(r.address, local.defaults.iosxe.configuration.mdt_subscriptions.receivers.address, null)
+            port     = try(r.port, local.defaults.iosxe.configuration.mdt_subscriptions.receivers.port, null)
+            protocol = try(r.protocol, local.defaults.iosxe.configuration.mdt_subscriptions.receivers.protocol, null)
           }
         ]
       }
