@@ -31,12 +31,16 @@ locals {
         vlan_based_encapsulation             = try(instance.vlan_based.encapsulation, local.defaults.iosxe.configuration.evpn.instances.vlan_based.encapsulation, null)
         vlan_based_auto_route_target         = try(instance.vlan_based.auto_route_target, local.defaults.iosxe.configuration.evpn.instances.vlan_based.auto_route_target, null)
         vlan_based_rd                        = try(instance.vlan_based.rd, local.defaults.iosxe.configuration.evpn.instances.vlan_based.rd, null)
-        vlan_based_route_target_import       = try(instance.vlan_based.route_target_import, local.defaults.iosxe.configuration.evpn.instances.vlan_based.route_target_import, null)
-        vlan_based_route_target_export       = try(instance.vlan_based.route_target_export, local.defaults.iosxe.configuration.evpn.instances.vlan_based.route_target_export, null)
         vlan_based_ip_local_learning_disable = try(instance.vlan_based.ip_local_learning_disable, local.defaults.iosxe.configuration.evpn.instances.vlan_based.ip_local_learning_disable, null)
         vlan_based_ip_local_learning_enable  = try(instance.vlan_based.ip_local_learning_enable, local.defaults.iosxe.configuration.evpn.instances.vlan_based.ip_local_learning_enable, null)
         vlan_based_default_gateway_advertise = try(instance.vlan_based.default_gateway_advertise == true ? "enable" : "disable", local.defaults.iosxe.configuration.evpn.instances.vlan_based.default_gateway_advertise == true ? "enable" : "disable", null)
         vlan_based_re_originate_route_type5  = try(instance.vlan_based.re_originate_route_type5, local.defaults.iosxe.configuration.evpn.instances.vlan_based.re_originate_route_type5, null)
+        vlan_based_route_target_imports = [for rt in try(instance.vlan_based.route_target_imports, []) : {
+          route_target = try(rt, local.defaults.iosxe.configuration.evpn.instances.vlan_based.route_target_imports, null)
+        }]
+        vlan_based_route_target_exports = [for rt in try(instance.vlan_based.route_target_exports, []) : {
+          route_target = try(rt, local.defaults.iosxe.configuration.evpn.instances.vlan_based.route_target_exports, null)
+        }]
     }]
   ])
 }
@@ -53,11 +57,10 @@ resource "iosxe_evpn_instance" "evpn_instance" {
   vlan_based_encapsulation             = each.value.vlan_based_encapsulation
   vlan_based_auto_route_target         = each.value.vlan_based_auto_route_target
   vlan_based_rd                        = each.value.vlan_based_rd
-  vlan_based_route_target_import       = each.value.vlan_based_route_target_import
-  vlan_based_route_target_export       = each.value.vlan_based_route_target_export
   vlan_based_ip_local_learning_disable = each.value.vlan_based_ip_local_learning_disable
   vlan_based_ip_local_learning_enable  = each.value.vlan_based_ip_local_learning_enable
   vlan_based_default_gateway_advertise = each.value.vlan_based_default_gateway_advertise
   vlan_based_re_originate_route_type5  = each.value.vlan_based_re_originate_route_type5
-
+  vlan_based_route_target_imports      = each.value.vlan_based_route_target_imports
+  vlan_based_route_target_exports      = each.value.vlan_based_route_target_exports
 }
