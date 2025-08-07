@@ -63,6 +63,7 @@ module "iosxe" {
 
 | Name | Type |
 |------|------|
+| [cisco_iosxe_static_route_vrf.static_routes](https://registry.terraform.io/providers/hashicorp/cisco/latest/docs/resources/iosxe_static_route_vrf) | resource |
 | [iosxe_aaa.aaa](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/aaa) | resource |
 | [iosxe_aaa_accounting.aaa_accounting](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/aaa_accounting) | resource |
 | [iosxe_aaa_authentication.aaa_authentication](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/aaa_authentication) | resource |
