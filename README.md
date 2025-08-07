@@ -99,6 +99,7 @@ module "iosxe" {
 | [iosxe_crypto_ipsec_profile.crypto_ipsec_profile](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/crypto_ipsec_profile) | resource |
 | [iosxe_crypto_ipsec_transform_set.crypto_ipsec_transform_set](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/crypto_ipsec_transform_set) | resource |
 | [iosxe_cts.cts](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/cts) | resource |
+| [iosxe_device_sensor.device_sensor](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/device_sensor) | resource |
 | [iosxe_dhcp.dhcp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/dhcp) | resource |
 | [iosxe_dot1x.dot1x](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/dot1x) | resource |
 | [iosxe_errdisable.errdisable](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/errdisable) | resource |
