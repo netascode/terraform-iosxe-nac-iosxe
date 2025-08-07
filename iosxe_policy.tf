@@ -6,23 +6,23 @@ locals {
       for class_map in try(local.device_config[device.name].policy.class_maps, []) : {
         "${device.name}/${class_map.name}" = { 
         device                                         = device.name
-        name                                           = try(class_map.name, null)
-        type                                           = try(class_map.type, null)
-        subscriber                                     = try(class_map.subscriber, null)
-        prematch                                       = try(class_map.prematch, null)
-        match_authorization_status_authorized          = try(class_map.match_authorization_status_authorized, null)
-        match_result_type_aaa_timeout                  = try(class_map.match_result_type_aaa_timeout, null)
-        match_authorization_status_unauthorized        = try(class_map.match_authorization_status_unauthorized, null)
-        match_activated_service_templates              = try(class_map.match_activated_service_templates, null)
-        match_authorizing_method_priority_greater_than = try(class_map.match_authorizing_method_priority_greater_than, null)
-        match_method_dot1x                             = try(class_map.match_method_dot1x, null)
-        match_result_type_method_dot1x_authoritative   = try(class_map.match_result_type_method_dot1x_authoritative, null)
-        match_result_type_method_dot1x_agent_not_found = try(class_map.match_result_type_method_dot1x_agent_not_found, null)
-        match_result_type_method_dot1x_method_timeout  = try(class_map.match_result_type_method_dot1x_method_timeout, null)
-        match_method_mab                               = try(class_map.match_method_mab, null)
-        match_result_type_method_mab_authoritative     = try(class_map.match_result_type_method_mab_authoritative, null)
-        match_dscp                                     = try(class_map.match_dscp, null)
-        description                                    = try(class_map.description, null)
+        name                                           = try(class_map.name, local.defaults.iosxe.configuration.policy.class_maps.device)
+        type                                           = try(class_map.type,local.defaults.iosxe.configuration.policy.class_maps.type, null)
+        subscriber                                     = try(class_map.subscriber,local.defaults.iosxe.configuration.policy.class_maps.subscriber, null)
+        prematch                                       = try(class_map.prematch, local.defaults.iosxe.configuration.policy.class_maps.prematch)
+        match_authorization_status_authorized          = try(class_map.match_authorization_status_authorized,local.defaults.iosxe.configuration.policy.class_maps.match_authorization_status_authorized, null)
+        match_result_type_aaa_timeout                  = try(class_map.match_result_type_aaa_timeout, local.defaults.iosxe.configuration.policy.class_maps.match_result_type_aaa_timeout, null)
+        match_authorization_status_unauthorized        = try(class_map.match_authorization_status_unauthorized, local.defaults.iosxe.configuration.policy.class_maps.match_authorization_status_unauthorized, null)
+        match_activated_service_templates              = try(class_map.match_activated_service_templates, local.defaults.iosxe.configuration.policy.class_maps.match_activated_service_template, null)
+        match_authorizing_method_priority_greater_than = try(class_map.match_authorizing_method_priority_greater_than, local.defaults.iosxe.configuration.policy.class_maps.match_authorizing_method_priority_greater_than, null)
+        match_method_dot1x                             = try(class_map.match_method_dot1x, local.defaults.iosxe.configuration.policy.class_maps.match_method_dot1x, null)
+        match_result_type_method_dot1x_authoritative   = try(class_map.match_result_type_method_dot1x_authoritative, local.defaults.iosxe.configuration.policy.class_maps.match_result_type_method_dot1x_authoritative, null)
+        match_result_type_method_dot1x_agent_not_found = try(class_map.match_result_type_method_dot1x_agent_not_found, local.defaults.iosxe.configuration.policy.class_maps.match_result_type_method_dot1x_agent_not_found, null)
+        match_result_type_method_dot1x_method_timeout  = try(class_map.match_result_type_method_dot1x_method_timeout, local.defaults.iosxe.configuration.policy.class_maps.match_result_type_method_dot1x_method_timeout, null)
+        match_method_mab                               = try(class_map.match_method_mab, local.defaults.iosxe.configuration.policy.class_maps.match_method_mab, null)
+        match_result_type_method_mab_authoritative     = try(class_map.match_result_type_method_mab_authoritative, local.defaults.iosxe.configuration.policy.class_maps.match_result_type_method_mab_authoritative, null)
+        match_dscp                                     = try(class_map.match_dscp, local.defaults.iosxe.configuration.policy.class_maps.match_dscp, null)
+        description                                    = try(class_map.description, local.defaults.iosxe.configuration.policy.class_maps.description, null)
       }
       }
     ]
@@ -36,11 +36,11 @@ locals {
       for policy_map in try(local.device_config[device.name].policy.policy_maps, []) : {
         key         = format("%s/%s", device.name, policy_map.name)
         device      = device.name
-        name        = try(policy_map.name, null)
-        type        = try(policy_map.type, null)
-        subscriber  = try(policy_map.subscriber, null)
-        description = try(policy_map.description, null)
-        classes     = try(policy_map.classes, [])
+        name        = try(policy_map.name, local.defaults.iosxe.configuration.policy.policy_map.name.name)
+        type        = try(policy_map.type, local.defaults.iosxe.configuration.policy.policy_map.name.type, null)
+        subscriber  = try(policy_map.subscriber, local.defaults.iosxe.configuration.policy.policy_map.name.subscriber, null)
+        description = try(policy_map.description, local.defaults.iosxe.configuration.policy.policy_map.name.description, null)
+        classes     = try(policy_map.classes, local.defaults.iosxe.configuration.policy.policy_map.name.classes, [])
       }
     ]
   ])
