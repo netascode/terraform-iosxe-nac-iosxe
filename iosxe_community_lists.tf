@@ -6,8 +6,8 @@ locals {
         device = device.name
 
         name           = community_list.name
-        deny_entries   = try(community_list.deny_entries, local.defaults.iosxe.configuration.community_lists.standard.deny_entries, null)
-        permit_entries = try(community_list.permit_entries, local.defaults.iosxe.configuration.community_lists.standard.permit_entries, null)
+        deny_entries   = [for e in try(community_list.entries, []) : try(e.communities, local.defaults.iosxe.configuration.community_lists.standard.entries.communities, null) if e.action == "deny"]
+        permit_entries = [for e in try(community_list.entries, []) : try(e.communities, local.defaults.iosxe.configuration.community_lists.standard.entries.communities, null) if e.action == "permit"]
       }
     ]
   ])

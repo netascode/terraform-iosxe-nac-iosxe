@@ -3,7 +3,7 @@ resource "iosxe_line" "line" {
   device   = each.value.name
 
   console = [for c in try(local.device_config[each.value.name].line.consoles, []) : {
-    first                = c.first
+    first                = "0"
     exec_timeout_minutes = try(c.exec_timeout_minutes, local.defaults.iosxe.configuration.line.consoles.exec_timeout_minutes, null)
     exec_timeout_seconds = try(c.exec_timeout_seconds, local.defaults.iosxe.configuration.line.consoles.exec_timeout_seconds, null)
     login_authentication = try(c.login_authentication, local.defaults.iosxe.configuration.line.consoles.login_authentication, null)
@@ -16,7 +16,7 @@ resource "iosxe_line" "line" {
   }]
 
   vty = [for v in try(local.device_config[each.value.name].line.vtys, []) : {
-    first = v.first
+    first = v.number_from
     access_classes = [for a in try(v.access_classes, []) : {
       access_list = a.access_list
       direction   = a.direction
@@ -30,7 +30,7 @@ resource "iosxe_line" "line" {
     password_level               = try(v.password_level, local.defaults.iosxe.configuration.line.vtys.password_level, null)
     password_type                = try(v.password_type, local.defaults.iosxe.configuration.line.vtys.password_type, null)
     password                     = try(v.password, local.defaults.iosxe.configuration.line.vtys.password, null)
-    last                         = try(v.last, local.defaults.iosxe.configuration.line.vtys.last, null)
+    last                         = try(v.number_to, local.defaults.iosxe.configuration.line.vtys.number_to, null)
     login_authentication         = try(v.login_authentication, local.defaults.iosxe.configuration.line.vtys.login_authentication, null)
     transport_preferred_protocol = try(v.transport_preferred_protocol, local.defaults.iosxe.configuration.line.vtys.transport_preferred_protocol, null)
     transport_input_all          = try(v.transport_input_all, local.defaults.iosxe.configuration.line.vtys.transport_input_all, null)
