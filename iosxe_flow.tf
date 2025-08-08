@@ -5,12 +5,18 @@ locals {
         key    = format("%s/%s", device.name, exporter.name)
         device = device.name
 
-        name                  = exporter.name
-        description           = try(exporter.description, local.defaults.iosxe.device_config.flow.exporters.description, null)
-        destination_ip        = try(exporter.destination_ip, local.defaults.iosxe.device_config.flow.exporters.destination_ip, null)
-        source_loopback       = try(exporter.source_loopback, local.defaults.iosxe.device_config.flow.exporters.source_loopback, null)
-        transport_udp         = try(exporter.transport_udp, local.defaults.iosxe.device_config.flow.exporters.transport_udp, null)
-        template_data_timeout = try(exporter.template_data_timeout, local.defaults.iosexe.device_config.flow.exporters.template_data_timeout, null)
+        name                                  = exporter.name
+        description                           = try(exporter.description, local.defaults.iosxe.device_config.flow.exporters.description, null)
+        destination_ip                        = try(exporter.destination_ip, local.defaults.iosxe.device_config.flow.exporters.destination_ip, null)
+        export_protocol                       = try(exporter.export_protocol, local.defaults.iosxe.device_config.flow.exporters.export_protocol, null)
+        option_application_attributes_timeout = try(exporter.option_application_attributes_timeout, local.defaults.iosxe.device_config.flow.exporters.option_application_attributes_timeout, null)
+        option_application_table_timeout      = try(exporter.option_application_table_timeout, local.defaults.iosxe.device_config.flow.exporters.option_application_table_timeout, null)
+        option_interface_table_timeout        = try(exporter.option_interface_table_timeout, local.defaults.iosxe.device_config.flow.exporters.option_interface_table_timeout, null)
+        option_sampler_table                  = try(exporter.option_sampler_table, local.defaults.iosxe.device_config.flow.exporters.option_sampler_table, null)
+        option_vrf_table_timeout              = try(exporter.option_vrf_table_timeout, local.defaults.iosxe.device_config.flow.exporters.option_vrf_table_timeout, null)
+        source_loopback                       = try(exporter.source_loopback, local.defaults.iosxe.device_config.flow.exporters.source_loopback, null)
+        transport_udp                         = try(exporter.transport_udp, local.defaults.iosxe.device_config.flow.exporters.transport_udp, null)
+        template_data_timeout                 = try(exporter.template_data_timeout, local.defaults.iosxe.device_config.flow.exporters.template_data_timeout, null)
       }
     ]
   ])
@@ -25,7 +31,7 @@ locals {
 
         name        = monitor.name
         description = try(monitor.description, local.defaults.iosxe.device_config.flow.monitors.description, null)
-        exporters = [for exporter in try(local.device_config.flow.monitors.exporters, []) : {
+        exporters = [for exporter in try(monitor.exporters, local.defaults.iosxe.device_config.flow.monitors.exporters, []) : {
           name = exporter
         }]
         cache_timeout_active = try(monitor.cache_timeout_active, local.defaults.iosxe.device_config.flow.monitors.cache_timeout_active, null)
@@ -67,12 +73,18 @@ resource "iosxe_flow_exporter" "flow_exporter" {
   for_each = { for e in local.flow_exporter : e.key => e }
   device   = each.value.device
 
-  name                  = each.value.name
-  description           = each.value.description
-  destination_ip        = each.value.destination_ip
-  source_loopback       = each.value.source_loopback
-  transport_udp         = each.value.transport_udp
-  template_data_timeout = each.value.template_data_timeout
+  name                                  = each.value.name
+  description                           = each.value.description
+  destination_ip                        = each.value.destination_ip
+  export_protocol                       = each.value.export_protocol
+  option_application_attributes_timeout = each.value.option_application_attributes_timeout
+  option_application_table_timeout      = each.value.option_application_table_timeout
+  option_interface_table_timeout        = each.value.option_interface_table_timeout
+  option_sampler_table                  = each.value.option_sampler_table
+  option_vrf_table_timeout              = each.value.option_vrf_table_timeout
+  source_loopback                       = each.value.source_loopback
+  transport_udp                         = each.value.transport_udp
+  template_data_timeout                 = each.value.template_data_timeout
 }
 
 
