@@ -8,7 +8,7 @@ resource "iosxe_arp" "arp" {
 
   inspection_filters = [for e in try(local.device_config[each.value.name].arp.inspection_filters, []) : {
     name = try(e.name, local.defaults.iosxe.configuration.arp.inspection_filters.name, null)
-    vlan = [for v in try(e.vlans, []) : {
+    vlans = [for v in try(e.vlans, []) : {
       vlan_range = try(v.vlan_range, local.defaults.iosxe.configuration.arp.inspection_filters.vlans.vlan_range, null)
       static     = try(v.static, local.defaults.iosxe.configuration.arp.inspection_filters.vlans.static, null)
     }]
