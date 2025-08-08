@@ -6,10 +6,10 @@ locals {
       for class_map in try(local.device_config[device.name].policy.class_maps, []) : {
         "${device.name}/${class_map.name}" = { 
         device                                         = device.name
-        name                                           = try(class_map.name, local.defaults.iosxe.configuration.policy.class_maps.device)
+        name                                           = class_map.name
         type                                           = try(class_map.type,local.defaults.iosxe.configuration.policy.class_maps.type, null)
         subscriber                                     = try(class_map.subscriber,local.defaults.iosxe.configuration.policy.class_maps.subscriber, null)
-        prematch                                       = try(class_map.prematch, local.defaults.iosxe.configuration.policy.class_maps.prematch)
+        prematch                                       = class_map.prematch
         match_authorization_status_authorized          = try(class_map.match_authorization_status_authorized,local.defaults.iosxe.configuration.policy.class_maps.match_authorization_status_authorized, null)
         match_result_type_aaa_timeout                  = try(class_map.match_result_type_aaa_timeout, local.defaults.iosxe.configuration.policy.class_maps.match_result_type_aaa_timeout, null)
         match_authorization_status_unauthorized        = try(class_map.match_authorization_status_unauthorized, local.defaults.iosxe.configuration.policy.class_maps.match_authorization_status_unauthorized, null)
@@ -36,11 +36,35 @@ locals {
       for policy_map in try(local.device_config[device.name].policy.policy_maps, []) : {
         key         = format("%s/%s", device.name, policy_map.name)
         device      = device.name
-        name        = try(policy_map.name, local.defaults.iosxe.configuration.policy.policy_map.name.name)
-        type        = try(policy_map.type, local.defaults.iosxe.configuration.policy.policy_map.name.type, null)
-        subscriber  = try(policy_map.subscriber, local.defaults.iosxe.configuration.policy.policy_map.name.subscriber, null)
-        description = try(policy_map.description, local.defaults.iosxe.configuration.policy.policy_map.name.description, null)
-        classes     = try(policy_map.classes, local.defaults.iosxe.configuration.policy.policy_map.name.classes, [])
+        name        = policy_map.name
+        type        = try(policy_map.type, local.defaults.iosxe.configuration.policy.policy_maps.type, null)
+        subscriber  = try(policy_map.subscriber, local.defaults.iosxe.configuration.policy.policy_maps.subscriber, null)
+        description = try(policy_map.description, local.defaults.iosxe.configuration.policy.policy_maps.description, null)
+        classes = [
+          for class in try(policy_map.classes, local.defaults.iosxe.configuration.policy.policy_maps.classes, []) : {
+            name    = class.name
+            actions = [
+              for action in try(class.actions,local.defaults.iosxe.configuration.policy.policy_maps.classes.action, []) : {
+                type                         = try(action.type, local.defaults.iosxe.configuration.policy.policy_maps.classes.action.type, null)
+                bandwidth_bits               = try(action.bandwidth_bits, null)
+                bandwidth_percent            = try(action.bandwidth_percent, null)
+                bandwidth_remaining_option   = try(action.bandwidth_remaining_option, null)
+                bandwidth_remaining_percent  = try(action.bandwidth_remaining_percent, null)
+                bandwidth_remaining_ratio    = try(action.bandwidth_remaining_ratio, null)
+                priority_burst               = try(action.priority_burst, null)
+                priority_level               = try(action.priority_level, null)
+                queue_limit                  = try(action.queue_limit, null)
+                queue_limit_type             = try(action.queue_limit_type, null)
+                shape_average_bit_rate       = try(action.shape_average_bit_rate, null)
+                shape_average_bits_per_interval_excess   = try(action.shape_average_bits_per_interval_excess, null)
+                shape_average_bits_per_interval_sustained = try(action.shape_average_bits_per_interval_sustained, null)
+                shape_average_burst_size_sustained       = try(action.shape_average_burst_size_sustained, null)
+                shape_average_ms             = try(action.shape_average_ms, null)
+                shape_average_percent        = try(action.shape_average_percent, null)
+              }
+            ]
+          }
+        ]
       }
     ]
   ])
@@ -76,32 +100,6 @@ resource "iosxe_policy_map" "policy_map" {
   type        = each.value.type
   subscriber  = each.value.subscriber
   description = each.value.description
-
-  classes = [
-    for class in each.value.classes : {
-      name    = class.name
-      actions = [
-        for action in try(class.actions, []) : {
-          type                         = try(action.type, null)
-          bandwidth_bits               = try(action.bandwidth_bits, null)
-          bandwidth_percent            = try(action.bandwidth_percent, null)
-          bandwidth_remaining_option   = try(action.bandwidth_remaining_option, null)
-          bandwidth_remaining_percent  = try(action.bandwidth_remaining_percent, null)
-          bandwidth_remaining_ratio    = try(action.bandwidth_remaining_ratio, null)
-          priority_burst               = try(action.priority_burst, null)
-          priority_level               = try(action.priority_level, null)
-          queue_limit                  = try(action.queue_limit, null)
-          queue_limit_type             = try(action.queue_limit_type, null)
-          shape_average_bit_rate       = try(action.shape_average_bit_rate, null)
-          shape_average_bits_per_interval_excess   = try(action.shape_average_bits_per_interval_excess, null)
-          shape_average_bits_per_interval_sustained = try(action.shape_average_bits_per_interval_sustained, null)
-          shape_average_burst_size_sustained       = try(action.shape_average_burst_size_sustained, null)
-          shape_average_ms             = try(action.shape_average_ms, null)
-          shape_average_percent        = try(action.shape_average_percent, null)
-        }
-      ]
-    }
-  ]
-
-  depends_on = [iosxe_class_map.class_map]
+  classes     = each.value.classes
+  depends_on  = [iosxe_class_map.class_map]
 }  
