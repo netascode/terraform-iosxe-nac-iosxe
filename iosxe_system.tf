@@ -49,3 +49,27 @@ resource "iosxe_system" "system" {
   ]
 }
 
+resource "iosxe_username" "username" {
+  for_each = merge([
+    for device in local.devices : {
+      for user in try(local.device_config[device.name].username, []) :
+      "${device.name}_${user.name}" => {
+        device_name         = device.name
+        name                = user.name
+        privilege           = user.privilege
+        description         = user.description
+        password_encryption = user.password_encryption
+        password            = user.password
+      }
+    }
+  ]...)
+
+  device              = each.value.device_name
+  name                = each.value.name
+  privilege           = each.value.privilege
+  description         = each.value.description
+  password_encryption = each.value.password_encryption
+  password            = each.value.password
+}
+
+
