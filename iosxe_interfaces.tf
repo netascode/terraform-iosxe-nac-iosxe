@@ -768,8 +768,6 @@ resource "iosxe_interface_pim" "vlan_pim" {
     iosxe_interface_vlan.interface_vlan
   ]
 }
-<<<<<<< HEAD:iosxe_interface.tf
-=======
 
 locals {
   nves = flatten([
@@ -815,4 +813,3 @@ resource "iosxe_interface_nve" "nves" {
   vnis     = each.value.vnis
   vni_vrfs = each.value.vni_vrfs
 }
->>>>>>> main:iosxe_interfaces.tf
