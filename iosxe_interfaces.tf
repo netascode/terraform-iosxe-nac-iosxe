@@ -17,7 +17,7 @@ locals {
         ip_arp_inspection_trust        = try(int.ipv4.arp_inspection_trust, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv4.arp_inspection_trust, null)
         ip_arp_inspection_limit_rate   = try(int.ipv4.arp_inspection_limit_rate, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv4.arp_inspection_limit_rate, null)
         ip_dhcp_snooping_trust         = try(int.ipv4.dhcp_snooping_trust, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv4.dhcp_snooping_trust, null)
-        ip_dhcp_relay_source_interface = try(int.ipv4.dhcp_relay_source_interface, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv4.dhcp_relay_source_interface, null)
+        ip_dhcp_relay_source_interface = try("${try(int.ipv4.dhcp_relay_source_interface_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv4.dhcp_relay_source_interface_type)}${try(int.ipv4.dhcp_relay_source_interface_id, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv4.dhcp_relay_source_interface_id)}", null)
         helper_addresses = [for ha in try(int.ipv4.helper_addresses, []) : {
           address = ha.address
           global  = try(ha.global, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv4.helper_addresses.global, null)
@@ -571,7 +571,7 @@ locals {
         ipv4_address                   = try(int.ipv4.address, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.address, null)
         ipv4_address_mask              = try(int.ipv4.address_mask, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.address_mask, null)
         ip_proxy_arp                   = try(int.ipv4.proxy_arp, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.proxy_arp, null)
-        ip_dhcp_relay_source_interface = try(int.ipv4.dhcp_relay_source_interface, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.dhcp_relay_source_interface, null)
+        ip_dhcp_relay_source_interface = try("${try(int.ipv4.dhcp_relay_source_interface_type, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.dhcp_relay_source_interface_type)}${try(int.ipv4.dhcp_relay_source_interface_id, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.dhcp_relay_source_interface_id)}", null)
         helper_addresses = [for ha in try(int.ipv4.helper_addresses, []) : {
           address = ha.address
           global  = try(ha.global, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.helper_addresses.global, null)
@@ -768,3 +768,51 @@ resource "iosxe_interface_pim" "vlan_pim" {
     iosxe_interface_vlan.interface_vlan
   ]
 }
+<<<<<<< HEAD:iosxe_interface.tf
+=======
+
+locals {
+  nves = flatten([
+    for device in local.devices : [
+      for nve in try(local.device_config[device.name].interfaces.nves, []) : {
+        key    = format("%s/%s", device.name, nve.id)
+        device = device.name
+
+        id                             = nve.id
+        description                    = try(nve.description, local.defaults.iosxe.configuration.interfaces.nves.description, null)
+        shutdown                       = try(nve.shutdown, local.defaults.iosxe.configuration.interfaces.nves.name.shutdown, null)
+        host_reachability_protocol_bgp = try(nve.host_reachability_protocol_bgp, local.defaults.iosxe.configuration.interfaces.nves.name.host_reachability_protocol_bgp, null)
+        source_interface_loopback      = try(nve.source_interface_type, local.defaults.iosxe.configuration.interfaces.nves.name.source_interface_type, null) == "Loopback" ? try(nve.source_interface_id, local.defaults.iosxe.configuration.interfaces.nves.name.source_interface_id, null) : null
+
+        # Lists
+        vni_vrfs = [for vni_vrf in try(nve.vni_vrfs, []) : {
+          vni_range = "${vni_vrf.vni_from}-${vni_vrf.vni_to}"
+          vrf       = try(vni_vrf.vrf, local.defaults.iosxe.configuration.interfaces.nves.vni_vrfs.vrf, null)
+          }
+        ]
+
+        vnis = [for vni in try(nve.vnis, []) : {
+          vni_range            = "${vni.vni_from}-${vni.vni_to}"
+          ipv4_multicast_group = try(vni.ipv4_multicast_group, local.defaults.iosxe.configuration.interfaces.nves.vnis.ipv4_multicast_group, null)
+          ingress_replication  = try(vni.ingress_replication, local.defaults.iosxe.configuration.interfaces.nves.vnis.ingress_replication, null)
+          }
+        ]
+    }]
+  ])
+}
+
+resource "iosxe_interface_nve" "nves" {
+  for_each = { for e in local.nves : e.key => e }
+  device   = each.value.device
+
+  name                           = each.value.id
+  description                    = each.value.description
+  shutdown                       = each.value.shutdown
+  host_reachability_protocol_bgp = each.value.host_reachability_protocol_bgp
+  source_interface_loopback      = each.value.source_interface_loopback
+
+  # Lists
+  vnis     = each.value.vnis
+  vni_vrfs = each.value.vni_vrfs
+}
+>>>>>>> main:iosxe_interfaces.tf

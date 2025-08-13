@@ -6,5 +6,5 @@ output "default_values" {
 
 output "model" {
   description = "Full devices model."
-  value       = local.iosxe_devices_interfaces
+  value       = local.iosxe_devices
 }
