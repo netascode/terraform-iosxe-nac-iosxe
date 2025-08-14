@@ -134,6 +134,8 @@ module "iosxe" {
 | [iosxe_msdp.msdp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.6.1/docs/resources/msdp) | resource |
 | [iosxe_msdp_vrf.msdp_vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.6.1/docs/resources/msdp_vrf) | resource |
 | [iosxe_ntp.ntp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.6.1/docs/resources/ntp) | resource |
+| [iosxe_ospf.ospf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.6.1/docs/resources/ospf) | resource |
+| [iosxe_ospf_vrf.ospf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.6.1/docs/resources/ospf_vrf) | resource |
 | [iosxe_pim.pim](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.6.1/docs/resources/pim) | resource |
 | [iosxe_prefix_list.prefix_list](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.6.1/docs/resources/prefix_list) | resource |
 | [iosxe_radius.radius](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.6.1/docs/resources/radius) | resource |
@@ -155,6 +157,7 @@ module "iosxe" {
 | [iosxe_vlan_configuration.vlan_vn_config](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.6.1/docs/resources/vlan_configuration) | resource |
 | [iosxe_vlan_filter.vlan_filter](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.6.1/docs/resources/vlan_filter) | resource |
 | [iosxe_vlan_group.vlan_group](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.6.1/docs/resources/vlan_group) | resource |
+| [iosxe_vrf.vrfs](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.6.1/docs/resources/vrf) | resource |
 | [iosxe_vtp.vtp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.6.1/docs/resources/vtp) | resource |
 ## Modules
 
