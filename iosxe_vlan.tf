@@ -69,7 +69,7 @@ locals {
         name               = try(amap.name, local.defaults.iosxe.configuration.vlan.access_maps.name, null)
         sequence           = try(amap.sequence, local.defaults.iosxe.configuration.vlan.access_maps.sequence, null)
         action             = try(amap.action, local.defaults.iosxe.configuration.vlan.access_maps.action, null)
-        match_ip_address   = try(amap.match_ip_addresses, local.defaults.iosxe.configuration.vlan.access_maps.match_ip_addresses, null)
+        match_ip_address   = try(amap.match_ipv4_addresses, local.defaults.iosxe.configuration.vlan.access_maps.match_ipv4_addresses, null)
         match_ipv6_address = try(amap.match_ipv6_addresses, local.defaults.iosxe.configuration.vlan.access_maps.match_ipv6_addresses, null)
       }
     ]
@@ -93,7 +93,7 @@ locals {
       for filter in try(local.device_config[device.name].vlan.filters, []) : {
         key        = format("%s/%s", device.name, filter.word)
         device     = device.name
-        word       = try(filter.word, local.defaults.iosxe.configuration.vlan.filters.word, null)
+        word       = try(filter.name, local.defaults.iosxe.configuration.vlan.filters.name, null)
         vlan_lists = try(filter.vlan_lists, local.defaults.iosxe.configuration.vlan.filters.vlan_lists, null)
       }
     ]

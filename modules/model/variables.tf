@@ -16,6 +16,18 @@ variable "model" {
   default     = {}
 }
 
+variable "managed_device_groups" {
+  description = "List of device group names to be managed. By default all device groups will be managed."
+  type        = list(string)
+  default     = []
+}
+
+variable "managed_devices" {
+  description = "List of device names to be managed. By default all devices will be managed."
+  type        = list(string)
+  default     = []
+}
+
 variable "write_default_values_file" {
   description = "Write all default values to a YAML file. Value is a path pointing to the file to be created."
   type        = string

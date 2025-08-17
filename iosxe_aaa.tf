@@ -28,7 +28,7 @@ resource "iosxe_aaa" "aaa" {
   group_server_tacacsplus = [for e in try(local.device_config[each.value.name].aaa.tacacs_groups, []) : {
     name                                                    = try(e.name, local.defaults.iosxe.configuration.aaa.tacacs_groups.name, null)
     ip_tacacs_source_interface_loopback                     = e.source_interface_type == "Loopback" ? e.source_interface_id : try(local.defaults.iosxe.configuration.aaa.tacacs_groups.ip_tacacs_source_interface_loopback, null)
-    ip_radius_source_interface_vlan                         = e.source_interface_type == "Vlan" ? e.source_interface_id : try(local.defaults.iosxe.configuration.aaa.tacacs_groups.ip_radius_source_interface_vlan, null)
+    ip_tacacs_source_interface_vlan                         = e.source_interface_type == "Vlan" ? e.source_interface_id : try(local.defaults.iosxe.configuration.aaa.tacacs_groups.ip_tacacs_source_interface_vlan, null)
     ip_tacacs_source_interface_gigabit_ethernet             = e.source_interface_type == "GigabitEthernet" ? e.source_interface_id : try(local.defaults.iosxe.configuration.aaa.tacacs_groups.ip_tacacs_source_interface_gigabit_ethernet, null)
     ip_tacacs_source_interface_two_gigabit_ethernet         = e.source_interface_type == "TwoGigabitEthernet" ? e.source_interface_id : try(local.defaults.iosxe.configuration.aaa.tacacs_groups.ip_tacacs_source_interface_two_gigabit_ethernet, null)
     ip_tacacs_source_interface_five_gigabit_ethernet        = e.source_interface_type == "FiveGigabitEthernet" ? e.source_interface_id : try(local.defaults.iosxe.configuration.aaa.tacacs_groups.ip_tacacs_source_interface_five_gigabit_ethernet, null)
@@ -253,7 +253,7 @@ locals {
         timeout      = try(server.timeout, local.defaults.iosxe.configuration.aaa.tacacs_servers.timeout, null)
         encryption   = try(server.encryption, local.defaults.iosxe.configuration.aaa.tacacs_servers.encryption, null)
         key          = try(server.key, local.defaults.iosxe.configuration.aaa.tacacs_servers.key, null)
-        tag          = format("%s/%s", device.name, try(server.name, local.defaults.iosxe.configuration.aaa.tacacas_servers.name, null))
+        tag          = format("%s/%s", device.name, try(server.name, local.defaults.iosxe.configuration.aaa.tacacs_servers.name, null))
       }
     ]
   ])
@@ -269,4 +269,36 @@ resource "iosxe_tacacs_server" "tacacs_server" {
   timeout      = each.value.timeout
   encryption   = each.value.encryption
   key          = each.value.key
+}
+
+locals {
+  usernames = flatten([
+    for device in local.devices : [
+      for username in try(local.device_config[device.name].aaa.usernames, []) : {
+        device_name         = device.name
+        name                = try(username.name, null)
+        privilege           = try(username.privilege, local.defaults.iosxe.configuration.aaa.usernames.privilege, null)
+        description         = try(username.description, local.defaults.iosxe.configuration.aaa.usernames.description, null)
+        password_encryption = try(username.password_encryption, local.defaults.iosxe.configuration.aaa.usernames.password_encryption, null)
+        password            = try(username.password, local.defaults.iosxe.configuration.aaa.usernames.password, null)
+        secret_encryption   = try(username.secret_encryption, local.defaults.iosxe.configuration.aaa.usernames.secret_encryption, null)
+        secret              = try(username.secret, local.defaults.iosxe.configuration.aaa.usernames.secret, null)
+        tag                 = format("%s/%s", device.name, try(username.name, null))
+      }
+    ]
+  ])
+}
+
+resource "iosxe_username" "username" {
+  for_each = {
+    for username in local.usernames : username.tag => username
+  }
+  device              = each.value.device_name
+  name                = each.value.name
+  privilege           = each.value.privilege
+  description         = each.value.description
+  password_encryption = each.value.password_encryption
+  password            = each.value.password
+  secret_encryption   = each.value.secret_encryption
+  secret              = each.value.secret
 }

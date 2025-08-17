@@ -53,8 +53,8 @@ locals {
           source_port_equal             = try(e.source.port_type, local.defaults.iosxe.configuration.access_lists.extended.entries.source.port_type, null) == "equal" ? try(e.source.port, null) : null
           source_port_greater_than      = try(e.source.port_type, local.defaults.iosxe.configuration.access_lists.extended.entries.source.port_type, null) == "greater_than" ? try(e.source.port, null) : null
           source_port_lesser_than       = try(e.source.port_type, local.defaults.iosxe.configuration.access_lists.extended.entries.source.port_type, null) == "lesser_than" ? try(e.source.port, null) : null
-          source_port_range_from        = try(e.source.port_type, local.defaults.iosxe.configuration.access_lists.extended.entries.source.port_type, null) == "range" ? try(e.source.port_from, null) : null
-          source_port_range_to          = try(e.source.port_type, local.defaults.iosxe.configuration.access_lists.extended.entries.source.port_type, null) == "range" ? try(e.source.port_to, null) : null
+          source_port_range_from        = try(e.source.port_type, local.defaults.iosxe.configuration.access_lists.extended.entries.source.port_type, null) == "range" ? try(e.source.port_range_from, null) : null
+          source_port_range_to          = try(e.source.port_type, local.defaults.iosxe.configuration.access_lists.extended.entries.source.port_type, null) == "range" ? try(e.source.port_range_to, null) : null
           destination_prefix            = try(e.destination.prefix, local.defaults.iosxe.configuration.access_lists.extended.entries.destination.prefix, null)
           destination_prefix_mask       = try(e.destination.prefix_mask, local.defaults.iosxe.configuration.access_lists.extended.entries.destination.prefix_mask, null)
           destination_any               = try(e.destination.any, local.defaults.iosxe.configuration.access_lists.extended.entries.destination.any, null)
@@ -63,8 +63,8 @@ locals {
           destination_port_equal        = try(e.destination.port_type, local.defaults.iosxe.configuration.access_lists.extended.entries.destination.port_type, null) == "equal" ? try(e.destination.port, null) : null
           destination_port_greater_than = try(e.destination.port_type, local.defaults.iosxe.configuration.access_lists.extended.entries.destination.port_type, null) == "greater_than" ? try(e.destination.port, null) : null
           destination_port_lesser_than  = try(e.destination.port_type, local.defaults.iosxe.configuration.access_lists.extended.entries.destination.port_type, null) == "lesser_than" ? try(e.destination.port, null) : null
-          destination_port_range_from   = try(e.destination.port_type, local.defaults.iosxe.configuration.access_lists.extended.entries.destination.port_type, null) == "range" ? try(e.destination.port_from, null) : null
-          destination_port_range_to     = try(e.destination.port_type, local.defaults.iosxe.configuration.access_lists.extended.entries.destination.port_type, null) == "range" ? try(e.destination.port_to, null) : null
+          destination_port_range_from   = try(e.destination.port_type, local.defaults.iosxe.configuration.access_lists.extended.entries.destination.port_type, null) == "range" ? try(e.destination.port_range_from, null) : null
+          destination_port_range_to     = try(e.destination.port_type, local.defaults.iosxe.configuration.access_lists.extended.entries.destination.port_type, null) == "range" ? try(e.destination.port_range_to, null) : null
           ack                           = try(e.ack, local.defaults.iosxe.configuration.access_lists.extended.entries.ack, null)
           fin                           = try(e.fin, local.defaults.iosxe.configuration.access_lists.extended.entries.fin, null)
           psh                           = try(e.psh, local.defaults.iosxe.configuration.access_lists.extended.entries.psh, null)
@@ -96,9 +96,9 @@ locals {
   as_path_access_lists = flatten([
     for device in local.devices : [
       for acl in try(local.device_config[device.name].access_lists.as_path, []) : {
-        key    = format("%s/%s", device.name, acl.name)
+        key    = format("%s/%s", device.name, acl.number)
         device = device.name
-        name   = try(acl.name, null)
+        name   = try(acl.number, null)
         entries = [for e in try(acl.entries, []) : {
           action = try(e.action, local.defaults.iosxe.configuration.access_lists.as_path.entries.action, null)
           regex  = try(e.regex, local.defaults.iosxe.configuration.access_lists.as_path.entries.regex, null)

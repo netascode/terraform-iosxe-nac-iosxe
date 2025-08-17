@@ -20,10 +20,10 @@ locals {
         description                               = try(neighbor.description, local.defaults.iosxe.configuration.routing.bgp.neighbors.description, null)
         shutdown                                  = try(neighbor.shutdown, local.defaults.iosxe.configuration.routing.bgp.neighbors.shutdown, null)
         cluster_id                                = try(neighbor.cluster_id, local.defaults.iosxe.configuration.routing.bgp.neighbors.cluster_id, null)
-        version                                   = try(neighbor.version, local.defaults.iosxe.configuration.routing.bgp.neighbors.version, null)
         disable_connected_check                   = try(neighbor.disable_connected_check, local.defaults.iosxe.configuration.routing.bgp.neighbors.disable_connected_check, null)
         fall_over_default_enable                  = try(neighbor.fall_over_default_enable, local.defaults.iosxe.configuration.routing.bgp.neighbors.fall_over_default_enable, null)
         fall_over_default_route_map               = try(neighbor.fall_over_default_route_map, local.defaults.iosxe.configuration.routing.bgp.neighbors.fall_over_default_route_map, null)
+        fall_over_bfd                             = try(neighbor.fall_over_bfd, local.defaults.iosxe.configuration.routing.bgp.neighbors.fall_over_bfd, null)
         fall_over_bfd_multi_hop                   = try(neighbor.fall_over_bfd_multi_hop, local.defaults.iosxe.configuration.routing.bgp.neighbors.fall_over_bfd_multi_hop, null)
         fall_over_bfd_single_hop                  = try(neighbor.fall_over_bfd_single_hop, local.defaults.iosxe.configuration.routing.bgp.neighbors.fall_over_bfd_single_hop, null)
         fall_over_bfd_check_control_plane_failure = try(neighbor.fall_over_bfd_check_control_plane_failure, local.defaults.iosxe.configuration.routing.bgp.neighbors.fall_over_bfd_check_control_plane_failure, null)
@@ -59,10 +59,10 @@ resource "iosxe_bgp_neighbor" "bgp_neighbor" {
   description                               = each.value.description
   shutdown                                  = each.value.shutdown
   cluster_id                                = each.value.cluster_id
-  version                                   = each.value.version
   disable_connected_check                   = each.value.disable_connected_check
   fall_over_default_enable                  = each.value.fall_over_default_enable
   fall_over_default_route_map               = each.value.fall_over_default_route_map
+  fall_over_bfd                             = each.value.fall_over_bfd
   fall_over_bfd_multi_hop                   = each.value.fall_over_bfd_multi_hop
   fall_over_bfd_single_hop                  = each.value.fall_over_bfd_single_hop
   fall_over_bfd_check_control_plane_failure = each.value.fall_over_bfd_check_control_plane_failure
