@@ -2,10 +2,16 @@ resource "iosxe_vtp" "vtp" {
   for_each = { for device in local.devices : device.name => device if try(local.device_config[device.name].vtp, null) != null || try(local.defaults.iosxe.configuration.vtp, null) != null }
   device   = each.value.name
 
-  domain                   = try(local.device_config[each.value.name].vtp.domain, local.defaults.iosxe.configuration.vtp.domain, null)
-  file                     = try(local.device_config[each.value.name].vtp.file, local.defaults.iosxe.configuration.vtp.file, null)
-  interface                = try(local.device_config[each.value.name].vtp.interface, local.defaults.iosxe.configuration.vtp.interface, null)
-  interface_only           = try(local.device_config[each.value.name].vtp.interface_only, local.defaults.iosxe.configuration.vtp.interface_only, null)
+  domain         = try(local.device_config[each.value.name].vtp.domain, local.defaults.iosxe.configuration.vtp.domain, null)
+  file           = try(local.device_config[each.value.name].vtp.file, local.defaults.iosxe.configuration.vtp.file, null)
+  interface      = try("${try(local.device_config[each.value.name].vtp.interface_type, local.defaults.iosxe.configuration.vtp.interface_type, null)}${try(local.device_config[each.value.name].vtp.interface_id, local.defaults.iosxe.configuration.vtp.interface_id, null)}", null)
+  interface_only = try(local.device_config[each.value.name].vtp.interface_only, local.defaults.iosxe.configuration.vtp.interface_only, null)
+
+  # Simple mode attributes (when no mode_instance is specified)
+  mode_client              = try(local.device_config[each.value.name].vtp.mode == "client" && local.device_config[each.value.name].vtp.mode_instance == null, local.defaults.iosxe.configuration.vtp.mode == "client" && local.defaults.iosxe.configuration.vtp.mode_instance == null, null)
+  mode_off                 = try(local.device_config[each.value.name].vtp.mode == "off" && local.device_config[each.value.name].vtp.mode_instance == null, local.defaults.iosxe.configuration.vtp.mode == "off" && local.defaults.iosxe.configuration.vtp.mode_instance == null, null)
+  mode_server              = try(local.device_config[each.value.name].vtp.mode == "server" && local.device_config[each.value.name].vtp.mode_instance == null, local.defaults.iosxe.configuration.vtp.mode == "server" && local.defaults.iosxe.configuration.vtp.mode_instance == null, null)
+  mode_transparent         = try(local.device_config[each.value.name].vtp.mode == "transparent" && local.device_config[each.value.name].vtp.mode_instance == null, local.defaults.iosxe.configuration.vtp.mode == "transparent" && local.defaults.iosxe.configuration.vtp.mode_instance == null, null)
   mode_client_mst          = try(local.device_config[each.value.name].vtp.mode == "client" && local.device_config[each.value.name].vtp.mode_instance == "mst", local.defaults.iosxe.configuration.vtp.mode == "client" && local.defaults.iosxe.configuration.vtp.mode_instance == "mst", null)
   mode_client_unknown      = try(local.device_config[each.value.name].vtp.mode == "client" && local.device_config[each.value.name].vtp.mode_instance == "unknown", local.defaults.iosxe.configuration.vtp.mode == "client" && local.defaults.iosxe.configuration.vtp.mode_instance == "unknown", null)
   mode_client_vlan         = try(local.device_config[each.value.name].vtp.mode == "client" && local.device_config[each.value.name].vtp.mode_instance == "vlan", local.defaults.iosxe.configuration.vtp.mode == "client" && local.defaults.iosxe.configuration.vtp.mode_instance == "vlan", null)

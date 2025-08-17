@@ -3,7 +3,7 @@ resource "iosxe_errdisable" "errdisable" {
   device   = each.value.name
 
   detect_cause_all                              = try(local.device_config[each.value.name].errdisable.detect_cause.all, local.defaults.iosxe.configuration.errdisable.detect_cause.all, null)
-  detect_cause_arp_inspection                   = try(local.device_config[each.value.name].errdisable.detect_cause.arp_insection, local.defaults.iosxe.configuration.errdisable.detect_cause.arp_insection, null)
+  detect_cause_arp_inspection                   = try(local.device_config[each.value.name].errdisable.detect_cause.arp_inspection, local.defaults.iosxe.configuration.errdisable.detect_cause.arp_inspection, null)
   detect_cause_bpduguard                        = try(local.device_config[each.value.name].errdisable.detect_cause.bpduguard, local.defaults.iosxe.configuration.errdisable.detect_cause.bpduguard, null)
   detect_cause_dhcp_rate_limit                  = try(local.device_config[each.value.name].errdisable.detect_cause.dhcp_rate_limit, local.defaults.iosxe.configuration.errdisable.detect_cause.dhcp_rate_limit, null)
   detect_cause_dtp_flap                         = try(local.device_config[each.value.name].errdisable.detect_cause.dtp_flap, local.defaults.iosxe.configuration.errdisable.detect_cause.dtp_flap, null)
@@ -27,6 +27,8 @@ resource "iosxe_errdisable" "errdisable" {
   flap_setting_cause_pagp_flap_max_flaps = try(local.device_config[each.value.name].errdisable.flap_setting_cause.pagp_flap_max_flaps, local.defaults.iosxe.configuration.errdisable.flap_setting_cause.pagp_flap_max_flaps, null)
   flap_setting_cause_pagp_flap_time      = try(local.device_config[each.value.name].errdisable.flap_setting_cause.pagp_flap_time, local.defaults.iosxe.configuration.errdisable.flap_setting_cause.pagp_flap_time, null)
 
+  recovery_interval = try(local.device_config[each.value.name].errdisable.recovery_interval, local.defaults.iosxe.configuration.errdisable.recovery_interval, null)
+
   recovery_cause_all                  = try(local.device_config[each.value.name].errdisable.recovery_cause.all, local.defaults.iosxe.configuration.errdisable.recovery_cause.all, null)
   recovery_cause_arp_inspection       = try(local.device_config[each.value.name].errdisable.recovery_cause.arp_inspection, local.defaults.iosxe.configuration.errdisable.recovery_cause.arp_inspection, null)
   recovery_cause_bpduguard            = try(local.device_config[each.value.name].errdisable.recovery_cause.bpduguard, local.defaults.iosxe.configuration.errdisable.recovery_cause.bpduguard, null)
@@ -41,6 +43,8 @@ resource "iosxe_errdisable" "errdisable" {
   recovery_cause_loopback             = try(local.device_config[each.value.name].errdisable.recovery_cause.loopback, local.defaults.iosxe.configuration.errdisable.recovery_cause.loopback, null)
   recovery_cause_mac_limit            = try(local.device_config[each.value.name].errdisable.recovery_cause.mac_limit, local.defaults.iosxe.configuration.errdisable.recovery_cause.mac_limit, null)
   recovery_cause_mlacp_minlink        = try(local.device_config[each.value.name].errdisable.recovery_cause.mlacp_minlink, local.defaults.iosxe.configuration.errdisable.recovery_cause.mlacp_minlink, null)
+  recovery_cause_mrp_miscabling       = try(local.device_config[each.value.name].errdisable.recovery_cause.mrp_miscabling, local.defaults.iosxe.configuration.errdisable.recovery_cause.mrp_miscabling, null)
+  recovery_cause_oam_remote_failure   = try(local.device_config[each.value.name].errdisable.recovery_cause.oam_remote_failure, local.defaults.iosxe.configuration.errdisable.recovery_cause.oam_remote_failure, null)
   recovery_cause_pagp_flap            = try(local.device_config[each.value.name].errdisable.recovery_cause.pagp_flap, local.defaults.iosxe.configuration.errdisable.recovery_cause.pagp_flap, null)
   recovery_cause_port_mode_failure    = try(local.device_config[each.value.name].errdisable.recovery_cause.port_mode_failure, local.defaults.iosxe.configuration.errdisable.recovery_cause.port_mode_failure, null)
   recovery_cause_pppoe_ia_rate_limit  = try(local.device_config[each.value.name].errdisable.recovery_cause.pppoe_ia_rate_limit, local.defaults.iosxe.configuration.errdisable.recovery_cause.pppoe_ia_rate_limit, null)

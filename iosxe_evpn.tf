@@ -13,6 +13,7 @@ resource "iosxe_evpn" "evpn" {
   default_gateway_advertise = try(local.device_config[each.value.name].evpn.default_gateway_advertise, local.defaults.iosxe.configuration.evpn.default_gateway_advertise, null)
   logging_peer_state        = try(local.device_config[each.value.name].evpn.logging_peer_state, local.defaults.iosxe.configuration.evpn.logging_peer_state, null)
   route_target_auto_vni     = try(local.device_config[each.value.name].evpn.route_target_auto_vni, local.defaults.iosxe.configuration.evpn.route_target_auto_vni, null)
+  anycast_gateway_mac_auto  = try(local.device_config[each.value.name].evpn.anycast_gateway_mac_auto, local.defaults.iosxe.configuration.evpn.anycast_gateway_mac_auto, null)
 }
 
 

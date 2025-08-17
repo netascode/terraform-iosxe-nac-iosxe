@@ -24,6 +24,7 @@ locals {
         redirect_url_match_action  = try(service_template.redirect_url_match_action, local.defaults.iosxe.configuration.service_template.name.redirect_url_match_action, null)
         service_policy_qos_input   = try(service_template.service_policy_qos_input, local.defaults.iosxe.configuration.service_template.name.service_policy_qos_input, null)
         service_policy_qos_output  = try(service_template.service_policy_qos_output, local.defaults.iosxe.configuration.service_template.name.service_policy_qos_output, null)
+        mdns_service_policy        = try(service_template.mdns_service_policy, local.defaults.iosxe.configuration.service_template.name.mdns_service_policy, null)
 
         # Lists
         access_groups = [for group_name in try(service_template.access_groups, []) : {
@@ -69,6 +70,7 @@ resource "iosxe_service_template" "service_templates" {
   redirect_url_match_action  = each.value.redirect_url_match_action
   service_policy_qos_input   = each.value.service_policy_qos_input
   service_policy_qos_output  = each.value.service_policy_qos_output
+  mdns_service_policy        = each.value.mdns_service_policy
 
   # Lists
   access_groups       = each.value.access_groups

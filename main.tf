@@ -4,6 +4,8 @@ module "model" {
   yaml_directories          = var.yaml_directories
   yaml_files                = var.yaml_files
   model                     = var.model
+  managed_device_groups     = var.managed_device_groups
+  managed_devices           = var.managed_devices
   write_model_file          = var.write_model_file
   write_default_values_file = var.write_default_values_file
 }

@@ -32,7 +32,7 @@ locals {
         name = community_list.name
         entries = [for e in try(community_list.entries, []) : {
           action = try(e.action, local.defaults.iosxe.configuration.community_lists.expanded.entries.action, null)
-          regex  = try(e.regex, local.defaults.iosxe.configuration.community_lists.expanded.entries.action, null)
+          regex  = try(e.regex, local.defaults.iosxe.configuration.community_lists.expanded.entries.regex, null)
         }]
       }
     ]

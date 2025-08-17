@@ -28,7 +28,7 @@ resource "iosxe_aaa" "aaa" {
   group_server_tacacsplus = [for e in try(local.device_config[each.value.name].aaa.tacacs_groups, []) : {
     name                                                    = try(e.name, local.defaults.iosxe.configuration.aaa.tacacs_groups.name, null)
     ip_tacacs_source_interface_loopback                     = e.source_interface_type == "Loopback" ? e.source_interface_id : try(local.defaults.iosxe.configuration.aaa.tacacs_groups.ip_tacacs_source_interface_loopback, null)
-    ip_radius_source_interface_vlan                         = e.source_interface_type == "Vlan" ? e.source_interface_id : try(local.defaults.iosxe.configuration.aaa.tacacs_groups.ip_radius_source_interface_vlan, null)
+    ip_tacacs_source_interface_vlan                         = e.source_interface_type == "Vlan" ? e.source_interface_id : try(local.defaults.iosxe.configuration.aaa.tacacs_groups.ip_tacacs_source_interface_vlan, null)
     ip_tacacs_source_interface_gigabit_ethernet             = e.source_interface_type == "GigabitEthernet" ? e.source_interface_id : try(local.defaults.iosxe.configuration.aaa.tacacs_groups.ip_tacacs_source_interface_gigabit_ethernet, null)
     ip_tacacs_source_interface_two_gigabit_ethernet         = e.source_interface_type == "TwoGigabitEthernet" ? e.source_interface_id : try(local.defaults.iosxe.configuration.aaa.tacacs_groups.ip_tacacs_source_interface_two_gigabit_ethernet, null)
     ip_tacacs_source_interface_five_gigabit_ethernet        = e.source_interface_type == "FiveGigabitEthernet" ? e.source_interface_id : try(local.defaults.iosxe.configuration.aaa.tacacs_groups.ip_tacacs_source_interface_five_gigabit_ethernet, null)
@@ -253,7 +253,7 @@ locals {
         timeout      = try(server.timeout, local.defaults.iosxe.configuration.aaa.tacacs_servers.timeout, null)
         encryption   = try(server.encryption, local.defaults.iosxe.configuration.aaa.tacacs_servers.encryption, null)
         key          = try(server.key, local.defaults.iosxe.configuration.aaa.tacacs_servers.key, null)
-        tag          = format("%s/%s", device.name, try(server.name, local.defaults.iosxe.configuration.aaa.tacacas_servers.name, null))
+        tag          = format("%s/%s", device.name, try(server.name, local.defaults.iosxe.configuration.aaa.tacacs_servers.name, null))
       }
     ]
   ])

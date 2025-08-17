@@ -6,7 +6,11 @@ locals {
   interface_groups        = try(local.iosxe.interface_groups, [])
   configuration_templates = try(local.iosxe.configuration_templates, [])
 
-  device_variables = { for device in local.devices :
+  managed_devices = [
+    for device in local.devices : device if(length(var.managed_devices) == 0 || contains(var.managed_devices, device.name)) && (length(var.managed_device_groups) == 0 || anytrue([for dg in local.device_groups : contains(try(device.device_groups, []), dg.name)]) || anytrue([for dg in local.device_groups : contains(try(dg.devices, []), device.name)]))
+  ]
+
+  device_variables = { for device in local.managed_devices :
     device.name => merge(concat(
       [try(local.global.variables, {})],
       [for dg in local.device_groups : try(dg.variables, {}) if contains(try(device.device_groups, []), dg.name)],
@@ -15,7 +19,7 @@ locals {
     )...)
   }
 
-  device_config_templates_raw_config = { for device in local.devices :
+  device_config_templates_raw_config = { for device in local.managed_devices :
     device.name => provider::utils::yaml_merge([
       for dg in local.device_groups :
       provider::utils::yaml_merge([
@@ -30,7 +34,7 @@ locals {
     device => templatestring(config, local.device_variables[device])
   }
 
-  devices_raw_config = { for device in local.devices :
+  devices_raw_config = { for device in local.managed_devices :
     device.name => try(provider::utils::yaml_merge(concat(
       [yamlencode(try(local.global.configuration, {}))],
       [for dg in local.device_groups : yamlencode(try(dg.configuration, {})) if contains(try(device.device_groups, []), dg.name)],
@@ -45,13 +49,13 @@ locals {
   }
 
   interface_groups_raw_config = {
-    for device in local.devices : device.name => {
+    for device in local.managed_devices : device.name => {
       for ig in local.interface_groups : ig.name => yamlencode(try(ig.configuration, {}))
     }
   }
 
   interface_groups_config = {
-    for device in local.devices : device.name => [
+    for device in local.managed_devices : device.name => [
       for ig in local.interface_groups : {
         name          = ig.name
         configuration = yamldecode(templatestring(local.interface_groups_raw_config[device.name][ig.name], local.device_variables[device.name]))
@@ -62,7 +66,7 @@ locals {
   iosxe_devices = {
     iosxe = {
       devices = [
-        for device in try(local.devices, []) : {
+        for device in try(local.managed_devices, []) : {
           name    = device.name
           url     = device.url
           managed = try(device.managed, local.defaults.iosxe.devices.managed, true)
