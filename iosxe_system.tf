@@ -49,27 +49,28 @@ resource "iosxe_system" "system" {
   ]
 }
 
-resource "iosxe_username" "username" {
-  for_each = merge([
-    for device in local.devices : {
-      for user in try(local.device_config[device.name].username, []) :
-      "${device.name}_${user.name}" => {
-        device_name         = device.name
-        name                = user.name
-        privilege           = user.privilege
-        description         = user.description
-        password_encryption = user.password_encryption
-        password            = user.password
+locals {
+  username = flatten([
+    for device in local.devices : [
+      for username in try(local.device_config[device.name].username, []) : {
+        key                 = format("%s/%s", device.name, username.name)
+        device              = device.name
+        name                = try(username.name, local.defaults.iosxe.configuration.username.name, null)
+        privilege           = try(username.privilege, local.defaults.iosxe.configuration.username.privilege, null)
+        description         = try(username.description, local.defaults.iosxe.configuration.username.description, null)
+        password_encryption = try(username.password_encryption, local.defaults.iosxe.configuration.username.password_encryption, null)
+        password            = try(username.password, local.defaults.iosxe.configuration.username.password, null)
       }
-    }
-  ]...)
+    ]
+  ])
+}
+resource "iosxe_username" "username" {
+  for_each = { for user in local.username : user.key => user }
+  device   = each.value.device_name
 
-  device              = each.value.device_name
   name                = each.value.name
   privilege           = each.value.privilege
   description         = each.value.description
   password_encryption = each.value.password_encryption
   password            = each.value.password
 }
-
-
