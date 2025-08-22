@@ -3,4 +3,9 @@ resource "iosxe_cts" "cts" {
   device   = each.value.name
 
   authorization_list = try(local.device_config[each.value.name].cts.authorization_list, local.defaults.iosxe.configuration.cts.authorization_list, null)
+
+  depends_on = [
+    iosxe_access_list_standard.access_list_standard,
+    iosxe_access_list_extended.access_list_extended
+  ]
 }

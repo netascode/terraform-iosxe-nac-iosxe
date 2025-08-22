@@ -24,19 +24,20 @@ locals {
         redirect_url_match_action  = try(service_template.redirect_url_match_action, local.defaults.iosxe.configuration.service_template.name.redirect_url_match_action, null)
         service_policy_qos_input   = try(service_template.service_policy_qos_input, local.defaults.iosxe.configuration.service_template.name.service_policy_qos_input, null)
         service_policy_qos_output  = try(service_template.service_policy_qos_output, local.defaults.iosxe.configuration.service_template.name.service_policy_qos_output, null)
+        mdns_service_policy        = try(service_template.mdns_service_policy, local.defaults.iosxe.configuration.service_template.name.mdns_service_policy, null)
 
         # Lists
-        access_groups = [for group_name in try(service_template.access_groups, []) : {
+        access_groups = try(length(service_template.access_groups) == 0, true) ? null : [for group_name in service_template.access_groups : {
           name = group_name
           }
         ]
 
-        interface_templates = [for template_name in try(service_template.interface_templates, []) : {
+        interface_templates = try(length(service_template.interface_templates) == 0, true) ? null : [for template_name in service_template.interface_templates : {
           name = template_name
           }
         ]
 
-        tags = [for tag_name in try(service_template.tags, []) : {
+        tags = try(length(service_template.tags) == 0, true) ? null : [for tag_name in service_template.tags : {
           name = tag_name
           }
         ]
@@ -46,7 +47,7 @@ locals {
   ])
 }
 
-resource "iosxe_service_template" "service_templates" {
+resource "iosxe_service_template" "service_template" {
   for_each = { for e in local.service_template_name : e.key => e }
   device   = each.value.device
 
@@ -69,9 +70,16 @@ resource "iosxe_service_template" "service_templates" {
   redirect_url_match_action  = each.value.redirect_url_match_action
   service_policy_qos_input   = each.value.service_policy_qos_input
   service_policy_qos_output  = each.value.service_policy_qos_output
+  mdns_service_policy        = each.value.mdns_service_policy
 
   # Lists
   access_groups       = each.value.access_groups
   interface_templates = each.value.interface_templates
   tags                = each.value.tags
+
+  depends_on = [
+    iosxe_vlan.vlan,
+    iosxe_access_list_standard.access_list_standard,
+    iosxe_access_list_extended.access_list_extended
+  ]
 }

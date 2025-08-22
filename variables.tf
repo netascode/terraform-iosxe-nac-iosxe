@@ -16,6 +16,18 @@ variable "model" {
   default     = {}
 }
 
+variable "managed_device_groups" {
+  description = "List of device group names to be managed. By default all device groups will be managed."
+  type        = list(string)
+  default     = []
+}
+
+variable "managed_devices" {
+  description = "List of device names to be managed. By default all devices will be managed."
+  type        = list(string)
+  default     = []
+}
+
 variable "save_config" {
   description = "Write changes to startup-config on all devices."
   type        = bool

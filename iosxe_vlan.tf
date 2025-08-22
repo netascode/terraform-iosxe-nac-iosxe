@@ -18,7 +18,6 @@ locals {
 }
 
 resource "iosxe_vlan" "vlan" {
-
   for_each = { for e in local.vlans : e.key => e }
   device   = each.value.device
 
@@ -48,7 +47,7 @@ locals {
   ])
 }
 
-resource "iosxe_vlan_configuration" "vlan_vn_config" {
+resource "iosxe_vlan_configuration" "vlan_configuration" {
   for_each = { for e in local.vlan_config : e.key => e }
   device   = each.value.device
 
@@ -57,7 +56,6 @@ resource "iosxe_vlan_configuration" "vlan_vn_config" {
   access_vfi        = each.value.access_vfi
   evpn_instance     = each.value.evpn_instance
   evpn_instance_vni = each.value.evpn_instance_vni
-
 }
 
 locals {
@@ -69,14 +67,14 @@ locals {
         name               = try(amap.name, local.defaults.iosxe.configuration.vlan.access_maps.name, null)
         sequence           = try(amap.sequence, local.defaults.iosxe.configuration.vlan.access_maps.sequence, null)
         action             = try(amap.action, local.defaults.iosxe.configuration.vlan.access_maps.action, null)
-        match_ip_address   = try(amap.match_ip_addresses, local.defaults.iosxe.configuration.vlan.access_maps.match_ip_addresses, null)
+        match_ip_address   = try(amap.match_ipv4_addresses, local.defaults.iosxe.configuration.vlan.access_maps.match_ipv4_addresses, null)
         match_ipv6_address = try(amap.match_ipv6_addresses, local.defaults.iosxe.configuration.vlan.access_maps.match_ipv6_addresses, null)
       }
     ]
   ])
 }
 
-resource "iosxe_vlan_access_map" "vlan_access_maps" {
+resource "iosxe_vlan_access_map" "vlan_access_map" {
   for_each = { for e in local.vlan_access_maps : e.key => e }
   device   = each.value.device
 
@@ -85,6 +83,11 @@ resource "iosxe_vlan_access_map" "vlan_access_maps" {
   action             = each.value.action
   match_ip_address   = each.value.match_ip_address
   match_ipv6_address = each.value.match_ipv6_address
+
+  depends_on = [
+    iosxe_access_list_standard.access_list_standard,
+    iosxe_access_list_extended.access_list_extended
+  ]
 }
 
 locals {
@@ -93,7 +96,7 @@ locals {
       for filter in try(local.device_config[device.name].vlan.filters, []) : {
         key        = format("%s/%s", device.name, filter.word)
         device     = device.name
-        word       = try(filter.word, local.defaults.iosxe.configuration.vlan.filters.word, null)
+        word       = try(filter.name, local.defaults.iosxe.configuration.vlan.filters.name, null)
         vlan_lists = try(filter.vlan_lists, local.defaults.iosxe.configuration.vlan.filters.vlan_lists, null)
       }
     ]

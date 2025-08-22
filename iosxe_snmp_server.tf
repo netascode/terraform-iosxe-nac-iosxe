@@ -117,6 +117,67 @@ resource "iosxe_snmp_server" "snmp_server" {
   enable_traps_vrfmib_vrf_down                       = try(local.device_config[each.value.name].snmp_server.traps.vrfmib_vrf_down, local.defaults.iosxe.configuration.snmp_server.traps.vrfmib_vrf_down, null)
   enable_traps_vrfmib_vrf_up                         = try(local.device_config[each.value.name].snmp_server.traps.vrfmib_vrf_up, local.defaults.iosxe.configuration.snmp_server.traps.vrfmib_vrf_up, null)
   enable_traps_vtp                                   = try(local.device_config[each.value.name].snmp_server.traps.vtp, local.defaults.iosxe.configuration.snmp_server.traps.vtp, null)
+  enable_traps_aaa_server                            = try(local.device_config[each.value.name].snmp_server.traps.aaa_server, local.defaults.iosxe.configuration.snmp_server.traps.aaa_server, null)
+  enable_traps_adslline                              = try(local.device_config[each.value.name].snmp_server.traps.adslline, local.defaults.iosxe.configuration.snmp_server.traps.adslline, null)
+  enable_traps_alarm_type                            = try(local.device_config[each.value.name].snmp_server.traps.alarm_type, local.defaults.iosxe.configuration.snmp_server.traps.alarm_type, null)
+  enable_traps_casa                                  = try(local.device_config[each.value.name].snmp_server.traps.casa, local.defaults.iosxe.configuration.snmp_server.traps.casa, null)
+  enable_traps_cnpd                                  = try(local.device_config[each.value.name].snmp_server.traps.cnpd, local.defaults.iosxe.configuration.snmp_server.traps.cnpd, null)
+  enable_traps_dial                                  = try(local.device_config[each.value.name].snmp_server.traps.dial, local.defaults.iosxe.configuration.snmp_server.traps.dial, null)
+  enable_traps_dlsw                                  = try(local.device_config[each.value.name].snmp_server.traps.dlsw, local.defaults.iosxe.configuration.snmp_server.traps.dlsw, null)
+  enable_traps_ds1                                   = try(local.device_config[each.value.name].snmp_server.traps.ds1, local.defaults.iosxe.configuration.snmp_server.traps.ds1, null)
+  enable_traps_dsp_card_status                       = try(local.device_config[each.value.name].snmp_server.traps.dsp_card_status, local.defaults.iosxe.configuration.snmp_server.traps.dsp_card_status, null)
+  enable_traps_dsp_oper_state                        = try(local.device_config[each.value.name].snmp_server.traps.dsp_oper_state, local.defaults.iosxe.configuration.snmp_server.traps.dsp_oper_state, null)
+  enable_traps_ether_oam                             = try(local.device_config[each.value.name].snmp_server.traps.ether_oam, local.defaults.iosxe.configuration.snmp_server.traps.ether_oam, null)
+  enable_traps_ethernet_cfm_alarm                    = try(local.device_config[each.value.name].snmp_server.traps.ethernet_cfm_alarm, local.defaults.iosxe.configuration.snmp_server.traps.ethernet_cfm_alarm, null)
+  enable_traps_ethernet_cfm_cc_config                = try(local.device_config[each.value.name].snmp_server.traps.ethernet_cfm_cc_config, local.defaults.iosxe.configuration.snmp_server.traps.ethernet_cfm_cc_config, null)
+  enable_traps_ethernet_cfm_cc_cross_connect         = try(local.device_config[each.value.name].snmp_server.traps.ethernet_cfm_cc_cross_connect, local.defaults.iosxe.configuration.snmp_server.traps.ethernet_cfm_cc_cross_connect, null)
+  enable_traps_ethernet_cfm_cc_loop                  = try(local.device_config[each.value.name].snmp_server.traps.ethernet_cfm_cc_loop, local.defaults.iosxe.configuration.snmp_server.traps.ethernet_cfm_cc_loop, null)
+  enable_traps_ethernet_cfm_cc_mep_down              = try(local.device_config[each.value.name].snmp_server.traps.ethernet_cfm_cc_mep_down, local.defaults.iosxe.configuration.snmp_server.traps.ethernet_cfm_cc_mep_down, null)
+  enable_traps_ethernet_cfm_cc_mep_up                = try(local.device_config[each.value.name].snmp_server.traps.ethernet_cfm_cc_mep_up, local.defaults.iosxe.configuration.snmp_server.traps.ethernet_cfm_cc_mep_up, null)
+  enable_traps_ethernet_cfm_crosscheck_mep_missing   = try(local.device_config[each.value.name].snmp_server.traps.ethernet_cfm_crosscheck_mep_missing, local.defaults.iosxe.configuration.snmp_server.traps.ethernet_cfm_crosscheck_mep_missing, null)
+  enable_traps_ethernet_cfm_crosscheck_mep_unknown   = try(local.device_config[each.value.name].snmp_server.traps.ethernet_cfm_crosscheck_mep_unknown, local.defaults.iosxe.configuration.snmp_server.traps.ethernet_cfm_crosscheck_mep_unknown, null)
+  enable_traps_ethernet_cfm_crosscheck_service_up    = try(local.device_config[each.value.name].snmp_server.traps.ethernet_cfm_crosscheck_service_up, local.defaults.iosxe.configuration.snmp_server.traps.ethernet_cfm_crosscheck_service_up, null)
+  enable_traps_ethernet_evc_create                   = try(local.device_config[each.value.name].snmp_server.traps.ethernet_evc_create, local.defaults.iosxe.configuration.snmp_server.traps.ethernet_evc_create, null)
+  enable_traps_ethernet_evc_delete                   = try(local.device_config[each.value.name].snmp_server.traps.ethernet_evc_delete, local.defaults.iosxe.configuration.snmp_server.traps.ethernet_evc_delete, null)
+  enable_traps_ethernet_evc_status                   = try(local.device_config[each.value.name].snmp_server.traps.ethernet_evc_status, local.defaults.iosxe.configuration.snmp_server.traps.ethernet_evc_status, null)
+  enable_traps_firewall_serverstatus                 = try(local.device_config[each.value.name].snmp_server.traps.firewall_serverstatus, local.defaults.iosxe.configuration.snmp_server.traps.firewall_serverstatus, null)
+  enable_traps_frame_relay_config_bundle_mismatch    = try(local.device_config[each.value.name].snmp_server.traps.frame_relay_config_bundle_mismatch, local.defaults.iosxe.configuration.snmp_server.traps.frame_relay_config_bundle_mismatch, null)
+  enable_traps_frame_relay_config_only               = try(local.device_config[each.value.name].snmp_server.traps.frame_relay_config_only, local.defaults.iosxe.configuration.snmp_server.traps.frame_relay_config_only, null)
+  enable_traps_frame_relay_config_subif_configs      = try(local.device_config[each.value.name].snmp_server.traps.frame_relay_config_subif_configs, local.defaults.iosxe.configuration.snmp_server.traps.frame_relay_config_subif_configs, null)
+  enable_traps_frame_relay_multilink_bundle_mismatch = try(local.device_config[each.value.name].snmp_server.traps.frame_relay_multilink_bundle_mismatch, local.defaults.iosxe.configuration.snmp_server.traps.frame_relay_multilink_bundle_mismatch, null)
+  enable_traps_frame_relay_subif_count               = try(local.device_config[each.value.name].snmp_server.traps.frame_relay_subif_count, local.defaults.iosxe.configuration.snmp_server.traps.frame_relay_subif_count, null)
+  enable_traps_frame_relay_subif_interval            = try(local.device_config[each.value.name].snmp_server.traps.frame_relay_subif_interval, local.defaults.iosxe.configuration.snmp_server.traps.frame_relay_subif_interval, null)
+  enable_traps_ip_local_pool                         = try(local.device_config[each.value.name].snmp_server.traps.ip_local_pool, local.defaults.iosxe.configuration.snmp_server.traps.ip_local_pool, null)
+  enable_traps_isdn_call_information                 = try(local.device_config[each.value.name].snmp_server.traps.isdn_call_information, local.defaults.iosxe.configuration.snmp_server.traps.isdn_call_information, null)
+  enable_traps_isdn_chan_not_avail                   = try(local.device_config[each.value.name].snmp_server.traps.isdn_chan_not_avail, local.defaults.iosxe.configuration.snmp_server.traps.isdn_chan_not_avail, null)
+  enable_traps_isdn_ietf                             = try(local.device_config[each.value.name].snmp_server.traps.isdn_ietf, local.defaults.iosxe.configuration.snmp_server.traps.isdn_ietf, null)
+  enable_traps_isdn_layer2                           = try(local.device_config[each.value.name].snmp_server.traps.isdn_layer2, local.defaults.iosxe.configuration.snmp_server.traps.isdn_layer2, null)
+  enable_traps_l2tun_pseudowire_status               = try(local.device_config[each.value.name].snmp_server.traps.l2tun_pseudowire_status, local.defaults.iosxe.configuration.snmp_server.traps.l2tun_pseudowire_status, null)
+  enable_traps_l2tun_session                         = try(local.device_config[each.value.name].snmp_server.traps.l2tun_session, local.defaults.iosxe.configuration.snmp_server.traps.l2tun_session, null)
+  enable_traps_l2tun_tunnel                          = try(local.device_config[each.value.name].snmp_server.traps.l2tun_tunnel, local.defaults.iosxe.configuration.snmp_server.traps.l2tun_tunnel, null)
+  enable_traps_lisp                                  = try(local.device_config[each.value.name].snmp_server.traps.lisp, local.defaults.iosxe.configuration.snmp_server.traps.lisp, null)
+  enable_traps_mpls                                  = try(local.device_config[each.value.name].snmp_server.traps.mpls, local.defaults.iosxe.configuration.snmp_server.traps.mpls, null)
+  enable_traps_mpls_rfc                              = try(local.device_config[each.value.name].snmp_server.traps.mpls_rfc, local.defaults.iosxe.configuration.snmp_server.traps.mpls_rfc, null)
+  enable_traps_mvpn                                  = try(local.device_config[each.value.name].snmp_server.traps.mvpn, local.defaults.iosxe.configuration.snmp_server.traps.mvpn, null)
+  enable_traps_pfr                                   = try(local.device_config[each.value.name].snmp_server.traps.pfr, local.defaults.iosxe.configuration.snmp_server.traps.pfr, null)
+  enable_traps_pimstdmib_interface_election          = try(local.device_config[each.value.name].snmp_server.traps.pimstdmib_interface_election, local.defaults.iosxe.configuration.snmp_server.traps.pimstdmib_interface_election, null)
+  enable_traps_pimstdmib_invalid_join_prune          = try(local.device_config[each.value.name].snmp_server.traps.pimstdmib_invalid_join_prune, local.defaults.iosxe.configuration.snmp_server.traps.pimstdmib_invalid_join_prune, null)
+  enable_traps_pimstdmib_invalid_register            = try(local.device_config[each.value.name].snmp_server.traps.pimstdmib_invalid_register, local.defaults.iosxe.configuration.snmp_server.traps.pimstdmib_invalid_register, null)
+  enable_traps_pimstdmib_neighbor_loss               = try(local.device_config[each.value.name].snmp_server.traps.pimstdmib_neighbor_loss, local.defaults.iosxe.configuration.snmp_server.traps.pimstdmib_neighbor_loss, null)
+  enable_traps_pimstdmib_rp_mapping_change           = try(local.device_config[each.value.name].snmp_server.traps.pimstdmib_rp_mapping_change, local.defaults.iosxe.configuration.snmp_server.traps.pimstdmib_rp_mapping_change, null)
+  enable_traps_pki                                   = try(local.device_config[each.value.name].snmp_server.traps.pki, local.defaults.iosxe.configuration.snmp_server.traps.pki, null)
+  enable_traps_pppoe                                 = try(local.device_config[each.value.name].snmp_server.traps.pppoe, local.defaults.iosxe.configuration.snmp_server.traps.pppoe, null)
+  enable_traps_resource_policy                       = try(local.device_config[each.value.name].snmp_server.traps.resource_policy, local.defaults.iosxe.configuration.snmp_server.traps.resource_policy, null)
+  enable_traps_rsvp                                  = try(local.device_config[each.value.name].snmp_server.traps.rsvp, local.defaults.iosxe.configuration.snmp_server.traps.rsvp, null)
+  enable_traps_sonet                                 = try(local.device_config[each.value.name].snmp_server.traps.sonet, local.defaults.iosxe.configuration.snmp_server.traps.sonet, null)
+  enable_traps_srp                                   = try(local.device_config[each.value.name].snmp_server.traps.srp, local.defaults.iosxe.configuration.snmp_server.traps.srp, null)
+  enable_traps_vdsl2line                             = try(local.device_config[each.value.name].snmp_server.traps.vdsl2line, local.defaults.iosxe.configuration.snmp_server.traps.vdsl2line, null)
+  enable_traps_voice                                 = try(local.device_config[each.value.name].snmp_server.traps.voice, local.defaults.iosxe.configuration.snmp_server.traps.voice, null)
+  enable_traps_vrrp                                  = try(local.device_config[each.value.name].snmp_server.traps.vrrp, local.defaults.iosxe.configuration.snmp_server.traps.vrrp, null)
+  enable_traps_entity_qfp_mem_res_thresh             = try(local.device_config[each.value.name].snmp_server.traps.entity_qfp_mem_res_thresh, local.defaults.iosxe.configuration.snmp_server.traps.entity_qfp_mem_res_thresh, null)
+  enable_traps_entity_qfp_throughput_notif           = try(local.device_config[each.value.name].snmp_server.traps.entity_qfp_throughput_notif, local.defaults.iosxe.configuration.snmp_server.traps.entity_qfp_throughput_notif, null)
+  enable_traps_entity_sensor                         = try(local.device_config[each.value.name].snmp_server.traps.entity_sensor, local.defaults.iosxe.configuration.snmp_server.traps.entity_sensor, null)
+  enable_traps_entity_state                          = try(local.device_config[each.value.name].snmp_server.traps.entity_state, local.defaults.iosxe.configuration.snmp_server.traps.entity_state, null)
   ifindex_persist                                    = try(local.device_config[each.value.name].snmp_server.ifindex_persist, local.defaults.iosxe.configuration.snmp_server.ifindex_persist, null)
   location                                           = try(local.device_config[each.value.name].snmp_server.location, local.defaults.iosxe.configuration.snmp_server.location, null)
   packetsize                                         = try(local.device_config[each.value.name].snmp_server.packet_size, local.defaults.iosxe.configuration.snmp_server.packet_size, null)
@@ -138,27 +199,37 @@ resource "iosxe_snmp_server" "snmp_server" {
   source_interface_traps_ten_gigabit_ethernet        = try(local.device_config[each.value.name].snmp_server.source_interface_traps_type, local.defaults.iosxe.configuration.snmp_server.source_interface_traps_type, null) == "TenGigabitEthernet" ? try(local.device_config[each.value.name].snmp_server.source_interface_traps_id, local.defaults.iosxe.configuration.snmp_server.source_interface_traps_id, null) : null
   source_interface_traps_vlan                        = try(local.device_config[each.value.name].snmp_server.source_interface_traps_type, local.defaults.iosxe.configuration.snmp_server.source_interface_traps_type, null) == "Vlan" ? try(local.device_config[each.value.name].snmp_server.source_interface_traps_id, local.defaults.iosxe.configuration.snmp_server.source_interface_traps_id, null) : null
   system_shutdown                                    = try(local.device_config[each.value.name].snmp_server.system_shutdown, local.defaults.iosxe.configuration.snmp_server.system_shutdown, null)
-  contexts = [for context in try(local.device_config[each.value.name].snmp_server.contexts, []) : {
+  contexts = try(length(local.device_config[each.value.name].snmp_server.contexts) == 0, true) ? null : [for context in local.device_config[each.value.name].snmp_server.contexts : {
     name = context
   }]
-  hosts = [for host in try(local.device_config[each.value.name].snmp_server.hosts, []) : {
-    ip_address        = host.ip
-    community_or_user = try(host.community_or_user, local.defaults.iosxe.configuration.snmp_server.hosts.community_or_user, null)
+  hosts = try(length(local.device_config[each.value.name].snmp_server.hosts) == 0, true) ? null : [for host in local.device_config[each.value.name].snmp_server.hosts : {
+    ip_address        = try(host.ip, local.defaults.iosxe.configuration.snmp_server.hosts.ip, null)
+    community_or_user = try(host.user, host.community, local.defaults.iosxe.configuration.snmp_server.hosts.user, local.defaults.iosxe.configuration.snmp_server.hosts.community, null)
     encryption        = try(host.encryption, local.defaults.iosxe.configuration.snmp_server.hosts.encryption, null)
     version           = try(host.version, local.defaults.iosxe.configuration.snmp_server.hosts.version, null)
   }]
-  snmp_communities = [for e in try(local.device_config[each.value.name].snmp_server.snmp_communities, []) : {
-    name             = e.name
-    access_list_name = try(e.acl, local.defaults.iosxe.configuration.snmp_server.snmp_communities.acl, null)
+  snmp_communities = try(length(local.device_config[each.value.name].snmp_server.snmp_communities) == 0, true) ? null : [for e in local.device_config[each.value.name].snmp_server.snmp_communities : {
+    name             = try(e.name, local.defaults.iosxe.configuration.snmp_server.snmp_communities.name, null)
+    access_list_name = try(e.ipv4_acl, local.defaults.iosxe.configuration.snmp_server.snmp_communities.ipv4_acl, null)
     ipv6             = try(e.ipv6_acl, local.defaults.iosxe.configuration.snmp_server.snmp_communities.ipv6_acl, null)
     permission       = try(e.permission, local.defaults.iosxe.configuration.snmp_server.snmp_communities.permission, null)
     view             = try(e.view, local.defaults.iosxe.configuration.snmp_server.snmp_communities.view, null)
   }]
-  views = [for e in try(local.device_config[each.value.name].snmp_server.views, []) : {
-    name    = e.name
-    mib     = e.mib
+  views = try(length(local.device_config[each.value.name].snmp_server.views) == 0, true) ? null : [for e in local.device_config[each.value.name].snmp_server.views : {
+    name    = try(e.name, local.defaults.iosxe.configuration.snmp_server.views.name, null)
+    mib     = try(e.mib, local.defaults.iosxe.configuration.snmp_server.views.mib, null)
     inc_exl = try(e.scope, local.defaults.iosxe.configuration.snmp_server.views.scope, null)
   }]
+
+  depends_on = [
+    iosxe_interface_ethernet.ethernet,
+    iosxe_interface_loopback.loopback,
+    iosxe_interface_vlan.vlan,
+    iosxe_interface_port_channel.port_channel,
+    iosxe_interface_port_channel_subinterface.port_channel_subinterface,
+    iosxe_access_list_standard.access_list_standard,
+    iosxe_access_list_extended.access_list_extended
+  ]
 }
 
 locals {
@@ -168,8 +239,8 @@ locals {
         key    = format("%s/%s", device.name, group.name)
         device = device.name
         name   = group.name
-        v3_security = [for e in try(group.v3_securities, []) : {
-          security_level      = e.security_level
+        v3_security = try(length(group.v3_security_levels) == 0, true) ? null : [for e in group.v3_security_levels : {
+          security_level      = try(e.security_level, local.defaults.iosxe.configuration.snmp_server.groups.v3_securities.security_level, null)
           context_node        = try(e.context_node, local.defaults.iosxe.configuration.snmp_server.groups.v3_securities.context_node, null)
           match_node          = try(e.match_node, local.defaults.iosxe.configuration.snmp_server.groups.v3_securities.match_node, null)
           read_node           = try(e.read_node, local.defaults.iosxe.configuration.snmp_server.groups.v3_securities.read_node, null)
@@ -198,12 +269,12 @@ locals {
       for user in try(local.device_config[device.name].snmp_server.users, []) : {
         key      = format("%s/%s", device.name, user.name)
         device   = device.name
-        username = user.name
-        grpname  = user.group
+        username = try(user.name, local.defaults.iosxe.configuration.snmp_server.users.name, null)
+        grpname  = try(user.group, local.defaults.iosxe.configuration.snmp_server.users.group, null)
 
         # Authentication settings
-        v3_auth_algorithm = user.v3_authentication.algorithm
-        v3_auth_password  = user.v3_authentication.password
+        v3_auth_algorithm = try(user.v3_authentication.algorithm, local.defaults.iosxe.configuration.snmp_server.users.v3_authentication.algorithm, null)
+        v3_auth_password  = try(user.v3_authentication.password, local.defaults.iosxe.configuration.snmp_server.users.v3_authentication.password, null)
 
         # Authentication access settings
         v3_auth_access_ipv6_acl = try(user.v3_authentication.access.ipv6_acl,

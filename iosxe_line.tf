@@ -2,7 +2,7 @@ resource "iosxe_line" "line" {
   for_each = { for device in local.devices : device.name => device if try(local.device_config[device.name].line, null) != null || try(local.defaults.iosxe.configuration.line, null) != null }
   device   = each.value.name
 
-  console = [for c in try(local.device_config[each.value.name].line.consoles, []) : {
+  console = try(length(local.device_config[each.value.name].line.consoles) == 0, true) ? null : [for c in local.device_config[each.value.name].line.consoles : {
     first                = "0"
     exec_timeout_minutes = try(c.exec_timeout_minutes, local.defaults.iosxe.configuration.line.consoles.exec_timeout_minutes, null)
     exec_timeout_seconds = try(c.exec_timeout_seconds, local.defaults.iosxe.configuration.line.consoles.exec_timeout_seconds, null)
@@ -15,9 +15,9 @@ resource "iosxe_line" "line" {
     stopbits             = try(c.stopbits, local.defaults.iosxe.configuration.line.consoles.stopbits, null)
   }]
 
-  vty = [for v in try(local.device_config[each.value.name].line.vtys, []) : {
+  vty = try(length(local.device_config[each.value.name].line.vtys) == 0, true) ? null : [for v in local.device_config[each.value.name].line.vtys : {
     first = v.number_from
-    access_classes = [for a in try(v.access_classes, []) : {
+    access_classes = try(length(v.access_classes) == 0, true) ? null : [for a in v.access_classes : {
       access_list = a.access_list
       direction   = a.direction
       vrf_also    = try(a.vrf_also, local.defaults.iosxe.configuration.line.vtys.access_classes.vrf_also, null)
@@ -30,11 +30,16 @@ resource "iosxe_line" "line" {
     password_level               = try(v.password_level, local.defaults.iosxe.configuration.line.vtys.password_level, null)
     password_type                = try(v.password_type, local.defaults.iosxe.configuration.line.vtys.password_type, null)
     password                     = try(v.password, local.defaults.iosxe.configuration.line.vtys.password, null)
-    last                         = try(v.number_to, local.defaults.iosxe.configuration.line.vtys.number_to, null)
+    last                         = try(v.number_to, v.number_from, null)
     login_authentication         = try(v.login_authentication, local.defaults.iosxe.configuration.line.vtys.login_authentication, null)
     transport_preferred_protocol = try(v.transport_preferred_protocol, local.defaults.iosxe.configuration.line.vtys.transport_preferred_protocol, null)
     transport_input_all          = try(v.transport_input_all, local.defaults.iosxe.configuration.line.vtys.transport_input_all, null)
     transport_input_none         = try(v.transport_input_none, local.defaults.iosxe.configuration.line.vtys.transport_input_none, null)
     transport_input              = try(v.transport_input, local.defaults.iosxe.configuration.line.vtys.transport_input, null)
   }]
+
+  depends_on = [
+    iosxe_access_list_standard.access_list_standard,
+    iosxe_access_list_extended.access_list_extended
+  ]
 }

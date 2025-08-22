@@ -11,8 +11,8 @@ resource "iosxe_dot1x" "dot1x" {
   supplicant_force_multicast      = try(local.device_config[each.value.name].dot1x.supplicant_force_multicast, local.defaults.iosxe.configuration.dot1x.supplicant_force_multicast, null)
   system_auth_control             = try(local.device_config[each.value.name].dot1x.system_auth_control, local.defaults.iosxe.configuration.dot1x.system_auth_control, null)
 
-  credentials = [
-    for cred in try(local.device_config[each.value.name].dot1x.credentials, []) : {
+  credentials = try(length(local.device_config[each.value.name].dot1x.credentials) == 0, true) ? null : [
+    for cred in local.device_config[each.value.name].dot1x.credentials : {
       profile_name   = try(cred.profile_name, local.defaults.iosxe.configuration.dot1x.credentials.profile_name, null)
       description    = try(cred.description, local.defaults.iosxe.configuration.dot1x.credentials.description, null)
       username       = try(cred.username, local.defaults.iosxe.configuration.dot1x.credentials.username, null)
@@ -22,5 +22,4 @@ resource "iosxe_dot1x" "dot1x" {
       anonymous_id   = try(cred.anonymous_id, local.defaults.iosxe.configuration.dot1x.credentials.anonymous_id, null)
     }
   ]
-
 }

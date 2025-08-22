@@ -6,9 +6,9 @@ resource "iosxe_arp" "arp" {
   proxy_disable      = try(local.device_config[each.value.name].arp.proxy_disable, local.defaults.iosxe.configuration.arp.proxy_disable, null)
   entry_learn        = try(local.device_config[each.value.name].arp.entry_learn, local.defaults.iosxe.configuration.arp.entry_learn, null)
 
-  inspection_filters = [for e in try(local.device_config[each.value.name].arp.inspection_filters, []) : {
+  inspection_filters = try(length(local.device_config[each.value.name].arp.inspection_filters) == 0, true) ? null : [for e in local.device_config[each.value.name].arp.inspection_filters : {
     name = try(e.name, local.defaults.iosxe.configuration.arp.inspection_filters.name, null)
-    vlans = [for v in try(e.vlans, []) : {
+    vlans = try(length(e.vlans) == 0, true) ? null : [for v in e.vlans : {
       vlan_range = try(v.vlan_range, local.defaults.iosxe.configuration.arp.inspection_filters.vlans.vlan_range, null)
       static     = try(v.static, local.defaults.iosxe.configuration.arp.inspection_filters.vlans.static, null)
     }]
@@ -22,4 +22,8 @@ resource "iosxe_arp" "arp" {
   inspection_log_buffer_logs_entries  = try(local.device_config[each.value.name].arp.inspection_log_buffer_logs_entries, local.defaults.iosxe.configuration.arp.inspection_log_buffer_logs_entries, null)
   inspection_log_buffer_logs_interval = try(local.device_config[each.value.name].arp.inspection_log_buffer_logs_interval, local.defaults.iosxe.configuration.arp.inspection_log_buffer_logs_interval, null)
   inspection_vlan                     = try(local.device_config[each.value.name].arp.inspection_vlan, local.defaults.iosxe.configuration.arp.inspection_vlan, null)
+
+  depends_on = [
+    iosxe_vlan.vlan,
+  ]
 }

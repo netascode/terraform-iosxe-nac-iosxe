@@ -13,8 +13,8 @@ locals {
         update_policy_on_change = try(sub.update_policy_on_change, local.defaults.iosxe.configuration.mdt_subscriptions.update_policy_on_change, null)
         filter_xpath            = try(sub.filter_xpath, local.defaults.iosxe.configuration.mdt_subscriptions.filter_xpath, null)
 
-        receivers = [
-          for r in try(sub.receivers, local.defaults.iosxe.configuration.mdt_subscriptions.receivers, []) : {
+        receivers = try(length(sub.receivers) == 0, true) ? null : [
+          for r in sub.receivers : {
             address  = try(r.ip, local.defaults.iosxe.configuration.mdt_subscriptions.receivers.ip, null)
             port     = try(r.port, local.defaults.iosxe.configuration.mdt_subscriptions.receivers.port, null)
             protocol = try(r.protocol, local.defaults.iosxe.configuration.mdt_subscriptions.receivers.protocol, null)
@@ -24,7 +24,7 @@ locals {
     ]
   ])
 }
-resource "iosxe_mdt_subscription" "mdt_subscriptions" {
+resource "iosxe_mdt_subscription" "mdt_subscription" {
   for_each = { for e in local.mdt_subscriptions : e.key => e }
 
   device                  = each.value.device

@@ -6,7 +6,7 @@ resource "iosxe_cdp" "cdp" {
   timer           = try(local.device_config[each.value.name].cdp.timer, local.defaults.iosxe.configuration.cdp.timer, null)
   run             = try(local.device_config[each.value.name].cdp.run, local.defaults.iosxe.configuration.cdp.run, null)
   filter_tlv_list = try(local.device_config[each.value.name].cdp.filter_tlv, local.defaults.iosxe.configuration.cdp.filter_tlv, null)
-  tlv_lists = [for tlv in try(local.device_config[each.value.name].cdp.tlv_lists, []) : {
+  tlv_lists = try(length(local.device_config[each.value.name].cdp.tlv_lists) == 0, true) ? null : [for tlv in local.device_config[each.value.name].cdp.tlv_lists : {
     name            = try(tlv.name, local.defaults.iosxe.configuration.cdp.tlv_lists.name, null)
     vtp_mgmt_domain = try(tlv.vtp_mgmt_domain, local.defaults.iosxe.configuration.cdp.tlv_lists.vtp_mgmt_domain, null)
     cos             = try(tlv.cos, local.defaults.iosxe.configuration.cdp.tlv_lists.cos, null)

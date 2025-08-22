@@ -3,6 +3,9 @@ resource "iosxe_clock" "clock" {
   device   = each.value.name
 
   calendar_valid                      = try(local.device_config[each.value.name].clock.calendar_valid, local.defaults.iosxe.configuration.clock.calendar_valid, null)
+  timezone                            = try(local.device_config[each.value.name].clock.timezone, local.defaults.iosxe.configuration.clock.timezone, null)
+  timezone_offset_hours               = try(local.device_config[each.value.name].clock.timezone_offset_hours, local.defaults.iosxe.configuration.clock.timezone_offset_hours, null)
+  timezone_offset_minutes             = try(local.device_config[each.value.name].clock.timezone_offset_minutes, local.defaults.iosxe.configuration.clock.timezone_offset_minutes, null)
   summer_time_zone                    = try(local.device_config[each.value.name].clock.summer_time.zone, local.defaults.iosxe.configuration.clock.summer_time.zone, null)
   summer_time_date                    = try(local.device_config[each.value.name].clock.summer_time.date.enabled, local.defaults.iosxe.configuration.clock.summer_time.date.enabled, null)
   summer_time_date_start_day          = try(local.device_config[each.value.name].clock.summer_time.date.start_day, local.defaults.iosxe.configuration.clock.summer_time.date.start_day, null)

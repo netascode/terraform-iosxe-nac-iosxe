@@ -8,3 +8,8 @@ output "model" {
   description = "Full devices model."
   value       = local.iosxe_devices
 }
+
+output "devices" {
+  description = "List of all devices."
+  value       = local.all_devices
+}
