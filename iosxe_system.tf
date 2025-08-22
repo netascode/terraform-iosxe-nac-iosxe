@@ -147,14 +147,31 @@ resource "iosxe_system" "system" {
       name  = try(cmd.name, local.defaults.iosxe.configuration.system.http.authentication_aaa_command_authorizations.name, null)
     }
   ]
-
-  depends_on = [
-    iosxe_vrf.vrf,
-    iosxe_interface_ethernet.ethernet,
-    iosxe_interface_loopback.loopback,
-    iosxe_interface_vlan.vlan,
-    iosxe_interface_port_channel.port_channel,
-    iosxe_interface_port_channel_subinterface.port_channel_subinterface,
-    iosxe_policy_map.policy_map
-  ]
 }
+    
+locals {
+  username = flatten([
+    for device in local.devices : [
+      for username in try(local.device_config[device.name].username, []) : {
+        key                 = format("%s/%s", device.name, username.name)
+        device              = device.name
+        name                = try(username.name, local.defaults.iosxe.configuration.username.name, null)
+        privilege           = try(username.privilege, local.defaults.iosxe.configuration.username.privilege, null)
+        description         = try(username.description, local.defaults.iosxe.configuration.username.description, null)
+        password_encryption = try(username.password_encryption, local.defaults.iosxe.configuration.username.password_encryption, null)
+        password            = try(username.password, local.defaults.iosxe.configuration.username.password, null)
+      }
+    ]
+  ])
+}
+resource "iosxe_username" "username" {
+  for_each = { for user in local.username : user.key => user }
+  device   = each.value.device_name
+
+  name                = each.value.name
+  privilege           = each.value.privilege
+  description         = each.value.description
+  password_encryption = each.value.password_encryption
+  password            = each.value.password
+}
+
