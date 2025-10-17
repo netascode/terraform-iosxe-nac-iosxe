@@ -5,7 +5,9 @@ resource "iosxe_bgp" "bgp" {
   asn                  = try(local.device_config[each.value.name].routing.bgp.as_number, local.defaults.iosxe.configuration.routing.bgp.as_number, null)
   default_ipv4_unicast = try(local.device_config[each.value.name].routing.bgp.default_ipv4_unicast, local.defaults.iosxe.configuration.routing.bgp.default_ipv4_unicast, null)
   log_neighbor_changes = try(local.device_config[each.value.name].routing.bgp.log_neighbor_changes, local.defaults.iosxe.configuration.routing.bgp.log_neighbor_changes, null)
-  router_id_loopback   = try(local.device_config[each.value.name].routing.bgp.router_id_interface_type, local.defaults.iosxe.configuration.routing.bgp.router_id_interface_type, null) == "Loopback" ? try(local.device_config[each.value.name].routing.bgp.router_id_interface_id, local.defaults.iosxe.configuration.routing.bgp.router_id_interface_id, null) : null
+  # Router-ID configuration: Direct IP (new) or interface-based (existing)
+  router_id_ip       = try(local.device_config[each.value.name].routing.bgp.router_id, local.defaults.iosxe.configuration.routing.bgp.router_id, null)
+  router_id_loopback = try(local.device_config[each.value.name].routing.bgp.router_id_interface_type, local.defaults.iosxe.configuration.routing.bgp.router_id_interface_type, null) == "Loopback" ? try(local.device_config[each.value.name].routing.bgp.router_id_interface_id, local.defaults.iosxe.configuration.routing.bgp.router_id_interface_id, null) : null
 
   depends_on = [
     iosxe_interface_loopback.loopback,
@@ -162,10 +164,12 @@ resource "iosxe_bgp_address_family_ipv4_vrf" "bgp_address_family_ipv4_vrf" {
     name                                = vrf.vrf
     ipv4_unicast_advertise_l2vpn_evpn   = try(vrf.advertise_l2vpn_evpn, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.advertise_l2vpn_evpn, null)
     ipv4_unicast_redistribute_connected = try(vrf.redistribute.connected, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.redistribute.connected, null)
-    ipv4_unicast_router_id_loopback     = try(vrf.router_id_interface_type, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.router_id_interface_type, null) == "Loopback" ? try(vrf.router_id_interface_id, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.router_id_interface_id, null) : null
-    ipv4_unicast_distance_bgp_external  = try(vrf.distance_bgp_external, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.distance_bgp_external, null)
-    ipv4_unicast_distance_bgp_internal  = try(vrf.distance_bgp_internal, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.distance_bgp_internal, null)
-    ipv4_unicast_distance_bgp_local     = try(vrf.distance_bgp_local, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.distance_bgp_local, null)
+    # VRF Router-ID configuration: Direct IP (new) or interface-based (existing)
+    ipv4_unicast_router_id_ip          = try(vrf.router_id, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.router_id, null)
+    ipv4_unicast_router_id_loopback    = try(vrf.router_id_interface_type, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.router_id_interface_type, null) == "Loopback" ? try(vrf.router_id_interface_id, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.router_id_interface_id, null) : null
+    ipv4_unicast_distance_bgp_external = try(vrf.distance_bgp_external, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.distance_bgp_external, null)
+    ipv4_unicast_distance_bgp_internal = try(vrf.distance_bgp_internal, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.distance_bgp_internal, null)
+    ipv4_unicast_distance_bgp_local    = try(vrf.distance_bgp_local, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.distance_bgp_local, null)
     ipv4_unicast_aggregate_addresses = try(length(vrf.aggregate_addresses) == 0, true) ? null : [for agg in vrf.aggregate_addresses : {
       ipv4_address = try(agg.address, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.aggregate_addresses.address, null)
       ipv4_mask    = try(agg.mask, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.aggregate_addresses.mask, null)
