@@ -254,6 +254,8 @@ resource "iosxe_interface_ethernet" "ethernet" {
   spanning_tree_portfast                     = each.value.spanning_tree_portfast
   spanning_tree_portfast_disable             = each.value.spanning_tree_portfast_disable
   spanning_tree_portfast_edge                = each.value.spanning_tree_portfast_edge
+  bpduguard_enable                           = each.value.bpduguard_enable
+  bpduguard_disable                          = each.value.bpduguard_disable
   speed_100                                  = each.value.speed_100
   speed_1000                                 = each.value.speed_1000
   speed_2500                                 = each.value.speed_2500
