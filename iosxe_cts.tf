@@ -11,6 +11,8 @@ resource "iosxe_cts" "cts" {
     ),
     null
   )
+
+  role_based_enforcement                  = try(local.device_config[each.value.name].cts.role_based_enforcement, local.defaults.iosxe.configuration.cts.role_based_enforcement, null)
   role_based_permissions_default_acl_name = try(local.device_config[each.value.name].cts.role_based_permissions_default_acl_name, local.defaults.iosxe.configuration.cts.role_based_permissions_default_acl_name, null)
   sgt                                     = try(local.device_config[each.value.name].cts.sgt, local.defaults.iosxe.configuration.cts.sgt, null)
   sxp_default_password                    = try(local.device_config[each.value.name].cts.sxp_default_password, local.defaults.iosxe.configuration.cts.sxp_default_password, null)
