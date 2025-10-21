@@ -56,32 +56,27 @@ locals {
           name      = try(fm.name, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv6.flow_monitors.name, null)
           direction = try(fm.direction, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv6.flow_monitors.direction, null)
         }]
-        bfd_enable                     = try(int.bfd.enable, local.defaults.iosxe.devices.configuration.interfaces.ethernets.bfd.enable, null)
-        bfd_template                   = try(int.bfd.template, local.defaults.iosxe.devices.configuration.interfaces.ethernets.bfd.template, null)
-        bfd_local_address              = try(int.bfd.local_address, local.defaults.iosxe.devices.configuration.interfaces.ethernets.bfd.local_address, null)
-        bfd_interval                   = try(int.bfd.interval, local.defaults.iosxe.devices.configuration.interfaces.ethernets.bfd.interval, null)
-        bfd_interval_min_rx            = try(int.bfd.interval_min_rx, local.defaults.iosxe.devices.configuration.interfaces.ethernets.bfd.interval_min_rx, null)
-        bfd_interval_multiplier        = try(int.bfd.interval_multiplier, local.defaults.iosxe.devices.configuration.interfaces.ethernets.bfd.interval_multiplier, null)
-        bfd_echo                       = try(int.bfd.echo, local.defaults.iosxe.devices.configuration.interfaces.ethernets.bfd.echo, null)
-        spanning_tree_guard            = try(int.spanning_tree.guard, local.defaults.iosxe.devices.configuration.interfaces.ethernets.spanning_tree.guard, null)
-        spanning_tree_link_type        = try(int.spanning_tree.link_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.spanning_tree.link_type, null)
-        spanning_tree_portfast_trunk   = try(int.spanning_tree.portfast_trunk, local.defaults.iosxe.devices.configuration.interfaces.ethernets.spanning_tree.portfast_trunk, null)
-        spanning_tree_portfast         = try(int.spanning_tree.portfast, local.defaults.iosxe.devices.configuration.interfaces.ethernets.spanning_tree.portfast, null)
-        spanning_tree_portfast_disable = try(int.spanning_tree.portfast_disable, local.defaults.iosxe.devices.configuration.interfaces.ethernets.spanning_tree.portfast_disable, null)
-        spanning_tree_portfast_edge    = try(int.spanning_tree.portfast_edge, local.defaults.iosxe.devices.configuration.interfaces.ethernets.spanning_tree.portfast_edge, null)
-        bpduguard_enable               = try(int.spanning_tree.bpduguard, local.defaults.iosxe.devices.configuration.interfaces.ethernets.spanning_tree.bpduguard, null)
-        bpduguard_disable              = try(int.spanning_tree.bpduguard_disable, local.defaults.iosxe.devices.configuration.interfaces.ethernets.spanning_tree.bpduguard_disable, null)
-        speed_100                      = try(int.speed, local.defaults.iosxe.devices.configuration.interfaces.ethernets.speed, null) == 100 ? true : null
-        speed_1000                     = try(int.speed, local.defaults.iosxe.devices.configuration.interfaces.ethernets.speed, null) == 1000 ? true : null
-        speed_2500                     = try(int.speed, local.defaults.iosxe.devices.configuration.interfaces.ethernets.speed, null) == 2500 ? true : null
-        speed_5000                     = try(int.speed, local.defaults.iosxe.devices.configuration.interfaces.ethernets.speed, null) == 5000 ? true : null
-        speed_10000                    = try(int.speed, local.defaults.iosxe.devices.configuration.interfaces.ethernets.speed, null) == 10000 ? true : null
-        speed_25000                    = try(int.speed, local.defaults.iosxe.devices.configuration.interfaces.ethernets.speed, null) == 25000 ? true : null
-        speed_40000                    = try(int.speed, local.defaults.iosxe.devices.configuration.interfaces.ethernets.speed, null) == 40000 ? true : null
-        speed_100000                   = try(int.speed, local.defaults.iosxe.devices.configuration.interfaces.ethernets.speed, null) == 100000 ? true : null
-        speed_nonegotiate              = try(int.speed_nonegotiate, local.defaults.iosxe.devices.configuration.interfaces.ethernets.speed_nonegotiate, null)
-        channel_group_number           = try(int.port_channel_id, local.defaults.iosxe.devices.configuration.interfaces.ethernets.port_channel_id, null)
-        channel_group_mode             = try(int.port_channel_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.port_channel_mode, null)
+        bfd_enable                   = try(int.bfd.enable, local.defaults.iosxe.devices.configuration.interfaces.ethernets.bfd.enable, null)
+        bfd_template                 = try(int.bfd.template, local.defaults.iosxe.devices.configuration.interfaces.ethernets.bfd.template, null)
+        bfd_local_address            = try(int.bfd.local_address, local.defaults.iosxe.devices.configuration.interfaces.ethernets.bfd.local_address, null)
+        bfd_interval                 = try(int.bfd.interval, local.defaults.iosxe.devices.configuration.interfaces.ethernets.bfd.interval, null)
+        bfd_interval_min_rx          = try(int.bfd.interval_min_rx, local.defaults.iosxe.devices.configuration.interfaces.ethernets.bfd.interval_min_rx, null)
+        bfd_interval_multiplier      = try(int.bfd.interval_multiplier, local.defaults.iosxe.devices.configuration.interfaces.ethernets.bfd.interval_multiplier, null)
+        bfd_echo                     = try(int.bfd.echo, local.defaults.iosxe.devices.configuration.interfaces.ethernets.bfd.echo, null)
+        spanning_tree_guard          = try(int.spanning_tree.guard, local.defaults.iosxe.devices.configuration.interfaces.ethernets.spanning_tree.guard, null)
+        spanning_tree_link_type      = try(int.spanning_tree.link_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.spanning_tree.link_type, null)
+        spanning_tree_portfast_trunk = try(int.spanning_tree.portfast_trunk, local.defaults.iosxe.devices.configuration.interfaces.ethernets.spanning_tree.portfast_trunk, null)
+        speed_100                    = try(int.speed, local.defaults.iosxe.devices.configuration.interfaces.ethernets.speed, null) == 100 ? true : null
+        speed_1000                   = try(int.speed, local.defaults.iosxe.devices.configuration.interfaces.ethernets.speed, null) == 1000 ? true : null
+        speed_2500                   = try(int.speed, local.defaults.iosxe.devices.configuration.interfaces.ethernets.speed, null) == 2500 ? true : null
+        speed_5000                   = try(int.speed, local.defaults.iosxe.devices.configuration.interfaces.ethernets.speed, null) == 5000 ? true : null
+        speed_10000                  = try(int.speed, local.defaults.iosxe.devices.configuration.interfaces.ethernets.speed, null) == 10000 ? true : null
+        speed_25000                  = try(int.speed, local.defaults.iosxe.devices.configuration.interfaces.ethernets.speed, null) == 25000 ? true : null
+        speed_40000                  = try(int.speed, local.defaults.iosxe.devices.configuration.interfaces.ethernets.speed, null) == 40000 ? true : null
+        speed_100000                 = try(int.speed, local.defaults.iosxe.devices.configuration.interfaces.ethernets.speed, null) == 100000 ? true : null
+        speed_nonegotiate            = try(int.speed_nonegotiate, local.defaults.iosxe.devices.configuration.interfaces.ethernets.speed_nonegotiate, null)
+        channel_group_number         = try(int.port_channel_id, local.defaults.iosxe.devices.configuration.interfaces.ethernets.port_channel_id, null)
+        channel_group_mode           = try(int.port_channel_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.port_channel_mode, null)
         source_templates = try(length(int.source_templates) == 0, true) ? null : [for st in int.source_templates : {
           template_name = try(st.name, local.defaults.iosxe.devices.configuration.interfaces.ethernets.source_templates.name, null)
           merge         = try(st.merge, local.defaults.iosxe.devices.configuration.interfaces.ethernets.source_templates.merge, null)
@@ -251,11 +246,6 @@ resource "iosxe_interface_ethernet" "ethernet" {
   spanning_tree_guard                        = each.value.spanning_tree_guard
   spanning_tree_link_type                    = each.value.spanning_tree_link_type
   spanning_tree_portfast_trunk               = each.value.spanning_tree_portfast_trunk
-  spanning_tree_portfast                     = each.value.spanning_tree_portfast
-  spanning_tree_portfast_disable             = each.value.spanning_tree_portfast_disable
-  spanning_tree_portfast_edge                = each.value.spanning_tree_portfast_edge
-  bpduguard_enable                           = each.value.bpduguard_enable
-  bpduguard_disable                          = each.value.bpduguard_disable
   speed_100                                  = each.value.speed_100
   speed_1000                                 = each.value.speed_1000
   speed_2500                                 = each.value.speed_2500
@@ -852,9 +842,9 @@ locals {
   interfaces_port_channels = flatten([
     for device in local.devices : [
       for int in try(local.device_config[device.name].interfaces.port_channels, []) : {
-        key                            = format("%s/Port-channel%s", device.name, int.name)
+        key                            = format("%s/Port-channel%s", device.name, trimprefix(int.id, "$string "))
         device                         = device.name
-        name                           = int.name
+        name                           = trimprefix(int.id, "$string ")
         description                    = try(int.description, local.defaults.iosxe.devices.configuration.interfaces.port_channels.description, null)
         shutdown                       = try(int.shutdown, local.defaults.iosxe.devices.configuration.interfaces.port_channels.shutdown, false)
         vrf_forwarding                 = try(int.vrf_forwarding, local.defaults.iosxe.devices.configuration.interfaces.port_channels.vrf_forwarding, null)
@@ -898,6 +888,7 @@ locals {
         bfd_echo                         = try(int.bfd.echo, local.defaults.iosxe.devices.configuration.interfaces.port_channels.bfd.echo, null)
         spanning_tree_guard              = try(int.spanning_tree.guard, local.defaults.iosxe.devices.configuration.interfaces.port_channels.spanning_tree.guard, null)
         spanning_tree_link_type          = try(int.spanning_tree.link_type, local.defaults.iosxe.devices.configuration.interfaces.port_channels.spanning_tree.link_type, null)
+        spanning_tree_portfast_trunk     = try(int.spanning_tree.portfast_trunk, local.defaults.iosxe.devices.configuration.interfaces.port_channels.spanning_tree.portfast_trunk, null)
         arp_timeout                      = try(int.arp_timeout, local.defaults.iosxe.devices.configuration.interfaces.port_channels.arp_timeout, null)
         load_interval                    = try(int.load_interval, local.defaults.iosxe.devices.configuration.interfaces.port_channels.load_interval, null)
         snmp_trap_link_status            = try(int.snmp_trap_link_status, local.defaults.iosxe.devices.configuration.interfaces.port_channels.snmp_trap_link_status, null)
@@ -1160,9 +1151,9 @@ locals {
     for device in local.devices : [
       for pc in try(local.device_config[device.name].interfaces.port_channels, []) : [
         for sub in try(pc.subinterfaces, []) : {
-          key                          = format("%s/Port-channel%s", device.name, sub.name)
+          key                          = format("%s/Port-channel%s", device.name, trimprefix(sub.id, "$string "))
           device                       = device.name
-          name                         = sub.name
+          name                         = trimprefix(sub.id, "$string ")
           description                  = try(sub.description, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.description, null)
           shutdown                     = try(sub.shutdown, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.shutdown, false)
           vrf_forwarding               = try(sub.vrf_forwarding, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.vrf_forwarding, null)
