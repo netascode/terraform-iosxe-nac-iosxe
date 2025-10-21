@@ -123,18 +123,27 @@ locals {
 
   global_cli_templates_raw = { for device in local.managed_devices :
     device.name => {
-      for t in try(local.global.templates, []) : local.templates[t].name => local.templates[t].content if try(local.templates[t].type, null) == "cli" && try(local.templates[t].content, "") != ""
+      for t in try(local.global.templates, []) : local.templates[t].name => {
+        content = local.templates[t].content
+        order   = try(local.templates[t].order, local.defaults.iosxe.templates.order)
+      } if try(local.templates[t].type, null) == "cli" && try(local.templates[t].content, "") != ""
     }
   }
 
   global_cli_templates = { for device, templates in local.global_cli_templates_raw :
-    device => { for name, content in templates : name => templatestring(content, local.device_variables[device]) }
+    device => { for name, template in templates : name => {
+      content = templatestring(template.content, local.device_variables[device])
+      order   = template.order
+    } }
   }
 
   group_cli_templates_raw = { for device in local.managed_devices :
     device.name => {
       for dg in local.device_groups : dg.name => {
-        for t in try(dg.templates, []) : "${local.templates[t].name}/${dg.name}" => local.templates[t].content if try(local.templates[t].type, null) == "cli" && try(local.templates[t].content, "") != ""
+        for t in try(dg.templates, []) : "${local.templates[t].name}/${dg.name}" => {
+          content = local.templates[t].content
+          order   = try(local.templates[t].order, local.defaults.iosxe.templates.order)
+        } if try(local.templates[t].type, null) == "cli" && try(local.templates[t].content, "") != ""
       }
       if contains(try(device.device_groups, []), dg.name) || contains(try(dg.devices, []), device.name)
     }
@@ -143,26 +152,35 @@ locals {
   group_cli_templates = { for device, groups in local.group_cli_templates_raw :
     device => merge([
       for group_name, group_configs in groups : {
-        for name, content in group_configs : name => templatestring(content, merge(local.device_variables[device], [for dg in local.device_groups : try(dg.variables, {}) if group_name == dg.name][0]))
+        for name, template in group_configs : name => {
+          content = templatestring(template.content, merge(local.device_variables[device], [for dg in local.device_groups : try(dg.variables, {}) if group_name == dg.name][0]))
+          order   = template.order
+        }
       }
     ]...)
   }
 
   device_cli_templates_raw = { for device in local.managed_devices :
     device.name => {
-      for t in try(device.templates, []) : local.templates[t].name => local.templates[t].content if try(local.templates[t].type, null) == "cli" && try(local.templates[t].content, "") != ""
+      for t in try(device.templates, []) : local.templates[t].name => {
+        content = local.templates[t].content
+        order   = try(local.templates[t].order, local.defaults.iosxe.templates.order)
+      } if try(local.templates[t].type, null) == "cli" && try(local.templates[t].content, "") != ""
     }
   }
 
   device_cli_templates = { for device, configs in local.device_cli_templates_raw :
-    device => { for name, content in configs : name => templatestring(content, local.device_variables[device]) }
+    device => { for name, template in configs : name => {
+      content = templatestring(template.content, local.device_variables[device])
+      order   = template.order
+    } }
   }
 
   all_cli_templates = { for device in local.managed_devices :
     device.name => concat(
-      [for name, content in local.global_cli_templates[device.name] : { "name" = name, "content" = content }],
-      [for name, content in local.group_cli_templates[device.name] : { "name" = name, "content" = content }],
-      [for name, content in local.device_cli_templates[device.name] : { "name" = name, "content" = content }],
+      [for name, template in local.global_cli_templates[device.name] : { "name" = name, "content" = template.content, "order" = template.order }],
+      [for name, template in local.group_cli_templates[device.name] : { "name" = name, "content" = template.content, "order" = template.order }],
+      [for name, template in local.device_cli_templates[device.name] : { "name" = name, "content" = template.content, "order" = template.order }],
       try(device.cli_templates, [])
     )
   }
