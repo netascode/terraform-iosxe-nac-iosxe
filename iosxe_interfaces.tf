@@ -844,9 +844,9 @@ locals {
   interfaces_port_channels = flatten([
     for device in local.devices : [
       for int in try(local.device_config[device.name].interfaces.port_channels, []) : {
-        key                            = format("%s/Port-channel%s", device.name, int.name)
+        key                            = format("%s/Port-channel%s", device.name, trimprefix(int.id, "$string "))
         device                         = device.name
-        name                           = int.name
+        name                           = trimprefix(int.id, "$string ")
         description                    = try(int.description, local.defaults.iosxe.devices.configuration.interfaces.port_channels.description, null)
         shutdown                       = try(int.shutdown, local.defaults.iosxe.devices.configuration.interfaces.port_channels.shutdown, false)
         vrf_forwarding                 = try(int.vrf_forwarding, local.defaults.iosxe.devices.configuration.interfaces.port_channels.vrf_forwarding, null)
@@ -1153,9 +1153,9 @@ locals {
     for device in local.devices : [
       for pc in try(local.device_config[device.name].interfaces.port_channels, []) : [
         for sub in try(pc.subinterfaces, []) : {
-          key                          = format("%s/Port-channel%s", device.name, sub.name)
+          key                          = format("%s/Port-channel%s", device.name, trimprefix(sub.id, "$string "))
           device                       = device.name
-          name                         = sub.name
+          name                         = trimprefix(sub.id, "$string ")
           description                  = try(sub.description, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.description, null)
           shutdown                     = try(sub.shutdown, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.shutdown, false)
           vrf_forwarding               = try(sub.vrf_forwarding, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.vrf_forwarding, null)
