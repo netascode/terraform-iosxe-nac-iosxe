@@ -725,6 +725,7 @@ resource "iosxe_interface_vlan" "vlan" {
   ipv4_address                    = each.value.ipv4_address
   ipv4_address_mask               = each.value.ipv4_address_mask
   ip_proxy_arp                    = each.value.ip_proxy_arp
+  mac_address                     = each.value.mac_address
   ip_dhcp_relay_source_interface  = each.value.ip_dhcp_relay_source_interface
   helper_addresses                = each.value.helper_addresses
   ip_access_group_in              = each.value.ip_access_group_in
