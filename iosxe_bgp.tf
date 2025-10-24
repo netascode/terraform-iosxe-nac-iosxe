@@ -180,20 +180,19 @@ resource "iosxe_bgp_peer_policy_template" "bgp_peer_policy_template" {
 locals {
   template_peer_policies = flatten([
     for device in local.devices : [
-      for peer_policy in try(local.device_config[device_name].routing.bgp.template_peer_policies, []) : {
+      for peer_policy in try(local.device_config[device.name].routing.bgp.template_peer_policies, []) : {
         key                       = format("%s/%s", device.name, peer_policy.name)
         device                    = device.name
         asn                       = iosxe_bgp.bgp[device.name].asn
+        name                      = try(peer_policy.name, null)
         send_community            = try(peer_policy.send_community, null)
         route_reflector_client    = try(peer_policy.route_reflector_client, null)
-        allow_in_as_number        = try(peer_polivy.allow_in_as_number, null)
+        allowas_in_as_number      = try(peer_policy.allowas_in_as_number, null)
         as_override_split_horizon = try(peer_policy.as_override_split_horizon, null)
-        route_maps = flatten([
-          for route_map in try(peer_policy.route_maps, []) : {
-            direction = try(route_map.direection, null)
-            name      = try(route_map.name, null)
-          }
-        ])
+        route_maps = try(length(peer_policy.route_maps) == 0, true) ? null : [for route_map in peer_policy.route_maps : {
+          in_out         = try(route_map.in_out, null)
+          route_map_name = try(route_map.route_map_name, null)
+        }]
       }
     ]
   ])
@@ -204,14 +203,12 @@ resource "iosxe_bgp_template_peer_policy" "bgp_template_peer_policy" {
   device   = each.value.device
 
   asn                       = each.value.asn
+  name                      = each.value.name
   send_community            = each.value.send_community
-  route_felector_client     = each.value.route_reflector_client
-  allow_in_as_number        = each.value.allow_in_as_number
+  route_reflector_client    = each.value.route_reflector_client
+  allowas_in_as_number      = each.value.allowas_in_as_number
   as_override_split_horizon = each.value.as_override_split_horizon
-  route_maps = try(length(eache.value.route_maps) == 0, true) ? null : [for rm in neighbor.route_maps : {
-    direction = try(rm.direction, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.neighbors.route_maps.direction, null)
-    name      = try(rm.name, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.neighbors.route_maps.name, null)
-  }]
+  route_maps                = each.value.route_maps
 
   depends_on = [iosxe_route_map.route_map]
 }
