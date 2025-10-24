@@ -14,54 +14,18 @@ locals {
         match_activated_service_templates = try(length(class_map.match.activated_service_templates) == 0, true) ? null : [for template in class_map.match.activated_service_templates : {
           service_name = try(template.service_name, local.defaults.iosxe.configuration.policy.class_maps.match.activated_service_templates.service_name, null)
         }]
-        match_authorizing_method_priority_greater_than = try(class_map.match.authorizing_method_priority_greater_than, local.defaults.iosxe.configuration.policy.class_maps.match.authorizing_method_priority_greater_than, null)
+        match_authorizing_method_priority_greater_than = can(class_map.match.authorizing_method_priority_greater_than) ? class_map.match.authorizing_method_priority_greater_than : null
         match_method_dot1x                             = try(class_map.match.method_dot1x, local.defaults.iosxe.configuration.policy.class_maps.match.method_dot1x, null)
         match_result_type_method_dot1x_authoritative   = try(class_map.match.result_type_method_dot1x_authoritative, local.defaults.iosxe.configuration.policy.class_maps.match.result_type_method_dot1x_authoritative, null)
         match_result_type_method_dot1x_agent_not_found = try(class_map.match.result_type_method_dot1x_agent_not_found, local.defaults.iosxe.configuration.policy.class_maps.match.result_type_method_dot1x_agent_not_found, null)
         match_result_type_method_dot1x_method_timeout  = try(class_map.match.result_type_method_dot1x_method_timeout, local.defaults.iosxe.configuration.policy.class_maps.match.result_type_method_dot1x_method_timeout, null)
         match_method_mab                               = try(class_map.match.method_mab, local.defaults.iosxe.configuration.policy.class_maps.match.method_mab, null)
         match_result_type_method_mab_authoritative     = try(class_map.match.result_type_method_mab_authoritative, local.defaults.iosxe.configuration.policy.class_maps.match.result_type_method_mab_authoritative, null)
-        match_dscp = length(
-          compact(concat(
-            try([for v in class_map.match.dscp : tostring(v)], []),
-            try([for v in local.defaults.iosxe.configuration.policy.class_maps.match.dscp : tostring(v)], [])
-          ))
-          ) > 0 ? tolist(compact(concat(
-            try([for v in class_map.match.dscp : tostring(v)], []),
-            try([for v in local.defaults.iosxe.configuration.policy.class_maps.match.dscp : tostring(v)], [])
-        ))) : null
-        match_access_group_name = length(
-          compact(concat(
-            try(tolist(class_map.match.access_groups), []),
-            try([class_map.match.access_group], []),
-            try(tolist(local.defaults.iosxe.configuration.policy.class_maps.match.access_groups), []),
-            try([local.defaults.iosxe.configuration.policy.class_maps.match.access_group], [])
-          ))
-          ) > 0 ? tolist(compact(concat(
-            try(tolist(class_map.match.access_groups), []),
-            try([class_map.match.access_group], []),
-            try(tolist(local.defaults.iosxe.configuration.policy.class_maps.match.access_groups), []),
-            try([local.defaults.iosxe.configuration.policy.class_maps.match.access_group], [])
-        ))) : null
-        match_ip_dscp = length(
-          compact(concat(
-            try(can(tolist(class_map.match.ip_dscp)) ? [for v in class_map.match.ip_dscp : tostring(v)] : [tostring(class_map.match.ip_dscp)], []),
-            try(can(tolist(local.defaults.iosxe.configuration.policy.class_maps.match.ip_dscp)) ? [for v in local.defaults.iosxe.configuration.policy.class_maps.match.ip_dscp : tostring(v)] : [tostring(local.defaults.iosxe.configuration.policy.class_maps.match.ip_dscp)], [])
-          ))
-          ) > 0 ? tolist(compact(concat(
-            try(can(tolist(class_map.match.ip_dscp)) ? [for v in class_map.match.ip_dscp : tostring(v)] : [tostring(class_map.match.ip_dscp)], []),
-            try(can(tolist(local.defaults.iosxe.configuration.policy.class_maps.match.ip_dscp)) ? [for v in local.defaults.iosxe.configuration.policy.class_maps.match.ip_dscp : tostring(v)] : [tostring(local.defaults.iosxe.configuration.policy.class_maps.match.ip_dscp)], [])
-        ))) : null
-        match_ip_precedence = length(
-          compact(concat(
-            try(can(tolist(class_map.match.ip_precedence)) ? [for v in class_map.match.ip_precedence : tostring(v)] : [tostring(class_map.match.ip_precedence)], []),
-            try(can(tolist(local.defaults.iosxe.configuration.policy.class_maps.match.ip_precedence)) ? [for v in local.defaults.iosxe.configuration.policy.class_maps.match.ip_precedence : tostring(v)] : [tostring(local.defaults.iosxe.configuration.policy.class_maps.match.ip_precedence)], [])
-          ))
-          ) > 0 ? tolist(compact(concat(
-            try(can(tolist(class_map.match.ip_precedence)) ? [for v in class_map.match.ip_precedence : tostring(v)] : [tostring(class_map.match.ip_precedence)], []),
-            try(can(tolist(local.defaults.iosxe.configuration.policy.class_maps.match.ip_precedence)) ? [for v in local.defaults.iosxe.configuration.policy.class_maps.match.ip_precedence : tostring(v)] : [tostring(local.defaults.iosxe.configuration.policy.class_maps.match.ip_precedence)], [])
-        ))) : null
-        description = try(class_map.description, local.defaults.iosxe.configuration.policy.class_maps.description, null)
+        match_dscp                                     = can(class_map.match.dscp) ? class_map.match.dscp : null
+        match_access_group_name                        = can(class_map.match.access_groups) ? class_map.match.access_groups : null
+        match_ip_dscp                                  = can(class_map.match.ip_dscp) ? class_map.match.ip_dscp : null
+        match_ip_precedence                            = can(class_map.match.ip_precedence) ? class_map.match.ip_precedence : null
+        description                                    = try(class_map.description, local.defaults.iosxe.configuration.policy.class_maps.description, null)
       }
     ]
   ])
