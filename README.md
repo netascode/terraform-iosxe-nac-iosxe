@@ -88,6 +88,7 @@ module "iosxe" {
 | [iosxe_bgp_ipv6_unicast_neighbor.bgp_ipv6_unicast_neighbor](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.9.3/docs/resources/bgp_ipv6_unicast_neighbor) | resource |
 | [iosxe_bgp_l2vpn_evpn_neighbor.bgp_l2vpn_evpn_neighbor](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.9.3/docs/resources/bgp_l2vpn_evpn_neighbor) | resource |
 | [iosxe_bgp_neighbor.bgp_neighbor](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.9.3/docs/resources/bgp_neighbor) | resource |
+| [iosxe_bgp_template_peer_policy.bgp_template_peer_policy](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.9.3/docs/resources/bgp_template_peer_policy) | resource |
 | [iosxe_cdp.cdp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.9.3/docs/resources/cdp) | resource |
 | [iosxe_class_map.class_map](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.9.3/docs/resources/class_map) | resource |
 | [iosxe_cli.cli](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.9.3/docs/resources/cli) | resource |
