@@ -21,11 +21,42 @@ locals {
         match_result_type_method_dot1x_method_timeout  = try(class_map.match.result_type_method_dot1x_method_timeout, local.defaults.iosxe.configuration.policy.class_maps.match.result_type_method_dot1x_method_timeout, null)
         match_method_mab                               = try(class_map.match.method_mab, local.defaults.iosxe.configuration.policy.class_maps.match.method_mab, null)
         match_result_type_method_mab_authoritative     = try(class_map.match.result_type_method_mab_authoritative, local.defaults.iosxe.configuration.policy.class_maps.match.result_type_method_mab_authoritative, null)
-        match_dscp                                     = try(class_map.match.dscp, local.defaults.iosxe.configuration.policy.class_maps.match.dscp, null)
-        match_access_group_name                        = try(class_map.match.access_group, local.defaults.iosxe.configuration.policy.class_maps.match.access_group, null)
-        match_ip_dscp                                  = try(class_map.match.ip_dscp, local.defaults.iosxe.configuration.policy.class_maps.match.ip_dscp, null)
-        match_ip_precedence                            = try(class_map.match.ip_precedence, local.defaults.iosxe.configuration.policy.class_maps.match.ip_precedence, null)
-        description                                    = try(class_map.description, local.defaults.iosxe.configuration.policy.class_maps.description, null)
+        match_dscp = try(
+          length(class_map.match.dscp) > 0 ? [for v in class_map.match.dscp : tostring(v)] : null,
+          local.defaults.iosxe.configuration.policy.class_maps.match.dscp != null ? [for v in local.defaults.iosxe.configuration.policy.class_maps.match.dscp : tostring(v)] : null,
+          null
+        )
+        match_access_group_name = try(
+          # Prefer plural attribute
+          length(class_map.match.access_groups) > 0 ? class_map.match.access_groups : null,
+          # Fallback to singular (convert to list)
+          class_map.match.access_group != null ? [class_map.match.access_group] : null,
+          # Try defaults
+          length(local.defaults.iosxe.configuration.policy.class_maps.match.access_groups) > 0 ? local.defaults.iosxe.configuration.policy.class_maps.match.access_groups : null,
+          local.defaults.iosxe.configuration.policy.class_maps.match.access_group != null ? [local.defaults.iosxe.configuration.policy.class_maps.match.access_group] : null,
+          null
+        )
+        match_ip_dscp = try(
+          # If it's already a list, convert to list of strings
+          can(tolist(class_map.match.ip_dscp)) ? [for v in class_map.match.ip_dscp : tostring(v)] : null,
+          # If it's a single value, wrap in list and convert to string
+          class_map.match.ip_dscp != null ? [tostring(class_map.match.ip_dscp)] : null,
+          # Try defaults (same logic)
+          can(tolist(local.defaults.iosxe.configuration.policy.class_maps.match.ip_dscp)) ? [for v in local.defaults.iosxe.configuration.policy.class_maps.match.ip_dscp : tostring(v)] : null,
+          local.defaults.iosxe.configuration.policy.class_maps.match.ip_dscp != null ? [tostring(local.defaults.iosxe.configuration.policy.class_maps.match.ip_dscp)] : null,
+          null
+        )
+        match_ip_precedence = try(
+          # If it's already a list, convert to list of strings
+          can(tolist(class_map.match.ip_precedence)) ? [for v in class_map.match.ip_precedence : tostring(v)] : null,
+          # If it's a single value, wrap in list and convert to string
+          class_map.match.ip_precedence != null ? [tostring(class_map.match.ip_precedence)] : null,
+          # Try defaults (same logic)
+          can(tolist(local.defaults.iosxe.configuration.policy.class_maps.match.ip_precedence)) ? [for v in local.defaults.iosxe.configuration.policy.class_maps.match.ip_precedence : tostring(v)] : null,
+          local.defaults.iosxe.configuration.policy.class_maps.match.ip_precedence != null ? [tostring(local.defaults.iosxe.configuration.policy.class_maps.match.ip_precedence)] : null,
+          null
+        )
+        description = try(class_map.description, local.defaults.iosxe.configuration.policy.class_maps.description, null)
       }
     ]
   ])
