@@ -26,15 +26,8 @@ locals {
           local.defaults.iosxe.configuration.policy.class_maps.match.dscp != null ? [for v in local.defaults.iosxe.configuration.policy.class_maps.match.dscp : tostring(v)] : null,
           null
         )
-        match_access_group_name = try(
-          # Prefer plural attribute
-          length(class_map.match.access_groups) > 0 ? class_map.match.access_groups : null,
-          # Fallback to singular (convert to list)
-          class_map.match.access_group != null ? [class_map.match.access_group] : null,
-          # Try defaults
-          length(local.defaults.iosxe.configuration.policy.class_maps.match.access_groups) > 0 ? local.defaults.iosxe.configuration.policy.class_maps.match.access_groups : null,
-          local.defaults.iosxe.configuration.policy.class_maps.match.access_group != null ? [local.defaults.iosxe.configuration.policy.class_maps.match.access_group] : null,
-          null
+        match_access_group_name = length(try(class_map.match.access_groups, try(local.defaults.iosxe.configuration.policy.class_maps.match.access_groups, []))) > 0 ? try(class_map.match.access_groups, local.defaults.iosxe.configuration.policy.class_maps.match.access_groups) : (
+          try(class_map.match.access_group, try(local.defaults.iosxe.configuration.policy.class_maps.match.access_group, null)) != null ? [try(class_map.match.access_group, local.defaults.iosxe.configuration.policy.class_maps.match.access_group)] : null
         )
         match_ip_dscp = try(
           # If it's already a list, convert to list of strings
