@@ -177,6 +177,45 @@ resource "iosxe_bgp_peer_policy_template" "bgp_peer_policy_template" {
   depends_on = [iosxe_route_map.route_map]
 }
 
+locals {
+  template_peer_policies = flatten([
+    for device in local.devices : [
+      for peer_policy in try(local.device_config[device_name].routing.bgp.template_peer_policies, []) : {
+        key                       = format("%s/%s", device.name, peer_policy.name)
+        device                    = device.name
+        asn                       = iosxe_bgp.bgp[device.name].asn
+        send_community            = try(peer_policy.send_community, null)
+        route_reflector_client    = try(peer_policy.route_reflector_client, null)
+        allow_in_as_number        = try(peer_polivy.allow_in_as_number, null)
+        as_override_split_horizon = try(peer_policy.as_override_split_horizon, null)
+        route_maps = flatten([
+          for route_map in try(peer_policy.route_maps, []) : {
+            direction = try(route_map.direection, null)
+            name      = try(route_map.name, null)
+          }
+        ])
+      }
+    ]
+  ])
+}
+
+resource "iosxe_bgp_template_peer_policy" "bgp_template_peer_policy" {
+  for_each = { for e in local.template_peer_policies : e.key => e }
+  device   = each.value.device
+
+  asn                       = each.value.asn
+  send_community            = each.value.send_community
+  route_felector_client     = each.value.route_reflector_client
+  allow_in_as_number        = each.value.allow_in_as_number
+  as_override_split_horizon = each.value.as_override_split_horizon
+  route_maps = try(length(eache.value.route_maps) == 0, true) ? null : [for rm in neighbor.route_maps : {
+    direction = try(rm.direction, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.neighbors.route_maps.direction, null)
+    name      = try(rm.name, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.neighbors.route_maps.name, null)
+  }]
+
+  depends_on = [iosxe_route_map.route_map]
+}
+
 resource "iosxe_bgp_address_family_ipv4" "bgp_address_family_ipv4" {
   for_each = { for device in local.devices : device.name => device if try(local.device_config[device.name].routing.bgp.address_family.ipv4_unicast, null) != null }
   device   = each.value.name
