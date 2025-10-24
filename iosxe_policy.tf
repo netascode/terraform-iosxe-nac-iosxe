@@ -21,24 +21,46 @@ locals {
         match_result_type_method_dot1x_method_timeout  = try(class_map.match.result_type_method_dot1x_method_timeout, local.defaults.iosxe.configuration.policy.class_maps.match.result_type_method_dot1x_method_timeout, null)
         match_method_mab                               = try(class_map.match.method_mab, local.defaults.iosxe.configuration.policy.class_maps.match.method_mab, null)
         match_result_type_method_mab_authoritative     = try(class_map.match.result_type_method_mab_authoritative, local.defaults.iosxe.configuration.policy.class_maps.match.result_type_method_mab_authoritative, null)
-        match_dscp = length(try(class_map.match.dscp, try(local.defaults.iosxe.configuration.policy.class_maps.match.dscp, []))) > 0 ? [
-          for v in try(class_map.match.dscp, local.defaults.iosxe.configuration.policy.class_maps.match.dscp) : tostring(v)
-        ] : null
-        match_access_group_name = length(try(class_map.match.access_groups, try(local.defaults.iosxe.configuration.policy.class_maps.match.access_groups, []))) > 0 ? try(class_map.match.access_groups, local.defaults.iosxe.configuration.policy.class_maps.match.access_groups) : (
-          try(class_map.match.access_group, try(local.defaults.iosxe.configuration.policy.class_maps.match.access_group, null)) != null ? [try(class_map.match.access_group, local.defaults.iosxe.configuration.policy.class_maps.match.access_group)] : null
-        )
-        match_ip_dscp = can(class_map.match.ip_dscp) || can(local.defaults.iosxe.configuration.policy.class_maps.match.ip_dscp) ? [
-          for v in try(
-            can(tolist(class_map.match.ip_dscp)) ? tolist(class_map.match.ip_dscp) : [class_map.match.ip_dscp],
-            can(tolist(local.defaults.iosxe.configuration.policy.class_maps.match.ip_dscp)) ? tolist(local.defaults.iosxe.configuration.policy.class_maps.match.ip_dscp) : [local.defaults.iosxe.configuration.policy.class_maps.match.ip_dscp]
-          ) : tostring(v)
-        ] : null
-        match_ip_precedence = can(class_map.match.ip_precedence) || can(local.defaults.iosxe.configuration.policy.class_maps.match.ip_precedence) ? [
-          for v in try(
-            can(tolist(class_map.match.ip_precedence)) ? tolist(class_map.match.ip_precedence) : [class_map.match.ip_precedence],
-            can(tolist(local.defaults.iosxe.configuration.policy.class_maps.match.ip_precedence)) ? tolist(local.defaults.iosxe.configuration.policy.class_maps.match.ip_precedence) : [local.defaults.iosxe.configuration.policy.class_maps.match.ip_precedence]
-          ) : tostring(v)
-        ] : null
+        match_dscp = length(
+          compact(concat(
+            try([for v in class_map.match.dscp : tostring(v)], []),
+            try([for v in local.defaults.iosxe.configuration.policy.class_maps.match.dscp : tostring(v)], [])
+          ))
+          ) > 0 ? tolist(compact(concat(
+            try([for v in class_map.match.dscp : tostring(v)], []),
+            try([for v in local.defaults.iosxe.configuration.policy.class_maps.match.dscp : tostring(v)], [])
+        ))) : null
+        match_access_group_name = length(
+          compact(concat(
+            try(tolist(class_map.match.access_groups), []),
+            try([class_map.match.access_group], []),
+            try(tolist(local.defaults.iosxe.configuration.policy.class_maps.match.access_groups), []),
+            try([local.defaults.iosxe.configuration.policy.class_maps.match.access_group], [])
+          ))
+          ) > 0 ? tolist(compact(concat(
+            try(tolist(class_map.match.access_groups), []),
+            try([class_map.match.access_group], []),
+            try(tolist(local.defaults.iosxe.configuration.policy.class_maps.match.access_groups), []),
+            try([local.defaults.iosxe.configuration.policy.class_maps.match.access_group], [])
+        ))) : null
+        match_ip_dscp = length(
+          compact(concat(
+            try(can(tolist(class_map.match.ip_dscp)) ? [for v in class_map.match.ip_dscp : tostring(v)] : [tostring(class_map.match.ip_dscp)], []),
+            try(can(tolist(local.defaults.iosxe.configuration.policy.class_maps.match.ip_dscp)) ? [for v in local.defaults.iosxe.configuration.policy.class_maps.match.ip_dscp : tostring(v)] : [tostring(local.defaults.iosxe.configuration.policy.class_maps.match.ip_dscp)], [])
+          ))
+          ) > 0 ? tolist(compact(concat(
+            try(can(tolist(class_map.match.ip_dscp)) ? [for v in class_map.match.ip_dscp : tostring(v)] : [tostring(class_map.match.ip_dscp)], []),
+            try(can(tolist(local.defaults.iosxe.configuration.policy.class_maps.match.ip_dscp)) ? [for v in local.defaults.iosxe.configuration.policy.class_maps.match.ip_dscp : tostring(v)] : [tostring(local.defaults.iosxe.configuration.policy.class_maps.match.ip_dscp)], [])
+        ))) : null
+        match_ip_precedence = length(
+          compact(concat(
+            try(can(tolist(class_map.match.ip_precedence)) ? [for v in class_map.match.ip_precedence : tostring(v)] : [tostring(class_map.match.ip_precedence)], []),
+            try(can(tolist(local.defaults.iosxe.configuration.policy.class_maps.match.ip_precedence)) ? [for v in local.defaults.iosxe.configuration.policy.class_maps.match.ip_precedence : tostring(v)] : [tostring(local.defaults.iosxe.configuration.policy.class_maps.match.ip_precedence)], [])
+          ))
+          ) > 0 ? tolist(compact(concat(
+            try(can(tolist(class_map.match.ip_precedence)) ? [for v in class_map.match.ip_precedence : tostring(v)] : [tostring(class_map.match.ip_precedence)], []),
+            try(can(tolist(local.defaults.iosxe.configuration.policy.class_maps.match.ip_precedence)) ? [for v in local.defaults.iosxe.configuration.policy.class_maps.match.ip_precedence : tostring(v)] : [tostring(local.defaults.iosxe.configuration.policy.class_maps.match.ip_precedence)], [])
+        ))) : null
         description = try(class_map.description, local.defaults.iosxe.configuration.policy.class_maps.description, null)
       }
     ]
