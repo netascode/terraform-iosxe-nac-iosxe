@@ -86,7 +86,18 @@ locals {
           {
             type       = try(segment.identifier_type, local.defaults.iosxe.configuration.evpn.ethernet_segments.identifier_type, null)
             hex_string = try(segment.identifier_hex_string, local.defaults.iosxe.configuration.evpn.ethernet_segments.identifier_hex_string, null)
-            system_mac = try(segment.identifier_system_mac, local.defaults.iosxe.configuration.evpn.ethernet_segments.identifier_system_mac, null)
+            # Normalize MAC address to Cisco dotted notation (xxxx.xxxx.xxxx)
+            # Accepts: xx:xx:xx:xx:xx:xx, xx-xx-xx-xx-xx-xx, or xxxx.xxxx.xxxx
+            system_mac = try(segment.identifier_system_mac, local.defaults.iosxe.configuration.evpn.ethernet_segments.identifier_system_mac, null) != null ? (
+              length(regexall(":", try(segment.identifier_system_mac, local.defaults.iosxe.configuration.evpn.ethernet_segments.identifier_system_mac, ""))) > 0 ||
+              length(regexall("-", try(segment.identifier_system_mac, local.defaults.iosxe.configuration.evpn.ethernet_segments.identifier_system_mac, ""))) > 0 ?
+              format("%s.%s.%s",
+                substr(replace(replace(try(segment.identifier_system_mac, local.defaults.iosxe.configuration.evpn.ethernet_segments.identifier_system_mac, ""), ":", ""), "-", ""), 0, 4),
+                substr(replace(replace(try(segment.identifier_system_mac, local.defaults.iosxe.configuration.evpn.ethernet_segments.identifier_system_mac, ""), ":", ""), "-", ""), 4, 4),
+                substr(replace(replace(try(segment.identifier_system_mac, local.defaults.iosxe.configuration.evpn.ethernet_segments.identifier_system_mac, ""), ":", ""), "-", ""), 8, 4)
+              ) :
+              try(segment.identifier_system_mac, local.defaults.iosxe.configuration.evpn.ethernet_segments.identifier_system_mac, null)
+            ) : null
           }
         ] : null
       }
