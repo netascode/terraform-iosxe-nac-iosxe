@@ -173,22 +173,23 @@ resource "iosxe_aaa_authentication" "aaa_authentication" {
 
   dot1x = try(length(local.device_config[each.value.name].aaa.authentication.dot1xs) == 0, true) ? null : [for e in local.device_config[each.value.name].aaa.authentication.dot1xs : {
     name      = try(e.name, local.defaults.iosxe.configuration.aaa.authentication.dot1xs.name, null)
-    a1_group  = try(!contains(["local", "cache", "radius"], try(e.methods[0], local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[0])), false) ? try(e.methods[0], local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[0]) : null
-    a1_local  = try(e.methods[0], local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[0], null) == "local" ? true : null
-    a1_cache  = try(e.methods[0], local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[0], null) == "cache" ? "cache" : null
-    a1_radius = try(e.methods[0], local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[0], null) == "radius" ? true : null
-    a2_group  = try(!contains(["local", "cache", "radius"], try(e.methods[1], local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[1])), false) ? try(e.methods[1], local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[1]) : null
-    a2_local  = try(e.methods[1], local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[1], null) == "local" ? true : null
-    a2_cache  = try(e.methods[1], local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[1], null) == "cache" ? "cache" : null
-    a2_radius = try(e.methods[1], local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[1], null) == "radius" ? true : null
-    a3_group  = try(!contains(["local", "cache", "radius"], try(e.methods[2], local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[2])), false) ? try(e.methods[2], local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[2]) : null
-    a3_local  = try(e.methods[2], local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[2], null) == "local" ? true : null
-    a3_cache  = try(e.methods[2], local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[2], null) == "cache" ? "cache" : null
-    a3_radius = try(e.methods[2], local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[2], null) == "radius" ? true : null
-    a4_group  = try(!contains(["local", "cache", "radius"], try(e.methods[3], local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[3])), false) ? try(e.methods[3], local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[3]) : null
-    a4_local  = try(e.methods[3], local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[3], null) == "local" ? true : null
-    a4_cache  = try(e.methods[3], local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[3], null) == "cache" ? "cache" : null
-    a4_radius = try(e.methods[3], local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[3], null) == "radius" ? true : null
+    a1_cache  = try(e.methods[0].cache, local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[0].cache, false) && try(e.methods[0].method, local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[0].method, null) != null ? try(e.methods[0].method, local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[0].method, null) : null
+    a1_local  = try(e.methods[0].method, local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[0].method, null) == "local" ? true : null
+    a1_radius = try(e.methods[0].method, local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[0].method, null) == "radius" ? true : null
+    a1_group  = !contains(["local", "radius"], try(e.methods[0].method, local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[0].method, "")) && !try(e.methods[0].cache, local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[0].cache, false) ? try(e.methods[0].method, local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[0].method, null) : null
+    a2_cache  = try(e.methods[1].cache, local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[1].cache, false) && try(e.methods[1].method, local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[1].method, null) != null ? try(e.methods[1].method, local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[1].method, null) : null
+    a2_local  = try(e.methods[1].method, local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[1].method, null) == "local" ? true : null
+    a2_radius = try(e.methods[1].method, local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[1].method, null) == "radius" ? true : null
+    a2_group  = !contains(["local", "radius"], try(e.methods[1].method, local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[1].method, "")) && !try(e.methods[1].cache, local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[1].cache, false) ? try(e.methods[1].method, local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[1].method, null) : null
+    a3_cache  = try(e.methods[2].cache, local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[2].cache, false) && try(e.methods[2].method, local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[2].method, null) != null ? try(e.methods[2].method, local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[2].method, null) : null
+    a3_local  = try(e.methods[2].method, local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[2].method, null) == "local" ? true : null
+    a3_radius = try(e.methods[2].method, local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[2].method, null) == "radius" ? true : null
+    a3_group  = !contains(["local", "radius"], try(e.methods[2].method, local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[2].method, "")) && !try(e.methods[2].cache, local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[2].cache, false) ? try(e.methods[2].method, local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[2].method, null) : null
+    # Method 4 (a4)
+    a4_cache  = try(e.methods[3].cache, local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[3].cache, false) && try(e.methods[3].method, local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[3].method, null) != null ? try(e.methods[3].method, local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[3].method, null) : null
+    a4_local  = try(e.methods[3].method, local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[3].method, null) == "local" ? true : null
+    a4_radius = try(e.methods[3].method, local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[3].method, null) == "radius" ? true : null
+    a4_group  = !contains(["local", "radius"], try(e.methods[3].method, local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[3].method, "")) && !try(e.methods[3].cache, local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[3].cache, false) ? try(e.methods[3].method, local.defaults.iosxe.configuration.aaa.authentication.dot1xs.methods[3].method, null) : null
   }]
 
   dot1x_default_a1_group = try(!contains(["local"], try(local.device_config[each.value.name].aaa.authentication.dot1x_defaults[0], local.defaults.iosxe.configuration.aaa.authentication.dot1x_defaults[0])), false) ? try(local.device_config[each.value.name].aaa.authentication.dot1x_defaults[0], local.defaults.iosxe.configuration.aaa.authentication.dot1x_defaults[0]) : null
