@@ -14,6 +14,46 @@ resource "iosxe_bgp" "bgp" {
 }
 
 locals {
+  bgp_peer_session_templates = flatten([
+    for device in local.devices : [
+      for template in try(local.device_config[device.name].routing.bgp.peer_session_templates, []) : {
+        key                     = format("%s/%s", device.name, template.template_name)
+        device                  = device.name
+        asn                     = iosxe_bgp.bgp[device.name].asn
+        template_name           = try(template.template_name, null)
+        remote_as               = try(template.remote_as, local.defaults.iosxe.configuration.routing.bgp.peer_session_templates.remote_as, null)
+        description             = try(template.description, local.defaults.iosxe.configuration.routing.bgp.peer_session_templates.description, null)
+        disable_connected_check = try(template.disable_connected_check, local.defaults.iosxe.configuration.routing.bgp.peer_session_templates.disable_connected_check, null)
+        ebgp_multihop           = try(template.ebgp_multihop, local.defaults.iosxe.configuration.routing.bgp.peer_session_templates.ebgp_multihop, null)
+        ebgp_multihop_max_hop   = try(template.ebgp_multihop_max_hop, local.defaults.iosxe.configuration.routing.bgp.peer_session_templates.ebgp_multihop_max_hop, null)
+        update_source_loopback  = try(template.update_source_interface_type, local.defaults.iosxe.configuration.routing.bgp.peer_session_templates.update_source_interface_type, null) == "Loopback" ? try(template.update_source_interface_id, local.defaults.iosxe.configuration.routing.bgp.peer_session_templates.update_source_interface_id, null) : null
+        inherit_peer_session    = try(template.inherit_peer_session, local.defaults.iosxe.configuration.routing.bgp.peer_session_templates.inherit_peer_session, null)
+      }
+    ]
+  ])
+}
+
+resource "iosxe_bgp_peer_session_template" "bgp_peer_session_template" {
+  for_each = { for e in local.bgp_peer_session_templates : e.key => e }
+  device   = each.value.device
+
+  asn                     = each.value.asn
+  template_name           = each.value.template_name
+  remote_as               = each.value.remote_as
+  description             = each.value.description
+  disable_connected_check = each.value.disable_connected_check
+  ebgp_multihop           = each.value.ebgp_multihop
+  ebgp_multihop_max_hop   = each.value.ebgp_multihop_max_hop
+  update_source_loopback  = each.value.update_source_loopback
+  inherit_peer_session    = each.value.inherit_peer_session
+
+  depends_on = [
+    iosxe_bgp.bgp,
+    iosxe_interface_loopback.loopback
+  ]
+}
+
+locals {
   bgp_neighbors = flatten([
     for device in local.devices : [
       for neighbor in try(local.device_config[device.name].routing.bgp.neighbors, []) : {
@@ -49,6 +89,7 @@ locals {
         update_source_interface_loopback          = try(neighbor.update_source_interface_type, local.defaults.iosxe.configuration.routing.bgp.neighbors.update_source_interface_type, null) == "Loopback" ? try(neighbor.update_source_interface_id, local.defaults.iosxe.configuration.routing.bgp.neighbors.update_source_interface_id, null) : null
         ebgp_multihop                             = try(neighbor.ebgp_multihop, local.defaults.iosxe.configuration.routing.bgp.neighbors.ebgp_multihop, null)
         ebgp_multihop_max_hop                     = try(neighbor.ebgp_multihop_max_hop, local.defaults.iosxe.configuration.routing.bgp.neighbors.ebgp_multihop_max_hop, null)
+        inherit_peer_session                      = try(neighbor.inherit_peer_session, local.defaults.iosxe.configuration.routing.bgp.neighbors.inherit_peer_session, null)
       }
     ]
   ])
@@ -88,8 +129,11 @@ resource "iosxe_bgp_neighbor" "bgp_neighbor" {
   update_source_interface_loopback          = each.value.update_source_interface_loopback
   ebgp_multihop                             = each.value.ebgp_multihop
   ebgp_multihop_max_hop                     = each.value.ebgp_multihop_max_hop
+  inherit_peer_session                      = each.value.inherit_peer_session
 
   depends_on = [
+    iosxe_bgp.bgp,
+    iosxe_bgp_peer_session_template.bgp_peer_session_template,
     iosxe_bgp_address_family_ipv4.bgp_address_family_ipv4
   ]
 }

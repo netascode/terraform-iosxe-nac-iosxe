@@ -142,6 +142,7 @@ resource "iosxe_cli" "cli_0" {
     iosxe_bfd_template_single_hop.bfd_template_single_hop,
     iosxe_bfd_template_multi_hop.bfd_template_multi_hop,
     iosxe_bgp.bgp,
+    iosxe_bgp_peer_session_template.bgp_peer_session_template,
     iosxe_bgp_neighbor.bgp_neighbor,
     iosxe_bgp_peer_policy_template.bgp_peer_policy_template,
     iosxe_bgp_address_family_ipv4.bgp_address_family_ipv4,
