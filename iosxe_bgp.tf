@@ -164,8 +164,9 @@ resource "iosxe_bgp_address_family_ipv4_vrf" "bgp_address_family_ipv4_vrf" {
     name                                = vrf.vrf
     ipv4_unicast_advertise_l2vpn_evpn   = try(vrf.advertise_l2vpn_evpn, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.advertise_l2vpn_evpn, null)
     ipv4_unicast_redistribute_connected = try(vrf.redistribute.connected, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.redistribute.connected, null)
-    # VRF Router-ID configuration: Direct IP (new) or interface-based (existing)
-    ipv4_unicast_router_id_ip          = try(vrf.router_id, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.router_id, null)
+    # VRF Router-ID: Direct IP (new) or interface-based (existing)
+    # NOTE: VRF must have route_distinguisher configured for BGP address-family commands to work
+    ipv4_unicast_router_id_ip           = try(vrf.router_id, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.router_id, null)
     ipv4_unicast_router_id_loopback    = try(vrf.router_id_interface_type, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.router_id_interface_type, null) == "Loopback" ? try(vrf.router_id_interface_id, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.router_id_interface_id, null) : null
     ipv4_unicast_distance_bgp_external = try(vrf.distance_bgp_external, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.distance_bgp_external, null)
     ipv4_unicast_distance_bgp_internal = try(vrf.distance_bgp_internal, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.distance_bgp_internal, null)
