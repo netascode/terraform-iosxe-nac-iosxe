@@ -17,17 +17,17 @@ locals {
   bgp_peer_session_templates = flatten([
     for device in local.devices : [
       for template in try(local.device_config[device.name].routing.bgp.peer_session_templates, []) : {
-        key                     = format("%s/%s", device.name, template.template_name)
-        device                  = device.name
-        asn                     = iosxe_bgp.bgp[device.name].asn
-        template_name           = try(template.template_name, null)
-        remote_as               = try(template.remote_as, local.defaults.iosxe.configuration.routing.bgp.peer_session_templates.remote_as, null)
-        description             = try(template.description, local.defaults.iosxe.configuration.routing.bgp.peer_session_templates.description, null)
-        disable_connected_check = try(template.disable_connected_check, local.defaults.iosxe.configuration.routing.bgp.peer_session_templates.disable_connected_check, null)
-        ebgp_multihop           = try(template.ebgp_multihop, local.defaults.iosxe.configuration.routing.bgp.peer_session_templates.ebgp_multihop, null)
-        ebgp_multihop_max_hop   = try(template.ebgp_multihop_max_hop, local.defaults.iosxe.configuration.routing.bgp.peer_session_templates.ebgp_multihop_max_hop, null)
-        update_source_loopback  = try(template.update_source_interface_type, local.defaults.iosxe.configuration.routing.bgp.peer_session_templates.update_source_interface_type, null) == "Loopback" ? try(template.update_source_interface_id, local.defaults.iosxe.configuration.routing.bgp.peer_session_templates.update_source_interface_id, null) : null
-        inherit_peer_session    = try(template.inherit_peer_session, local.defaults.iosxe.configuration.routing.bgp.peer_session_templates.inherit_peer_session, null)
+        key                              = format("%s/%s", device.name, template.template_name)
+        device                           = device.name
+        asn                              = iosxe_bgp.bgp[device.name].asn
+        template_name                    = try(template.template_name, null)
+        remote_as                        = try(template.remote_as, local.defaults.iosxe.configuration.routing.bgp.peer_session_templates.remote_as, null)
+        description                      = try(template.description, local.defaults.iosxe.configuration.routing.bgp.peer_session_templates.description, null)
+        disable_connected_check          = try(template.disable_connected_check, local.defaults.iosxe.configuration.routing.bgp.peer_session_templates.disable_connected_check, null)
+        ebgp_multihop                    = try(template.ebgp_multihop, local.defaults.iosxe.configuration.routing.bgp.peer_session_templates.ebgp_multihop, null)
+        ebgp_multihop_max_hop            = try(template.ebgp_multihop_max_hop, local.defaults.iosxe.configuration.routing.bgp.peer_session_templates.ebgp_multihop_max_hop, null)
+        update_source_interface_loopback = try(template.update_source_interface_type, local.defaults.iosxe.configuration.routing.bgp.peer_session_templates.update_source_interface_type, null) == "Loopback" ? try(template.update_source_interface_id, local.defaults.iosxe.configuration.routing.bgp.peer_session_templates.update_source_interface_id, null) : null
+        inherit_peer_session             = try(template.inherit_peer_session, local.defaults.iosxe.configuration.routing.bgp.peer_session_templates.inherit_peer_session, null)
       }
     ]
   ])
@@ -44,7 +44,7 @@ resource "iosxe_bgp_peer_session_template" "bgp_peer_session_template" {
   disable_connected_check = each.value.disable_connected_check
   ebgp_multihop           = each.value.ebgp_multihop
   ebgp_multihop_max_hop   = each.value.ebgp_multihop_max_hop
-  update_source_loopback  = each.value.update_source_loopback
+  update_source_loopback  = each.value.update_source_interface_loopback
   inherit_peer_session    = each.value.inherit_peer_session
 
   depends_on = [
