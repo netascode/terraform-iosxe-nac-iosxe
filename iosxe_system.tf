@@ -20,6 +20,10 @@ resource "iosxe_system" "system" {
   ip_multicast_routing_distributed = try(local.device_config[each.value.name].system.ip_multicast_routing_distributed, local.defaults.iosxe.configuration.system.ip_multicast_routing_distributed, null)
   access_session_mac_move_deny     = try(local.device_config[each.value.name].system.access_session_mac_move_deny, local.defaults.iosxe.configuration.system.access_session_mac_move_deny, null)
 
+  # New global configurations
+  ip_default_gateway = try(local.device_config[each.value.name].system.ip_default_gateway, local.defaults.iosxe.configuration.system.ip_default_gateway, null)
+  device_classifier  = try(local.device_config[each.value.name].system.device_classifier, local.defaults.iosxe.configuration.system.device_classifier, null)
+
   # Archive configuration
   archive_log_config_logging_enable  = try(local.device_config[each.value.name].system.archive.log_config_logging_enable, local.defaults.iosxe.configuration.system.archive.log_config_logging_enable, null)
   archive_log_config_logging_size    = try(local.device_config[each.value.name].system.archive.log_config_logging_size, local.defaults.iosxe.configuration.system.archive.log_config_logging_size, null)
@@ -193,6 +197,20 @@ resource "iosxe_system" "system" {
       number              = try(track_obj.number, local.defaults.iosxe.configuration.system.track_objects.number, null)
       ip_sla_number       = try(track_obj.ip_sla_number, local.defaults.iosxe.configuration.system.track_objects.ip_sla_number, null)
       ip_sla_reachability = try(track_obj.ip_sla_reachability, local.defaults.iosxe.configuration.system.track_objects.ip_sla_reachability, null)
+    }
+  ]
+
+  # Table-Map configurations for QoS value translation
+  table_maps = try(length(local.device_config[each.value.name].system.table_maps) == 0, true) ? null : [
+    for table_map in local.device_config[each.value.name].system.table_maps : {
+      name    = try(table_map.name, local.defaults.iosxe.configuration.system.table_maps.name, null)
+      default = try(table_map.default, local.defaults.iosxe.configuration.system.table_maps.default, null)
+      mappings = try(length(table_map.mappings) == 0, true) ? null : [
+        for mapping in table_map.mappings : {
+          from = try(mapping.from, local.defaults.iosxe.configuration.system.table_maps.mappings.from, null)
+          to   = try(mapping.to, local.defaults.iosxe.configuration.system.table_maps.mappings.to, null)
+        }
+      ]
     }
   ]
 
