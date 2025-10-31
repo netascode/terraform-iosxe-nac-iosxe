@@ -1416,6 +1416,7 @@ locals {
           vni_range            = "${vni.vni_from}${try(vni.vni_to, null) != null ? format("-%s", vni.vni_to) : ""}"
           ipv4_multicast_group = try(vni.ipv4_multicast_group, local.defaults.iosxe.configuration.interfaces.nves.vnis.ipv4_multicast_group, null)
           ingress_replication  = try(vni.ingress_replication, local.defaults.iosxe.configuration.interfaces.nves.vnis.ingress_replication, null)
+          local_routing        = try(vni.local_routing, local.defaults.iosxe.configuration.interfaces.nves.vnis.local_routing, null)
           }
         ]
     }]
