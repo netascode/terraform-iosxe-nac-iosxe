@@ -632,6 +632,7 @@ locals {
         ipv4_address                   = try(int.ipv4.address, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.address, null)
         ipv4_address_mask              = try(int.ipv4.address_mask, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.address_mask, null)
         ip_proxy_arp                   = try(int.ipv4.proxy_arp, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.proxy_arp, null)
+        mac_address                    = try(int.mac_address, local.defaults.iosxe.devices.configuration.interfaces.vlans.mac_address, null)
         ip_dhcp_relay_source_interface = try("${try(int.ipv4.dhcp_relay_source_interface_type, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.dhcp_relay_source_interface_type)}${try(int.ipv4.dhcp_relay_source_interface_id, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.dhcp_relay_source_interface_id)}", null)
         helper_addresses = try(length(int.ipv4.helper_addresses) == 0, true) ? null : [for ha in int.ipv4.helper_addresses : {
           address = try(ha.address, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.helper_addresses.address, null)
@@ -724,6 +725,7 @@ resource "iosxe_interface_vlan" "vlan" {
   ipv4_address                    = each.value.ipv4_address
   ipv4_address_mask               = each.value.ipv4_address_mask
   ip_proxy_arp                    = each.value.ip_proxy_arp
+  mac_address                     = each.value.mac_address
   ip_dhcp_relay_source_interface  = each.value.ip_dhcp_relay_source_interface
   helper_addresses                = each.value.helper_addresses
   ip_access_group_in              = each.value.ip_access_group_in
