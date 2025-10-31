@@ -148,11 +148,10 @@ resource "iosxe_bgp_address_family_l2vpn" "bgp_address_family_l2vpn" {
   for_each = { for device in local.devices : device.name => device if try(local.device_config[device.name].routing.bgp.address_family.l2vpn_evpn, null) != null }
   device   = each.value.name
 
-  asn                    = iosxe_bgp.bgp[each.value.name].asn
-  af_name                = "evpn"
-  rewrite_evpn_rt_asn    = try(local.device_config[each.value.name].routing.bgp.address_family.l2vpn_evpn.rewrite_evpn_rt_asn, local.defaults.iosxe.configuration.routing.bgp.address_family.l2vpn_evpn.rewrite_evpn_rt_asn, null)
-  nexthop_trigger_enable = try(local.device_config[each.value.name].routing.bgp.address_family.l2vpn_evpn.nexthop_trigger_enable, local.defaults.iosxe.configuration.routing.bgp.address_family.l2vpn_evpn.nexthop_trigger_enable, null)
-  nexthop_trigger_delay  = try(local.device_config[each.value.name].routing.bgp.address_family.l2vpn_evpn.nexthop_trigger_delay, local.defaults.iosxe.configuration.routing.bgp.address_family.l2vpn_evpn.nexthop_trigger_delay, null)
+  asn                       = iosxe_bgp.bgp[each.value.name].asn
+  af_name                   = "evpn"
+  rewrite_evpn_rt_asn       = try(local.device_config[each.value.name].routing.bgp.address_family.l2vpn_evpn.rewrite_evpn_rt_asn, local.defaults.iosxe.configuration.routing.bgp.address_family.l2vpn_evpn.rewrite_evpn_rt_asn, null)
+  bgp_nexthop_trigger_delay = try(local.device_config[each.value.name].routing.bgp.address_family.l2vpn_evpn.bgp_nexthop_trigger_delay, local.defaults.iosxe.configuration.routing.bgp.address_family.l2vpn_evpn.bgp_nexthop_trigger_delay, null)
 }
 
 resource "iosxe_bgp_address_family_ipv4_vrf" "bgp_address_family_ipv4_vrf" {
