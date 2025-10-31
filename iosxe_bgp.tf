@@ -122,6 +122,8 @@ resource "iosxe_bgp_address_family_ipv4" "bgp_address_family_ipv4" {
     wildcard  = try(ad.wildcard, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.admin_distances.wildcard, null)
     acl       = try(ad.acl, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.admin_distances.acl, null)
   }]
+  ipv4_unicast_maximum_paths_ebgp = try(local.device_config[each.value.name].routing.bgp.address_family.ipv4_unicast.ipv4_unicast_maximum_paths_ebgp, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.ipv4_unicast_maximum_paths_ebgp, null)
+  ipv4_unicast_maximum_paths_ibgp = try(local.device_config[each.value.name].routing.bgp.address_family.ipv4_unicast.ipv4_unicast_maximum_paths_ibgp, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.ipv4_unicast_maximum_paths_ibgp, null)
 
   depends_on = [
     iosxe_access_list_standard.access_list_standard,
@@ -188,6 +190,8 @@ resource "iosxe_bgp_address_family_ipv4_vrf" "bgp_address_family_ipv4_vrf" {
       route_map = try(net.route_map, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.networks.route_map, null)
       backdoor  = try(net.backdoor, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.networks.backdoor, null)
     } if try(net.mask, null) == null]
+    ipv4_unicast_maximum_paths_ebgp = try(vrf.ipv4_unicast_maximum_paths_ebgp, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.ipv4_unicast_maximum_paths_ebgp, null)
+    ipv4_unicast_maximum_paths_ibgp = try(vrf.ipv4_unicast_maximum_paths_ibgp, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.ipv4_unicast_maximum_paths_ibgp, null)
   }]
 
   depends_on = [
