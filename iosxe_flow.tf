@@ -15,6 +15,15 @@ locals {
         option_sampler_table                  = try(exporter.option_sampler_table, local.defaults.iosxe.device_config.flow.exporters.option_sampler_table, null)
         option_vrf_table_timeout              = try(exporter.option_vrf_table_timeout, local.defaults.iosxe.device_config.flow.exporters.option_vrf_table_timeout, null)
         source_loopback                       = try(exporter.source_loopback, local.defaults.iosxe.device_config.flow.exporters.source_loopback, null)
+        source_gigabit_ethernet               = try(exporter.source_gigabit_ethernet, local.defaults.iosxe.device_config.flow.exporters.source_gigabit_ethernet, null)
+        source_two_gigabit_ethernet           = try(exporter.source_two_gigabit_ethernet, local.defaults.iosxe.device_config.flow.exporters.source_two_gigabit_ethernet, null)
+        source_five_gigabit_ethernet          = try(exporter.source_five_gigabit_ethernet, local.defaults.iosxe.device_config.flow.exporters.source_five_gigabit_ethernet, null)
+        source_ten_gigabit_ethernet           = try(exporter.source_ten_gigabit_ethernet, local.defaults.iosxe.device_config.flow.exporters.source_ten_gigabit_ethernet, null)
+        source_twenty_five_gig_e              = try(exporter.source_twenty_five_gig_e, local.defaults.iosxe.device_config.flow.exporters.source_twenty_five_gig_e, null)
+        source_forty_gigabit_ethernet         = try(exporter.source_forty_gigabit_ethernet, local.defaults.iosxe.device_config.flow.exporters.source_forty_gigabit_ethernet, null)
+        source_hundred_gig_e                  = try(exporter.source_hundred_gig_e, local.defaults.iosxe.device_config.flow.exporters.source_hundred_gig_e, null)
+        source_vlan                           = try(exporter.source_vlan, local.defaults.iosxe.device_config.flow.exporters.source_vlan, null)
+        source_port_channel                   = try(exporter.source_port_channel, local.defaults.iosxe.device_config.flow.exporters.source_port_channel, null)
         transport_udp                         = try(exporter.transport_udp, local.defaults.iosxe.device_config.flow.exporters.transport_udp, null)
         template_data_timeout                 = try(exporter.template_data_timeout, local.defaults.iosxe.device_config.flow.exporters.template_data_timeout, null)
       }
@@ -36,6 +45,15 @@ resource "iosxe_flow_exporter" "flow_exporter" {
   option_sampler_table                  = each.value.option_sampler_table
   option_vrf_table_timeout              = each.value.option_vrf_table_timeout
   source_loopback                       = each.value.source_loopback
+  source_gigabit_ethernet               = each.value.source_gigabit_ethernet
+  source_two_gigabit_ethernet           = each.value.source_two_gigabit_ethernet
+  source_five_gigabit_ethernet          = each.value.source_five_gigabit_ethernet
+  source_ten_gigabit_ethernet           = each.value.source_ten_gigabit_ethernet
+  source_twenty_five_gig_e              = each.value.source_twenty_five_gig_e
+  source_forty_gigabit_ethernet         = each.value.source_forty_gigabit_ethernet
+  source_hundred_gig_e                  = each.value.source_hundred_gig_e
+  source_vlan                           = each.value.source_vlan
+  source_port_channel                   = each.value.source_port_channel
   transport_udp                         = each.value.transport_udp
   template_data_timeout                 = each.value.template_data_timeout
 
