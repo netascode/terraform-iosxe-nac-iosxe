@@ -128,6 +128,12 @@ locals {
         match_ipv6_version                                   = try(record.match.ipv6_version, local.defaults.iosxe.device_config.flow.records.match.ipv6_version, null)
         match_transport_destination_port                     = try(record.match.transport_destination_port, local.defaults.iosxe.device_config.flow.records.match.transport_destination_port, null)
         match_transport_source_port                          = try(record.match.transport_source_port, local.defaults.iosxe.device_config.flow.records.match.transport_source_port, null)
+        match_datalink_mac_source_address_input              = try(record.match.datalink_mac_source_address_input, local.defaults.iosxe.device_config.flow.records.match.datalink_mac_source_address_input, null)
+        match_datalink_mac_destination_address_input         = try(record.match.datalink_mac_destination_address_input, local.defaults.iosxe.device_config.flow.records.match.datalink_mac_destination_address_input, null)
+        match_datalink_vlan                                  = try(record.match.datalink_vlan, local.defaults.iosxe.device_config.flow.records.match.datalink_vlan, null)
+        match_datalink_source_vlan_id                        = try(record.match.datalink_source_vlan_id, local.defaults.iosxe.device_config.flow.records.match.datalink_source_vlan_id, null)
+        match_datalink_destination_vlan_id                   = try(record.match.datalink_destination_vlan_id, local.defaults.iosxe.device_config.flow.records.match.datalink_destination_vlan_id, null)
+        match_ipv4_ttl                                       = try(record.match.ipv4_ttl, local.defaults.iosxe.device_config.flow.records.match.ipv4_ttl, null)
         collect_connection_initiator                         = try(record.collect.connection_initiator, local.defaults.iosxe.device_config.flow.records.collect.connection_initiator, null)
         collect_connection_new_connections                   = try(record.collect.connection_new_connections, local.defaults.iosxe.device_config.flow.records.collect.connection_new_connections, null)
         collect_connection_server_counter_bytes_network_long = try(record.collect.connection_server_counter_bytes_network_long, local.defaults.iosxe.device_config.flow.records.collect.connection_server_counter_bytes_network_long, null)
@@ -171,6 +177,12 @@ resource "iosxe_flow_record" "flow_record" {
   match_ipv6_version                                   = each.value.match_ipv6_version
   match_transport_destination_port                     = each.value.match_transport_destination_port
   match_transport_source_port                          = each.value.match_transport_source_port
+  match_datalink_mac_source_address_input              = each.value.match_datalink_mac_source_address_input
+  match_datalink_mac_destination_address_input         = each.value.match_datalink_mac_destination_address_input
+  match_datalink_vlan                                  = each.value.match_datalink_vlan
+  match_datalink_source_vlan_id                        = each.value.match_datalink_source_vlan_id
+  match_datalink_destination_vlan_id                   = each.value.match_datalink_destination_vlan_id
+  match_ipv4_ttl                                       = each.value.match_ipv4_ttl
   collect_connection_initiator                         = each.value.collect_connection_initiator
   collect_connection_new_connections                   = each.value.collect_connection_new_connections
   collect_connection_server_counter_bytes_network_long = each.value.collect_connection_server_counter_bytes_network_long
