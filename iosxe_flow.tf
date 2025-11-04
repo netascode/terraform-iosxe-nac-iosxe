@@ -19,9 +19,9 @@ locals {
         source_two_gigabit_ethernet           = try(exporter.source_two_gigabit_ethernet, local.defaults.iosxe.device_config.flow.exporters.source_two_gigabit_ethernet, null)
         source_five_gigabit_ethernet          = try(exporter.source_five_gigabit_ethernet, local.defaults.iosxe.device_config.flow.exporters.source_five_gigabit_ethernet, null)
         source_ten_gigabit_ethernet           = try(exporter.source_ten_gigabit_ethernet, local.defaults.iosxe.device_config.flow.exporters.source_ten_gigabit_ethernet, null)
-        source_twenty_five_gig_e              = try(exporter.source_twenty_five_gig_e, local.defaults.iosxe.device_config.flow.exporters.source_twenty_five_gig_e, null)
+        source_twenty_five_gigabit_ethernet   = try(exporter.source_twenty_five_gigabit_ethernet, local.defaults.iosxe.device_config.flow.exporters.source_twenty_five_gigabit_ethernet, null)
         source_forty_gigabit_ethernet         = try(exporter.source_forty_gigabit_ethernet, local.defaults.iosxe.device_config.flow.exporters.source_forty_gigabit_ethernet, null)
-        source_hundred_gig_e                  = try(exporter.source_hundred_gig_e, local.defaults.iosxe.device_config.flow.exporters.source_hundred_gig_e, null)
+        source_hundred_gigabit_ethernet       = try(exporter.source_hundred_gigabit_ethernet, local.defaults.iosxe.device_config.flow.exporters.source_hundred_gigabit_ethernet, null)
         source_vlan                           = try(exporter.source_vlan, local.defaults.iosxe.device_config.flow.exporters.source_vlan, null)
         source_port_channel                   = try(exporter.source_port_channel, local.defaults.iosxe.device_config.flow.exporters.source_port_channel, null)
         transport_udp                         = try(exporter.transport_udp, local.defaults.iosxe.device_config.flow.exporters.transport_udp, null)
@@ -49,9 +49,9 @@ resource "iosxe_flow_exporter" "flow_exporter" {
   source_two_gigabit_ethernet           = each.value.source_two_gigabit_ethernet
   source_five_gigabit_ethernet          = each.value.source_five_gigabit_ethernet
   source_ten_gigabit_ethernet           = each.value.source_ten_gigabit_ethernet
-  source_twenty_five_gig_e              = each.value.source_twenty_five_gig_e
+  source_twenty_five_gigabit_ethernet   = each.value.source_twenty_five_gigabit_ethernet
   source_forty_gigabit_ethernet         = each.value.source_forty_gigabit_ethernet
-  source_hundred_gig_e                  = each.value.source_hundred_gig_e
+  source_hundred_gigabit_ethernet       = each.value.source_hundred_gigabit_ethernet
   source_vlan                           = each.value.source_vlan
   source_port_channel                   = each.value.source_port_channel
   transport_udp                         = each.value.transport_udp
