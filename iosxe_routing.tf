@@ -7,7 +7,7 @@ locals {
         prefix      = try(static_route.prefix, local.defaults.iosxe.configuration.routing.static_routes.prefix, null)
         mask        = try(static_route.mask, local.defaults.iosxe.configuration.routing.static_routes.mask, null)
         next_hops = try(length(static_route.next_hops) == 0, true) ? null : [for hop in static_route.next_hops : {
-          next_hop  = try(hop.ip, local.defaults.iosxe.configuration.routing.static_routes.next_hops.ip, "${hop.interface_type}${hop.interface_id}", "${local.defaults.iosxe.configuration.routing.static_routes.next_hops.interface_type}${local.defaults.iosxe.configuration.routing.static_routes.next_hops.interface_id}", null)
+          next_hop  = try(hop.ip, local.defaults.iosxe.configuration.routing.static_routes.next_hops.ip, "${hop.interface_type}${trimprefix(hop.interface_id, "$string ")}", "${local.defaults.iosxe.configuration.routing.static_routes.next_hops.interface_type}${local.defaults.iosxe.configuration.routing.static_routes.next_hops.interface_id}", null)
           distance  = try(hop.distance, local.defaults.iosxe.configuration.routing.static_routes.next_hops.distance, null)
           global    = try(hop.global, local.defaults.iosxe.configuration.routing.static_routes.next_hops.global, null)
           name      = try(hop.name, local.defaults.iosxe.configuration.routing.static_routes.next_hops.name, null)
@@ -15,7 +15,7 @@ locals {
           tag       = try(hop.tag, local.defaults.iosxe.configuration.routing.static_routes.next_hops.tag, null)
         } if try(hop.track_id, local.defaults.iosxe.configuration.routing.static_routes.next_hops.track_id, null) == null]
         next_hops_with_track = try(length(static_route.next_hops) == 0, true) ? null : [for hop in static_route.next_hops : {
-          next_hop      = try(hop.ip, local.defaults.iosxe.configuration.routing.static_routes.next_hops.ip, "${hop.interface_type}${hop.interface_id}", "${local.defaults.iosxe.configuration.routing.static_routes.next_hops.interface_type}${local.defaults.iosxe.configuration.routing.static_routes.next_hops.interface_id}", null)
+          next_hop      = try(hop.ip, local.defaults.iosxe.configuration.routing.static_routes.next_hops.ip, "${hop.interface_type}${trimprefix(hop.interface_id, "$string ")}", "${local.defaults.iosxe.configuration.routing.static_routes.next_hops.interface_type}${local.defaults.iosxe.configuration.routing.static_routes.next_hops.interface_id}", null)
           distance      = try(hop.distance, local.defaults.iosxe.configuration.routing.static_routes.next_hops_with_track.distance, null)
           name          = try(hop.name, local.defaults.iosxe.configuration.routing.static_routes.next_hops_with_track.name, null)
           permanent     = try(hop.permanent, local.defaults.iosxe.configuration.routing.static_routes.next_hops_with_track.permanent, null)
@@ -43,7 +43,7 @@ locals {
           prefix = try(static_route.prefix, local.defaults.iosxe.configuration.routing.static_routes.prefix, null)
           mask   = try(static_route.mask, local.defaults.iosxe.configuration.routing.static_routes.mask, null)
           next_hops = try(length(static_route.next_hops) == 0, true) ? null : [for hop in static_route.next_hops : {
-            next_hop  = try(hop.ip, local.defaults.iosxe.configuration.routing.static_routes.next_hops.ip, "${hop.interface_type}${hop.interface_id}", "${local.defaults.iosxe.configuration.routing.static_routes.next_hops.interface_type}${local.defaults.iosxe.configuration.routing.static_routes.next_hops.interface_id}", null)
+            next_hop  = try(hop.ip, local.defaults.iosxe.configuration.routing.static_routes.next_hops.ip, "${hop.interface_type}${trimprefix(hop.interface_id, "$string ")}", "${local.defaults.iosxe.configuration.routing.static_routes.next_hops.interface_type}${local.defaults.iosxe.configuration.routing.static_routes.next_hops.interface_id}", null)
             distance  = try(hop.distance, local.defaults.iosxe.configuration.routing.static_routes.next_hops.distance, null)
             global    = try(hop.global, local.defaults.iosxe.configuration.routing.static_routes.next_hops.global, null)
             name      = try(hop.name, local.defaults.iosxe.configuration.routing.static_routes.next_hops.name, null)
@@ -51,7 +51,7 @@ locals {
             tag       = try(hop.tag, local.defaults.iosxe.configuration.routing.static_routes.next_hops.tag, null)
           } if try(hop.track_id, local.defaults.iosxe.configuration.routing.static_routes.next_hops.track_id, null) == null]
           next_hops_with_track = try(length(static_route.next_hops) == 0, true) ? null : [for hop in static_route.next_hops : {
-            next_hop      = try(hop.ip, local.defaults.iosxe.configuration.routing.static_routes.next_hops.ip, "${hop.interface_type}${hop.interface_id}", "${local.defaults.iosxe.configuration.routing.static_routes.next_hops.interface_type}${local.defaults.iosxe.configuration.routing.static_routes.next_hops.interface_id}", null)
+            next_hop      = try(hop.ip, local.defaults.iosxe.configuration.routing.static_routes.next_hops.ip, "${hop.interface_type}${trimprefix(hop.interface_id, "$string ")}", "${local.defaults.iosxe.configuration.routing.static_routes.next_hops.interface_type}${local.defaults.iosxe.configuration.routing.static_routes.next_hops.interface_id}", null)
             distance      = try(hop.distance, local.defaults.iosxe.configuration.routing.static_routes.next_hops_with_track.distance, null)
             name          = try(hop.name, local.defaults.iosxe.configuration.routing.static_routes.next_hops_with_track.name, null)
             permanent     = try(hop.permanent, local.defaults.iosxe.configuration.routing.static_routes.next_hops_with_track.permanent, null)

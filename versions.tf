@@ -8,7 +8,7 @@ terraform {
     }
     utils = {
       source  = "netascode/utils"
-      version = "= 1.1.0-beta1"
+      version = "= 1.1.0-beta3"
     }
   }
 }

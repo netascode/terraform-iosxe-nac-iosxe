@@ -41,7 +41,7 @@ module "iosxe" {
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.8.0 |
 | <a name="requirement_iosxe"></a> [iosxe](#requirement\_iosxe) | = 0.9.3 |
-| <a name="requirement_utils"></a> [utils](#requirement\_utils) | = 1.1.0-beta1 |
+| <a name="requirement_utils"></a> [utils](#requirement\_utils) | = 1.1.0-beta3 |
 ## Inputs
 
 | Name | Description | Type | Default | Required |
