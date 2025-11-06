@@ -197,8 +197,11 @@ locals {
         cdp_tlv_app                                = try(int.cdp_tlv_app, local.defaults.iosxe.devices.configuration.interfaces.ethernets.cdp_tlv_app, null)
         cdp_tlv_location                           = try(int.cdp_tlv_location, local.defaults.iosxe.devices.configuration.interfaces.ethernets.cdp_tlv_location, null)
         cdp_tlv_server_location                    = try(int.cdp_tlv_server_location, local.defaults.iosxe.devices.configuration.interfaces.ethernets.cdp_tlv_server_location, null)
-        ip_nat_inside                              = try(int.ipv4.nat_inside, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv4.nat_inside, null)
-        ip_nat_outside                             = try(int.ipv4.nat_outside, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv4.nat_outside, null)
+        evpn_ethernet_segments = try(length(int.evpn_ethernet_segments) == 0, true) ? null : [for es in int.evpn_ethernet_segments : {
+          es_value = try(es.es_value, local.defaults.iosxe.devices.configuration.interfaces.ethernets.evpn_ethernet_segments.es_value, null)
+        }]
+        ip_nat_inside  = try(int.ipv4.nat_inside, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv4.nat_inside, null)
+        ip_nat_outside = try(int.ipv4.nat_outside, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv4.nat_outside, null)
       }
     ]
   ])
@@ -312,6 +315,7 @@ resource "iosxe_interface_ethernet" "ethernet" {
   cdp_tlv_app                                = each.value.cdp_tlv_app
   cdp_tlv_location                           = each.value.cdp_tlv_location
   cdp_tlv_server_location                    = each.value.cdp_tlv_server_location
+  evpn_ethernet_segments                     = each.value.evpn_ethernet_segments
   ip_nat_inside                              = each.value.ip_nat_inside
   ip_nat_outside                             = each.value.ip_nat_outside
 
@@ -990,6 +994,9 @@ locals {
         auto_qos_voip_trust                     = try(int.auto_qos.voip_trust, local.defaults.iosxe.devices.configuration.interfaces.port_channels.auto_qos.voip_trust, null)
         trust_device                            = try(int.auto_qos.trust_device, local.defaults.iosxe.devices.configuration.interfaces.port_channels.auto_qos.trust_device, null)
         negotiation_auto                        = try(int.negotiation_auto, local.defaults.iosxe.devices.configuration.interfaces.port_channels.negotiation_auto, null)
+        evpn_ethernet_segments = try(length(int.evpn_ethernet_segments) == 0, true) ? null : [for es in int.evpn_ethernet_segments : {
+          es_value = try(es.es_value, local.defaults.iosxe.devices.configuration.interfaces.port_channels.evpn_ethernet_segments.es_value, null)
+        }]
       }
     ]
   ])
@@ -1052,6 +1059,7 @@ resource "iosxe_interface_port_channel" "port_channel" {
   auto_qos_voip_trust              = each.value.auto_qos_voip_trust
   trust_device                     = each.value.trust_device
   negotiation_auto                 = each.value.negotiation_auto
+  evpn_ethernet_segments           = each.value.evpn_ethernet_segments
 }
 
 resource "iosxe_interface_switchport" "port_channel_switchport" {
