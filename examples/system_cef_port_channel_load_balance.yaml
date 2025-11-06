@@ -1,0 +1,33 @@
+---
+# Example: CEF and Port-Channel Load Balancing Configuration
+#
+# This example demonstrates configuring CEF load balancing with port-based
+# hashing and port-channel load balance algorithms.
+
+iosxe:
+  global:
+    system:
+      hostname: CORE-SWITCH-1
+      ipv6_unicast_routing: true
+
+      # CEF Load Balancing Configuration
+      # Enables Layer 4 (port) information in CEF hash calculations
+      # for improved traffic distribution across ECMP paths
+      cef:
+        load_balance:
+          ipv4:
+            include_ports:
+              source: true       # Include source port in hash
+              destination: true  # Include destination port in hash
+          ipv6:
+            include_ports:
+              source: true       # Include source port in hash for IPv6
+              destination: true  # Include destination port in hash for IPv6
+
+      # Port-Channel Load Balancing Configuration
+      # Determines how traffic is distributed across port-channel member links
+      port_channel:
+        load_balance: src-dst-mixed-ip-port  # Hash based on src/dst IP and port
+
+      # Other system configuration...
+      ip_domain_name: example.com
