@@ -162,6 +162,9 @@ locals {
           md5_auth_key  = try(key.md5_auth_key, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospf.message_digest_keys.md5_auth_key, null)
           md5_auth_type = try(key.md5_auth_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospf.message_digest_keys.md5_auth_type, null)
         }]
+        ospf_multi_area_ids = try(length(int.ospf.multi_area_ids) == 0, true) ? null : [for area in int.ospf.multi_area_ids : {
+          area_id = area
+        }]
         ospfv3                                     = try(int.ospfv3, null) != null ? true : false
         ospfv3_network_type_broadcast              = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.network_type, null) == "broadcast" ? true : null
         ospfv3_network_type_non_broadcast          = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.network_type, null) == "non-broadcast" ? true : null
@@ -371,15 +374,16 @@ resource "iosxe_interface_ospf" "ethernet_ospf" {
   cost                             = each.value.ospf_cost
   dead_interval                    = each.value.ospf_dead_interval
   hello_interval                   = each.value.ospf_hello_interval
+  message_digest_keys              = each.value.ospf_message_digest_keys
   mtu_ignore                       = each.value.ospf_mtu_ignore
+  multi_area_ids                   = each.value.ospf_multi_area_ids
   network_type_broadcast           = each.value.ospf_network_type_broadcast
   network_type_non_broadcast       = each.value.ospf_network_type_non_broadcast
   network_type_point_to_multipoint = each.value.ospf_network_type_point_to_multipoint
   network_type_point_to_point      = each.value.ospf_network_type_point_to_point
   priority                         = each.value.ospf_priority
-  ttl_security_hops                = each.value.ospf_ttl_security_hops
   process_ids                      = each.value.ospf_process_ids
-  message_digest_keys              = each.value.ospf_message_digest_keys
+  ttl_security_hops                = each.value.ospf_ttl_security_hops
 
   depends_on = [
     iosxe_interface_ethernet.ethernet,
