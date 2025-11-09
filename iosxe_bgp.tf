@@ -365,7 +365,7 @@ locals {
           local_as_no_prepend                       = try(neighbor.local_as_no_prepend, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.neighbors.local_as_no_prepend, null)
           local_as_replace_as                       = try(neighbor.local_as_replace_as, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.neighbors.local_as_replace_as, null)
           local_as_dual_as                          = try(neighbor.local_as_dual_as, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.neighbors.local_as_dual_as, null)
-          update_source_loopback                    = try(neighbor.update_source_interface_type, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.neighbors.update_source_interface_type, null) == "Loopback" ? try(neighbor.update_source_interface_id, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.neighbors.update_source_interface_id, null) : null
+          update_source_interface_loopback          = try(neighbor.update_source_interface_type, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.neighbors.update_source_interface_type, null) == "Loopback" ? try(neighbor.update_source_interface_id, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.neighbors.update_source_interface_id, null) : null
           activate                                  = try(neighbor.activate, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.neighbors.activate, true)
           send_community                            = try(neighbor.send_community, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.neighbors.send_community, null)
           route_reflector_client                    = try(neighbor.route_reflector_client, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.neighbors.route_reflector_client, null)
@@ -418,7 +418,7 @@ resource "iosxe_bgp_ipv4_unicast_vrf_neighbor" "bgp_ipv4_unicast_vrf_neighbor" {
   local_as_no_prepend                       = each.value.local_as_no_prepend
   local_as_replace_as                       = each.value.local_as_replace_as
   local_as_dual_as                          = each.value.local_as_dual_as
-  update_source_loopback                    = each.value.update_source_loopback
+  update_source_interface_loopback          = each.value.update_source_interface_loopback
   activate                                  = each.value.activate
   send_community                            = each.value.send_community
   route_reflector_client                    = each.value.route_reflector_client
