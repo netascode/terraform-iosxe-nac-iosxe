@@ -418,7 +418,7 @@ resource "iosxe_bgp_ipv4_unicast_vrf_neighbor" "bgp_ipv4_unicast_vrf_neighbor" {
   local_as_no_prepend                       = each.value.local_as_no_prepend
   local_as_replace_as                       = each.value.local_as_replace_as
   local_as_dual_as                          = each.value.local_as_dual_as
-  update_source_loopback                    = each.value.update_source_loopback
+  update_source_interface_loopback          = each.value.update_source_loopback
   activate                                  = each.value.activate
   send_community                            = each.value.send_community
   route_reflector_client                    = each.value.route_reflector_client
