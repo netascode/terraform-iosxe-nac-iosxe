@@ -17,7 +17,7 @@ Configuring an IOS-XE system configuration using YAML:
 iosxe:
   devices:
     - name: Switch1
-      url: https://1.2.3.4
+      host: 1.2.3.4
       configuration:
         system:
           hostname: Switch1
