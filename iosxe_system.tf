@@ -195,6 +195,15 @@ resource "iosxe_system" "system" {
   standby_redirects                = try(local.device_config[each.value.name].system.standby_redirects, local.defaults.iosxe.configuration.system.standby_redirects, null) == "none" ? true : null
   standby_redirects_enable_disable = contains(["enable", "disable"], try(local.device_config[each.value.name].system.standby_redirects, local.defaults.iosxe.configuration.system.standby_redirects, "")) ? try(local.device_config[each.value.name].system.standby_redirects, local.defaults.iosxe.configuration.system.standby_redirects, null) : null
 
+  # CEF Load Balancing
+  ip_cef_load_sharing_algorithm_include_ports_source        = try(local.device_config[each.value.name].system.cef.load_balance.ipv4.include_ports.source, local.defaults.iosxe.configuration.system.cef.load_balance.ipv4.include_ports.source, null)
+  ip_cef_load_sharing_algorithm_include_ports_destination   = try(local.device_config[each.value.name].system.cef.load_balance.ipv4.include_ports.destination, local.defaults.iosxe.configuration.system.cef.load_balance.ipv4.include_ports.destination, null)
+  ipv6_cef_load_sharing_algorithm_include_ports_source      = try(local.device_config[each.value.name].system.cef.load_balance.ipv6.include_ports.source, local.defaults.iosxe.configuration.system.cef.load_balance.ipv6.include_ports.source, null)
+  ipv6_cef_load_sharing_algorithm_include_ports_destination = try(local.device_config[each.value.name].system.cef.load_balance.ipv6.include_ports.destination, local.defaults.iosxe.configuration.system.cef.load_balance.ipv6.include_ports.destination, null)
+
+  # Port-Channel Load Balancing
+  port_channel_load_balance = try(local.device_config[each.value.name].system.port_channel.load_balance, local.defaults.iosxe.configuration.system.port_channel.load_balance, null)
+
   track_objects = try(length(local.device_config[each.value.name].system.track_objects) == 0, true) ? null : [
     for track_obj in local.device_config[each.value.name].system.track_objects : {
       number              = try(track_obj.number, local.defaults.iosxe.configuration.system.track_objects.number, null)
