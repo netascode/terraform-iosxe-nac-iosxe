@@ -8,6 +8,7 @@ resource "iosxe_pim" "pim" {
   bsr_candidate_mask                = try(local.device_config[each.value.name].pim.bsr_candidate_mask, local.defaults.iosxe.configuration.pim.bsr_candidate_mask, null)
   bsr_candidate_priority            = try(local.device_config[each.value.name].pim.bsr_candidate_priority, local.defaults.iosxe.configuration.pim.bsr_candidate_priority, null)
   bsr_candidate_accept_rp_candidate = try(local.device_config[each.value.name].pim.bsr_candidate_accept_rp_candidate, local.defaults.iosxe.configuration.pim.bsr_candidate_accept_rp_candidate, null)
+  register_source_loopback          = try(local.device_config[each.value.name].pim.register_source_interface_type, local.defaults.iosxe.configuration.pim.register_source_interface_type, null) == "Loopback" ? try(local.device_config[each.value.name].pim.register_source_interface_id, local.defaults.iosxe.configuration.pim.register_source_interface_id, null) : null
   ssm_range                         = try(local.device_config[each.value.name].pim.ssm_range, local.defaults.iosxe.configuration.pim.ssm_range, null)
   ssm_default                       = try(local.device_config[each.value.name].pim.ssm_default, local.defaults.iosxe.configuration.pim.ssm_default, null)
   rp_address                        = try(local.device_config[each.value.name].pim.rp_address, local.defaults.iosxe.configuration.pim.rp_address, null)
@@ -40,6 +41,7 @@ resource "iosxe_pim" "pim" {
     bsr_candidate_mask                = try(vrf.bsr_candidate_mask, local.defaults.iosxe.configuration.pim.vrfs.bsr_candidate_mask, null)
     bsr_candidate_priority            = try(vrf.bsr_candidate_priority, local.defaults.iosxe.configuration.pim.vrfs.bsr_candidate_priority, null)
     bsr_candidate_accept_rp_candidate = try(vrf.bsr_candidate_accept_rp_candidate, local.defaults.iosxe.configuration.pim.vrfs.bsr_candidate_accept_rp_candidate, null)
+    register_source_loopback          = try(vrf.register_source_interface_type, local.defaults.iosxe.configuration.pim.vrfs.register_source_interface_type, null) == "Loopback" ? try(vrf.register_source_interface_id, local.defaults.iosxe.configuration.pim.vrfs.register_source_interface_id, null) : null
     cache_rpf_oif                     = try(vrf.cache_rpf_oif, local.defaults.iosxe.configuration.pim.vrfs.cache_rpf_oif, null)
     ssm_range                         = try(vrf.ssm_range, local.defaults.iosxe.configuration.pim.vrfs.ssm_range, null)
     ssm_default                       = try(vrf.ssm_default, local.defaults.iosxe.configuration.pim.vrfs.ssm_default, null)

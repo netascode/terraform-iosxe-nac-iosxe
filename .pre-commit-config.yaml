@@ -18,4 +18,6 @@ repos:
       - id: terraform-docs-system
         args: ["./examples/system"]
       - id: terraform-docs-system
+        args: ["./examples/pim"]
+      - id: terraform-docs-system
         args: ["."]
