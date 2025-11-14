@@ -88,6 +88,10 @@ resource "iosxe_bgp_neighbor" "bgp_neighbor" {
   update_source_interface_loopback          = each.value.update_source_interface_loopback
   ebgp_multihop                             = each.value.ebgp_multihop
   ebgp_multihop_max_hop                     = each.value.ebgp_multihop_max_hop
+
+  depends_on = [
+    iosxe_bgp_address_family_ipv4.bgp_address_family_ipv4
+  ]
 }
 
 resource "iosxe_bgp_address_family_ipv4" "bgp_address_family_ipv4" {
@@ -258,7 +262,10 @@ resource "iosxe_bgp_ipv4_unicast_neighbor" "bgp_ipv4_unicast_neighbor" {
   default_originate_route_map = each.value.default_originate_route_map
   route_maps                  = each.value.route_maps
 
-  depends_on = [iosxe_bgp_neighbor.bgp_neighbor]
+  depends_on = [
+    iosxe_bgp_neighbor.bgp_neighbor,
+    iosxe_bgp_address_family_ipv4.bgp_address_family_ipv4
+  ]
 }
 
 locals {
@@ -298,7 +305,10 @@ resource "iosxe_bgp_ipv6_unicast_neighbor" "bgp_ipv6_unicast_neighbor" {
   default_originate_route_map = each.value.default_originate_route_map
   route_maps                  = each.value.route_maps
 
-  depends_on = [iosxe_bgp_neighbor.bgp_neighbor]
+  depends_on = [
+    iosxe_bgp_neighbor.bgp_neighbor,
+    iosxe_bgp_address_family_ipv6.bgp_address_family_ipv6
+  ]
 }
 
 locals {
@@ -329,7 +339,10 @@ resource "iosxe_bgp_l2vpn_evpn_neighbor" "bgp_l2vpn_evpn_neighbor" {
   route_reflector_client = each.value.route_reflector_client
   soft_reconfiguration   = each.value.soft_reconfiguration
 
-  depends_on = [iosxe_bgp_neighbor.bgp_neighbor]
+  depends_on = [
+    iosxe_bgp_neighbor.bgp_neighbor,
+    iosxe_bgp_address_family_l2vpn.bgp_address_family_l2vpn
+  ]
 }
 
 locals {
