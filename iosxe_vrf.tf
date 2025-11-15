@@ -40,9 +40,9 @@ locals {
 
         ipv4_route_replicate = try(length(vrf.address_family_ipv4.route_replicate) == 0, true) ? null : [
           for rr in vrf.address_family_ipv4.route_replicate : {
-            name        = rr.name
-            unicast_all = true
-            route_map   = try(rr.route_map, null)
+            name                  = rr.name
+            unicast_all           = true
+            unicast_all_route_map = try(rr.route_map, null)
           }
         ]
 
