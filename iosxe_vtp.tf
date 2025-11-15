@@ -4,7 +4,7 @@ resource "iosxe_vtp" "vtp" {
 
   domain         = try(local.device_config[each.value.name].vtp.domain, local.defaults.iosxe.configuration.vtp.domain, null)
   file           = try(local.device_config[each.value.name].vtp.file, local.defaults.iosxe.configuration.vtp.file, null)
-  interface      = try("${try(local.device_config[each.value.name].vtp.interface_type, local.defaults.iosxe.configuration.vtp.interface_type, null)}${try(local.device_config[each.value.name].vtp.interface_id, local.defaults.iosxe.configuration.vtp.interface_id, null)}", null)
+  interface      = try("${try(local.device_config[each.value.name].vtp.interface_type, local.defaults.iosxe.configuration.vtp.interface_type, null)}${try(trimprefix(local.device_config[each.value.name].vtp.interface_id, "$string "), local.defaults.iosxe.configuration.vtp.interface_id, null)}", null)
   interface_only = try(local.device_config[each.value.name].vtp.interface_only, local.defaults.iosxe.configuration.vtp.interface_only, null)
 
   # Simple mode attributes (when no mode_instance is specified)

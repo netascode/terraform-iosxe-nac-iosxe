@@ -28,6 +28,12 @@ variable "managed_devices" {
   default     = []
 }
 
+variable "device_transaction" {
+  description = "Enable device transaction mode. This will group all changes into a single transaction. Only valid if NETCONF is used."
+  type        = bool
+  default     = false
+}
+
 variable "save_config" {
   description = "Write changes to startup-config on all devices."
   type        = bool
