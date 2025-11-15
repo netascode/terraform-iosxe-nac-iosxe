@@ -15,6 +15,15 @@ locals {
         option_sampler_table                  = try(exporter.option_sampler_table, local.defaults.iosxe.device_config.flow.exporters.option_sampler_table, null)
         option_vrf_table_timeout              = try(exporter.option_vrf_table_timeout, local.defaults.iosxe.device_config.flow.exporters.option_vrf_table_timeout, null)
         source_loopback                       = try(exporter.source_loopback, local.defaults.iosxe.device_config.flow.exporters.source_loopback, null)
+        source_gigabit_ethernet               = try(exporter.source_gigabit_ethernet, local.defaults.iosxe.device_config.flow.exporters.source_gigabit_ethernet, null)
+        source_two_gigabit_ethernet           = try(exporter.source_two_gigabit_ethernet, local.defaults.iosxe.device_config.flow.exporters.source_two_gigabit_ethernet, null)
+        source_five_gigabit_ethernet          = try(exporter.source_five_gigabit_ethernet, local.defaults.iosxe.device_config.flow.exporters.source_five_gigabit_ethernet, null)
+        source_ten_gigabit_ethernet           = try(exporter.source_ten_gigabit_ethernet, local.defaults.iosxe.device_config.flow.exporters.source_ten_gigabit_ethernet, null)
+        source_twenty_five_gigabit_ethernet   = try(exporter.source_twenty_five_gigabit_ethernet, local.defaults.iosxe.device_config.flow.exporters.source_twenty_five_gigabit_ethernet, null)
+        source_forty_gigabit_ethernet         = try(exporter.source_forty_gigabit_ethernet, local.defaults.iosxe.device_config.flow.exporters.source_forty_gigabit_ethernet, null)
+        source_hundred_gigabit_ethernet       = try(exporter.source_hundred_gigabit_ethernet, local.defaults.iosxe.device_config.flow.exporters.source_hundred_gigabit_ethernet, null)
+        source_vlan                           = try(exporter.source_vlan, local.defaults.iosxe.device_config.flow.exporters.source_vlan, null)
+        source_port_channel                   = try(exporter.source_port_channel, local.defaults.iosxe.device_config.flow.exporters.source_port_channel, null)
         transport_udp                         = try(exporter.transport_udp, local.defaults.iosxe.device_config.flow.exporters.transport_udp, null)
         template_data_timeout                 = try(exporter.template_data_timeout, local.defaults.iosxe.device_config.flow.exporters.template_data_timeout, null)
       }
@@ -36,6 +45,15 @@ resource "iosxe_flow_exporter" "flow_exporter" {
   option_sampler_table                  = each.value.option_sampler_table
   option_vrf_table_timeout              = each.value.option_vrf_table_timeout
   source_loopback                       = each.value.source_loopback
+  source_gigabit_ethernet               = each.value.source_gigabit_ethernet
+  source_two_gigabit_ethernet           = each.value.source_two_gigabit_ethernet
+  source_five_gigabit_ethernet          = each.value.source_five_gigabit_ethernet
+  source_ten_gigabit_ethernet           = each.value.source_ten_gigabit_ethernet
+  source_twenty_five_gigabit_ethernet   = each.value.source_twenty_five_gigabit_ethernet
+  source_forty_gigabit_ethernet         = each.value.source_forty_gigabit_ethernet
+  source_hundred_gigabit_ethernet       = each.value.source_hundred_gigabit_ethernet
+  source_vlan                           = each.value.source_vlan
+  source_port_channel                   = each.value.source_port_channel
   transport_udp                         = each.value.transport_udp
   template_data_timeout                 = each.value.template_data_timeout
 
@@ -110,6 +128,12 @@ locals {
         match_ipv6_version                                   = try(record.match.ipv6_version, local.defaults.iosxe.device_config.flow.records.match.ipv6_version, null)
         match_transport_destination_port                     = try(record.match.transport_destination_port, local.defaults.iosxe.device_config.flow.records.match.transport_destination_port, null)
         match_transport_source_port                          = try(record.match.transport_source_port, local.defaults.iosxe.device_config.flow.records.match.transport_source_port, null)
+        match_datalink_mac_source_address_input              = try(record.match.datalink_mac_source_address_input, local.defaults.iosxe.device_config.flow.records.match.datalink_mac_source_address_input, null)
+        match_datalink_mac_destination_address_input         = try(record.match.datalink_mac_destination_address_input, local.defaults.iosxe.device_config.flow.records.match.datalink_mac_destination_address_input, null)
+        match_datalink_vlan                                  = try(record.match.datalink_vlan, local.defaults.iosxe.device_config.flow.records.match.datalink_vlan, null)
+        match_datalink_source_vlan_id                        = try(record.match.datalink_source_vlan_id, local.defaults.iosxe.device_config.flow.records.match.datalink_source_vlan_id, null)
+        match_datalink_destination_vlan_id                   = try(record.match.datalink_destination_vlan_id, local.defaults.iosxe.device_config.flow.records.match.datalink_destination_vlan_id, null)
+        match_ipv4_ttl                                       = try(record.match.ipv4_ttl, local.defaults.iosxe.device_config.flow.records.match.ipv4_ttl, null)
         collect_connection_initiator                         = try(record.collect.connection_initiator, local.defaults.iosxe.device_config.flow.records.collect.connection_initiator, null)
         collect_connection_new_connections                   = try(record.collect.connection_new_connections, local.defaults.iosxe.device_config.flow.records.collect.connection_new_connections, null)
         collect_connection_server_counter_bytes_network_long = try(record.collect.connection_server_counter_bytes_network_long, local.defaults.iosxe.device_config.flow.records.collect.connection_server_counter_bytes_network_long, null)
@@ -153,6 +177,12 @@ resource "iosxe_flow_record" "flow_record" {
   match_ipv6_version                                   = each.value.match_ipv6_version
   match_transport_destination_port                     = each.value.match_transport_destination_port
   match_transport_source_port                          = each.value.match_transport_source_port
+  match_datalink_mac_source_address_input              = each.value.match_datalink_mac_source_address_input
+  match_datalink_mac_destination_address_input         = each.value.match_datalink_mac_destination_address_input
+  match_datalink_vlan                                  = each.value.match_datalink_vlan
+  match_datalink_source_vlan_id                        = each.value.match_datalink_source_vlan_id
+  match_datalink_destination_vlan_id                   = each.value.match_datalink_destination_vlan_id
+  match_ipv4_ttl                                       = each.value.match_ipv4_ttl
   collect_connection_initiator                         = each.value.collect_connection_initiator
   collect_connection_new_connections                   = each.value.collect_connection_new_connections
   collect_connection_server_counter_bytes_network_long = each.value.collect_connection_server_counter_bytes_network_long
