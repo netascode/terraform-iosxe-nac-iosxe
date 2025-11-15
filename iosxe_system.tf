@@ -40,6 +40,8 @@ resource "iosxe_system" "system" {
   ip_ssh_authentication_retries       = try(local.device_config[each.value.name].system.ssh.authentication_retries, local.defaults.iosxe.configuration.system.ssh.authentication_retries, null)
   ip_ssh_time_out                     = try(local.device_config[each.value.name].system.ssh.time_out, local.defaults.iosxe.configuration.system.ssh.time_out, null)
   ip_ssh_version                      = try(local.device_config[each.value.name].system.ssh.version, local.defaults.iosxe.configuration.system.ssh.version, null)
+  ip_ssh_bulk_mode                    = try(local.device_config[each.value.name].system.ssh.bulk_mode, local.defaults.iosxe.configuration.system.ssh.bulk_mode, null)
+  ip_ssh_bulk_mode_window_size        = try(local.device_config[each.value.name].system.ssh.bulk_mode_window_size, local.defaults.iosxe.configuration.system.ssh.bulk_mode_window_size, null)
   memory_free_low_watermark_processor = try(local.device_config[each.value.name].system.memory_free_low_watermark_processor, local.defaults.iosxe.configuration.system.memory_free_low_watermark_processor, null)
   redundancy                          = try(local.device_config[each.value.name].system.redundancy, local.defaults.iosxe.configuration.system.redundancy, null)
   redundancy_mode                     = try(local.device_config[each.value.name].system.redundancy_mode, local.defaults.iosxe.configuration.system.redundancy_mode, null)
