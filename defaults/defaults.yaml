@@ -1,5 +1,7 @@
 defaults:
   iosxe:
+    templates:
+      order: 0
     devices:
       managed: true
       configuration:
