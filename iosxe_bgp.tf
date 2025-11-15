@@ -154,7 +154,7 @@ locals {
         allowas_in_as_number      = try(peer_policy.allowas_in_as_number, null)
         as_override_split_horizon = try(peer_policy.as_override_split_horizon, null)
         route_maps = try(length(peer_policy.route_maps) == 0, true) ? null : [for route_map in peer_policy.route_maps : {
-          in_out         = try(route_map.in_out, null)
+          in_out         = try(route_map.direction, null)
           route_map_name = try(route_map.route_map_name, null)
         }]
       }
@@ -163,42 +163,6 @@ locals {
 }
 
 resource "iosxe_bgp_peer_policy_template" "bgp_peer_policy_template" {
-  for_each = { for e in local.template_peer_policies : e.key => e }
-  device   = each.value.device
-
-  asn                       = each.value.asn
-  name                      = each.value.name
-  send_community            = each.value.send_community
-  route_reflector_client    = each.value.route_reflector_client
-  allowas_in_as_number      = each.value.allowas_in_as_number
-  as_override_split_horizon = each.value.as_override_split_horizon
-  route_maps                = each.value.route_maps
-
-  depends_on = [iosxe_route_map.route_map]
-}
-
-locals {
-  template_peer_policies = flatten([
-    for device in local.devices : [
-      for peer_policy in try(local.device_config[device.name].routing.bgp.template_peer_policies, []) : {
-        key                       = format("%s/%s", device.name, peer_policy.name)
-        device                    = device.name
-        asn                       = iosxe_bgp.bgp[device.name].asn
-        name                      = try(peer_policy.name, null)
-        send_community            = try(peer_policy.send_community, null)
-        route_reflector_client    = try(peer_policy.route_reflector_client, null)
-        allowas_in_as_number      = try(peer_policy.allowas_in_as_number, null)
-        as_override_split_horizon = try(peer_policy.as_override_split_horizon, null)
-        route_maps = try(length(peer_policy.route_maps) == 0, true) ? null : [for route_map in peer_policy.route_maps : {
-          in_out         = try(route_map.in_out, null)
-          route_map_name = try(route_map.route_map_name, null)
-        }]
-      }
-    ]
-  ])
-}
-
-resource "iosxe_bgp_template_peer_policy" "bgp_template_peer_policy" {
   for_each = { for e in local.template_peer_policies : e.key => e }
   device   = each.value.device
 
