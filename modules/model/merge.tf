@@ -7,11 +7,6 @@ locals {
   yaml_strings_files = [
     for file in var.yaml_files : file(file)
   ]
-  template_paths = concat(var.yaml_directories, flatten([
-    for dir in var.yaml_directories : [
-      fileset(".", "${dir}/**/*.{tmpl}")
-    ]
-  ]))
   model_strings   = length(keys(var.model)) != 0 ? [yamlencode(var.model)] : []
   model_string    = provider::utils::yaml_merge(concat(local.yaml_strings_directories, local.yaml_strings_files, local.model_strings))
   model           = yamldecode(local.model_string)
