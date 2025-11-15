@@ -18,11 +18,11 @@ resource "iosxe_logging" "logging" {
   file_max_size     = try(local.device_config[each.value.name].logging.file_max_size, local.defaults.iosxe.configuration.logging.file_max_size, null)
   file_min_size     = try(local.device_config[each.value.name].logging.file_min_size, local.defaults.iosxe.configuration.logging.file_min_size, null)
   file_severity     = try(local.device_config[each.value.name].logging.file_severity, local.defaults.iosxe.configuration.logging.file_severity, null)
-  source_interface  = try("${try(local.device_config[each.value.name].logging.source_interface_type, local.defaults.iosxe.configuration.logging.source_interface_type)}${try(local.device_config[each.value.name].logging.source_interface_id, local.defaults.iosxe.configuration.logging.source_interface_id)}", null)
+  source_interface  = try("${try(local.device_config[each.value.name].logging.source_interface_type, local.defaults.iosxe.configuration.logging.source_interface_type)}${try(trimprefix(local.device_config[each.value.name].logging.source_interface_id, "$string "), local.defaults.iosxe.configuration.logging.source_interface_id)}", null)
 
   source_interfaces_vrf = try(length(local.device_config[each.value.name].logging.source_interfaces_vrf) == 0, true) ? null : [for s in local.device_config[each.value.name].logging.source_interfaces_vrf : {
     vrf            = try(s.vrf, local.defaults.iosxe.configuration.logging.source_interfaces_vrf.vrf, null)
-    interface_name = try("${try(s.interface_type, local.defaults.iosxe.configuration.logging.source_interfaces_vrf.interface_type)}${try(s.interface_id, local.defaults.iosxe.configuration.logging.source_interfaces_vrf.interface_id)}", null)
+    interface_name = try("${try(s.interface_type, local.defaults.iosxe.configuration.logging.source_interfaces_vrf.interface_type)}${try(trimprefix(s.interface_id, "$string "), local.defaults.iosxe.configuration.logging.source_interfaces_vrf.interface_id)}", null)
   }]
 
   # IPv4 hosts without VRF and without transport
