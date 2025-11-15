@@ -9,6 +9,10 @@ locals {
         dot1x_max_reauth_req                           = try(template.network_access_control.dot1x_max_reauth_req, local.defaults.iosxe.configuration.templates.network_access_control.dot1x_max_reauth_req, null)
         dot1x_max_req                                  = try(template.network_access_control.dot1x_max_req, local.defaults.iosxe.configuration.templates.network_access_control.dot1x_max_req, null)
         dot1x_timeout_tx_period                        = try(template.network_access_control.dot1x_timeout_tx_period, local.defaults.iosxe.configuration.templates.network_access_control.dot1x_timeout_tx_period, null)
+        dot1x_timeout_quiet_period                     = try(template.network_access_control.dot1x_timeout_quiet_period, local.defaults.iosxe.configuration.templates.network_access_control.dot1x_timeout_quiet_period, null)
+        dot1x_timeout_supp_timeout                     = try(template.network_access_control.dot1x_timeout_supp_timeout, local.defaults.iosxe.configuration.templates.network_access_control.dot1x_timeout_supp_timeout, null)
+        dot1x_timeout_ratelimit_period                 = try(template.network_access_control.dot1x_timeout_ratelimit_period, local.defaults.iosxe.configuration.templates.network_access_control.dot1x_timeout_ratelimit_period, null)
+        dot1x_timeout_server_timeout                   = try(template.network_access_control.dot1x_timeout_server_timeout, local.defaults.iosxe.configuration.templates.network_access_control.dot1x_timeout_server_timeout, null)
         service_policy_type_control_subscriber         = try(template.service_policy_type_control_subscriber, local.defaults.iosxe.configuration.templates.service_policy_type_control_subscriber, null)
         service_policy_input                           = try(template.service_policy_input, local.defaults.iosxe.configuration.templates.service_policy_input, null)
         service_policy_output                          = try(template.service_policy_output, local.defaults.iosxe.configuration.templates.service_policy_output, null)
@@ -116,6 +120,10 @@ resource "iosxe_template" "template" {
   dot1x_max_reauth_req                                     = each.value.dot1x_max_reauth_req
   dot1x_max_req                                            = each.value.dot1x_max_req
   dot1x_timeout_tx_period                                  = each.value.dot1x_timeout_tx_period
+  dot1x_timeout_quiet_period                               = each.value.dot1x_timeout_quiet_period
+  dot1x_timeout_supp_timeout                               = each.value.dot1x_timeout_supp_timeout
+  dot1x_timeout_ratelimit_period                           = each.value.dot1x_timeout_ratelimit_period
+  dot1x_timeout_server_timeout                             = each.value.dot1x_timeout_server_timeout
   service_policy_type_control_subscriber                   = each.value.service_policy_type_control_subscriber
   service_policy_input                                     = each.value.service_policy_input
   service_policy_output                                    = each.value.service_policy_output
