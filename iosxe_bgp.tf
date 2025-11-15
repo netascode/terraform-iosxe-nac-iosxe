@@ -115,7 +115,7 @@ locals {
   ])
 }
 
-resource "iosxe_bgp_template_peer_policy" "bgp_template_peer_policy" {
+resource "iosxe_bgp_peer_policy_template" "bgp_peer_policy_template" {
   for_each = { for e in local.template_peer_policies : e.key => e }
   device   = each.value.device
 
