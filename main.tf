@@ -142,7 +142,9 @@ resource "iosxe_cli" "cli_0" {
     iosxe_bfd_template_single_hop.bfd_template_single_hop,
     iosxe_bfd_template_multi_hop.bfd_template_multi_hop,
     iosxe_bgp.bgp,
+    iosxe_bgp_peer_session_template.bgp_peer_session_template,
     iosxe_bgp_neighbor.bgp_neighbor,
+    iosxe_bgp_peer_policy_template.bgp_peer_policy_template,
     iosxe_bgp_address_family_ipv4.bgp_address_family_ipv4,
     iosxe_bgp_address_family_ipv6.bgp_address_family_ipv6,
     iosxe_bgp_address_family_l2vpn.bgp_address_family_l2vpn,
@@ -350,9 +352,12 @@ resource "iosxe_cli" "cli_9" {
   ]
 }
 
-resource "iosxe_save_config" "save_config" {
-  for_each = { for device in local.devices : device.name => device if var.save_config }
+resource "iosxe_commit" "commit" {
+  for_each = { for device in local.devices : device.name => device if var.device_transaction || var.save_config }
   device   = each.key
+
+  commit      = var.device_transaction
+  save_config = var.save_config
 
   depends_on = [
     iosxe_cli.cli_9
