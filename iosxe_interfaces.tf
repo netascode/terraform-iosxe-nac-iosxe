@@ -4,23 +4,24 @@ locals {
   interfaces_ethernets = flatten([
     for device in local.devices : [
       for int in try(local.device_config[device.name].interfaces.ethernets, []) : {
-        key                            = format("%s/%s%s", device.name, try(int.type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.type, null), trimprefix(int.id, "$string "))
-        device                         = device.name
-        id                             = trimprefix(int.id, "$string ")
-        type                           = try(int.type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.type, null)
-        media_type                     = try(int.media_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.media_type, null)
-        bandwidth                      = try(int.bandwidth, local.defaults.iosxe.devices.configuration.interfaces.ethernets.bandwidth, null)
-        mtu                            = try(int.mtu, local.defaults.iosxe.devices.configuration.interfaces.ethernets.mtu, null)
-        description                    = try(int.description, local.defaults.iosxe.devices.configuration.interfaces.ethernets.description, null)
-        shutdown                       = try(int.shutdown, local.defaults.iosxe.devices.configuration.interfaces.ethernets.shutdown, false)
-        vrf_forwarding                 = try(int.vrf_forwarding, local.defaults.iosxe.devices.configuration.interfaces.ethernets.vrf_forwarding, null)
-        ipv4_address                   = try(int.ipv4.address, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv4.address, null)
-        ipv4_address_mask              = try(int.ipv4.address_mask, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv4.address_mask, null)
-        ip_proxy_arp                   = try(int.ipv4.proxy_arp, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv4.proxy_arp, null)
-        ip_arp_inspection_trust        = try(int.ipv4.arp_inspection_trust, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv4.arp_inspection_trust, null)
-        ip_arp_inspection_limit_rate   = try(int.ipv4.arp_inspection_limit_rate, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv4.arp_inspection_limit_rate, null)
-        ip_dhcp_snooping_trust         = try(int.ipv4.dhcp_snooping_trust, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv4.dhcp_snooping_trust, null)
-        ip_dhcp_relay_source_interface = try("${try(int.ipv4.dhcp_relay_source_interface_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv4.dhcp_relay_source_interface_type)}${try(int.ipv4.dhcp_relay_source_interface_id, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv4.dhcp_relay_source_interface_id)}", null)
+        key                                     = format("%s/%s%s", device.name, try(int.type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.type, null), trimprefix(int.id, "$string "))
+        device                                  = device.name
+        id                                      = trimprefix(int.id, "$string ")
+        type                                    = try(int.type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.type, null)
+        media_type                              = try(int.media_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.media_type, null)
+        bandwidth                               = try(int.bandwidth, local.defaults.iosxe.devices.configuration.interfaces.ethernets.bandwidth, null)
+        mtu                                     = try(int.mtu, local.defaults.iosxe.devices.configuration.interfaces.ethernets.mtu, null)
+        description                             = try(int.description, local.defaults.iosxe.devices.configuration.interfaces.ethernets.description, null)
+        shutdown                                = try(int.shutdown, local.defaults.iosxe.devices.configuration.interfaces.ethernets.shutdown, false)
+        vrf_forwarding                          = try(int.vrf_forwarding, local.defaults.iosxe.devices.configuration.interfaces.ethernets.vrf_forwarding, null)
+        ipv4_address                            = try(int.ipv4.address, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv4.address, null)
+        ipv4_address_mask                       = try(int.ipv4.address_mask, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv4.address_mask, null)
+        ip_proxy_arp                            = try(int.ipv4.proxy_arp, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv4.proxy_arp, null)
+        ip_arp_inspection_trust                 = try(int.ipv4.arp_inspection_trust, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv4.arp_inspection_trust, null)
+        ip_arp_inspection_limit_rate            = try(int.ipv4.arp_inspection_limit_rate, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv4.arp_inspection_limit_rate, null)
+        ip_dhcp_snooping_trust                  = try(int.ipv4.dhcp_snooping_trust, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv4.dhcp_snooping_trust, null)
+        ip_dhcp_relay_source_interface          = try("${try(int.ipv4.dhcp_relay_source_interface_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv4.dhcp_relay_source_interface_type)}${try(int.ipv4.dhcp_relay_source_interface_id, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv4.dhcp_relay_source_interface_id)}", null)
+        ip_dhcp_relay_information_option_vpn_id = try(int.ipv4.dhcp_relay_information_option_vpn_id, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv4.dhcp_relay_information_option_vpn_id, null)
         helper_addresses = try(length(int.ipv4.helper_addresses) == 0, true) ? null : [for ha in int.ipv4.helper_addresses : {
           address = try(ha.address, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv4.helper_addresses.address, null)
           global  = try(ha.global, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv4.helper_addresses.global, null)
@@ -56,27 +57,32 @@ locals {
           name      = try(fm.name, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv6.flow_monitors.name, null)
           direction = try(fm.direction, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv6.flow_monitors.direction, null)
         }]
-        bfd_enable                   = try(int.bfd.enable, local.defaults.iosxe.devices.configuration.interfaces.ethernets.bfd.enable, null)
-        bfd_template                 = try(int.bfd.template, local.defaults.iosxe.devices.configuration.interfaces.ethernets.bfd.template, null)
-        bfd_local_address            = try(int.bfd.local_address, local.defaults.iosxe.devices.configuration.interfaces.ethernets.bfd.local_address, null)
-        bfd_interval                 = try(int.bfd.interval, local.defaults.iosxe.devices.configuration.interfaces.ethernets.bfd.interval, null)
-        bfd_interval_min_rx          = try(int.bfd.interval_min_rx, local.defaults.iosxe.devices.configuration.interfaces.ethernets.bfd.interval_min_rx, null)
-        bfd_interval_multiplier      = try(int.bfd.interval_multiplier, local.defaults.iosxe.devices.configuration.interfaces.ethernets.bfd.interval_multiplier, null)
-        bfd_echo                     = try(int.bfd.echo, local.defaults.iosxe.devices.configuration.interfaces.ethernets.bfd.echo, null)
-        spanning_tree_guard          = try(int.spanning_tree.guard, local.defaults.iosxe.devices.configuration.interfaces.ethernets.spanning_tree.guard, null)
-        spanning_tree_link_type      = try(int.spanning_tree.link_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.spanning_tree.link_type, null)
-        spanning_tree_portfast_trunk = try(int.spanning_tree.portfast_trunk, local.defaults.iosxe.devices.configuration.interfaces.ethernets.spanning_tree.portfast_trunk, null)
-        speed_100                    = try(int.speed, local.defaults.iosxe.devices.configuration.interfaces.ethernets.speed, null) == 100 ? true : null
-        speed_1000                   = try(int.speed, local.defaults.iosxe.devices.configuration.interfaces.ethernets.speed, null) == 1000 ? true : null
-        speed_2500                   = try(int.speed, local.defaults.iosxe.devices.configuration.interfaces.ethernets.speed, null) == 2500 ? true : null
-        speed_5000                   = try(int.speed, local.defaults.iosxe.devices.configuration.interfaces.ethernets.speed, null) == 5000 ? true : null
-        speed_10000                  = try(int.speed, local.defaults.iosxe.devices.configuration.interfaces.ethernets.speed, null) == 10000 ? true : null
-        speed_25000                  = try(int.speed, local.defaults.iosxe.devices.configuration.interfaces.ethernets.speed, null) == 25000 ? true : null
-        speed_40000                  = try(int.speed, local.defaults.iosxe.devices.configuration.interfaces.ethernets.speed, null) == 40000 ? true : null
-        speed_100000                 = try(int.speed, local.defaults.iosxe.devices.configuration.interfaces.ethernets.speed, null) == 100000 ? true : null
-        speed_nonegotiate            = try(int.speed_nonegotiate, local.defaults.iosxe.devices.configuration.interfaces.ethernets.speed_nonegotiate, null)
-        channel_group_number         = try(int.port_channel_id, local.defaults.iosxe.devices.configuration.interfaces.ethernets.port_channel_id, null)
-        channel_group_mode           = try(int.port_channel_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.port_channel_mode, null)
+        bfd_enable                     = try(int.bfd.enable, local.defaults.iosxe.devices.configuration.interfaces.ethernets.bfd.enable, null)
+        bfd_template                   = try(int.bfd.template, local.defaults.iosxe.devices.configuration.interfaces.ethernets.bfd.template, null)
+        bfd_local_address              = try(int.bfd.local_address, local.defaults.iosxe.devices.configuration.interfaces.ethernets.bfd.local_address, null)
+        bfd_interval                   = try(int.bfd.interval, local.defaults.iosxe.devices.configuration.interfaces.ethernets.bfd.interval, null)
+        bfd_interval_min_rx            = try(int.bfd.interval_min_rx, local.defaults.iosxe.devices.configuration.interfaces.ethernets.bfd.interval_min_rx, null)
+        bfd_interval_multiplier        = try(int.bfd.interval_multiplier, local.defaults.iosxe.devices.configuration.interfaces.ethernets.bfd.interval_multiplier, null)
+        bfd_echo                       = try(int.bfd.echo, local.defaults.iosxe.devices.configuration.interfaces.ethernets.bfd.echo, null)
+        spanning_tree_guard            = try(int.spanning_tree.guard, local.defaults.iosxe.devices.configuration.interfaces.ethernets.spanning_tree.guard, null)
+        spanning_tree_link_type        = try(int.spanning_tree.link_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.spanning_tree.link_type, null)
+        spanning_tree_portfast_trunk   = try(int.spanning_tree.portfast_trunk, local.defaults.iosxe.devices.configuration.interfaces.ethernets.spanning_tree.portfast_trunk, null)
+        spanning_tree_portfast         = try(int.spanning_tree.portfast, local.defaults.iosxe.devices.configuration.interfaces.ethernets.spanning_tree.portfast, null)
+        spanning_tree_portfast_disable = try(int.spanning_tree.portfast_disable, local.defaults.iosxe.devices.configuration.interfaces.ethernets.spanning_tree.portfast_disable, null)
+        spanning_tree_portfast_edge    = try(int.spanning_tree.portfast_edge, local.defaults.iosxe.devices.configuration.interfaces.ethernets.spanning_tree.portfast_edge, null)
+        bpduguard_enable               = try(int.spanning_tree.bpduguard, local.defaults.iosxe.devices.configuration.interfaces.ethernets.spanning_tree.bpduguard, null)
+        bpduguard_disable              = try(int.spanning_tree.bpduguard_disable, local.defaults.iosxe.devices.configuration.interfaces.ethernets.spanning_tree.bpduguard_disable, null)
+        speed_100                      = try(int.speed, local.defaults.iosxe.devices.configuration.interfaces.ethernets.speed, null) == 100 ? true : null
+        speed_1000                     = try(int.speed, local.defaults.iosxe.devices.configuration.interfaces.ethernets.speed, null) == 1000 ? true : null
+        speed_2500                     = try(int.speed, local.defaults.iosxe.devices.configuration.interfaces.ethernets.speed, null) == 2500 ? true : null
+        speed_5000                     = try(int.speed, local.defaults.iosxe.devices.configuration.interfaces.ethernets.speed, null) == 5000 ? true : null
+        speed_10000                    = try(int.speed, local.defaults.iosxe.devices.configuration.interfaces.ethernets.speed, null) == 10000 ? true : null
+        speed_25000                    = try(int.speed, local.defaults.iosxe.devices.configuration.interfaces.ethernets.speed, null) == 25000 ? true : null
+        speed_40000                    = try(int.speed, local.defaults.iosxe.devices.configuration.interfaces.ethernets.speed, null) == 40000 ? true : null
+        speed_100000                   = try(int.speed, local.defaults.iosxe.devices.configuration.interfaces.ethernets.speed, null) == 100000 ? true : null
+        speed_nonegotiate              = try(int.speed_nonegotiate, local.defaults.iosxe.devices.configuration.interfaces.ethernets.speed_nonegotiate, null)
+        channel_group_number           = try(int.port_channel_id, local.defaults.iosxe.devices.configuration.interfaces.ethernets.port_channel_id, null)
+        channel_group_mode             = try(int.port_channel_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.port_channel_mode, null)
         source_templates = try(length(int.source_templates) == 0, true) ? null : [for st in int.source_templates : {
           template_name = try(st.name, local.defaults.iosxe.devices.configuration.interfaces.ethernets.source_templates.name, null)
           merge         = try(st.merge, local.defaults.iosxe.devices.configuration.interfaces.ethernets.source_templates.merge, null)
@@ -192,8 +198,11 @@ locals {
         cdp_tlv_app                                = try(int.cdp_tlv_app, local.defaults.iosxe.devices.configuration.interfaces.ethernets.cdp_tlv_app, null)
         cdp_tlv_location                           = try(int.cdp_tlv_location, local.defaults.iosxe.devices.configuration.interfaces.ethernets.cdp_tlv_location, null)
         cdp_tlv_server_location                    = try(int.cdp_tlv_server_location, local.defaults.iosxe.devices.configuration.interfaces.ethernets.cdp_tlv_server_location, null)
-        ip_nat_inside                              = try(int.ipv4.nat_inside, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv4.nat_inside, null)
-        ip_nat_outside                             = try(int.ipv4.nat_outside, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv4.nat_outside, null)
+        evpn_ethernet_segments = try(length(int.evpn_ethernet_segments) == 0, true) ? null : [for es in int.evpn_ethernet_segments : {
+          es_value = try(es.es_value, local.defaults.iosxe.devices.configuration.interfaces.ethernets.evpn_ethernet_segments.es_value, null)
+        }]
+        ip_nat_inside  = try(int.ipv4.nat_inside, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv4.nat_inside, null)
+        ip_nat_outside = try(int.ipv4.nat_outside, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv4.nat_outside, null)
       }
     ]
   ])
@@ -218,6 +227,7 @@ resource "iosxe_interface_ethernet" "ethernet" {
   ip_arp_inspection_limit_rate               = each.value.ip_arp_inspection_limit_rate
   ip_dhcp_snooping_trust                     = each.value.ip_dhcp_snooping_trust
   ip_dhcp_relay_source_interface             = each.value.ip_dhcp_relay_source_interface
+  ip_dhcp_relay_information_option_vpn_id    = each.value.ip_dhcp_relay_information_option_vpn_id
   helper_addresses                           = each.value.helper_addresses
   ip_access_group_in                         = each.value.ip_access_group_in
   ip_access_group_in_enable                  = each.value.ip_access_group_in_enable
@@ -246,6 +256,11 @@ resource "iosxe_interface_ethernet" "ethernet" {
   spanning_tree_guard                        = each.value.spanning_tree_guard
   spanning_tree_link_type                    = each.value.spanning_tree_link_type
   spanning_tree_portfast_trunk               = each.value.spanning_tree_portfast_trunk
+  spanning_tree_portfast                     = each.value.spanning_tree_portfast
+  spanning_tree_portfast_disable             = each.value.spanning_tree_portfast_disable
+  spanning_tree_portfast_edge                = each.value.spanning_tree_portfast_edge
+  bpduguard_enable                           = each.value.bpduguard_enable
+  bpduguard_disable                          = each.value.bpduguard_disable
   speed_100                                  = each.value.speed_100
   speed_1000                                 = each.value.speed_1000
   speed_2500                                 = each.value.speed_2500
@@ -302,6 +317,7 @@ resource "iosxe_interface_ethernet" "ethernet" {
   cdp_tlv_app                                = each.value.cdp_tlv_app
   cdp_tlv_location                           = each.value.cdp_tlv_location
   cdp_tlv_server_location                    = each.value.cdp_tlv_server_location
+  evpn_ethernet_segments                     = each.value.evpn_ethernet_segments
   ip_nat_inside                              = each.value.ip_nat_inside
   ip_nat_outside                             = each.value.ip_nat_outside
 
@@ -621,18 +637,20 @@ locals {
   interfaces_vlans = flatten([
     for device in local.devices : [
       for int in try(local.device_config[device.name].interfaces.vlans, []) : {
-        key                            = format("%s/Vlan%s", device.name, int.id)
-        device                         = device.name
-        id                             = int.id
-        type                           = try(int.type, local.defaults.iosxe.devices.configuration.interfaces.vlans.type, null)
-        description                    = try(int.description, local.defaults.iosxe.devices.configuration.interfaces.vlans.description, null)
-        shutdown                       = try(int.shutdown, local.defaults.iosxe.devices.configuration.interfaces.vlans.shutdown, false)
-        autostate                      = try(int.autostate, local.defaults.iosxe.devices.configuration.interfaces.vlans.autostate, null)
-        vrf_forwarding                 = try(int.vrf_forwarding, local.defaults.iosxe.devices.configuration.interfaces.vlans.vrf_forwarding, null)
-        ipv4_address                   = try(int.ipv4.address, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.address, null)
-        ipv4_address_mask              = try(int.ipv4.address_mask, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.address_mask, null)
-        ip_proxy_arp                   = try(int.ipv4.proxy_arp, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.proxy_arp, null)
-        ip_dhcp_relay_source_interface = try("${try(int.ipv4.dhcp_relay_source_interface_type, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.dhcp_relay_source_interface_type)}${try(int.ipv4.dhcp_relay_source_interface_id, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.dhcp_relay_source_interface_id)}", null)
+        key                                     = format("%s/Vlan%s", device.name, int.id)
+        device                                  = device.name
+        id                                      = int.id
+        type                                    = try(int.type, local.defaults.iosxe.devices.configuration.interfaces.vlans.type, null)
+        description                             = try(int.description, local.defaults.iosxe.devices.configuration.interfaces.vlans.description, null)
+        shutdown                                = try(int.shutdown, local.defaults.iosxe.devices.configuration.interfaces.vlans.shutdown, false)
+        autostate                               = try(int.autostate, local.defaults.iosxe.devices.configuration.interfaces.vlans.autostate, null)
+        vrf_forwarding                          = try(int.vrf_forwarding, local.defaults.iosxe.devices.configuration.interfaces.vlans.vrf_forwarding, null)
+        ipv4_address                            = try(int.ipv4.address, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.address, null)
+        ipv4_address_mask                       = try(int.ipv4.address_mask, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.address_mask, null)
+        ip_proxy_arp                            = try(int.ipv4.proxy_arp, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.proxy_arp, null)
+        mac_address                             = try(int.mac_address, local.defaults.iosxe.devices.configuration.interfaces.vlans.mac_address, null)
+        ip_dhcp_relay_source_interface          = try("${try(int.ipv4.dhcp_relay_source_interface_type, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.dhcp_relay_source_interface_type)}${try(int.ipv4.dhcp_relay_source_interface_id, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.dhcp_relay_source_interface_id)}", null)
+        ip_dhcp_relay_information_option_vpn_id = try(int.ipv4.dhcp_relay_information_option_vpn_id, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.dhcp_relay_information_option_vpn_id, null)
         helper_addresses = try(length(int.ipv4.helper_addresses) == 0, true) ? null : [for ha in int.ipv4.helper_addresses : {
           address = try(ha.address, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.helper_addresses.address, null)
           global  = try(ha.global, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.helper_addresses.global, null)
@@ -716,38 +734,40 @@ resource "iosxe_interface_vlan" "vlan" {
   for_each = { for v in local.interfaces_vlans : v.key => v }
   device   = each.value.device
 
-  name                            = each.value.id
-  description                     = each.value.description
-  shutdown                        = each.value.shutdown
-  autostate                       = each.value.autostate
-  vrf_forwarding                  = each.value.vrf_forwarding
-  ipv4_address                    = each.value.ipv4_address
-  ipv4_address_mask               = each.value.ipv4_address_mask
-  ip_proxy_arp                    = each.value.ip_proxy_arp
-  ip_dhcp_relay_source_interface  = each.value.ip_dhcp_relay_source_interface
-  helper_addresses                = each.value.helper_addresses
-  ip_access_group_in              = each.value.ip_access_group_in
-  ip_access_group_in_enable       = each.value.ip_access_group_in_enable
-  ip_access_group_out             = each.value.ip_access_group_out
-  ip_access_group_out_enable      = each.value.ip_access_group_out_enable
-  ip_redirects                    = each.value.ip_redirects
-  ip_unreachables                 = each.value.ip_unreachables
-  unnumbered                      = each.value.unnumbered
-  ipv6_address_autoconfig_default = each.value.ipv6_address_autoconfig_default
-  ipv6_address_dhcp               = each.value.ipv6_address_dhcp
-  ipv6_addresses                  = each.value.ipv6_addresses
-  ipv6_enable                     = each.value.ipv6_enable
-  ipv6_link_local_addresses       = each.value.ipv6_link_local_addresses
-  ipv6_mtu                        = each.value.ipv6_mtu
-  ipv6_nd_ra_suppress_all         = each.value.ipv6_nd_ra_suppress_all
-  bfd_enable                      = each.value.bfd_enable
-  bfd_template                    = each.value.bfd_template
-  bfd_local_address               = each.value.bfd_local_address
-  bfd_interval                    = each.value.bfd_interval
-  bfd_interval_min_rx             = each.value.bfd_interval_min_rx
-  bfd_interval_multiplier         = each.value.bfd_interval_multiplier
-  bfd_echo                        = each.value.bfd_echo
-  load_interval                   = each.value.load_interval
+  name                                    = each.value.id
+  description                             = each.value.description
+  shutdown                                = each.value.shutdown
+  autostate                               = each.value.autostate
+  vrf_forwarding                          = each.value.vrf_forwarding
+  ipv4_address                            = each.value.ipv4_address
+  ipv4_address_mask                       = each.value.ipv4_address_mask
+  ip_proxy_arp                            = each.value.ip_proxy_arp
+  mac_address                             = each.value.mac_address
+  ip_dhcp_relay_source_interface          = each.value.ip_dhcp_relay_source_interface
+  ip_dhcp_relay_information_option_vpn_id = each.value.ip_dhcp_relay_information_option_vpn_id
+  helper_addresses                        = each.value.helper_addresses
+  ip_access_group_in                      = each.value.ip_access_group_in
+  ip_access_group_in_enable               = each.value.ip_access_group_in_enable
+  ip_access_group_out                     = each.value.ip_access_group_out
+  ip_access_group_out_enable              = each.value.ip_access_group_out_enable
+  ip_redirects                            = each.value.ip_redirects
+  ip_unreachables                         = each.value.ip_unreachables
+  unnumbered                              = each.value.unnumbered
+  ipv6_address_autoconfig_default         = each.value.ipv6_address_autoconfig_default
+  ipv6_address_dhcp                       = each.value.ipv6_address_dhcp
+  ipv6_addresses                          = each.value.ipv6_addresses
+  ipv6_enable                             = each.value.ipv6_enable
+  ipv6_link_local_addresses               = each.value.ipv6_link_local_addresses
+  ipv6_mtu                                = each.value.ipv6_mtu
+  ipv6_nd_ra_suppress_all                 = each.value.ipv6_nd_ra_suppress_all
+  bfd_enable                              = each.value.bfd_enable
+  bfd_template                            = each.value.bfd_template
+  bfd_local_address                       = each.value.bfd_local_address
+  bfd_interval                            = each.value.bfd_interval
+  bfd_interval_min_rx                     = each.value.bfd_interval_min_rx
+  bfd_interval_multiplier                 = each.value.bfd_interval_multiplier
+  bfd_echo                                = each.value.bfd_echo
+  load_interval                           = each.value.load_interval
 
   depends_on = [
     iosxe_vrf.vrf,
@@ -978,6 +998,9 @@ locals {
         auto_qos_voip_trust                     = try(int.auto_qos.voip_trust, local.defaults.iosxe.devices.configuration.interfaces.port_channels.auto_qos.voip_trust, null)
         trust_device                            = try(int.auto_qos.trust_device, local.defaults.iosxe.devices.configuration.interfaces.port_channels.auto_qos.trust_device, null)
         negotiation_auto                        = try(int.negotiation_auto, local.defaults.iosxe.devices.configuration.interfaces.port_channels.negotiation_auto, null)
+        evpn_ethernet_segments = try(length(int.evpn_ethernet_segments) == 0, true) ? null : [for es in int.evpn_ethernet_segments : {
+          es_value = try(es.es_value, local.defaults.iosxe.devices.configuration.interfaces.port_channels.evpn_ethernet_segments.es_value, null)
+        }]
       }
     ]
   ])
@@ -1040,6 +1063,7 @@ resource "iosxe_interface_port_channel" "port_channel" {
   auto_qos_voip_trust              = each.value.auto_qos_voip_trust
   trust_device                     = each.value.trust_device
   negotiation_auto                 = each.value.negotiation_auto
+  evpn_ethernet_segments           = each.value.evpn_ethernet_segments
 }
 
 resource "iosxe_interface_switchport" "port_channel_switchport" {
@@ -1416,6 +1440,7 @@ locals {
           vni_range            = "${vni.vni_from}${try(vni.vni_to, null) != null ? format("-%s", vni.vni_to) : ""}"
           ipv4_multicast_group = try(vni.ipv4_multicast_group, local.defaults.iosxe.configuration.interfaces.nves.vnis.ipv4_multicast_group, null)
           ingress_replication  = try(vni.ingress_replication, local.defaults.iosxe.configuration.interfaces.nves.vnis.ingress_replication, null)
+          local_routing        = try(vni.local_routing, local.defaults.iosxe.configuration.interfaces.nves.vnis.local_routing, null)
           }
         ]
     }]
