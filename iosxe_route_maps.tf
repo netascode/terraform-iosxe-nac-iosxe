@@ -71,6 +71,7 @@ locals {
           set_ip_global_next_hop_address             = try(e.set.ipv4_global_next_hop_addresses, local.defaults.iosxe.configuration.route_maps.entries.set.ipv4_global_next_hop_addresses, null)
           set_ip_next_hop_address                    = try(e.set.ipv4_next_hop_addresses, local.defaults.iosxe.configuration.route_maps.entries.set.ipv4_next_hop_addresses, null)
           set_ip_next_hop_self                       = try(e.set.ipv4_next_hop_self, local.defaults.iosxe.configuration.route_maps.entries.set.ipv4_next_hop_self, null)
+          set_ip_next_hop_unchanged                  = try(e.set.ipv4_next_hop_unchanged, local.defaults.iosxe.configuration.route_maps.entries.set.ipv4_next_hop_unchanged, null)
           set_ip_qos_group                           = try(e.set.ipv4_qos_group, local.defaults.iosxe.configuration.route_maps.entries.set.ipv4_qos_group, null)
           set_ipv6_address                           = try(e.set.ipv6_addresses, local.defaults.iosxe.configuration.route_maps.entries.set.ipv6_addresses, null)
           set_ipv6_default_global_next_hop           = try(e.set.ipv6_default_global_next_hop, local.defaults.iosxe.configuration.route_maps.entries.set.ipv6_default_global_next_hop, null)
