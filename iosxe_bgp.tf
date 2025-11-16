@@ -37,15 +37,15 @@ resource "iosxe_bgp_peer_session_template" "bgp_peer_session_template" {
   for_each = { for e in local.bgp_peer_session_templates : e.key => e }
   device   = each.value.device
 
-  asn                     = each.value.asn
-  template_name           = each.value.template_name
-  remote_as               = each.value.remote_as
-  description             = each.value.description
-  disable_connected_check = each.value.disable_connected_check
-  ebgp_multihop           = each.value.ebgp_multihop
-  ebgp_multihop_max_hop   = each.value.ebgp_multihop_max_hop
-  update_source_loopback  = each.value.update_source_interface_loopback
-  inherit_peer_session    = each.value.inherit_peer_session
+  asn                              = each.value.asn
+  template_name                    = each.value.template_name
+  remote_as                        = each.value.remote_as
+  description                      = each.value.description
+  disable_connected_check          = each.value.disable_connected_check
+  ebgp_multihop                    = each.value.ebgp_multihop
+  ebgp_multihop_max_hop            = each.value.ebgp_multihop_max_hop
+  update_source_interface_loopback = each.value.update_source_interface_loopback
+  inherit_peer_session             = each.value.inherit_peer_session
 
   depends_on = [
     iosxe_bgp.bgp,
