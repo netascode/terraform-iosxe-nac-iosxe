@@ -69,3 +69,53 @@ resource "iosxe_evpn_instance" "evpn_instance" {
   vlan_based_route_target_imports      = each.value.vlan_based_route_target_imports
   vlan_based_route_target_exports      = each.value.vlan_based_route_target_exports
 }
+
+
+locals {
+  evpn_ethernet_segments = flatten([
+    for device in local.devices : [
+      for segment in try(local.device_config[device.name].evpn.ethernet_segments, []) : {
+        key    = format("%s/%s", device.name, segment.es_value)
+        device = device.name
+
+        es_value                 = try(segment.es_value, local.defaults.iosxe.configuration.evpn.ethernet_segments.es_value, null)
+        df_election_wait_time    = try(segment.df_election_wait_time, local.defaults.iosxe.configuration.evpn.ethernet_segments.df_election_wait_time, null)
+        redundancy_all_active    = try(segment.redundancy_all_active, local.defaults.iosxe.configuration.evpn.ethernet_segments.redundancy_all_active, null)
+        redundancy_single_active = try(segment.redundancy_single_active, local.defaults.iosxe.configuration.evpn.ethernet_segments.redundancy_single_active, null)
+        identifier_types = try(segment.identifier_type, local.defaults.iosxe.configuration.evpn.ethernet_segments.identifier_type, null) != null ? [
+          {
+            type       = try(segment.identifier_type, local.defaults.iosxe.configuration.evpn.ethernet_segments.identifier_type, null)
+            hex_string = try(segment.identifier_hex_string, local.defaults.iosxe.configuration.evpn.ethernet_segments.identifier_hex_string, null)
+            # Normalize MAC address to Cisco dotted notation (xxxx.xxxx.xxxx)
+            # Accepts: xx:xx:xx:xx:xx:xx, xx-xx-xx-xx-xx-xx, or xxxx.xxxx.xxxx
+            system_mac = try(segment.identifier_system_mac, local.defaults.iosxe.configuration.evpn.ethernet_segments.identifier_system_mac, null) != null ? (
+              length(regexall(":", try(segment.identifier_system_mac, local.defaults.iosxe.configuration.evpn.ethernet_segments.identifier_system_mac, ""))) > 0 ||
+              length(regexall("-", try(segment.identifier_system_mac, local.defaults.iosxe.configuration.evpn.ethernet_segments.identifier_system_mac, ""))) > 0 ?
+              format("%s.%s.%s",
+                substr(replace(replace(try(segment.identifier_system_mac, local.defaults.iosxe.configuration.evpn.ethernet_segments.identifier_system_mac, ""), ":", ""), "-", ""), 0, 4),
+                substr(replace(replace(try(segment.identifier_system_mac, local.defaults.iosxe.configuration.evpn.ethernet_segments.identifier_system_mac, ""), ":", ""), "-", ""), 4, 4),
+                substr(replace(replace(try(segment.identifier_system_mac, local.defaults.iosxe.configuration.evpn.ethernet_segments.identifier_system_mac, ""), ":", ""), "-", ""), 8, 4)
+              ) :
+              try(segment.identifier_system_mac, local.defaults.iosxe.configuration.evpn.ethernet_segments.identifier_system_mac, null)
+            ) : null
+          }
+        ] : null
+      }
+    ]
+  ])
+}
+
+resource "iosxe_evpn_ethernet_segment" "evpn_ethernet_segment" {
+  for_each = { for e in local.evpn_ethernet_segments : e.key => e }
+  device   = each.value.device
+
+  es_value                 = each.value.es_value
+  df_election_wait_time    = each.value.df_election_wait_time
+  redundancy_all_active    = each.value.redundancy_all_active
+  redundancy_single_active = each.value.redundancy_single_active
+  identifier_types         = each.value.identifier_types
+
+  depends_on = [
+    iosxe_evpn.evpn
+  ]
+}
