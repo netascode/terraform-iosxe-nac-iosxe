@@ -418,7 +418,7 @@ locals {
         route_reflector_client = try(neighbor.route_reflector_client, local.defaults.iosxe.configuration.routing.bgp.address_family.l2vpn_evpn.neighbors.route_reflector_client, null)
         soft_reconfiguration   = try(neighbor.soft_reconfiguration, local.defaults.iosxe.configuration.routing.bgp.address_family.l2vpn_evpn.neighbors.soft_reconfiguration, null)
         route_maps = try(length(neighbor.route_maps) == 0, true) ? null : [for rm in neighbor.route_maps : {
-          inout          = try(rm.in_out, local.defaults.iosxe.configuration.routing.bgp.address_family.l2vpn_evpn.neighbors.route_maps.in_out, null)
+          in_out         = try(rm.in_out, local.defaults.iosxe.configuration.routing.bgp.address_family.l2vpn_evpn.neighbors.route_maps.in_out, null)
           route_map_name = try(rm.name, local.defaults.iosxe.configuration.routing.bgp.address_family.l2vpn_evpn.neighbors.route_maps.name, null)
         }]
       }
@@ -436,7 +436,7 @@ resource "iosxe_bgp_l2vpn_evpn_neighbor" "bgp_l2vpn_evpn_neighbor" {
   send_community         = each.value.send_community
   route_reflector_client = each.value.route_reflector_client
   soft_reconfiguration   = each.value.soft_reconfiguration
-  route_map              = each.value.route_maps
+  route_maps             = each.value.route_maps
 
   depends_on = [
     iosxe_bgp_neighbor.bgp_neighbor,
