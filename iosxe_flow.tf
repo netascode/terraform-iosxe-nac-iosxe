@@ -26,6 +26,7 @@ locals {
         source_port_channel                   = try(exporter.source_port_channel, local.defaults.iosxe.device_config.flow.exporters.source_port_channel, null)
         transport_udp                         = try(exporter.transport_udp, local.defaults.iosxe.device_config.flow.exporters.transport_udp, null)
         template_data_timeout                 = try(exporter.template_data_timeout, local.defaults.iosxe.device_config.flow.exporters.template_data_timeout, null)
+        ttl                                   = try(exporter.ttl, local.defaults.iosxe.device_config.flow.exporters.ttl, null)
       }
     ]
   ])
@@ -56,6 +57,7 @@ resource "iosxe_flow_exporter" "flow_exporter" {
   source_port_channel                   = each.value.source_port_channel
   transport_udp                         = each.value.transport_udp
   template_data_timeout                 = each.value.template_data_timeout
+  ttl                                   = each.value.ttl
 
   depends_on = [
     iosxe_interface_loopback.loopback
