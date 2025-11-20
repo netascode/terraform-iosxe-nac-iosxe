@@ -42,7 +42,7 @@ locals {
         source_template            = try(int.source_template, local.defaults.iosxe.devices.configuration.interfaces.ethernets.source_template, [])
         ipv6_enable                = try(int.ipv6.enable, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv6.enable, null)
         ipv6_addresses = try(length(int.ipv6.addresses) == 0, true) ? null : [for addr in int.ipv6.addresses : {
-          prefix = "${try(addr.prefix, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv6.addresses.prefix, null)}/${try(addr.prefix_length, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv6.addresses.prefix_length, null)}"
+          prefix = try(addr.prefix, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv6.addresses.prefix, null)
           eui64  = try(addr.eui64, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv6.addresses.eui64, null)
         }]
         ipv6_link_local_addresses = try(length(int.ipv6.link_local_addresses) == 0, true) ? null : [for addr in int.ipv6.link_local_addresses : {
@@ -482,7 +482,7 @@ locals {
         source_template            = try(int.source_template, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.source_template, [])
         ipv6_enable                = try(int.ipv6.enable, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ipv6.enable, null)
         ipv6_addresses = try(length(int.ipv6.addresses) == 0, true) ? null : [for addr in int.ipv6.addresses : {
-          prefix = "${try(addr.prefix, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ipv6.addresses.prefix, null)}/${try(addr.prefix_length, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ipv6.addresses.prefix_length, null)}"
+          prefix = try(addr.prefix, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ipv6.addresses.prefix, null)
           eui64  = try(addr.eui64, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ipv6.addresses.eui64, null)
         }]
         ipv6_link_local_addresses = try(length(int.ipv6.link_local_addresses) == 0, true) ? null : [for addr in int.ipv6.link_local_addresses : {
@@ -711,7 +711,7 @@ locals {
         unnumbered                 = try("${try(int.ipv4.unnumbered_interface_type, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.unnumbered_interface_type)}${try(int.ipv4.unnumbered_interface_id, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.unnumbered_interface_id)}", null)
         ipv6_enable                = try(int.ipv6.enable, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv6.enable, null)
         ipv6_addresses = try(length(int.ipv6.addresses) == 0, true) ? null : [for addr in int.ipv6.addresses : {
-          prefix = "${try(addr.prefix, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv6.addresses.prefix, null)}/${try(addr.prefix_length, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv6.addresses.prefix_length, null)}"
+          prefix = try(addr.prefix, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv6.addresses.prefix, null)
           eui64  = try(addr.eui64, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv6.addresses.eui64, null)
         }]
         ipv6_link_local_addresses = try(length(int.ipv6.link_local_addresses) == 0, true) ? null : [for addr in int.ipv6.link_local_addresses : {
@@ -1287,7 +1287,7 @@ locals {
           ip_unreachables            = try(sub.ipv4.unreachables, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv4.unreachables, null)
           ipv6_enable                = try(sub.ipv6.enable, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv6.enable, null)
           ipv6_addresses = try(length(sub.ipv6.addresses) == 0, true) ? null : [for addr in sub.ipv6.addresses : {
-            prefix = "${try(addr.prefix, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv6.addresses.prefix, null)}/${try(addr.prefix_length, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv6.addresses.prefix_length, null)}"
+            prefix = try(addr.prefix, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv6.addresses.prefix, null)
             eui_64 = try(addr.eui_64, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv6.addresses.eui_64, null)
           }]
           ipv6_link_local_addresses = try(length(sub.ipv6.link_local_addresses) == 0, true) ? null : [for addr in sub.ipv6.link_local_addresses : {
