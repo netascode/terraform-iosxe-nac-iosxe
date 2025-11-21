@@ -127,6 +127,7 @@ module "iosxe" {
 | [iosxe_flow_monitor.flow_monitor](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.10.2/docs/resources/flow_monitor) | resource |
 | [iosxe_flow_record.flow_record](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.10.2/docs/resources/flow_record) | resource |
 | [iosxe_interface_ethernet.ethernet](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.10.2/docs/resources/interface_ethernet) | resource |
+| [iosxe_interface_isis.loopback_isis](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.10.2/docs/resources/interface_isis) | resource |
 | [iosxe_interface_loopback.loopback](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.10.2/docs/resources/interface_loopback) | resource |
 | [iosxe_interface_mpls.ethernet_mpls](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.10.2/docs/resources/interface_mpls) | resource |
 | [iosxe_interface_mpls.loopback_mpls](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.10.2/docs/resources/interface_mpls) | resource |
@@ -154,6 +155,7 @@ module "iosxe" {
 | [iosxe_interface_switchport.ethernet_switchport](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.10.2/docs/resources/interface_switchport) | resource |
 | [iosxe_interface_switchport.port_channel_switchport](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.10.2/docs/resources/interface_switchport) | resource |
 | [iosxe_interface_vlan.vlan](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.10.2/docs/resources/interface_vlan) | resource |
+| [iosxe_isis.isis](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.10.2/docs/resources/isis) | resource |
 | [iosxe_license.license](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.10.2/docs/resources/license) | resource |
 | [iosxe_line.line](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.10.2/docs/resources/line) | resource |
 | [iosxe_lldp.lldp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.10.2/docs/resources/lldp) | resource |

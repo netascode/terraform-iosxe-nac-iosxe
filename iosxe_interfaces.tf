@@ -643,10 +643,10 @@ resource "iosxe_interface_pim" "loopback_pim" {
 resource "iosxe_interface_isis" "loopback_isis" {
   for_each = { for v in local.interfaces_loopbacks : v.key => v if v.isis }
 
-  device              = each.value.device
-  type                = "Loopback"
-  name                = each.value.id
-  ipv4_metric_levels  = each.value.isis_ipv4_metric_levels
+  device             = each.value.device
+  type               = "Loopback"
+  name               = each.value.id
+  ipv4_metric_levels = each.value.isis_ipv4_metric_levels
 
   depends_on = [
     iosxe_interface_loopback.loopback,
