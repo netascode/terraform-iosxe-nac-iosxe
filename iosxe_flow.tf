@@ -135,7 +135,6 @@ locals {
         match_vxlan_vtep_output                              = try(record.match.vxlan_vtep_output, local.defaults.iosxe.device_config.flow.records.match.vxlan_vtep_output, null)
         match_datalink_mac_source_address_input              = try(record.match.datalink_mac_source_address_input, local.defaults.iosxe.device_config.flow.records.match.datalink_mac_source_address_input, null)
         match_datalink_mac_destination_address_input         = try(record.match.datalink_mac_destination_address_input, local.defaults.iosxe.device_config.flow.records.match.datalink_mac_destination_address_input, null)
-        match_datalink_vlan                                  = try(record.match.datalink_vlan, local.defaults.iosxe.device_config.flow.records.match.datalink_vlan, null)
         match_datalink_source_vlan_id                        = try(record.match.datalink_source_vlan_id, local.defaults.iosxe.device_config.flow.records.match.datalink_source_vlan_id, null)
         match_datalink_destination_vlan_id                   = try(record.match.datalink_destination_vlan_id, local.defaults.iosxe.device_config.flow.records.match.datalink_destination_vlan_id, null)
         match_ipv4_ttl                                       = try(record.match.ipv4_ttl, local.defaults.iosxe.device_config.flow.records.match.ipv4_ttl, null)
@@ -189,7 +188,6 @@ resource "iosxe_flow_record" "flow_record" {
   match_vxlan_vtep_output                              = each.value.match_vxlan_vtep_output
   match_datalink_mac_source_address_input              = each.value.match_datalink_mac_source_address_input
   match_datalink_mac_destination_address_input         = each.value.match_datalink_mac_destination_address_input
-  match_datalink_vlan                                  = each.value.match_datalink_vlan
   match_datalink_source_vlan_id                        = each.value.match_datalink_source_vlan_id
   match_datalink_destination_vlan_id                   = each.value.match_datalink_destination_vlan_id
   match_ipv4_ttl                                       = each.value.match_ipv4_ttl
