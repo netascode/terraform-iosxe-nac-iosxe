@@ -40,6 +40,8 @@ resource "iosxe_system" "system" {
   ip_ssh_authentication_retries       = try(local.device_config[each.value.name].system.ssh.authentication_retries, local.defaults.iosxe.configuration.system.ssh.authentication_retries, null)
   ip_ssh_time_out                     = try(local.device_config[each.value.name].system.ssh.time_out, local.defaults.iosxe.configuration.system.ssh.time_out, null)
   ip_ssh_version                      = try(local.device_config[each.value.name].system.ssh.version, local.defaults.iosxe.configuration.system.ssh.version, null)
+  ip_ssh_bulk_mode                    = try(local.device_config[each.value.name].system.ssh.bulk_mode, local.defaults.iosxe.configuration.system.ssh.bulk_mode, null)
+  ip_ssh_bulk_mode_window_size        = try(local.device_config[each.value.name].system.ssh.bulk_mode_window_size, local.defaults.iosxe.configuration.system.ssh.bulk_mode_window_size, null)
   memory_free_low_watermark_processor = try(local.device_config[each.value.name].system.memory_free_low_watermark_processor, local.defaults.iosxe.configuration.system.memory_free_low_watermark_processor, null)
   redundancy                          = try(local.device_config[each.value.name].system.redundancy, local.defaults.iosxe.configuration.system.redundancy, null)
   redundancy_mode                     = try(local.device_config[each.value.name].system.redundancy_mode, local.defaults.iosxe.configuration.system.redundancy_mode, null)
@@ -194,6 +196,15 @@ resource "iosxe_system" "system" {
 
   standby_redirects                = try(local.device_config[each.value.name].system.standby_redirects, local.defaults.iosxe.configuration.system.standby_redirects, null) == "none" ? true : null
   standby_redirects_enable_disable = contains(["enable", "disable"], try(local.device_config[each.value.name].system.standby_redirects, local.defaults.iosxe.configuration.system.standby_redirects, "")) ? try(local.device_config[each.value.name].system.standby_redirects, local.defaults.iosxe.configuration.system.standby_redirects, null) : null
+
+  # CEF Load Balancing
+  ip_cef_load_sharing_algorithm_include_ports_source        = try(local.device_config[each.value.name].system.cef.load_balance.ipv4.include_ports.source, local.defaults.iosxe.configuration.system.cef.load_balance.ipv4.include_ports.source, null)
+  ip_cef_load_sharing_algorithm_include_ports_destination   = try(local.device_config[each.value.name].system.cef.load_balance.ipv4.include_ports.destination, local.defaults.iosxe.configuration.system.cef.load_balance.ipv4.include_ports.destination, null)
+  ipv6_cef_load_sharing_algorithm_include_ports_source      = try(local.device_config[each.value.name].system.cef.load_balance.ipv6.include_ports.source, local.defaults.iosxe.configuration.system.cef.load_balance.ipv6.include_ports.source, null)
+  ipv6_cef_load_sharing_algorithm_include_ports_destination = try(local.device_config[each.value.name].system.cef.load_balance.ipv6.include_ports.destination, local.defaults.iosxe.configuration.system.cef.load_balance.ipv6.include_ports.destination, null)
+
+  # Port-Channel Load Balancing
+  port_channel_load_balance = try(local.device_config[each.value.name].system.port_channel.load_balance, local.defaults.iosxe.configuration.system.port_channel.load_balance, null)
 
   track_objects = try(length(local.device_config[each.value.name].system.track_objects) == 0, true) ? null : [
     for track_obj in local.device_config[each.value.name].system.track_objects : {

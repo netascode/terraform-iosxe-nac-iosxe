@@ -365,9 +365,8 @@ resource "iosxe_radius_server" "radius_server" {
 
   attributes = try(length(local.device_config[each.value.name].aaa.radius.attributes) == 0, true) ? null : [for attr in local.device_config[each.value.name].aaa.radius.attributes :
     {
-      number                 = try(attr.number, local.defaults.iosxe.configuration.aaa.radius.attributes.number, null)
-      access_request_include = try(attr.access_request_include, local.defaults.iosxe.configuration.aaa.radius.attributes.access_request_include, null)
-      send_attributes        = try(attr.send_attributes, local.defaults.iosxe.configuration.aaa.radius.attributes.send_attributes, null)
+      number          = try(attr.number, local.defaults.iosxe.configuration.aaa.radius.attributes.number, null)
+      send_attributes = try(attr.send_attributes, local.defaults.iosxe.configuration.aaa.radius.attributes.send_attributes, null)
       attribute_31_parameters = try(length(attr.attribute_31_parameters) == 0, true) ? null : [for param in attr.attribute_31_parameters :
         {
           calling_station_id      = try(param.calling_station_id, local.defaults.iosxe.configuration.aaa.radius.attributes.attribute_31_parameters.calling_station_id, null)

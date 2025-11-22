@@ -56,6 +56,10 @@ resource "iosxe_vlan_configuration" "vlan_configuration" {
   access_vfi        = each.value.access_vfi
   evpn_instance     = each.value.evpn_instance
   evpn_instance_vni = each.value.evpn_instance_vni
+
+  depends_on = [
+    iosxe_evpn_instance.evpn_instance
+  ]
 }
 
 locals {

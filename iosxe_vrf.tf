@@ -38,6 +38,14 @@ locals {
           }
         ]
 
+        ipv4_route_replicate = try(length(vrf.address_family_ipv4.route_replicate) == 0, true) ? null : [
+          for rr in vrf.address_family_ipv4.route_replicate : {
+            name                  = rr.name
+            unicast_all           = true
+            unicast_all_route_map = try(rr.route_map, null)
+          }
+        ]
+
         ipv6_route_target_import = try(length(vrf.address_family_ipv6.import_route_targets) == 0, true) ? null : [
           for rt in vrf.address_family_ipv6.import_route_targets : {
             value = rt
@@ -83,6 +91,7 @@ resource "iosxe_vrf" "vrf" {
   ipv4_route_target_import_stitching = each.value.ipv4_route_target_import_stitching
   ipv4_route_target_export           = each.value.ipv4_route_target_export
   ipv4_route_target_export_stitching = each.value.ipv4_route_target_export_stitching
+  ipv4_route_replicate               = each.value.ipv4_route_replicate
 
   ipv6_route_target_import           = each.value.ipv6_route_target_import
   ipv6_route_target_import_stitching = each.value.ipv6_route_target_import_stitching
