@@ -154,6 +154,7 @@ module "iosxe" {
 | [iosxe_interface_switchport.ethernet_switchport](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.10.2/docs/resources/interface_switchport) | resource |
 | [iosxe_interface_switchport.port_channel_switchport](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.10.2/docs/resources/interface_switchport) | resource |
 | [iosxe_interface_vlan.vlan](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.10.2/docs/resources/interface_vlan) | resource |
+| [iosxe_l2_vfi.l2_vfi](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.10.2/docs/resources/l2_vfi) | resource |
 | [iosxe_license.license](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.10.2/docs/resources/license) | resource |
 | [iosxe_line.line](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.10.2/docs/resources/line) | resource |
 | [iosxe_lldp.lldp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.10.2/docs/resources/lldp) | resource |
