@@ -107,6 +107,7 @@ module "iosxe" {
 | [iosxe_commit.commit](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.10.2/docs/resources/commit) | resource |
 | [iosxe_community_list_expanded.community_list_expanded](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.10.2/docs/resources/community_list_expanded) | resource |
 | [iosxe_community_list_standard.community_list_standard](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.10.2/docs/resources/community_list_standard) | resource |
+| [iosxe_crypto_engine.crypto_engine](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.10.2/docs/resources/crypto_engine) | resource |
 | [iosxe_crypto_ikev2.crypto_ikev2](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.10.2/docs/resources/crypto_ikev2) | resource |
 | [iosxe_crypto_ikev2_keyring.crypto_ikev2_keyring](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.10.2/docs/resources/crypto_ikev2_keyring) | resource |
 | [iosxe_crypto_ikev2_policy.crypto_ikev2_policy](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.10.2/docs/resources/crypto_ikev2_policy) | resource |
