@@ -1,0 +1,57 @@
+version: ">= 0.14.0"
+
+formatter: markdown table
+
+content: |-
+  # IPv6 PIM Configuration Example
+
+  This example demonstrates VRF-aware IPv6 PIM configuration for TRM (Tenant Routed Multicast) deployments.
+
+  ## Features
+
+  - Global IPv6 PIM RP configuration
+  - VRF-aware IPv6 PIM with isolated multicast domains
+  - Interface-level IPv6 PIM on Loopbacks and VLANs
+  - Multiple VRFs with independent RP addresses
+  - Different multicast group ranges per VRF
+
+  ## Usage
+
+  To run this example you need to execute:
+
+  ```bash
+  $ terraform init
+  $ terraform plan
+  $ terraform apply
+  ```
+
+  Note that this example will create resources. Resources can be destroyed with `terraform destroy`.
+
+  ## Configuration
+
+  #### `ipv6_pim.nac.yaml`
+
+  ```yaml
+  {{ include "./ipv6_pim.nac.yaml" }}
+  ```
+
+  #### `main.tf`
+
+  ```hcl
+  {{ include "./main.tf" }}
+  ```
+
+  ## Scenario
+
+  This configuration demonstrates a complete TRM deployment with:
+  - 2 VRFs (BLUE, GREEN) with isolated multicast domains
+  - Global RP: 2001:db8::100 with group range ff70::/12
+  - VRF BLUE RP: 2001:db8:1::100 with group range ff71::/12
+  - VRF GREEN RP: 2001:db8:2::100 with group range ff72::/12
+  - 3 RP Loopbacks with high DR priority
+  - 3 Multicast VLANs with per-VRF isolation
+
+output:
+  file: README.md
+  mode: replace
+
