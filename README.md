@@ -159,6 +159,7 @@ module "iosxe" {
 | [iosxe_lldp.lldp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.10.2/docs/resources/lldp) | resource |
 | [iosxe_logging.logging](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.10.2/docs/resources/logging) | resource |
 | [iosxe_mdt_subscription.mdt_subscription](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.10.2/docs/resources/mdt_subscription) | resource |
+| [iosxe_mpls.mpls](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.10.2/docs/resources/mpls) | resource |
 | [iosxe_msdp.msdp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.10.2/docs/resources/msdp) | resource |
 | [iosxe_nat.nat](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.10.2/docs/resources/nat) | resource |
 | [iosxe_ntp.ntp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.10.2/docs/resources/ntp) | resource |
