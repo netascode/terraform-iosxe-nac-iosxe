@@ -69,6 +69,11 @@ locals {
             value = rt
           }
         ]
+
+        ipv4_evpn_mcast_mdt_default_address = try(vrf.address_family_ipv4.evpn_mcast.mdt_default_address, null)
+        ipv4_evpn_mcast_anycast             = try(vrf.address_family_ipv4.evpn_mcast.anycast, null)
+        ipv4_evpn_mcast_data_address        = try(vrf.address_family_ipv4.evpn_mcast.data_address, null)
+        ipv4_evpn_mcast_data_mask_bits      = try(vrf.address_family_ipv4.evpn_mcast.data_mask_bits, null)
       }
     ]
   ])
@@ -97,4 +102,9 @@ resource "iosxe_vrf" "vrf" {
   ipv6_route_target_import_stitching = each.value.ipv6_route_target_import_stitching
   ipv6_route_target_export           = each.value.ipv6_route_target_export
   ipv6_route_target_export_stitching = each.value.ipv6_route_target_export_stitching
+
+  ipv4_evpn_mcast_mdt_default_address = each.value.ipv4_evpn_mcast_mdt_default_address
+  ipv4_evpn_mcast_anycast             = each.value.ipv4_evpn_mcast_anycast
+  ipv4_evpn_mcast_data_address        = each.value.ipv4_evpn_mcast_data_address
+  ipv4_evpn_mcast_data_mask_bits      = each.value.ipv4_evpn_mcast_data_mask_bits
 }
