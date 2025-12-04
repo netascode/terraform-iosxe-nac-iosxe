@@ -245,6 +245,22 @@ resource "iosxe_bgp_address_family_l2vpn" "bgp_address_family_l2vpn" {
   bgp_nexthop_trigger_delay = try(local.device_config[each.value.name].routing.bgp.address_family.l2vpn_evpn.bgp_nexthop_trigger_delay, local.defaults.iosxe.configuration.routing.bgp.address_family.l2vpn_evpn.bgp_nexthop_trigger_delay, null)
 }
 
+resource "iosxe_bgp_address_family_vpnv4" "bgp_address_family_vpnv4" {
+  for_each = { for device in local.devices : device.name => device if try(local.device_config[device.name].routing.bgp.address_family.vpnv4_unicast.enable, null) != null }
+  device   = each.value.name
+
+  asn     = iosxe_bgp.bgp[each.value.name].asn
+  af_name = "unicast"
+}
+
+resource "iosxe_bgp_address_family_vpnv6" "bgp_address_family_vpnv6" {
+  for_each = { for device in local.devices : device.name => device if try(local.device_config[device.name].routing.bgp.address_family.vpnv6_unicast.enable, null) != null }
+  device   = each.value.name
+
+  asn     = iosxe_bgp.bgp[each.value.name].asn
+  af_name = "unicast"
+}
+
 resource "iosxe_bgp_address_family_ipv4_vrf" "bgp_address_family_ipv4_vrf" {
   for_each = { for device in local.devices : device.name => device if try(local.device_config[device.name].routing.bgp.address_family.ipv4_unicast.vrfs, null) != null }
   device   = each.value.name
