@@ -74,6 +74,11 @@ locals {
         ipv4_evpn_mcast_anycast             = try(vrf.address_family_ipv4.evpn_mcast.anycast, null)
         ipv4_evpn_mcast_data_address        = try(vrf.address_family_ipv4.evpn_mcast.data_address, null)
         ipv4_evpn_mcast_data_mask_bits      = try(vrf.address_family_ipv4.evpn_mcast.data_mask_bits, null)
+
+        ipv6_evpn_mcast_mdt_default_address = try(vrf.address_family_ipv6.evpn_mcast.mdt_default_address, null)
+        ipv6_evpn_mcast_anycast             = try(vrf.address_family_ipv6.evpn_mcast.anycast, null)
+        ipv6_evpn_mcast_data_address        = try(vrf.address_family_ipv6.evpn_mcast.data_address, null)
+        ipv6_evpn_mcast_data_mask_bits      = try(vrf.address_family_ipv6.evpn_mcast.data_mask_bits, null)
       }
     ]
   ])
@@ -107,4 +112,9 @@ resource "iosxe_vrf" "vrf" {
   ipv4_evpn_mcast_anycast             = each.value.ipv4_evpn_mcast_anycast
   ipv4_evpn_mcast_data_address        = each.value.ipv4_evpn_mcast_data_address
   ipv4_evpn_mcast_data_mask_bits      = each.value.ipv4_evpn_mcast_data_mask_bits
+
+  ipv6_evpn_mcast_mdt_default_address = each.value.ipv6_evpn_mcast_mdt_default_address
+  ipv6_evpn_mcast_anycast             = each.value.ipv6_evpn_mcast_anycast
+  ipv6_evpn_mcast_data_address        = each.value.ipv6_evpn_mcast_data_address
+  ipv6_evpn_mcast_data_mask_bits      = each.value.ipv6_evpn_mcast_data_mask_bits
 }

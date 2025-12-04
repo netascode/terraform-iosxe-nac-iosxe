@@ -7,6 +7,7 @@ iosxe:
           hostname: Switch1
           ip_routing: true
           ip_multicast_routing: true
+          ipv6_unicast_routing: true
         vrfs:
           - name: TRM_EVPN_MCAST_VRF
             description: "TRM VRF with EVPN-Mcast Configuration"
@@ -18,4 +19,11 @@ iosxe:
                 anycast: 61.61.1.11
                 data_address: 225.25.25.26
                 data_mask_bits: 0.0.0.255
+            address_family_ipv6:
+              enable: true
+              evpn_mcast:
+                mdt_default_address: "ff3e::1"
+                anycast: "6600::1"
+                data_address: "ff3e::2"
+                data_mask_bits: "::ff"
 
