@@ -122,11 +122,6 @@ module "iosxe" {
 | [iosxe_flow_monitor.flow_monitor](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.9.3/docs/resources/flow_monitor) | resource |
 | [iosxe_flow_record.flow_record](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.9.3/docs/resources/flow_record) | resource |
 | [iosxe_interface_ethernet.ethernet](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.9.3/docs/resources/interface_ethernet) | resource |
-| [iosxe_interface_igmp.ethernet_igmp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.9.3/docs/resources/interface_igmp) | resource |
-| [iosxe_interface_igmp.loopback_igmp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.9.3/docs/resources/interface_igmp) | resource |
-| [iosxe_interface_igmp.port_channel_igmp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.9.3/docs/resources/interface_igmp) | resource |
-| [iosxe_interface_igmp.port_channel_subinterface_igmp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.9.3/docs/resources/interface_igmp) | resource |
-| [iosxe_interface_igmp.vlan_igmp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.9.3/docs/resources/interface_igmp) | resource |
 | [iosxe_interface_loopback.loopback](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.9.3/docs/resources/interface_loopback) | resource |
 | [iosxe_interface_mpls.ethernet_mpls](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.9.3/docs/resources/interface_mpls) | resource |
 | [iosxe_interface_mpls.loopback_mpls](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.9.3/docs/resources/interface_mpls) | resource |
