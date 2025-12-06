@@ -287,6 +287,7 @@ resource "iosxe_crypto_pki" "crypto_pki" {
     enrollment_pkcs12     = try(tp.enrollment_pkcs12, local.defaults.iosxe.configuration.crypto.pki.trustpoints.enrollment_pkcs12, null)
     enrollment_selfsigned = try(tp.enrollment_selfsigned, local.defaults.iosxe.configuration.crypto.pki.trustpoints.enrollment_selfsigned, null)
     enrollment_terminal   = try(tp.enrollment_terminal, local.defaults.iosxe.configuration.crypto.pki.trustpoints.enrollment_terminal, null)
+    hash                  = try(tp.hash, local.defaults.iosxe.configuration.crypto.pki.trustpoints.hash, null)
     revocation_check      = try(tp.revocation_check, local.defaults.iosxe.configuration.crypto.pki.trustpoints.revocation_check, null)
     rsakeypair            = try(tp.rsakeypair, local.defaults.iosxe.configuration.crypto.pki.trustpoints.rsakeypair, null)
     source_interface      = try(tp.source_interface, local.defaults.iosxe.configuration.crypto.pki.trustpoints.source_interface, null)
