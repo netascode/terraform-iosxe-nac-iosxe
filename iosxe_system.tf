@@ -20,6 +20,10 @@ resource "iosxe_system" "system" {
   ip_multicast_routing_distributed = try(local.device_config[each.value.name].system.ip_multicast_routing_distributed, local.defaults.iosxe.configuration.system.ip_multicast_routing_distributed, null)
   access_session_mac_move_deny     = try(local.device_config[each.value.name].system.access_session_mac_move_deny, local.defaults.iosxe.configuration.system.access_session_mac_move_deny, null)
 
+  # New global configurations
+  ip_default_gateway = try(local.device_config[each.value.name].system.ip_default_gateway, local.defaults.iosxe.configuration.system.ip_default_gateway, null)
+  device_classifier  = try(local.device_config[each.value.name].system.device_classifier, local.defaults.iosxe.configuration.system.device_classifier, null)
+
   # Archive configuration
   archive_log_config_logging_enable  = try(local.device_config[each.value.name].system.archive.log_config_logging_enable, local.defaults.iosxe.configuration.system.archive.log_config_logging_enable, null)
   archive_log_config_logging_size    = try(local.device_config[each.value.name].system.archive.log_config_logging_size, local.defaults.iosxe.configuration.system.archive.log_config_logging_size, null)
@@ -40,6 +44,8 @@ resource "iosxe_system" "system" {
   ip_ssh_authentication_retries       = try(local.device_config[each.value.name].system.ssh.authentication_retries, local.defaults.iosxe.configuration.system.ssh.authentication_retries, null)
   ip_ssh_time_out                     = try(local.device_config[each.value.name].system.ssh.time_out, local.defaults.iosxe.configuration.system.ssh.time_out, null)
   ip_ssh_version                      = try(local.device_config[each.value.name].system.ssh.version, local.defaults.iosxe.configuration.system.ssh.version, null)
+  ip_ssh_bulk_mode                    = try(local.device_config[each.value.name].system.ssh.bulk_mode, local.defaults.iosxe.configuration.system.ssh.bulk_mode, null)
+  ip_ssh_bulk_mode_window_size        = try(local.device_config[each.value.name].system.ssh.bulk_mode_window_size, local.defaults.iosxe.configuration.system.ssh.bulk_mode_window_size, null)
   memory_free_low_watermark_processor = try(local.device_config[each.value.name].system.memory_free_low_watermark_processor, local.defaults.iosxe.configuration.system.memory_free_low_watermark_processor, null)
   redundancy                          = try(local.device_config[each.value.name].system.redundancy, local.defaults.iosxe.configuration.system.redundancy, null)
   redundancy_mode                     = try(local.device_config[each.value.name].system.redundancy_mode, local.defaults.iosxe.configuration.system.redundancy_mode, null)
@@ -195,11 +201,37 @@ resource "iosxe_system" "system" {
   standby_redirects                = try(local.device_config[each.value.name].system.standby_redirects, local.defaults.iosxe.configuration.system.standby_redirects, null) == "none" ? true : null
   standby_redirects_enable_disable = contains(["enable", "disable"], try(local.device_config[each.value.name].system.standby_redirects, local.defaults.iosxe.configuration.system.standby_redirects, "")) ? try(local.device_config[each.value.name].system.standby_redirects, local.defaults.iosxe.configuration.system.standby_redirects, null) : null
 
+  # CEF Load Balancing
+  ip_cef_load_sharing_algorithm_include_ports_source        = try(local.device_config[each.value.name].system.cef.load_balance.ipv4.include_ports.source, local.defaults.iosxe.configuration.system.cef.load_balance.ipv4.include_ports.source, null)
+  ip_cef_load_sharing_algorithm_include_ports_destination   = try(local.device_config[each.value.name].system.cef.load_balance.ipv4.include_ports.destination, local.defaults.iosxe.configuration.system.cef.load_balance.ipv4.include_ports.destination, null)
+  ipv6_cef_load_sharing_algorithm_include_ports_source      = try(local.device_config[each.value.name].system.cef.load_balance.ipv6.include_ports.source, local.defaults.iosxe.configuration.system.cef.load_balance.ipv6.include_ports.source, null)
+  ipv6_cef_load_sharing_algorithm_include_ports_destination = try(local.device_config[each.value.name].system.cef.load_balance.ipv6.include_ports.destination, local.defaults.iosxe.configuration.system.cef.load_balance.ipv6.include_ports.destination, null)
+
+  # Port-Channel Load Balancing
+  port_channel_load_balance = try(local.device_config[each.value.name].system.port_channel.load_balance, local.defaults.iosxe.configuration.system.port_channel.load_balance, null)
+
   track_objects = try(length(local.device_config[each.value.name].system.track_objects) == 0, true) ? null : [
     for track_obj in local.device_config[each.value.name].system.track_objects : {
       number              = try(track_obj.number, local.defaults.iosxe.configuration.system.track_objects.number, null)
       ip_sla_number       = try(track_obj.ip_sla_number, local.defaults.iosxe.configuration.system.track_objects.ip_sla_number, null)
       ip_sla_reachability = try(track_obj.ip_sla_reachability, local.defaults.iosxe.configuration.system.track_objects.ip_sla_reachability, null)
+    }
+  ]
+
+  authentication_mac_move_permit            = try(local.device_config[each.value.name].system.authentication_mac_move_permit, local.defaults.iosxe.configuration.system.authentication_mac_move_permit, null)
+  authentication_mac_move_deny_uncontrolled = try(local.device_config[each.value.name].system.authentication_mac_move_deny_uncontrolled, local.defaults.iosxe.configuration.system.authentication_mac_move_deny_uncontrolled, null)
+
+  # Table-Map configurations for QoS value translation
+  table_maps = try(length(local.device_config[each.value.name].system.table_maps) == 0, true) ? null : [
+    for table_map in local.device_config[each.value.name].system.table_maps : {
+      name    = try(table_map.name, local.defaults.iosxe.configuration.system.table_maps.name, null)
+      default = try(table_map.default, local.defaults.iosxe.configuration.system.table_maps.default, null)
+      mappings = try(length(table_map.mappings) == 0, true) ? null : [
+        for mapping in table_map.mappings : {
+          from = try(mapping.from, local.defaults.iosxe.configuration.system.table_maps.mappings.from, null)
+          to   = try(mapping.to, local.defaults.iosxe.configuration.system.table_maps.mappings.to, null)
+        }
+      ]
     }
   ]
 
