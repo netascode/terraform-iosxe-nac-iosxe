@@ -119,6 +119,7 @@ module "iosxe" {
 | [iosxe_device_sensor.device_sensor](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/device_sensor) | resource |
 | [iosxe_dhcp.dhcp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/dhcp) | resource |
 | [iosxe_dot1x.dot1x](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/dot1x) | resource |
+| [iosxe_eem.eem](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/eem) | resource |
 | [iosxe_errdisable.errdisable](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/errdisable) | resource |
 | [iosxe_evpn.evpn](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/evpn) | resource |
 | [iosxe_evpn_ethernet_segment.evpn_ethernet_segment](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/evpn_ethernet_segment) | resource |
