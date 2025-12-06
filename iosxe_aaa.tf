@@ -417,11 +417,11 @@ locals {
     for device in local.devices : [
       for server in try(local.device_config[device.name].aaa.tacacs.servers, []) : {
         device_name  = device.name
-        name         = try(server.name, local.defaults.iosxe.configuration.aaa.tacacs.servers, null)
+        name         = try(server.name, local.defaults.iosxe.configuration.aaa.tacacs.servers.name, null)
         address_ipv4 = try(server.ip, local.defaults.iosxe.configuration.aaa.tacacs.servers.ip, null)
         timeout      = try(server.timeout, local.defaults.iosxe.configuration.aaa.tacacs.servers.timeout, null)
         port         = try(server.port, local.defaults.iosxe.configuration.aaa.tacacs.servers.port, null)
-        encryption   = try(server.encryption, local.defaults.iosxe.configuration.aaa.ttacacs.servers.encryption, null)
+        encryption   = try(server.encryption, local.defaults.iosxe.configuration.aaa.tacacs.servers.encryption, null)
         key          = try(server.key, local.defaults.iosxe.configuration.aaa.tacacs.servers.key, null)
         tag          = format("%s/%s", device.name, try(server.name, local.defaults.iosxe.configuration.aaa.tacacs.servers.name, null))
       }
