@@ -15,6 +15,7 @@ resource "iosxe_aaa" "aaa" {
   group_server_radius = try(length(local.device_config[each.value.name].aaa.radius_groups) == 0, true) ? null : [for e in local.device_config[each.value.name].aaa.radius_groups : {
     name = try(e.name, local.defaults.iosxe.configuration.aaa.radius_groups.name, null)
 
+    deadtime                                                = try(e.deadtime, local.defaults.iosxe.configuration.aaa.radius_groups.deadtime, null)
     ip_radius_source_interface_loopback                     = try(e.source_interface_type, local.defaults.iosxe.configuration.aaa.radius_groups.source_interface_type, null) == "Loopback" ? try(e.source_interface_id, local.defaults.iosxe.configuration.aaa.radius_groups.source_interface_id, null) : null
     ip_radius_source_interface_vlan                         = try(e.source_interface_type, local.defaults.iosxe.configuration.aaa.radius_groups.source_interface_type, null) == "Vlan" ? try(e.source_interface_id, local.defaults.iosxe.configuration.aaa.radius_groups.source_interface_id, null) : null
     ip_radius_source_interface_gigabit_ethernet             = try(e.source_interface_type, local.defaults.iosxe.configuration.aaa.radius_groups.source_interface_type, null) == "GigabitEthernet" ? try(trimprefix(e.source_interface_id, "$string "), local.defaults.iosxe.configuration.aaa.radius_groups.source_interface_id, null) : null
@@ -137,6 +138,24 @@ resource "iosxe_aaa_accounting" "aaa_accounting" {
     start_stop_group2 = try(e.start_stop_groups[1], local.defaults.iosxe.configuration.aaa.accounting.networks.start_stop_groups[1], null)
   }]
   system_guarantee_first = try(local.device_config[each.value.name].aaa.accounting.system_guarantee_first, local.defaults.iosxe.configuration.aaa.accounting.system_guarantee_first, null)
+  dot1x = try(length(local.device_config[each.value.name].aaa.accounting.dot1x) == 0, true) ? null : [for e in local.device_config[each.value.name].aaa.accounting.dot1x : {
+    name                       = try(e.name, local.defaults.iosxe.configuration.aaa.accounting.dot1x.name, null)
+    start_stop_broadcast       = try(e.start_stop_broadcast, local.defaults.iosxe.configuration.aaa.accounting.dot1x.start_stop_broadcast, null)
+    start_stop_group_broadcast = try(e.start_stop_group_broadcast, local.defaults.iosxe.configuration.aaa.accounting.dot1x.start_stop_group_broadcast, null)
+    start_stop_group_logger    = try(e.start_stop_group_logger, local.defaults.iosxe.configuration.aaa.accounting.dot1x.start_stop_group_logger, null)
+    start_stop_group1          = try(e.start_stop_groups[0], local.defaults.iosxe.configuration.aaa.accounting.dot1x.start_stop_groups[0], null)
+    start_stop_group2          = try(e.start_stop_groups[1], local.defaults.iosxe.configuration.aaa.accounting.dot1x.start_stop_groups[1], null)
+    start_stop_group3          = try(e.start_stop_groups[2], local.defaults.iosxe.configuration.aaa.accounting.dot1x.start_stop_groups[2], null)
+    start_stop_group4          = try(e.start_stop_groups[3], local.defaults.iosxe.configuration.aaa.accounting.dot1x.start_stop_groups[3], null)
+  }]
+
+  dot1x_default_start_stop_group1          = try(local.device_config[each.value.name].aaa.accounting.dot1x_defaults[0], local.defaults.iosxe.configuration.aaa.accounting.dot1x_defaults[0], null)
+  dot1x_default_start_stop_group2          = try(local.device_config[each.value.name].aaa.accounting.dot1x_defaults[1], local.defaults.iosxe.configuration.aaa.accounting.dot1x_defaults[1], null)
+  dot1x_default_start_stop_group3          = try(local.device_config[each.value.name].aaa.accounting.dot1x_defaults[2], local.defaults.iosxe.configuration.aaa.accounting.dot1x_defaults[2], null)
+  dot1x_default_start_stop_group4          = try(local.device_config[each.value.name].aaa.accounting.dot1x_defaults[3], local.defaults.iosxe.configuration.aaa.accounting.dot1x_defaults[3], null)
+  dot1x_default_start_stop_broadcast       = try(local.device_config[each.value.name].aaa.accounting.dot1x_default_start_stop_broadcast, local.defaults.iosxe.configuration.aaa.accounting.dot1x_default_start_stop_broadcast, null)
+  dot1x_default_start_stop_group_broadcast = try(local.device_config[each.value.name].aaa.accounting.dot1x_default_start_stop_group_broadcast, local.defaults.iosxe.configuration.aaa.accounting.dot1x_default_start_stop_group_broadcast, null)
+  dot1x_default_start_stop_group_logger    = try(local.device_config[each.value.name].aaa.accounting.dot1x_default_start_stop_group_logger, local.defaults.iosxe.configuration.aaa.accounting.dot1x_default_start_stop_group_logger, null)
 
   depends_on = [
     iosxe_aaa.aaa,
@@ -199,6 +218,11 @@ resource "iosxe_aaa_authentication" "aaa_authentication" {
   dot1x_default_a3_local = try(local.device_config[each.value.name].aaa.authentication.dot1x_defaults[2], local.defaults.iosxe.configuration.aaa.authentication.dot1x_defaults[2], null) == "local" ? true : false
   dot1x_default_a4_group = try(!contains(["local"], try(local.device_config[each.value.name].aaa.authentication.dot1x_defaults[3], local.defaults.iosxe.configuration.aaa.authentication.dot1x_defaults[3])), false) ? try(local.device_config[each.value.name].aaa.authentication.dot1x_defaults[3], local.defaults.iosxe.configuration.aaa.authentication.dot1x_defaults[3]) : null
   dot1x_default_a4_local = try(local.device_config[each.value.name].aaa.authentication.dot1x_defaults[3], local.defaults.iosxe.configuration.aaa.authentication.dot1x_defaults[3], null) == "local" ? true : false
+
+  enable_default_group_legacy  = !contains(["enable", "line", "none"], try(local.device_config[each.value.name].aaa.authentication.enable_defaults_legacy, local.defaults.iosxe.configuration.aaa.authentication.enable_defaults_legacy, "")) ? try(local.device_config[each.value.name].aaa.authentication.enable_defaults_legacy, local.defaults.iosxe.configuration.aaa.authentication.enable_defaults_legacy, null) : null
+  enable_default_enable_legacy = try(local.device_config[each.value.name].aaa.authentication.enable_defaults_legacy, local.defaults.iosxe.configuration.aaa.authentication.enable_defaults_legacy, null) == "enable" ? true : false
+  enable_default_line_legacy   = try(local.device_config[each.value.name].aaa.authentication.enable_defaults_legacy, local.defaults.iosxe.configuration.aaa.authentication.enable_defaults_legacy, null) == "line" ? true : false
+  enable_default_none_legacy   = try(local.device_config[each.value.name].aaa.authentication.enable_defaults_legacy, local.defaults.iosxe.configuration.aaa.authentication.enable_defaults_legacy, null) == "none" ? true : false
 
   enable_default_group1_cache  = try(local.device_config[each.value.name].aaa.authentication.enable_defaults[0].cache, local.defaults.iosxe.configuration.aaa.authentication.enable_defaults[0].cache, false) ? try(local.device_config[each.value.name].aaa.authentication.enable_defaults[0].method, local.defaults.iosxe.configuration.aaa.authentication.enable_defaults[0].method, null) : null
   enable_default_group1_enable = try(local.device_config[each.value.name].aaa.authentication.enable_defaults[0].method, local.defaults.iosxe.configuration.aaa.authentication.enable_defaults[0].method, null) == "enable" ? true : false
@@ -327,9 +351,12 @@ locals {
         timeout                          = try(server.timeout, local.defaults.iosxe.configuration.aaa.radius.servers.timeout, null)
         retransmit                       = try(server.retransmit, local.defaults.iosxe.configuration.aaa.radius.servers.retransmit, null)
         key                              = try(server.key, local.defaults.iosxe.configuration.aaa.radius.servers.key, null)
+        encryption                       = try(server.encryption, local.defaults.iosxe.configuration.aaa.radius.servers.encryption, null)
         automate_tester_username         = try(server.automate_tester_username, local.defaults.iosxe.configuration.aaa.radius.servers.automate_tester_username, null)
         automate_tester_ignore_acct_port = try(server.automate_tester_ignore_acct_port, local.defaults.iosxe.configuration.aaa.radius.servers.automate_tester_ignore_acct_port, null)
+        automate_tester_ignore_auth_port = try(server.automate_tester_ignore_auth_port, local.defaults.iosxe.configuration.aaa.radius.servers.automate_tester_ignore_auth_port, null)
         automate_tester_probe_on_config  = try(server.automate_tester_probe_on_config, local.defaults.iosxe.configuration.aaa.radius.servers.automate_tester_probe_on_config, null)
+        automate_tester_idle_time        = try(server.automate_tester_idle_time, local.defaults.iosxe.configuration.aaa.radius.servers.automate_tester_idle_time, null)
         pac_key                          = try(server.pac_key, local.defaults.iosxe.configuration.aaa.radius.servers.pac_key, null)
         pac_key_encryption               = try(server.pac_key_encryption, local.defaults.iosxe.configuration.aaa.radius.servers.pac_key_encryption, null)
       }
@@ -345,11 +372,14 @@ resource "iosxe_radius" "radius" {
   ipv4_address                     = each.value.ipv4_address
   timeout                          = each.value.timeout
   key                              = each.value.key
+  key_encryption                   = each.value.encryption
   authentication_port              = each.value.authentication_port
   accounting_port                  = each.value.accounting_port
   retransmit                       = each.value.retransmit
   automate_tester_username         = each.value.automate_tester_username
   automate_tester_ignore_acct_port = each.value.automate_tester_ignore_acct_port
+  automate_tester_ignore_auth_port = each.value.automate_tester_ignore_auth_port
+  automate_tester_idle_time        = each.value.automate_tester_idle_time
   automate_tester_probe_on_config  = each.value.automate_tester_probe_on_config
   pac_key                          = each.value.pac_key
   pac_key_encryption               = each.value.pac_key_encryption
@@ -380,31 +410,51 @@ resource "iosxe_radius_server" "radius_server" {
   ]
 }
 
+
+
 locals {
   tacacs_servers = flatten([
     for device in local.devices : [
-      for server in try(local.device_config[device.name].aaa.tacacs_servers, []) : {
+      for server in try(local.device_config[device.name].aaa.tacacs.servers, []) : {
         device_name  = device.name
-        name         = try(server.name, local.defaults.iosxe.configuration.aaa.tacacs_servers.name, null)
-        address_ipv4 = try(server.ip, local.defaults.iosxe.configuration.aaa.tacacs_servers.ip, null)
-        timeout      = try(server.timeout, local.defaults.iosxe.configuration.aaa.tacacs_servers.timeout, null)
-        encryption   = try(server.encryption, local.defaults.iosxe.configuration.aaa.tacacs_servers.encryption, null)
-        key          = try(server.key, local.defaults.iosxe.configuration.aaa.tacacs_servers.key, null)
-        tag          = format("%s/%s", device.name, try(server.name, local.defaults.iosxe.configuration.aaa.tacacs_servers.name, null))
+        name         = try(server.name, local.defaults.iosxe.configuration.aaa.tacacs.servers.name, null)
+        address_ipv4 = try(server.ip, local.defaults.iosxe.configuration.aaa.tacacs.servers.ip, null)
+        timeout      = try(server.timeout, local.defaults.iosxe.configuration.aaa.tacacs.servers.timeout, null)
+        port         = try(server.port, local.defaults.iosxe.configuration.aaa.tacacs.servers.port, null)
+        encryption   = try(server.encryption, local.defaults.iosxe.configuration.aaa.tacacs.servers.encryption, null)
+        key          = try(server.key, local.defaults.iosxe.configuration.aaa.tacacs.servers.key, null)
+        tag          = format("%s/%s", device.name, try(server.name, local.defaults.iosxe.configuration.aaa.tacacs.servers.name, null))
       }
     ]
   ])
 }
 
-resource "iosxe_tacacs_server" "tacacs_server" {
+resource "iosxe_tacacs" "tacacs" {
   for_each = { for server in local.tacacs_servers : server.tag => server }
   device   = each.value.device_name
 
   name         = each.value.name
   address_ipv4 = each.value.address_ipv4
   timeout      = each.value.timeout
+  port         = each.value.port
   encryption   = each.value.encryption
   key          = each.value.key
+
+}
+
+resource "iosxe_tacacs_server" "tacacs_server" {
+
+  for_each = { for device in local.devices : device.name => device if try(local.device_config[device.name].aaa.tacacs, null) != null || try(local.defaults.iosxe.configuration.aaa.tacacs, null) != null }
+  device   = each.value.name
+
+  timeout                      = try(local.device_config[each.value.name].aaa.tacacs.timeout, local.defaults.iosxe.configuration.aaa.tacacs.timeout, null)
+  directed_request             = try(local.device_config[each.value.name].aaa.tacacs.directed_request, local.defaults.iosxe.configuration.aaa.tacacs.directed_request, null)
+  directed_request_restricted  = try(local.device_config[each.value.name].aaa.tacacs.directed_request_restricted, local.defaults.iosxe.configuration.aaa.tacacs.directed_request_restricted, null)
+  directed_request_no_truncate = try(local.device_config[each.value.name].aaa.tacacs.directed_request_no_truncate, local.defaults.iosxe.configuration.aaa.tacacs.directed_request_no_truncate, null)
+  key                          = try(local.device_config[each.value.name].aaa.tacacs.key, local.defaults.iosxe.configuration.aaa.tacacs.key, null)
+  encryption                   = try(local.device_config[each.value.name].aaa.tacacs.encryption, local.defaults.iosxe.configuration.aaa.tacacs.encryption, null)
+  attribute_allow_unknown      = try(local.device_config[each.value.name].aaa.tacacs.attribute_allow_unknown, local.defaults.iosxe.configuration.aaa.tacacs.attribute_allow_unknown, null)
+
 }
 
 locals {
