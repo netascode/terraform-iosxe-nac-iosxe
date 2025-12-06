@@ -8,7 +8,10 @@ resource "iosxe_dhcp" "dhcp" {
   relay_information_option_default                      = try(local.device_config[each.value.name].dhcp.relay_information_option_default, local.defaults.iosxe.configuration.dhcp.relay_information_option_default, null)
   relay_information_option_vpn                          = try(local.device_config[each.value.name].dhcp.relay_information_option_vpn, local.defaults.iosxe.configuration.dhcp.relay_information_option_vpn, null)
   snooping                                              = try(local.device_config[each.value.name].dhcp.snooping, local.defaults.iosxe.configuration.dhcp.snooping, null)
+  snooping_information_option                           = try(local.device_config[each.value.name].dhcp.snooping_information_option, local.defaults.iosxe.configuration.dhcp.snooping_information_option, null)
+  snooping_information_option_allow_untrusted           = try(local.device_config[each.value.name].dhcp.snooping_information_option_allow_untrusted, local.defaults.iosxe.configuration.dhcp.snooping_information_option_allow_untrusted, null)
   snooping_information_option_format_remote_id_hostname = try(local.device_config[each.value.name].dhcp.snooping_information_option_format_remote_id_hostname, local.defaults.iosxe.configuration.dhcp.snooping_information_option_format_remote_id_hostname, null)
+  snooping_information_option_format_remote_id_string   = try(local.device_config[each.value.name].dhcp.snooping_information_option_format_remote_id_string, local.defaults.iosxe.configuration.dhcp.snooping_information_option_format_remote_id_string, null)
   snooping_vlans = try(length(provider::utils::normalize_vlans(
     try(local.device_config[each.value.name].dhcp.snooping_vlans, local.defaults.iosxe.configuration.dhcp.snooping_vlans),
     "list"

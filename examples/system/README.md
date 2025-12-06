@@ -17,7 +17,7 @@ Note that this example will create resources. Resources can be destroyed with `t
 iosxe:
   devices:
     - name: Switch1
-      url: https://1.2.3.4
+      host: 1.2.3.4
       configuration:
         system:
           hostname: Switch1
