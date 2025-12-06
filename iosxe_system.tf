@@ -214,6 +214,9 @@ resource "iosxe_system" "system" {
     }
   ]
 
+  authentication_mac_move_permit            = try(local.device_config[each.value.name].system.authentication_mac_move_permit, local.defaults.iosxe.configuration.system.authentication_mac_move_permit, null)
+  authentication_mac_move_deny_uncontrolled = try(local.device_config[each.value.name].system.authentication_mac_move_deny_uncontrolled, local.defaults.iosxe.configuration.system.authentication_mac_move_deny_uncontrolled, null)
+
   depends_on = [
     iosxe_vrf.vrf,
     iosxe_interface_ethernet.ethernet,

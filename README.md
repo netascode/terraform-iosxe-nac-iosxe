@@ -180,6 +180,7 @@ module "iosxe" {
 | [iosxe_static_route.static_route](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/static_route) | resource |
 | [iosxe_static_routes_vrf.static_routes_vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/static_routes_vrf) | resource |
 | [iosxe_system.system](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/system) | resource |
+| [iosxe_tacacs.tacacs](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/tacacs) | resource |
 | [iosxe_tacacs_server.tacacs_server](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/tacacs_server) | resource |
 | [iosxe_template.template](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/template) | resource |
 | [iosxe_udld.udld](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/udld) | resource |
