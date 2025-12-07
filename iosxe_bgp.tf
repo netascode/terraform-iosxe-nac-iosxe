@@ -129,7 +129,7 @@ resource "iosxe_bgp_neighbor" "bgp_neighbor" {
   timers_holdtime                           = each.value.timers_holdtime
   timers_minimum_neighbor_hold              = each.value.timers_minimum_neighbor_hold
   ttl_security_hops                         = each.value.ttl_security_hops
-  update_source_interface_loopback          = each.value.update_source_loopback
+  update_source_interface_loopback          = each.value.update_source_interface_loopback
   ebgp_multihop                             = each.value.ebgp_multihop
   ebgp_multihop_max_hop                     = each.value.ebgp_multihop_max_hop
   inherit_peer_session                      = each.value.inherit_peer_session
