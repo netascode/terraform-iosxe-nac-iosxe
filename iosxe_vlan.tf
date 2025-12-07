@@ -35,13 +35,16 @@ locals {
   vlan_config = flatten([
     for device in local.devices : [
       for vlan in try(local.device_config[device.name].vlan.vlans, []) : {
-        key               = format("%s/%s", device.name, vlan.id)
-        device            = device.name
-        id                = try(vlan.id, local.defaults.iosxe.configuration.vlan.vlans.id, null)
-        vni               = try(vlan.vni, local.defaults.iosxe.configuration.vlan.vlans.vni, null)
-        access_vfi        = try(vlan.access_vfi, local.defaults.iosxe.configuration.vlan.vlans.access_vfi, null)
-        evpn_instance     = try(vlan.evpn_instance, local.defaults.iosxe.configuration.vlan.vlans.evpn_instance, null)
-        evpn_instance_vni = try(vlan.evpn_instance_vni, local.defaults.iosxe.configuration.vlan.vlans.evpn_instance_vni, null)
+        key                             = format("%s/%s", device.name, vlan.id)
+        device                          = device.name
+        id                              = try(vlan.id, local.defaults.iosxe.configuration.vlan.vlans.id, null)
+        vni                             = try(vlan.vni, local.defaults.iosxe.configuration.vlan.vlans.vni, null)
+        access_vfi                      = try(vlan.access_vfi, local.defaults.iosxe.configuration.vlan.vlans.access_vfi, null)
+        evpn_instance                   = try(vlan.evpn_instance, local.defaults.iosxe.configuration.vlan.vlans.evpn_instance, null)
+        evpn_instance_vni               = try(vlan.evpn_instance_vni, local.defaults.iosxe.configuration.vlan.vlans.evpn_instance_vni, null)
+        evpn_instance_protected         = try(vlan.evpn_instance_protected, local.defaults.iosxe.configuration.vlan.vlans.evpn_instance_protected, null)
+        evpn_instance_profile           = try(vlan.evpn_instance_profile, local.defaults.iosxe.configuration.vlan.vlans.evpn_instance_profile, null)
+        evpn_instance_profile_protected = try(vlan.evpn_instance_profile_protected, local.defaults.iosxe.configuration.vlan.vlans.evpn_instance_profile_protected, null)
       }
     ]
   ])
@@ -51,11 +54,14 @@ resource "iosxe_vlan_configuration" "vlan_configuration" {
   for_each = { for e in local.vlan_config : e.key => e }
   device   = each.value.device
 
-  vlan_id           = each.value.id
-  vni               = each.value.vni
-  access_vfi        = each.value.access_vfi
-  evpn_instance     = each.value.evpn_instance
-  evpn_instance_vni = each.value.evpn_instance_vni
+  vlan_id                         = each.value.id
+  vni                             = each.value.vni
+  access_vfi                      = each.value.access_vfi
+  evpn_instance                   = each.value.evpn_instance
+  evpn_instance_vni               = each.value.evpn_instance_vni
+  evpn_instance_protected         = each.value.evpn_instance_protected
+  evpn_instance_profile           = each.value.evpn_instance_profile
+  evpn_instance_profile_protected = each.value.evpn_instance_profile_protected
 
   depends_on = [
     iosxe_evpn_instance.evpn_instance
