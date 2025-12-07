@@ -1,0 +1,21 @@
+iosxe:
+  devices:
+    - name: Switch1
+      host: 10.1.1.1
+      configuration:
+        l2vpn_evpn_profile:
+          profiles:
+            - name: DC_PROFILE_1
+              evi_base: 1000
+              l2vni_base: 10000
+            - name: CAMPUS_PROFILE
+              evi_base: 2000
+              l2vni_base: 20000
+    - name: Switch2
+      host: 10.1.1.2
+      configuration:
+        l2vpn_evpn_profile:
+          profiles:
+            - name: DC_PROFILE_1
+              evi_base: 1000
+              l2vni_base: 10000
