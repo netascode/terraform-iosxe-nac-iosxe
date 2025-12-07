@@ -80,10 +80,12 @@ module "iosxe" {
 | [iosxe_bfd_template_single_hop.bfd_template_single_hop](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/bfd_template_single_hop) | resource |
 | [iosxe_bgp.bgp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/bgp) | resource |
 | [iosxe_bgp_address_family_ipv4.bgp_address_family_ipv4](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/bgp_address_family_ipv4) | resource |
+| [iosxe_bgp_address_family_ipv4_mvpn.bgp_address_family_ipv4_mvpn](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/bgp_address_family_ipv4_mvpn) | resource |
 | [iosxe_bgp_address_family_ipv4_vrf.bgp_address_family_ipv4_vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/bgp_address_family_ipv4_vrf) | resource |
 | [iosxe_bgp_address_family_ipv6.bgp_address_family_ipv6](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/bgp_address_family_ipv6) | resource |
 | [iosxe_bgp_address_family_ipv6_vrf.bgp_address_family_ipv6_vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/bgp_address_family_ipv6_vrf) | resource |
 | [iosxe_bgp_address_family_l2vpn.bgp_address_family_l2vpn](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/bgp_address_family_l2vpn) | resource |
+| [iosxe_bgp_ipv4_mvpn_neighbor.bgp_ipv4_mvpn_neighbor](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/bgp_ipv4_mvpn_neighbor) | resource |
 | [iosxe_bgp_ipv4_unicast_neighbor.bgp_ipv4_unicast_neighbor](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/bgp_ipv4_unicast_neighbor) | resource |
 | [iosxe_bgp_ipv4_unicast_vrf_neighbor.bgp_ipv4_unicast_vrf_neighbor](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/bgp_ipv4_unicast_vrf_neighbor) | resource |
 | [iosxe_bgp_ipv6_unicast_neighbor.bgp_ipv6_unicast_neighbor](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/bgp_ipv6_unicast_neighbor) | resource |
