@@ -537,6 +537,7 @@ locals {
         pim_bsr_border                          = try(int.pim.bsr_border, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.pim.bsr_border, null)
         pim_dr_priority                         = try(int.pim.dr_priority, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.pim.dr_priority, null)
         isis                                    = try(int.isis, null) != null ? true : false
+        isis_area_tag                           = try(int.isis.area_tag, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.isis.area_tag, null)
         isis_ipv4_metric_levels = try(length(int.isis.ipv4_metric_levels) == 0, true) ? null : [for level in int.isis.ipv4_metric_levels : {
           level = try(level.level, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.isis.ipv4_metric_levels.level, null)
           value = try(level.value, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.isis.ipv4_metric_levels.value, null)
@@ -571,6 +572,7 @@ resource "iosxe_interface_loopback" "loopback" {
   ipv6_mtu                        = each.value.ipv6_mtu
   ipv6_nd_ra_suppress_all         = each.value.ipv6_nd_ra_suppress_all
   arp_timeout                     = each.value.arp_timeout
+  ip_router_isis                  = each.value.isis_area_tag
 
   depends_on = [
     iosxe_vrf.vrf,
