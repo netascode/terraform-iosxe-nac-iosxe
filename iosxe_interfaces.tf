@@ -536,6 +536,11 @@ locals {
         pim_border                              = try(int.pim.border, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.pim.border, null)
         pim_bsr_border                          = try(int.pim.bsr_border, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.pim.bsr_border, null)
         pim_dr_priority                         = try(int.pim.dr_priority, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.pim.dr_priority, null)
+        isis                                    = try(int.isis, null) != null ? true : false
+        isis_ipv4_metric_levels = try(length(int.isis.ipv4_metric_levels) == 0, true) ? null : [for level in int.isis.ipv4_metric_levels : {
+          level = try(level.level, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.isis.ipv4_metric_levels.level, null)
+          value = try(level.value, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.isis.ipv4_metric_levels.value, null)
+        }]
       }
     ]
   ])
@@ -651,6 +656,20 @@ resource "iosxe_interface_pim" "loopback_pim" {
 
   depends_on = [
     iosxe_interface_loopback.loopback
+  ]
+}
+
+resource "iosxe_interface_isis" "loopback_isis" {
+  for_each = { for v in local.interfaces_loopbacks : v.key => v if v.isis }
+
+  device             = each.value.device
+  type               = "Loopback"
+  name               = each.value.id
+  ipv4_metric_levels = each.value.isis_ipv4_metric_levels
+
+  depends_on = [
+    iosxe_interface_loopback.loopback,
+    iosxe_isis.isis
   ]
 }
 
