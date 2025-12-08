@@ -204,8 +204,25 @@ locals {
         evpn_ethernet_segments = try(length(int.evpn_ethernet_segments) == 0, true) ? null : [for es in int.evpn_ethernet_segments : {
           es_value = try(es.es_value, local.defaults.iosxe.devices.configuration.interfaces.ethernets.evpn_ethernet_segments.es_value, null)
         }]
-        ip_nat_inside  = try(int.ipv4.nat_inside, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv4.nat_inside, null)
-        ip_nat_outside = try(int.ipv4.nat_outside, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv4.nat_outside, null)
+        ip_nat_inside      = try(int.ipv4.nat_inside, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv4.nat_inside, null)
+        ip_nat_outside     = try(int.ipv4.nat_outside, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv4.nat_outside, null)
+        carrier_delay_msec = try(int.carrier_delay_msec, local.defaults.iosxe.devices.configuration.interfaces.ethernets.carrier_delay_msec, null)
+        hold_queues = [
+          contains(keys(int), "hold_queue_in") ? {
+            direction    = "in"
+            queue_length = try(int.hold_queue_in, local.defaults.iosxe.devices.configuration.interfaces.ethernets.hold_queue_in, null)
+            } : {
+            direction    = "in"
+            queue_length = try(local.defaults.iosxe.devices.configuration.interfaces.ethernets.hold_queue_in, null)
+          },
+          contains(keys(int), "hold_queue_out") ? {
+            direction    = "out"
+            queue_length = try(int.hold_queue_out, local.defaults.iosxe.devices.configuration.interfaces.ethernets.hold_queue_out, null)
+            } : {
+            direction    = "out"
+            queue_length = try(local.defaults.iosxe.devices.configuration.interfaces.ethernets.hold_queue_out, null)
+          },
+        ]
       }
     ]
   ])
@@ -323,6 +340,8 @@ resource "iosxe_interface_ethernet" "ethernet" {
   evpn_ethernet_segments                     = each.value.evpn_ethernet_segments
   ip_nat_inside                              = each.value.ip_nat_inside
   ip_nat_outside                             = each.value.ip_nat_outside
+  carrier_delay_msec                         = each.value.carrier_delay_msec
+  hold_queues                                = each.value.hold_queues
 
   depends_on = [
     iosxe_vrf.vrf,
@@ -517,6 +536,11 @@ locals {
         pim_border                              = try(int.pim.border, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.pim.border, null)
         pim_bsr_border                          = try(int.pim.bsr_border, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.pim.bsr_border, null)
         pim_dr_priority                         = try(int.pim.dr_priority, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.pim.dr_priority, null)
+        isis                                    = try(int.isis, null) != null ? true : false
+        isis_ipv4_metric_levels = try(length(int.isis.ipv4_metric_levels) == 0, true) ? null : [for level in int.isis.ipv4_metric_levels : {
+          level = try(level.level, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.isis.ipv4_metric_levels.level, null)
+          value = try(level.value, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.isis.ipv4_metric_levels.value, null)
+        }]
       }
     ]
   ])
@@ -632,6 +656,20 @@ resource "iosxe_interface_pim" "loopback_pim" {
 
   depends_on = [
     iosxe_interface_loopback.loopback
+  ]
+}
+
+resource "iosxe_interface_isis" "loopback_isis" {
+  for_each = { for v in local.interfaces_loopbacks : v.key => v if v.isis }
+
+  device             = each.value.device
+  type               = "Loopback"
+  name               = each.value.id
+  ipv4_metric_levels = each.value.isis_ipv4_metric_levels
+
+  depends_on = [
+    iosxe_interface_loopback.loopback,
+    iosxe_isis.isis
   ]
 }
 
