@@ -130,10 +130,6 @@ module "iosxe" {
 | [iosxe_flow_monitor.flow_monitor](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/flow_monitor) | resource |
 | [iosxe_flow_record.flow_record](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/flow_record) | resource |
 | [iosxe_interface_ethernet.ethernet](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_ethernet) | resource |
-| [iosxe_interface_ipv6_pim.ethernet_ipv6_pim](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_ipv6_pim) | resource |
-| [iosxe_interface_ipv6_pim.loopback_ipv6_pim](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_ipv6_pim) | resource |
-| [iosxe_interface_ipv6_pim.port_channel_ipv6_pim](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_ipv6_pim) | resource |
-| [iosxe_interface_ipv6_pim.vlan_ipv6_pim](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_ipv6_pim) | resource |
 | [iosxe_interface_isis.loopback_isis](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_isis) | resource |
 | [iosxe_interface_loopback.loopback](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_loopback) | resource |
 | [iosxe_interface_mpls.ethernet_mpls](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_mpls) | resource |
@@ -157,12 +153,15 @@ module "iosxe" {
 | [iosxe_interface_pim.port_channel_pim](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_pim) | resource |
 | [iosxe_interface_pim.port_channel_subinterface_pim](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_pim) | resource |
 | [iosxe_interface_pim.vlan_pim](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_pim) | resource |
+| [iosxe_interface_pim_ipv6.ethernet_pim_ipv6](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_pim_ipv6) | resource |
+| [iosxe_interface_pim_ipv6.loopback_pim_ipv6](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_pim_ipv6) | resource |
+| [iosxe_interface_pim_ipv6.port_channel_pim_ipv6](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_pim_ipv6) | resource |
+| [iosxe_interface_pim_ipv6.vlan_pim_ipv6](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_pim_ipv6) | resource |
 | [iosxe_interface_port_channel.port_channel](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_port_channel) | resource |
 | [iosxe_interface_port_channel_subinterface.port_channel_subinterface](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_port_channel_subinterface) | resource |
 | [iosxe_interface_switchport.ethernet_switchport](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_switchport) | resource |
 | [iosxe_interface_switchport.port_channel_switchport](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_switchport) | resource |
 | [iosxe_interface_vlan.vlan](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_vlan) | resource |
-| [iosxe_ipv6_pim.ipv6_pim](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/ipv6_pim) | resource |
 | [iosxe_isis.isis](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/isis) | resource |
 | [iosxe_license.license](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/license) | resource |
 | [iosxe_line.line](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/line) | resource |
@@ -176,6 +175,7 @@ module "iosxe" {
 | [iosxe_ospf.ospf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/ospf) | resource |
 | [iosxe_ospf_vrf.ospf_vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/ospf_vrf) | resource |
 | [iosxe_pim.pim](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/pim) | resource |
+| [iosxe_pim_ipv6.pim_ipv6](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/pim_ipv6) | resource |
 | [iosxe_platform.platform](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/platform) | resource |
 | [iosxe_policy_map.policy_map](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/policy_map) | resource |
 | [iosxe_policy_map_event.policy_map_event](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/policy_map_event) | resource |

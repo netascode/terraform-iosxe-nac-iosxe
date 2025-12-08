@@ -1,4 +1,4 @@
-resource "iosxe_ipv6_pim" "ipv6_pim" {
+resource "iosxe_pim_ipv6" "pim_ipv6" {
   for_each = { for device in local.devices : device.name => device if try(local.device_config[device.name].ipv6_pim, null) != null }
   device   = each.value.name
 

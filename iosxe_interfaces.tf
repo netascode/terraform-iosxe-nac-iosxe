@@ -461,7 +461,7 @@ resource "iosxe_interface_pim" "ethernet_pim" {
   ]
 }
 
-resource "iosxe_interface_ipv6_pim" "ethernet_ipv6_pim" {
+resource "iosxe_interface_pim_ipv6" "ethernet_pim_ipv6" {
   for_each = { for v in local.interfaces_ethernets : v.key => v if v.ipv6_pim }
 
   device      = each.value.device
@@ -685,7 +685,7 @@ resource "iosxe_interface_pim" "loopback_pim" {
   ]
 }
 
-resource "iosxe_interface_ipv6_pim" "loopback_ipv6_pim" {
+resource "iosxe_interface_pim_ipv6" "loopback_pim_ipv6" {
   for_each = { for v in local.interfaces_loopbacks : v.key => v if v.ipv6_pim }
 
   device      = each.value.device
@@ -945,7 +945,7 @@ resource "iosxe_interface_pim" "vlan_pim" {
   ]
 }
 
-resource "iosxe_interface_ipv6_pim" "vlan_ipv6_pim" {
+resource "iosxe_interface_pim_ipv6" "vlan_pim_ipv6" {
   for_each = { for v in local.interfaces_vlans : v.key => v if v.ipv6_pim }
 
   device      = each.value.device
@@ -1278,7 +1278,7 @@ resource "iosxe_interface_pim" "port_channel_pim" {
   ]
 }
 
-resource "iosxe_interface_ipv6_pim" "port_channel_ipv6_pim" {
+resource "iosxe_interface_pim_ipv6" "port_channel_pim_ipv6" {
   for_each = { for v in local.interfaces_port_channels : v.key => v if v.ipv6_pim }
 
   device      = each.value.device
