@@ -126,6 +126,7 @@ module "iosxe" {
 | [iosxe_flow_exporter.flow_exporter](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.10.2/docs/resources/flow_exporter) | resource |
 | [iosxe_flow_monitor.flow_monitor](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.10.2/docs/resources/flow_monitor) | resource |
 | [iosxe_flow_record.flow_record](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.10.2/docs/resources/flow_record) | resource |
+| [iosxe_igmp_snooping.igmp_snooping](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.10.2/docs/resources/igmp_snooping) | resource |
 | [iosxe_interface_ethernet.ethernet](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.10.2/docs/resources/interface_ethernet) | resource |
 | [iosxe_interface_loopback.loopback](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.10.2/docs/resources/interface_loopback) | resource |
 | [iosxe_interface_mpls.ethernet_mpls](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.10.2/docs/resources/interface_mpls) | resource |
