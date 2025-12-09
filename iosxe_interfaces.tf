@@ -212,22 +212,16 @@ locals {
         ip_nat_inside      = try(int.ipv4.nat_inside, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv4.nat_inside, null)
         ip_nat_outside     = try(int.ipv4.nat_outside, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv4.nat_outside, null)
         carrier_delay_msec = try(int.carrier_delay_msec, local.defaults.iosxe.devices.configuration.interfaces.ethernets.carrier_delay_msec, null)
-        hold_queues = [
-          contains(keys(int), "hold_queue_in") ? {
+        hold_queues = (contains(keys(int), "hold_queue_in") || contains(keys(int), "hold_queue_out") || try(local.defaults.iosxe.devices.configuration.interfaces.ethernets.hold_queue_in, null) != null || try(local.defaults.iosxe.devices.configuration.interfaces.ethernets.hold_queue_out, null) != null) ? flatten([
+          (contains(keys(int), "hold_queue_in") || try(local.defaults.iosxe.devices.configuration.interfaces.ethernets.hold_queue_in, null) != null) ? [{
             direction    = "in"
             queue_length = try(int.hold_queue_in, local.defaults.iosxe.devices.configuration.interfaces.ethernets.hold_queue_in, null)
-            } : {
-            direction    = "in"
-            queue_length = try(local.defaults.iosxe.devices.configuration.interfaces.ethernets.hold_queue_in, null)
-          },
-          contains(keys(int), "hold_queue_out") ? {
+          }] : [],
+          (contains(keys(int), "hold_queue_out") || try(local.defaults.iosxe.devices.configuration.interfaces.ethernets.hold_queue_out, null) != null) ? [{
             direction    = "out"
             queue_length = try(int.hold_queue_out, local.defaults.iosxe.devices.configuration.interfaces.ethernets.hold_queue_out, null)
-            } : {
-            direction    = "out"
-            queue_length = try(local.defaults.iosxe.devices.configuration.interfaces.ethernets.hold_queue_out, null)
-          },
-        ]
+          }] : []
+        ]) : []
       }
     ]
   ])
