@@ -186,6 +186,7 @@ locals {
         ipv6_pim_bfd                               = try(int.ipv6.pim.bfd, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv6.pim.bfd, null)
         ipv6_pim_bsr_border                        = try(int.ipv6.pim.bsr_border, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv6.pim.bsr_border, null)
         ipv6_pim_dr_priority                       = try(int.ipv6.pim.dr_priority, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv6.pim.dr_priority, null)
+        ip_igmp_version                            = try(int.igmp.version, local.defaults.iosxe.devices.configuration.interfaces.ethernets.igmp.version, null)
         authentication_periodic                    = try(int.network_access_control.authentication_periodic, local.defaults.iosxe.devices.configuration.interfaces.ethernets.network_access_control.authentication_periodic, null)
         authentication_timer_reauthenticate        = try(int.network_access_control.authentication_timer_reauthenticate, local.defaults.iosxe.devices.configuration.interfaces.ethernets.network_access_control.authentication_timer_reauthenticate, null)
         authentication_timer_reauthenticate_server = try(int.network_access_control.authentication_timer_reauthenticate_server, local.defaults.iosxe.devices.configuration.interfaces.ethernets.network_access_control.authentication_timer_reauthenticate_server, null)
@@ -256,6 +257,7 @@ resource "iosxe_interface_ethernet" "ethernet" {
   ip_nbar_protocol_discovery                 = each.value.ip_nbar_protocol_discovery
   ip_redirects                               = each.value.ip_redirects
   ip_unreachables                            = each.value.ip_unreachables
+  ip_igmp_version                            = each.value.ip_igmp_version
   unnumbered                                 = each.value.unnumbered
   ipv6_address_autoconfig_default            = each.value.ipv6_address_autoconfig_default
   ipv6_address_dhcp                          = each.value.ipv6_address_dhcp
@@ -562,6 +564,7 @@ locals {
           level = try(level.level, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.isis.ipv4_metric_levels.level, null)
           value = try(level.value, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.isis.ipv4_metric_levels.value, null)
         }]
+        ip_igmp_version = try(int.igmp.version, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.igmp.version, null)
       }
     ]
   ])
@@ -584,6 +587,7 @@ resource "iosxe_interface_loopback" "loopback" {
   ip_access_group_out_enable      = each.value.ip_access_group_out_enable
   ip_redirects                    = each.value.ip_redirects
   ip_unreachables                 = each.value.ip_unreachables
+  ip_igmp_version                 = each.value.ip_igmp_version
   ipv6_enable                     = each.value.ipv6_enable
   ipv6_addresses                  = each.value.ipv6_addresses
   ipv6_link_local_addresses       = each.value.ipv6_link_local_addresses
@@ -810,6 +814,7 @@ locals {
         ipv6_pim_bfd                            = try(int.ipv6.pim.bfd, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv6.pim.bfd, null)
         ipv6_pim_bsr_border                     = try(int.ipv6.pim.bsr_border, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv6.pim.bsr_border, null)
         ipv6_pim_dr_priority                    = try(int.ipv6.pim.dr_priority, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv6.pim.dr_priority, null)
+        ip_igmp_version                         = try(int.igmp.version, local.defaults.iosxe.devices.configuration.interfaces.vlans.igmp.version, null)
       }
     ]
   ])
@@ -837,6 +842,7 @@ resource "iosxe_interface_vlan" "vlan" {
   ip_access_group_out_enable              = each.value.ip_access_group_out_enable
   ip_redirects                            = each.value.ip_redirects
   ip_unreachables                         = each.value.ip_unreachables
+  ip_igmp_version                         = each.value.ip_igmp_version
   unnumbered                              = each.value.unnumbered
   ipv6_address_autoconfig_default         = each.value.ipv6_address_autoconfig_default
   ipv6_address_dhcp                       = each.value.ipv6_address_dhcp
@@ -1090,6 +1096,7 @@ locals {
         ipv6_pim_bfd                            = try(int.ipv6.pim.bfd, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv6.pim.bfd, null)
         ipv6_pim_bsr_border                     = try(int.ipv6.pim.bsr_border, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv6.pim.bsr_border, null)
         ipv6_pim_dr_priority                    = try(int.ipv6.pim.dr_priority, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv6.pim.dr_priority, null)
+        ip_igmp_version                         = try(int.igmp.version, local.defaults.iosxe.devices.configuration.interfaces.port_channels.igmp.version, null)
         auto_qos_classify                       = try(int.auto_qos.classify, local.defaults.iosxe.devices.configuration.interfaces.port_channels.auto_qos.classify, null)
         auto_qos_classify_police                = try(int.auto_qos.classify_police, local.defaults.iosxe.devices.configuration.interfaces.port_channels.auto_qos.classify_police, null)
         auto_qos_trust                          = try(int.auto_qos.trust, local.defaults.iosxe.devices.configuration.interfaces.port_channels.auto_qos.trust, null)
@@ -1130,6 +1137,7 @@ resource "iosxe_interface_port_channel" "port_channel" {
   ip_access_group_out              = each.value.ip_access_group_out
   ip_redirects                     = each.value.ip_redirects
   ip_unreachables                  = each.value.ip_unreachables
+  ip_igmp_version                  = each.value.ip_igmp_version
   ip_arp_inspection_trust          = each.value.ip_arp_inspection_trust
   ip_arp_inspection_limit_rate     = each.value.ip_arp_inspection_limit_rate
   ip_dhcp_snooping_trust           = each.value.ip_dhcp_snooping_trust
@@ -1393,6 +1401,7 @@ locals {
           pim_border                              = try(sub.pim.border, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.pim.border, null)
           pim_bsr_border                          = try(sub.pim.bsr_border, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.pim.bsr_border, null)
           pim_dr_priority                         = try(sub.pim.dr_priority, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.pim.dr_priority, null)
+          ip_igmp_version                         = try(sub.igmp.version, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.igmp.version, null)
         }
       ]
     ]
@@ -1417,6 +1426,7 @@ resource "iosxe_interface_port_channel_subinterface" "port_channel_subinterface"
   ip_access_group_in              = each.value.ip_access_group_in
   ip_access_group_out_enable      = each.value.ip_access_group_out_enable
   ip_access_group_out             = each.value.ip_access_group_out
+  ip_igmp_version                 = each.value.ip_igmp_version
   helper_addresses                = each.value.helper_addresses
   bfd_template                    = each.value.bfd_template
   bfd_enable                      = each.value.bfd_enable
