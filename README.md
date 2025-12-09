@@ -142,11 +142,13 @@ module "iosxe" {
 | [iosxe_interface_ospf.loopback_ospf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_ospf) | resource |
 | [iosxe_interface_ospf.port_channel_ospf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_ospf) | resource |
 | [iosxe_interface_ospf.port_channel_subinterface_ospf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_ospf) | resource |
+| [iosxe_interface_ospf.tunnel_ospf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_ospf) | resource |
 | [iosxe_interface_ospf.vlan_ospf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_ospf) | resource |
 | [iosxe_interface_ospfv3.ethernet_ospfv3](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_ospfv3) | resource |
 | [iosxe_interface_ospfv3.loopback_ospfv3](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_ospfv3) | resource |
 | [iosxe_interface_ospfv3.port_channel_ospfv3](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_ospfv3) | resource |
 | [iosxe_interface_ospfv3.port_channel_subinterface_ospfv3](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_ospfv3) | resource |
+| [iosxe_interface_ospfv3.tunnel_ospfv3](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_ospfv3) | resource |
 | [iosxe_interface_ospfv3.vlan_ospfv3](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_ospfv3) | resource |
 | [iosxe_interface_pim.ethernet_pim](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_pim) | resource |
 | [iosxe_interface_pim.loopback_pim](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_pim) | resource |
@@ -161,6 +163,7 @@ module "iosxe" {
 | [iosxe_interface_port_channel_subinterface.port_channel_subinterface](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_port_channel_subinterface) | resource |
 | [iosxe_interface_switchport.ethernet_switchport](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_switchport) | resource |
 | [iosxe_interface_switchport.port_channel_switchport](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_switchport) | resource |
+| [iosxe_interface_tunnel.tunnel](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_tunnel) | resource |
 | [iosxe_interface_vlan.vlan](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_vlan) | resource |
 | [iosxe_isis.isis](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/isis) | resource |
 | [iosxe_license.license](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/license) | resource |
