@@ -1672,6 +1672,7 @@ locals {
         ospfv3_network_type_point_to_multipoint = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ospfv3.network_type, null) == "point-to-multipoint" ? true : null
         ospfv3_network_type_point_to_point      = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ospfv3.network_type, null) == "point-to-point" ? true : null
         ospfv3_cost                             = try(int.ospfv3.cost, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ospfv3.cost, null)
+        ip_igmp_version                         = try(int.igmp.version, local.defaults.iosxe.devices.configuration.interfaces.tunnels.igmp.version, null)
       }
     ]
   ])
@@ -1721,6 +1722,7 @@ resource "iosxe_interface_tunnel" "tunnel" {
   load_interval                    = each.value.load_interval
   snmp_trap_link_status            = each.value.snmp_trap_link_status
   logging_event_link_status_enable = each.value.logging_event_link_status_enable
+  ip_igmp_version                  = each.value.ip_igmp_version
 
   depends_on = [
     iosxe_vrf.vrf,
