@@ -107,9 +107,9 @@ locals {
                 # String trim action - trims whitespace from string
                 string_trim = try(action.string_trim, local.defaults.iosxe.configuration.eem.applets.actions.string_trim, null)
 
-                # String first action - finds first occurrence of substring
-                string_first_string_op_1 = try(action.string_first.operand1, local.defaults.iosxe.configuration.eem.applets.actions.string_first.operand1, null)
-                string_first_string_op_2 = try(action.string_first.operand2, local.defaults.iosxe.configuration.eem.applets.actions.string_first.operand2, null)
+                # String first action - finds first occurrence of substring in string
+                string_first_string_op_1 = try(action.string_first.string, local.defaults.iosxe.configuration.eem.applets.actions.string_first.string, null)
+                string_first_string_op_2 = try(action.string_first.substring, local.defaults.iosxe.configuration.eem.applets.actions.string_first.substring, null)
               }
             ]
           }
