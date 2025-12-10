@@ -348,8 +348,7 @@ resource "iosxe_interface_ethernet" "ethernet" {
     iosxe_vrf.vrf,
     iosxe_access_list_standard.access_list_standard,
     iosxe_access_list_extended.access_list_extended,
-    iosxe_policy_map.policy_map,
-    iosxe_evpn_ethernet_segment.evpn_ethernet_segment
+    iosxe_policy_map.policy_map
   ]
 }
 
@@ -1179,10 +1178,6 @@ resource "iosxe_interface_port_channel" "port_channel" {
   trust_device                     = each.value.trust_device
   negotiation_auto                 = each.value.negotiation_auto
   evpn_ethernet_segments           = each.value.evpn_ethernet_segments
-
-  depends_on = [
-    iosxe_evpn_ethernet_segment.evpn_ethernet_segment
-  ]
 }
 
 resource "iosxe_interface_switchport" "port_channel_switchport" {
