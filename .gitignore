@@ -7,3 +7,5 @@ terraform.tfstate.backup
 .envrc
 tflint.hcl
 .venv
+test-epic-*.nac.yaml
+test-epic-*.tf
