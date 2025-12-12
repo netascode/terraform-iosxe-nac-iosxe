@@ -93,6 +93,7 @@ module "iosxe" {
 | [iosxe_bgp_neighbor.bgp_neighbor](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/bgp_neighbor) | resource |
 | [iosxe_bgp_peer_policy_template.bgp_peer_policy_template](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/bgp_peer_policy_template) | resource |
 | [iosxe_bgp_peer_session_template.bgp_peer_session_template](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/bgp_peer_session_template) | resource |
+| [iosxe_bridge_domain.bridge_domain](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/bridge_domain) | resource |
 | [iosxe_cdp.cdp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/cdp) | resource |
 | [iosxe_class_map.class_map](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/class_map) | resource |
 | [iosxe_cli.cli_0](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/cli) | resource |
@@ -129,6 +130,7 @@ module "iosxe" {
 | [iosxe_flow_exporter.flow_exporter](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/flow_exporter) | resource |
 | [iosxe_flow_monitor.flow_monitor](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/flow_monitor) | resource |
 | [iosxe_flow_record.flow_record](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/flow_record) | resource |
+| [iosxe_interface_bdi.bdi](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_bdi) | resource |
 | [iosxe_interface_ethernet.ethernet](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_ethernet) | resource |
 | [iosxe_interface_isis.loopback_isis](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_isis) | resource |
 | [iosxe_interface_loopback.loopback](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_loopback) | resource |
