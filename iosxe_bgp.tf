@@ -245,6 +245,14 @@ resource "iosxe_bgp_address_family_l2vpn" "bgp_address_family_l2vpn" {
   bgp_nexthop_trigger_delay = try(local.device_config[each.value.name].routing.bgp.address_family.l2vpn_evpn.bgp_nexthop_trigger_delay, local.defaults.iosxe.configuration.routing.bgp.address_family.l2vpn_evpn.bgp_nexthop_trigger_delay, null)
 }
 
+resource "iosxe_bgp_address_family_ipv4_mvpn" "bgp_address_family_ipv4_mvpn" {
+  for_each = { for device in local.devices : device.name => device if try(local.device_config[device.name].routing.bgp.address_family.ipv4_mvpn, null) != null }
+  device   = each.value.name
+
+  asn     = iosxe_bgp.bgp[each.value.name].asn
+  af_name = "mvpn"
+}
+
 resource "iosxe_bgp_address_family_ipv4_vrf" "bgp_address_family_ipv4_vrf" {
   for_each = { for device in local.devices : device.name => device if try(local.device_config[device.name].routing.bgp.address_family.ipv4_unicast.vrfs, null) != null }
   device   = each.value.name
@@ -443,6 +451,33 @@ resource "iosxe_bgp_l2vpn_evpn_neighbor" "bgp_l2vpn_evpn_neighbor" {
     iosxe_bgp_address_family_l2vpn.bgp_address_family_l2vpn,
     iosxe_route_map.route_map
   ]
+}
+
+locals {
+  bgp_ipv4_mvpn_neighbors = flatten([
+    for device in local.devices : [
+      for neighbor in try(local.device_config[device.name].routing.bgp.address_family.ipv4_mvpn.neighbors, []) : {
+        key            = format("%s/%s", device.name, neighbor.ip)
+        device         = device.name
+        asn            = iosxe_bgp.bgp[device.name].asn
+        ip             = neighbor.ip
+        activate       = try(neighbor.activate, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_mvpn.neighbors.activate, null)
+        send_community = try(neighbor.send_community, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_mvpn.neighbors.send_community, null)
+      }
+    ]
+  ])
+}
+
+resource "iosxe_bgp_ipv4_mvpn_neighbor" "bgp_ipv4_mvpn_neighbor" {
+  for_each = { for e in local.bgp_ipv4_mvpn_neighbors : e.key => e }
+  device   = each.value.device
+
+  asn            = each.value.asn
+  ip             = each.value.ip
+  activate       = each.value.activate
+  send_community = each.value.send_community
+
+  depends_on = [iosxe_bgp_neighbor.bgp_neighbor]
 }
 
 locals {
