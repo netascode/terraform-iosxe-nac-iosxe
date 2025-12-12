@@ -295,6 +295,7 @@ resource "iosxe_crypto_pki" "crypto_pki" {
     usage                 = try(tp.usage, local.defaults.iosxe.configuration.crypto.pki.trustpoints.usage, null)
   }]
 }
+
 resource "iosxe_crypto" "crypto_engine" {
   for_each = { for device in local.devices : device.name => device if try(local.device_config[device.name].crypto.engine, null) != null || try(local.defaults.iosxe.configuration.crypto.engine, null) != null }
   device   = each.value.name
