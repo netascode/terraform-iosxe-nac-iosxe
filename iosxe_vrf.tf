@@ -16,12 +16,12 @@ locals {
         vnid = try(length(vrf.vnid) == 0, true) ? null : [
           for v in vrf.vnid : {
             vnid_value = v.vnid_value
-            evpn_instance_vni_vni_num = try(v.evpn_instance_vni_vni_num, null) != null ? [
-              {
-                vni_num   = v.evpn_instance_vni_vni_num
-                core_vlan = try(v.evpn_instance_vni_vni_num_core_vlan, null)
+            evpn_instance_vni = try(length(v.evpn_instance_vni) == 0, true) ? null : [
+              for vni in v.evpn_instance_vni : {
+                vni_num   = vni.vni_num
+                core_vlan = try(vni.core_vlan, null)
               }
-            ] : null
+            ]
           }
         ]
 
