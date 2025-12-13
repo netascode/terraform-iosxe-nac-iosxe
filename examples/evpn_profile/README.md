@@ -11,7 +11,7 @@ $ terraform apply
 
 Note that this example will create resources. Resources can be destroyed with `terraform destroy`.
 
-#### `l2vpn_evpn_profile.nac.yaml`
+#### `evpn_profile.nac.yaml`
 
 ```yaml
 iosxe:
@@ -19,7 +19,7 @@ iosxe:
     - name: Switch1
       host: 10.1.1.1
       configuration:
-        l2vpn_evpn_profile:
+        evpn_profile:
           profiles:
             - name: DC_PROFILE_1
               evi_base: 1000
@@ -30,7 +30,7 @@ iosxe:
     - name: Switch2
       host: 10.1.1.2
       configuration:
-        l2vpn_evpn_profile:
+        evpn_profile:
           profiles:
             - name: DC_PROFILE_1
               evi_base: 1000
@@ -43,7 +43,7 @@ iosxe:
 module "iosxe" {
   source = "../../"
 
-  yaml_files = ["l2vpn_evpn_profile.nac.yaml"]
+  yaml_files = ["evpn_profile.nac.yaml"]
 
   write_default_values_file = "./defaults.yaml"
 }

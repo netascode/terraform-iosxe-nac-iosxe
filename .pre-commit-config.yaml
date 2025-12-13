@@ -18,6 +18,6 @@ repos:
       - id: terraform-docs-system
         args: ["./examples/system"]
       - id: terraform-docs-system
-        args: ["./examples/l2vpn_evpn_profile"]
+        args: ["./examples/evpn_profile"]
       - id: terraform-docs-system
         args: ["."]

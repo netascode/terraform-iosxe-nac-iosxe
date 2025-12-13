@@ -15,10 +15,10 @@ content: |-
 
   Note that this example will create resources. Resources can be destroyed with `terraform destroy`.
 
-  #### `l2vpn_evpn_profile.nac.yaml`
+  #### `evpn_profile.nac.yaml`
 
   ```yaml
-  {{ include "./l2vpn_evpn_profile.nac.yaml" }}
+  {{ include "./evpn_profile.nac.yaml" }}
   ```
 
   #### `main.tf`

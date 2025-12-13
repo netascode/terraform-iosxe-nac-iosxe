@@ -124,6 +124,7 @@ module "iosxe" {
 | [iosxe_evpn.evpn](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/evpn) | resource |
 | [iosxe_evpn_ethernet_segment.evpn_ethernet_segment](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/evpn_ethernet_segment) | resource |
 | [iosxe_evpn_instance.evpn_instance](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/evpn_instance) | resource |
+| [iosxe_evpn_profile.evpn_profile](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/evpn_profile) | resource |
 | [iosxe_flow_exporter.flow_exporter](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/flow_exporter) | resource |
 | [iosxe_flow_monitor.flow_monitor](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/flow_monitor) | resource |
 | [iosxe_flow_record.flow_record](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/flow_record) | resource |
@@ -155,7 +156,6 @@ module "iosxe" {
 | [iosxe_interface_switchport.ethernet_switchport](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_switchport) | resource |
 | [iosxe_interface_switchport.port_channel_switchport](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_switchport) | resource |
 | [iosxe_interface_vlan.vlan](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/interface_vlan) | resource |
-| [iosxe_l2vpn_evpn_profile.l2vpn_evpn_profile](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/l2vpn_evpn_profile) | resource |
 | [iosxe_license.license](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/license) | resource |
 | [iosxe_line.line](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/line) | resource |
 | [iosxe_lldp.lldp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.11.0/docs/resources/lldp) | resource |

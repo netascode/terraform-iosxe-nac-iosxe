@@ -3,7 +3,7 @@ iosxe:
     - name: Switch1
       host: 10.1.1.1
       configuration:
-        l2vpn_evpn_profile:
+        evpn_profile:
           profiles:
             - name: DC_PROFILE_1
               evi_base: 1000
@@ -14,7 +14,7 @@ iosxe:
     - name: Switch2
       host: 10.1.1.2
       configuration:
-        l2vpn_evpn_profile:
+        evpn_profile:
           profiles:
             - name: DC_PROFILE_1
               evi_base: 1000
