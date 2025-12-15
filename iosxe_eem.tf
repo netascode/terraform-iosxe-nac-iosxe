@@ -104,9 +104,12 @@ locals {
                 # Wait action
                 wait = try(action.wait, local.defaults.iosxe.configuration.eem.applets.actions.wait, null)
 
-                # String trim action - uses string/first container, not deprecated string/trim leaf
-                string_first_string_op_1 = try(action.string_trim.input, local.defaults.iosxe.configuration.eem.applets.actions.string_trim.input, null)
-                string_first_string_op_2 = try(action.string_trim.output_variable, local.defaults.iosxe.configuration.eem.applets.actions.string_trim.output_variable, null)
+                # String trim action - trims whitespace from string
+                string_trim = try(action.string_trim, local.defaults.iosxe.configuration.eem.applets.actions.string_trim, null)
+
+                # String first action - finds first occurrence of substring in string
+                string_first_string_op_1 = try(action.string_first.string, local.defaults.iosxe.configuration.eem.applets.actions.string_first.string, null)
+                string_first_string_op_2 = try(action.string_first.substring, local.defaults.iosxe.configuration.eem.applets.actions.string_first.substring, null)
               }
             ]
           }

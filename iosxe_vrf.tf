@@ -2,12 +2,12 @@ locals {
   vrf_configurations = flatten([
     for device in local.devices : [
       for vrf in try(local.device_config[device.name].vrfs, []) : {
-        key         = format("%s/%s", device.name, vrf.name)
-        device      = device.name
-        name        = vrf.name
-        description = try(vrf.description, local.defaults.iosxe.configuration.vrfs.description, null)
-        rd          = try(vrf.route_distinguisher, local.defaults.iosxe.configuration.vrfs.route_distinguisher, null)
-
+        key                 = format("%s/%s", device.name, vrf.name)
+        device              = device.name
+        name                = vrf.name
+        description         = try(vrf.description, local.defaults.iosxe.configuration.vrfs.description, null)
+        rd                  = try(vrf.route_distinguisher, local.defaults.iosxe.configuration.vrfs.route_distinguisher, null)
+        rd_auto             = try(vrf.rd_auto, local.defaults.iosxe.configuration.vrfs.rd_auto, null)
         address_family_ipv4 = try(vrf.address_family_ipv4.enable, local.defaults.iosxe.configuration.vrfs.address_family_ipv4.enable, try(vrf.address_family_ipv4, null) != null ? true : null)
         address_family_ipv6 = try(vrf.address_family_ipv6.enable, local.defaults.iosxe.configuration.vrfs.address_family_ipv6.enable, try(vrf.address_family_ipv6, null) != null ? true : null)
 
@@ -134,11 +134,11 @@ locals {
 resource "iosxe_vrf" "vrf" {
   for_each = { for vrf in local.vrf_configurations : vrf.key => vrf }
 
-  device      = each.value.device
-  name        = each.value.name
-  description = each.value.description
-  rd          = each.value.rd
-
+  device              = each.value.device
+  name                = each.value.name
+  description         = each.value.description
+  rd                  = each.value.rd
+  rd_auto             = each.value.rd_auto
   address_family_ipv4 = each.value.address_family_ipv4
   address_family_ipv6 = each.value.address_family_ipv6
 
