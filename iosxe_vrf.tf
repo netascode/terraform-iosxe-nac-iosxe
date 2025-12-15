@@ -70,7 +70,54 @@ locals {
           }
         ]
 
-        # MDT Configuration
+        ipv4_evpn_mcast_mdt_default_address = try(
+          vrf.address_family_ipv4.evpn_mcast.mdt_default_address,
+          local.defaults.iosxe.configuration.vrfs.address_family_ipv4.evpn_mcast.mdt_default_address,
+          null
+        )
+
+        ipv4_evpn_mcast_anycast = try(
+          vrf.address_family_ipv4.evpn_mcast.anycast,
+          local.defaults.iosxe.configuration.vrfs.address_family_ipv4.evpn_mcast.anycast,
+          null
+        )
+
+        ipv4_evpn_mcast_data_address = try(
+          vrf.address_family_ipv4.evpn_mcast.data_address,
+          local.defaults.iosxe.configuration.vrfs.address_family_ipv4.evpn_mcast.data_address,
+          null
+        )
+
+        ipv4_evpn_mcast_data_mask_bits = try(
+          vrf.address_family_ipv4.evpn_mcast.data_mask_bits,
+          local.defaults.iosxe.configuration.vrfs.address_family_ipv4.evpn_mcast.data_mask_bits,
+          null
+        )
+
+        ipv6_evpn_mcast_mdt_default_address = try(
+          vrf.address_family_ipv6.evpn_mcast.mdt_default_address,
+          local.defaults.iosxe.configuration.vrfs.address_family_ipv6.evpn_mcast.mdt_default_address,
+          null
+        )
+
+        ipv6_evpn_mcast_anycast = try(
+          vrf.address_family_ipv6.evpn_mcast.anycast,
+          local.defaults.iosxe.configuration.vrfs.address_family_ipv6.evpn_mcast.anycast,
+          null
+        )
+
+        ipv6_evpn_mcast_data_address = try(
+          vrf.address_family_ipv6.evpn_mcast.data_address,
+          local.defaults.iosxe.configuration.vrfs.address_family_ipv6.evpn_mcast.data_address,
+          null
+        )
+
+        ipv6_evpn_mcast_data_mask_bits = try(
+          vrf.address_family_ipv6.evpn_mcast.data_mask_bits,
+          local.defaults.iosxe.configuration.vrfs.address_family_ipv6.evpn_mcast.data_mask_bits,
+          null
+        )
+
         ipv4_mdt_default_address = try(
           vrf.address_family_ipv4.mdt.default_address,
           local.defaults.iosxe.configuration.vrfs.address_family_ipv4.mdt.default_address,
@@ -155,7 +202,16 @@ resource "iosxe_vrf" "vrf" {
   ipv6_route_target_export           = each.value.ipv6_route_target_export
   ipv6_route_target_export_stitching = each.value.ipv6_route_target_export_stitching
 
-  # MDT Configuration
+  ipv4_evpn_mcast_mdt_default_address = each.value.ipv4_evpn_mcast_mdt_default_address
+  ipv4_evpn_mcast_anycast             = each.value.ipv4_evpn_mcast_anycast
+  ipv4_evpn_mcast_data_address        = each.value.ipv4_evpn_mcast_data_address
+  ipv4_evpn_mcast_data_mask_bits      = each.value.ipv4_evpn_mcast_data_mask_bits
+
+  ipv6_evpn_mcast_mdt_default_address = each.value.ipv6_evpn_mcast_mdt_default_address
+  ipv6_evpn_mcast_anycast             = each.value.ipv6_evpn_mcast_anycast
+  ipv6_evpn_mcast_data_address        = each.value.ipv6_evpn_mcast_data_address
+  ipv6_evpn_mcast_data_mask_bits      = each.value.ipv6_evpn_mcast_data_mask_bits
+
   ipv4_mdt_default_address                                = each.value.ipv4_mdt_default_address
   ipv4_mdt_auto_discovery_vxlan                           = each.value.ipv4_mdt_auto_discovery_vxlan
   ipv4_mdt_auto_discovery_vxlan_inter_as                  = each.value.ipv4_mdt_auto_discovery_vxlan_inter_as
