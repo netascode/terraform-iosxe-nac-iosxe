@@ -79,6 +79,62 @@ locals {
         ipv6_evpn_mcast_anycast             = try(vrf.address_family_ipv6.evpn_mcast.anycast, null)
         ipv6_evpn_mcast_data_address        = try(vrf.address_family_ipv6.evpn_mcast.data_address, null)
         ipv6_evpn_mcast_data_mask_bits      = try(vrf.address_family_ipv6.evpn_mcast.data_mask_bits, null)
+
+        ipv4_mdt_default_address = try(
+          vrf.address_family_ipv4.mdt.default_address,
+          local.defaults.iosxe.configuration.vrfs.address_family_ipv4.mdt.default_address,
+          null
+        )
+
+        ipv4_mdt_auto_discovery_vxlan = try(
+          vrf.address_family_ipv4.mdt.auto_discovery_vxlan,
+          local.defaults.iosxe.configuration.vrfs.address_family_ipv4.mdt.auto_discovery_vxlan,
+          null
+        )
+
+        ipv4_mdt_auto_discovery_vxlan_inter_as = try(
+          vrf.address_family_ipv4.mdt.auto_discovery_vxlan_inter_as,
+          local.defaults.iosxe.configuration.vrfs.address_family_ipv4.mdt.auto_discovery_vxlan_inter_as,
+          null
+        )
+
+        ipv4_mdt_auto_discovery_interworking_vxlan_pim = try(
+          vrf.address_family_ipv4.mdt.auto_discovery_interworking_vxlan_pim,
+          local.defaults.iosxe.configuration.vrfs.address_family_ipv4.mdt.auto_discovery_interworking_vxlan_pim,
+          null
+        )
+
+        ipv4_mdt_auto_discovery_interworking_vxlan_pim_inter_as = try(
+          vrf.address_family_ipv4.mdt.auto_discovery_interworking_vxlan_pim_inter_as,
+          local.defaults.iosxe.configuration.vrfs.address_family_ipv4.mdt.auto_discovery_interworking_vxlan_pim_inter_as,
+          null
+        )
+
+        ipv4_mdt_overlay_use_bgp = try(
+          vrf.address_family_ipv4.mdt.overlay_use_bgp,
+          local.defaults.iosxe.configuration.vrfs.address_family_ipv4.mdt.overlay_use_bgp,
+          null
+        )
+
+        ipv4_mdt_overlay_use_bgp_spt_only = try(
+          vrf.address_family_ipv4.mdt.overlay_use_bgp_spt_only,
+          local.defaults.iosxe.configuration.vrfs.address_family_ipv4.mdt.overlay_use_bgp_spt_only,
+          null
+        )
+
+        ipv4_mdt_data_threshold = try(
+          vrf.address_family_ipv4.mdt.data_threshold,
+          local.defaults.iosxe.configuration.vrfs.address_family_ipv4.mdt.data_threshold,
+          null
+        )
+
+        ipv4_mdt_data_multicast = try(length(vrf.address_family_ipv4.mdt.data_multicast) == 0, true) ? null : [
+          for dm in vrf.address_family_ipv4.mdt.data_multicast : {
+            address  = dm.address
+            wildcard = dm.wildcard
+            list     = try(dm.access_list, null)
+          }
+        ]
       }
     ]
   ])
@@ -117,4 +173,14 @@ resource "iosxe_vrf" "vrf" {
   ipv6_evpn_mcast_anycast             = each.value.ipv6_evpn_mcast_anycast
   ipv6_evpn_mcast_data_address        = each.value.ipv6_evpn_mcast_data_address
   ipv6_evpn_mcast_data_mask_bits      = each.value.ipv6_evpn_mcast_data_mask_bits
+
+  ipv4_mdt_default_address                                = each.value.ipv4_mdt_default_address
+  ipv4_mdt_auto_discovery_vxlan                           = each.value.ipv4_mdt_auto_discovery_vxlan
+  ipv4_mdt_auto_discovery_vxlan_inter_as                  = each.value.ipv4_mdt_auto_discovery_vxlan_inter_as
+  ipv4_mdt_auto_discovery_interworking_vxlan_pim          = each.value.ipv4_mdt_auto_discovery_interworking_vxlan_pim
+  ipv4_mdt_auto_discovery_interworking_vxlan_pim_inter_as = each.value.ipv4_mdt_auto_discovery_interworking_vxlan_pim_inter_as
+  ipv4_mdt_overlay_use_bgp                                = each.value.ipv4_mdt_overlay_use_bgp
+  ipv4_mdt_overlay_use_bgp_spt_only                       = each.value.ipv4_mdt_overlay_use_bgp_spt_only
+  ipv4_mdt_data_multicast                                 = each.value.ipv4_mdt_data_multicast
+  ipv4_mdt_data_threshold                                 = each.value.ipv4_mdt_data_threshold
 }
