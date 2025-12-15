@@ -85,6 +85,8 @@ module "iosxe" {
 | [iosxe_bgp_address_family_ipv6.bgp_address_family_ipv6](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/bgp_address_family_ipv6) | resource |
 | [iosxe_bgp_address_family_ipv6_vrf.bgp_address_family_ipv6_vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/bgp_address_family_ipv6_vrf) | resource |
 | [iosxe_bgp_address_family_l2vpn.bgp_address_family_l2vpn](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/bgp_address_family_l2vpn) | resource |
+| [iosxe_bgp_address_family_vpnv4.bgp_address_family_vpnv4](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/bgp_address_family_vpnv4) | resource |
+| [iosxe_bgp_address_family_vpnv6.bgp_address_family_vpnv6](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/bgp_address_family_vpnv6) | resource |
 | [iosxe_bgp_ipv4_mvpn_neighbor.bgp_ipv4_mvpn_neighbor](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/bgp_ipv4_mvpn_neighbor) | resource |
 | [iosxe_bgp_ipv4_unicast_neighbor.bgp_ipv4_unicast_neighbor](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/bgp_ipv4_unicast_neighbor) | resource |
 | [iosxe_bgp_ipv4_unicast_vrf_neighbor.bgp_ipv4_unicast_vrf_neighbor](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/bgp_ipv4_unicast_vrf_neighbor) | resource |

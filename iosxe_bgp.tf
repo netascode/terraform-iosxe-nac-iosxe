@@ -253,6 +253,22 @@ resource "iosxe_bgp_address_family_ipv4_mvpn" "bgp_address_family_ipv4_mvpn" {
   af_name = "mvpn"
 }
 
+resource "iosxe_bgp_address_family_vpnv4" "bgp_address_family_vpnv4" {
+  for_each = { for device in local.devices : device.name => device if try(local.device_config[device.name].routing.bgp.address_family.vpnv4_unicast.enable, null) != null }
+  device   = each.value.name
+
+  asn     = iosxe_bgp.bgp[each.value.name].asn
+  af_name = "unicast"
+}
+
+resource "iosxe_bgp_address_family_vpnv6" "bgp_address_family_vpnv6" {
+  for_each = { for device in local.devices : device.name => device if try(local.device_config[device.name].routing.bgp.address_family.vpnv6_unicast.enable, null) != null }
+  device   = each.value.name
+
+  asn     = iosxe_bgp.bgp[each.value.name].asn
+  af_name = "unicast"
+}
+
 resource "iosxe_bgp_address_family_ipv4_vrf" "bgp_address_family_ipv4_vrf" {
   for_each = { for device in local.devices : device.name => device if try(local.device_config[device.name].routing.bgp.address_family.ipv4_unicast.vrfs, null) != null }
   device   = each.value.name
