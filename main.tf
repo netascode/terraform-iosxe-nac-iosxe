@@ -216,7 +216,6 @@ resource "iosxe_cli" "cli_0" {
     iosxe_ospf.ospf,
     iosxe_ospf_vrf.ospf_vrf,
     iosxe_pim.pim,
-    iosxe_pim_ipv6.pim_ipv6,
     iosxe_policy_map.policy_map,
     iosxe_policy_map_event.policy_map_event,
     iosxe_prefix_list.prefix_list,
