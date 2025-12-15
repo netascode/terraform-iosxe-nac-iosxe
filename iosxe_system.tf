@@ -239,6 +239,9 @@ resource "iosxe_system" "system" {
   authentication_mac_move_permit            = try(local.device_config[each.value.name].system.authentication_mac_move_permit, local.defaults.iosxe.configuration.system.authentication_mac_move_permit, null)
   authentication_mac_move_deny_uncontrolled = try(local.device_config[each.value.name].system.authentication_mac_move_deny_uncontrolled, local.defaults.iosxe.configuration.system.authentication_mac_move_deny_uncontrolled, null)
 
+  # Routing Protocol Purge
+  ip_routing_protocol_purge_interface = try(local.device_config[each.value.name].system.ip_routing_protocol_purge_interface, local.defaults.iosxe.configuration.system.ip_routing_protocol_purge_interface, null)
+
   # Table-Map configurations for QoS value translation
   table_maps = try(length(local.device_config[each.value.name].system.table_maps) == 0, true) ? null : [
     for table_map in local.device_config[each.value.name].system.table_maps : {
