@@ -20,7 +20,14 @@ resource "iosxe_system" "system" {
   ip_multicast_routing             = try(local.device_config[each.value.name].system.ip_multicast_routing, local.defaults.iosxe.configuration.system.ip_multicast_routing, null)
   multicast_routing_switch         = try(local.device_config[each.value.name].system.multicast_routing_switch, local.defaults.iosxe.configuration.system.multicast_routing_switch, null)
   ip_multicast_routing_distributed = try(local.device_config[each.value.name].system.ip_multicast_routing_distributed, local.defaults.iosxe.configuration.system.ip_multicast_routing_distributed, null)
+  ipv6_multicast_routing           = try(local.device_config[each.value.name].system.ipv6_multicast_routing, local.defaults.iosxe.configuration.system.ipv6_multicast_routing, null)
   access_session_mac_move_deny     = try(local.device_config[each.value.name].system.access_session_mac_move_deny, local.defaults.iosxe.configuration.system.access_session_mac_move_deny, null)
+
+  # IGMP Snooping
+  igmp_snooping_querier                   = try(local.device_config[each.value.name].system.igmp_snooping_querier, local.defaults.iosxe.configuration.system.igmp_snooping_querier, null)
+  igmp_snooping_querier_version           = try(local.device_config[each.value.name].system.igmp_snooping_querier_version, local.defaults.iosxe.configuration.system.igmp_snooping_querier_version, null)
+  igmp_snooping_querier_max_response_time = try(local.device_config[each.value.name].system.igmp_snooping_querier_max_response_time, local.defaults.iosxe.configuration.system.igmp_snooping_querier_max_response_time, null)
+  igmp_snooping_querier_timer_expiry      = try(local.device_config[each.value.name].system.igmp_snooping_querier_timer_expiry, local.defaults.iosxe.configuration.system.igmp_snooping_querier_timer_expiry, null)
 
   # New global configurations
   ip_default_gateway = try(local.device_config[each.value.name].system.ip_default_gateway, local.defaults.iosxe.configuration.system.ip_default_gateway, null)
@@ -251,6 +258,8 @@ resource "iosxe_system" "system" {
       ]
     }
   ]
+  mld_snooping         = try(local.device_config[each.value.name].system.ipv6_mld_snooping, local.defaults.iosxe.configuration.system.ipv6_mld_snooping, null)
+  mld_snooping_querier = try(local.device_config[each.value.name].system.ipv6_mld_snooping_querier, local.defaults.iosxe.configuration.system.ipv6_mld_snooping_querier, null)
 
   depends_on = [
     iosxe_vrf.vrf,
