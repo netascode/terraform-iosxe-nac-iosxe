@@ -245,6 +245,30 @@ resource "iosxe_bgp_address_family_l2vpn" "bgp_address_family_l2vpn" {
   bgp_nexthop_trigger_delay = try(local.device_config[each.value.name].routing.bgp.address_family.l2vpn_evpn.bgp_nexthop_trigger_delay, local.defaults.iosxe.configuration.routing.bgp.address_family.l2vpn_evpn.bgp_nexthop_trigger_delay, null)
 }
 
+resource "iosxe_bgp_address_family_ipv4_mvpn" "bgp_address_family_ipv4_mvpn" {
+  for_each = { for device in local.devices : device.name => device if try(local.device_config[device.name].routing.bgp.address_family.ipv4_mvpn, null) != null }
+  device   = each.value.name
+
+  asn     = iosxe_bgp.bgp[each.value.name].asn
+  af_name = "mvpn"
+}
+
+resource "iosxe_bgp_address_family_vpnv4" "bgp_address_family_vpnv4" {
+  for_each = { for device in local.devices : device.name => device if try(local.device_config[device.name].routing.bgp.address_family.vpnv4_unicast.enable, null) != null }
+  device   = each.value.name
+
+  asn     = iosxe_bgp.bgp[each.value.name].asn
+  af_name = "unicast"
+}
+
+resource "iosxe_bgp_address_family_vpnv6" "bgp_address_family_vpnv6" {
+  for_each = { for device in local.devices : device.name => device if try(local.device_config[device.name].routing.bgp.address_family.vpnv6_unicast.enable, null) != null }
+  device   = each.value.name
+
+  asn     = iosxe_bgp.bgp[each.value.name].asn
+  af_name = "unicast"
+}
+
 resource "iosxe_bgp_address_family_ipv4_vrf" "bgp_address_family_ipv4_vrf" {
   for_each = { for device in local.devices : device.name => device if try(local.device_config[device.name].routing.bgp.address_family.ipv4_unicast.vrfs, null) != null }
   device   = each.value.name
@@ -263,6 +287,7 @@ resource "iosxe_bgp_address_family_ipv4_vrf" "bgp_address_family_ipv4_vrf" {
     ipv4_unicast_aggregate_addresses = try(length(vrf.aggregate_addresses) == 0, true) ? null : [for agg in vrf.aggregate_addresses : {
       ipv4_address = try(agg.address, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.aggregate_addresses.address, null)
       ipv4_mask    = try(agg.mask, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.aggregate_addresses.mask, null)
+      summary_only = try(agg.summary_only, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.aggregate_addresses.summary_only, null)
     }]
     ipv4_unicast_admin_distances = try(length(vrf.admin_distances) == 0, true) ? null : [for ad in vrf.admin_distances : {
       distance  = try(ad.distance, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.admin_distances.distance, null)
@@ -282,8 +307,9 @@ resource "iosxe_bgp_address_family_ipv4_vrf" "bgp_address_family_ipv4_vrf" {
       route_map = try(net.route_map, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.networks.route_map, null)
       backdoor  = try(net.backdoor, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.networks.backdoor, null)
     } if try(net.mask, null) == null]
-    ipv4_unicast_maximum_paths_ebgp = try(vrf.ipv4_unicast_maximum_paths_ebgp, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.ipv4_unicast_maximum_paths_ebgp, null)
-    ipv4_unicast_maximum_paths_ibgp = try(vrf.ipv4_unicast_maximum_paths_ibgp, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.ipv4_unicast_maximum_paths_ibgp, null)
+    ipv4_unicast_maximum_paths_ebgp        = try(vrf.ipv4_unicast_maximum_paths_ebgp, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.ipv4_unicast_maximum_paths_ebgp, null)
+    ipv4_unicast_maximum_paths_ibgp        = try(vrf.ipv4_unicast_maximum_paths_ibgp, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.ipv4_unicast_maximum_paths_ibgp, null)
+    ipv4_unicast_import_path_selection_all = try(vrf.import_path_selection_all, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.vrfs.import_path_selection_all, null)
   }]
 
   depends_on = [
@@ -335,6 +361,7 @@ locals {
           in_out         = try(rm.direction, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.neighbors.route_maps.direction, null)
           route_map_name = try(rm.name, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.neighbors.route_maps.name, null)
         }]
+        inherit_peer_policy = try(neighbor.inherit_peer_policy, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.neighbors.inherit_peer_policy, null)
       }
     ]
   ])
@@ -353,6 +380,7 @@ resource "iosxe_bgp_ipv4_unicast_neighbor" "bgp_ipv4_unicast_neighbor" {
   default_originate           = each.value.default_originate
   default_originate_route_map = each.value.default_originate_route_map
   route_maps                  = each.value.route_maps
+  inherit_peer_policy         = each.value.inherit_peer_policy
 
   depends_on = [
     iosxe_bgp_neighbor.bgp_neighbor,
@@ -415,6 +443,11 @@ locals {
         send_community         = try(neighbor.send_community, local.defaults.iosxe.configuration.routing.bgp.address_family.l2vpn_evpn.neighbors.send_community, null)
         route_reflector_client = try(neighbor.route_reflector_client, local.defaults.iosxe.configuration.routing.bgp.address_family.l2vpn_evpn.neighbors.route_reflector_client, null)
         soft_reconfiguration   = try(neighbor.soft_reconfiguration, local.defaults.iosxe.configuration.routing.bgp.address_family.l2vpn_evpn.neighbors.soft_reconfiguration, null)
+        inherit_peer_policy    = try(neighbor.inherit_peer_policy, local.defaults.iosxe.configuration.routing.bgp.address_family.l2vpn_evpn.neighbors.inherit_peer_policy, null)
+        route_maps = try(length(neighbor.route_maps) == 0, true) ? null : [for rm in neighbor.route_maps : {
+          in_out         = try(rm.in_out, local.defaults.iosxe.configuration.routing.bgp.address_family.l2vpn_evpn.neighbors.route_maps.in_out, null)
+          route_map_name = try(rm.name, local.defaults.iosxe.configuration.routing.bgp.address_family.l2vpn_evpn.neighbors.route_maps.name, null)
+        }]
       }
     ]
   ])
@@ -430,11 +463,41 @@ resource "iosxe_bgp_l2vpn_evpn_neighbor" "bgp_l2vpn_evpn_neighbor" {
   send_community         = each.value.send_community
   route_reflector_client = each.value.route_reflector_client
   soft_reconfiguration   = each.value.soft_reconfiguration
+  inherit_peer_policy    = each.value.inherit_peer_policy
+  route_maps             = each.value.route_maps
 
   depends_on = [
     iosxe_bgp_neighbor.bgp_neighbor,
-    iosxe_bgp_address_family_l2vpn.bgp_address_family_l2vpn
+    iosxe_bgp_address_family_l2vpn.bgp_address_family_l2vpn,
+    iosxe_route_map.route_map
   ]
+}
+
+locals {
+  bgp_ipv4_mvpn_neighbors = flatten([
+    for device in local.devices : [
+      for neighbor in try(local.device_config[device.name].routing.bgp.address_family.ipv4_mvpn.neighbors, []) : {
+        key            = format("%s/%s", device.name, neighbor.ip)
+        device         = device.name
+        asn            = iosxe_bgp.bgp[device.name].asn
+        ip             = neighbor.ip
+        activate       = try(neighbor.activate, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_mvpn.neighbors.activate, null)
+        send_community = try(neighbor.send_community, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_mvpn.neighbors.send_community, null)
+      }
+    ]
+  ])
+}
+
+resource "iosxe_bgp_ipv4_mvpn_neighbor" "bgp_ipv4_mvpn_neighbor" {
+  for_each = { for e in local.bgp_ipv4_mvpn_neighbors : e.key => e }
+  device   = each.value.device
+
+  asn            = each.value.asn
+  ip             = each.value.ip
+  activate       = each.value.activate
+  send_community = each.value.send_community
+
+  depends_on = [iosxe_bgp_neighbor.bgp_neighbor]
 }
 
 locals {

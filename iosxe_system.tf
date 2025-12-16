@@ -9,6 +9,8 @@ resource "iosxe_system" "system" {
   mtu                              = try(local.device_config[each.value.name].system.mtu, local.defaults.iosxe.configuration.system.mtu, null)
   ip_source_route                  = try(local.device_config[each.value.name].system.ip_source_route, local.defaults.iosxe.configuration.system.ip_source_route, null)
   ip_domain_lookup                 = try(local.device_config[each.value.name].system.ip_domain_lookup, local.defaults.iosxe.configuration.system.ip_domain_lookup, null)
+  ip_domain_lookup_nsap            = try(local.device_config[each.value.name].system.ip_domain_lookup_nsap, local.defaults.iosxe.configuration.system.ip_domain_lookup_nsap, null)
+  ip_domain_lookup_recursive       = try(local.device_config[each.value.name].system.ip_domain_lookup_recursive, local.defaults.iosxe.configuration.system.ip_domain_lookup_recursive, null)
   ip_domain_name                   = try(local.device_config[each.value.name].system.ip_domain_name, local.defaults.iosxe.configuration.system.ip_domain_name, null)
   login_delay                      = try(local.device_config[each.value.name].system.login_delay, local.defaults.iosxe.configuration.system.login_delay, null)
   login_on_failure                 = try(local.device_config[each.value.name].system.login_on_failure, local.defaults.iosxe.configuration.system.login_on_failure, null)
@@ -18,7 +20,12 @@ resource "iosxe_system" "system" {
   ip_multicast_routing             = try(local.device_config[each.value.name].system.ip_multicast_routing, local.defaults.iosxe.configuration.system.ip_multicast_routing, null)
   multicast_routing_switch         = try(local.device_config[each.value.name].system.multicast_routing_switch, local.defaults.iosxe.configuration.system.multicast_routing_switch, null)
   ip_multicast_routing_distributed = try(local.device_config[each.value.name].system.ip_multicast_routing_distributed, local.defaults.iosxe.configuration.system.ip_multicast_routing_distributed, null)
+  ipv6_multicast_routing           = try(local.device_config[each.value.name].system.ipv6_multicast_routing, local.defaults.iosxe.configuration.system.ipv6_multicast_routing, null)
   access_session_mac_move_deny     = try(local.device_config[each.value.name].system.access_session_mac_move_deny, local.defaults.iosxe.configuration.system.access_session_mac_move_deny, null)
+
+  # New global configurations
+  ip_default_gateway = try(local.device_config[each.value.name].system.ip_default_gateway, local.defaults.iosxe.configuration.system.ip_default_gateway, null)
+  device_classifier  = try(local.device_config[each.value.name].system.device_classifier, local.defaults.iosxe.configuration.system.device_classifier, null)
 
   # Archive configuration
   archive_log_config_logging_enable  = try(local.device_config[each.value.name].system.archive.log_config_logging_enable, local.defaults.iosxe.configuration.system.archive.log_config_logging_enable, null)
@@ -57,6 +64,21 @@ resource "iosxe_system" "system" {
   ip_domain_lookup_source_interface_twenty_five_gigabit_ethernet = try(local.device_config[each.value.name].system.ip_domain_lookup_source_interface_type, local.defaults.iosxe.configuration.system.ip_domain_lookup_source_interface_type, null) == "TwentyFiveGigabitEthernet" ? try(trimprefix(local.device_config[each.value.name].system.ip_domain_lookup_source_interface_id, "$string "), local.defaults.iosxe.configuration.system.ip_domain_lookup_source_interface_id, null) : null
   ip_domain_lookup_source_interface_two_gigabit_ethernet         = try(local.device_config[each.value.name].system.ip_domain_lookup_source_interface_type, local.defaults.iosxe.configuration.system.ip_domain_lookup_source_interface_type, null) == "TwoGigabitEthernet" ? try(trimprefix(local.device_config[each.value.name].system.ip_domain_lookup_source_interface_id, "$string "), local.defaults.iosxe.configuration.system.ip_domain_lookup_source_interface_id, null) : null
   ip_domain_lookup_source_interface_vlan                         = try(local.device_config[each.value.name].system.ip_domain_lookup_source_interface_type, local.defaults.iosxe.configuration.system.ip_domain_lookup_source_interface_type, null) == "Vlan" ? try(local.device_config[each.value.name].system.ip_domain_lookup_source_interface_id, local.defaults.iosxe.configuration.system.ip_domain_lookup_source_interface_id, null) : null
+
+  ip_domain_lookup_vrfs = try(length(local.device_config[each.value.name].system.ip_domain_lookup_vrfs) == 0, true) ? null : [
+    for vrf in local.device_config[each.value.name].system.ip_domain_lookup_vrfs : {
+      vrf                                           = try(vrf.vrf, local.defaults.iosxe.configuration.system.ip_domain_lookup_vrfs.vrf, null)
+      source_interface_five_gigabit_ethernet        = try(vrf.source_interface_type, local.defaults.iosxe.configuration.system.ip_domain_lookup_vrfs.source_interface_type, null) == "FiveGigabitEthernet" ? try(trimprefix(vrf.source_interface_id, "$string "), local.defaults.iosxe.configuration.system.ip_domain_lookup_vrfs.source_interface_id, null) : null
+      source_interface_forty_gigabit_ethernet       = try(vrf.source_interface_type, local.defaults.iosxe.configuration.system.ip_domain_lookup_vrfs.source_interface_type, null) == "FortyGigabitEthernet" ? try(trimprefix(vrf.source_interface_id, "$string "), local.defaults.iosxe.configuration.system.ip_domain_lookup_vrfs.source_interface_id, null) : null
+      source_interface_gigabit_ethernet             = try(vrf.source_interface_type, local.defaults.iosxe.configuration.system.ip_domain_lookup_vrfs.source_interface_type, null) == "GigabitEthernet" ? try(trimprefix(vrf.source_interface_id, "$string "), local.defaults.iosxe.configuration.system.ip_domain_lookup_vrfs.source_interface_id, null) : null
+      source_interface_hundred_gigabit_ethernet     = try(vrf.source_interface_type, local.defaults.iosxe.configuration.system.ip_domain_lookup_vrfs.source_interface_type, null) == "HundredGigabitEthernet" ? try(trimprefix(vrf.source_interface_id, "$string "), local.defaults.iosxe.configuration.system.ip_domain_lookup_vrfs.source_interface_id, null) : null
+      source_interface_loopback                     = try(vrf.source_interface_type, local.defaults.iosxe.configuration.system.ip_domain_lookup_vrfs.source_interface_type, null) == "Loopback" ? try(vrf.source_interface_id, local.defaults.iosxe.configuration.system.ip_domain_lookup_vrfs.source_interface_id, null) : null
+      source_interface_ten_gigabit_ethernet         = try(vrf.source_interface_type, local.defaults.iosxe.configuration.system.ip_domain_lookup_vrfs.source_interface_type, null) == "TenGigabitEthernet" ? try(trimprefix(vrf.source_interface_id, "$string "), local.defaults.iosxe.configuration.system.ip_domain_lookup_vrfs.source_interface_id, null) : null
+      source_interface_twenty_five_gigabit_ethernet = try(vrf.source_interface_type, local.defaults.iosxe.configuration.system.ip_domain_lookup_vrfs.source_interface_type, null) == "TwentyFiveGigabitEthernet" ? try(trimprefix(vrf.source_interface_id, "$string "), local.defaults.iosxe.configuration.system.ip_domain_lookup_vrfs.source_interface_id, null) : null
+      source_interface_two_gigabit_ethernet         = try(vrf.source_interface_type, local.defaults.iosxe.configuration.system.ip_domain_lookup_vrfs.source_interface_type, null) == "TwoGigabitEthernet" ? try(trimprefix(vrf.source_interface_id, "$string "), local.defaults.iosxe.configuration.system.ip_domain_lookup_vrfs.source_interface_id, null) : null
+      source_interface_vlan                         = try(vrf.source_interface_type, local.defaults.iosxe.configuration.system.ip_domain_lookup_vrfs.source_interface_type, null) == "Vlan" ? try(vrf.source_interface_id, local.defaults.iosxe.configuration.system.ip_domain_lookup_vrfs.source_interface_id, null) : null
+    }
+  ]
 
   ip_radius_source_interface_five_gigabit_ethernet        = try(local.device_config[each.value.name].system.ip_radius_source_interface_type, local.defaults.iosxe.configuration.system.ip_radius_source_interface_type, null) == "FiveGigabitEthernet" ? try(trimprefix(local.device_config[each.value.name].system.ip_radius_source_interface_id, "$string "), local.defaults.iosxe.configuration.system.ip_radius_source_interface_id, null) : null
   ip_radius_source_interface_forty_gigabit_ethernet       = try(local.device_config[each.value.name].system.ip_radius_source_interface_type, local.defaults.iosxe.configuration.system.ip_radius_source_interface_type, null) == "FortyGigabitEthernet" ? try(trimprefix(local.device_config[each.value.name].system.ip_radius_source_interface_id, "$string "), local.defaults.iosxe.configuration.system.ip_radius_source_interface_id, null) : null
@@ -211,6 +233,23 @@ resource "iosxe_system" "system" {
       number              = try(track_obj.number, local.defaults.iosxe.configuration.system.track_objects.number, null)
       ip_sla_number       = try(track_obj.ip_sla_number, local.defaults.iosxe.configuration.system.track_objects.ip_sla_number, null)
       ip_sla_reachability = try(track_obj.ip_sla_reachability, local.defaults.iosxe.configuration.system.track_objects.ip_sla_reachability, null)
+    }
+  ]
+
+  authentication_mac_move_permit            = try(local.device_config[each.value.name].system.authentication_mac_move_permit, local.defaults.iosxe.configuration.system.authentication_mac_move_permit, null)
+  authentication_mac_move_deny_uncontrolled = try(local.device_config[each.value.name].system.authentication_mac_move_deny_uncontrolled, local.defaults.iosxe.configuration.system.authentication_mac_move_deny_uncontrolled, null)
+
+  # Table-Map configurations for QoS value translation
+  table_maps = try(length(local.device_config[each.value.name].system.table_maps) == 0, true) ? null : [
+    for table_map in local.device_config[each.value.name].system.table_maps : {
+      name    = try(table_map.name, local.defaults.iosxe.configuration.system.table_maps.name, null)
+      default = try(table_map.default, local.defaults.iosxe.configuration.system.table_maps.default, null)
+      mappings = try(length(table_map.mappings) == 0, true) ? null : [
+        for mapping in table_map.mappings : {
+          from = try(mapping.from, local.defaults.iosxe.configuration.system.table_maps.mappings.from, null)
+          to   = try(mapping.to, local.defaults.iosxe.configuration.system.table_maps.mappings.to, null)
+        }
+      ]
     }
   ]
 
