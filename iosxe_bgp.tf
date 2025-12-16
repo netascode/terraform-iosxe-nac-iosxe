@@ -443,7 +443,7 @@ locals {
         send_community         = try(neighbor.send_community, local.defaults.iosxe.configuration.routing.bgp.address_family.l2vpn_evpn.neighbors.send_community, null)
         route_reflector_client = try(neighbor.route_reflector_client, local.defaults.iosxe.configuration.routing.bgp.address_family.l2vpn_evpn.neighbors.route_reflector_client, null)
         soft_reconfiguration   = try(neighbor.soft_reconfiguration, local.defaults.iosxe.configuration.routing.bgp.address_family.l2vpn_evpn.neighbors.soft_reconfiguration, null)
-        inherit_peer_policy    = try(neighbor.inherit_peer_policy, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.neighbors.inherit_peer_policy, null)
+        inherit_peer_policy    = try(neighbor.inherit_peer_policy, local.defaults.iosxe.configuration.routing.bgp.address_family.l2vpn_evpn.neighbors.inherit_peer_policy, null)
         route_maps = try(length(neighbor.route_maps) == 0, true) ? null : [for rm in neighbor.route_maps : {
           in_out         = try(rm.in_out, local.defaults.iosxe.configuration.routing.bgp.address_family.l2vpn_evpn.neighbors.route_maps.in_out, null)
           route_map_name = try(rm.name, local.defaults.iosxe.configuration.routing.bgp.address_family.l2vpn_evpn.neighbors.route_maps.name, null)
