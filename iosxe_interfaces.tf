@@ -1,3 +1,27 @@
+##### BDIS #####
+
+locals {
+  interfaces_bdis = flatten([
+    for device in local.devices : [
+      for int in try(local.device_config[device.name].interfaces.bdis, []) : {
+        key         = format("%s/BDI%s", device.name, try(int.id, null))
+        device      = device.name
+        id          = trimprefix(int.id, "$string ")
+        mac_address = try(int.mac_address, null)
+      }
+    ]
+  ])
+}
+
+resource "iosxe_interface_bdi" "bdi" {
+  for_each = { for v in local.interfaces_bdis : v.key => v }
+  device   = each.value.device
+
+  name        = each.value.id
+  mac_address = each.value.mac_address
+
+}
+
 ##### ETHERNETS #####
 
 locals {
@@ -223,6 +247,11 @@ locals {
             queue_length = try(int.hold_queue_out, local.defaults.iosxe.devices.configuration.interfaces.ethernets.hold_queue_out, null)
           }] : []
         ]) : []
+        service_instances = try(length(int.service_instances) == 0, true) ? null : [for si in int.service_instances : {
+          id                     = try(si.id, local.defaults.iosxe.devices.configuration.interfaces.ethernets.service_instances.id, null)
+          ethernet               = try(si.type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.service_instances.type, null) == "ethernet" ? true : null
+          encapsulation_untagged = try(si.encapsulation, local.defaults.iosxe.devices.configuration.interfaces.ethernets.service_instances.encapsulation, null) == "untagged" ? true : null
+        }]
       }
     ]
   ])
@@ -343,6 +372,7 @@ resource "iosxe_interface_ethernet" "ethernet" {
   ip_nat_outside                             = each.value.ip_nat_outside
   carrier_delay_msec                         = each.value.carrier_delay_msec
   hold_queues                                = each.value.hold_queues
+  service_instances                          = each.value.service_instances
 
   depends_on = [
     iosxe_vrf.vrf,
@@ -733,6 +763,7 @@ locals {
         ipv4_address                            = try(int.ipv4.address, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.address, null)
         ipv4_address_mask                       = try(int.ipv4.address_mask, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.address_mask, null)
         ip_proxy_arp                            = try(int.ipv4.proxy_arp, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.proxy_arp, null)
+        ip_local_proxy_arp                      = try(int.ipv4.local_proxy_arp, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.local_proxy_arp, null)
         mac_address                             = try(int.mac_address, local.defaults.iosxe.devices.configuration.interfaces.vlans.mac_address, null)
         ip_dhcp_relay_source_interface          = try("${try(int.ipv4.dhcp_relay_source_interface_type, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.dhcp_relay_source_interface_type)}${try(int.ipv4.dhcp_relay_source_interface_id, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.dhcp_relay_source_interface_id)}", null)
         ip_dhcp_relay_information_option_vpn_id = try(int.ipv4.dhcp_relay_information_option_vpn_id, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.dhcp_relay_information_option_vpn_id, null)
@@ -833,6 +864,7 @@ resource "iosxe_interface_vlan" "vlan" {
   ipv4_address                            = each.value.ipv4_address
   ipv4_address_mask                       = each.value.ipv4_address_mask
   ip_proxy_arp                            = each.value.ip_proxy_arp
+  ip_local_proxy_arp                      = each.value.ip_local_proxy_arp
   mac_address                             = each.value.mac_address
   ip_dhcp_relay_source_interface          = each.value.ip_dhcp_relay_source_interface
   ip_dhcp_relay_information_option_vpn_id = each.value.ip_dhcp_relay_information_option_vpn_id
