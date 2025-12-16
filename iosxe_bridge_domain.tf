@@ -24,4 +24,8 @@ resource "iosxe_bridge_domain" "bridge_domain" {
   bridge_domain_id  = each.value.id
   member_vni        = each.value.member_vni
   member_interfaces = each.value.member_interfaces
+
+  depends_on = [
+    iosxe_interface_ethernet.ethernet
+  ]
 }
