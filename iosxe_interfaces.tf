@@ -591,6 +591,7 @@ locals {
         ipv6_pim_dr_priority                    = try(int.ipv6.pim.dr_priority, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ipv6.pim.dr_priority, null)
         isis                                    = try(int.isis, null) != null ? true : false
         isis_area_tag                           = try(int.isis.area_tag, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.isis.area_tag, null)
+        isis_network_point_to_point             = try(int.isis.network_point_to_point, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.isis.network_point_to_point, null)
         isis_ipv4_metric_levels = try(length(int.isis.ipv4_metric_levels) == 0, true) ? null : [for level in int.isis.ipv4_metric_levels : {
           level = try(level.level, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.isis.ipv4_metric_levels.level, null)
           value = try(level.value, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.isis.ipv4_metric_levels.value, null)
@@ -735,10 +736,11 @@ resource "iosxe_interface_pim_ipv6" "loopback_pim_ipv6" {
 resource "iosxe_interface_isis" "loopback_isis" {
   for_each = { for v in local.interfaces_loopbacks : v.key => v if v.isis }
 
-  device             = each.value.device
-  type               = "Loopback"
-  name               = each.value.id
-  ipv4_metric_levels = each.value.isis_ipv4_metric_levels
+  device                 = each.value.device
+  type                   = "Loopback"
+  name                   = each.value.id
+  network_point_to_point = each.value.isis_network_point_to_point
+  ipv4_metric_levels     = each.value.isis_ipv4_metric_levels
 
   depends_on = [
     iosxe_interface_loopback.loopback,
