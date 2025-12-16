@@ -372,7 +372,7 @@ resource "iosxe_interface_ethernet" "ethernet" {
   ip_nat_outside                             = each.value.ip_nat_outside
   carrier_delay_msec                         = each.value.carrier_delay_msec
   hold_queues                                = each.value.hold_queues
-  service_instance                           = each.value.service_instances
+  service_instances                          = each.value.service_instances
 
   depends_on = [
     iosxe_vrf.vrf,

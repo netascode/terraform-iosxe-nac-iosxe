@@ -21,7 +21,7 @@ resource "iosxe_bridge_domain" "bridge_domain" {
   for_each = { for v in local.bridge_domains : v.key => v }
   device   = each.value.device
 
-  bridge_domain_id = each.value.id
-  member_vni       = each.value.member_vni
-  member_interface = each.value.member_interfaces
+  bridge_domain_id  = each.value.id
+  member_vni        = each.value.member_vni
+  member_interfaces = each.value.member_interfaces
 }
