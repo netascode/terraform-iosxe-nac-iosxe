@@ -13,12 +13,12 @@ locals {
 
         vpn_id = try(vrf.vpn_id, local.defaults.iosxe.configuration.vrfs.vpn_id, null)
 
-        vnid = try(length(vrf.vnid) == 0, true) ? null : [
+        vnids = try(length(vrf.vnid) == 0, true) ? null : [
           for v in vrf.vnid : {
-            vnid_value = v.vnid_value
-            evpn_instance_vni = try(length(v.evpn_instance_vni) == 0, true) ? null : [
+            vnid = v.vnid_value
+            evpn_instance_vnis = try(length(v.evpn_instance_vni) == 0, true) ? null : [
               for vni in v.evpn_instance_vni : {
-                vni_num   = vni.vni_num
+                vni       = vni.vni_num
                 core_vlan = try(vni.core_vlan, null)
               }
             ]
@@ -203,7 +203,7 @@ resource "iosxe_vrf" "vrf" {
 
   vpn_id = each.value.vpn_id
 
-  vnid = each.value.vnid
+  vnids = each.value.vnids
 
   ipv4_route_target_import           = each.value.ipv4_route_target_import
   ipv4_route_target_import_stitching = each.value.ipv4_route_target_import_stitching
