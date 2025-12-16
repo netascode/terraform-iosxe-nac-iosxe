@@ -1,3 +1,27 @@
+##### BDIS #####
+
+locals {
+  interfaces_bdis = flatten([
+    for device in local.devices : [
+      for int in try(local.device_config[device.name].interfaces.bdis, []) : {
+        key         = format("%s/BDI%s", device.name, try(int.id, null))
+        device      = device.name
+        id          = trimprefix(int.id, "$string ")
+        mac_address = try(int.mac_address, null)
+      }
+    ]
+  ])
+}
+
+resource "iosxe_interface_bdi" "bdi" {
+  for_each = { for v in local.interfaces_bdis : v.key => v }
+  device   = each.value.device
+
+  name        = each.value.id
+  mac_address = each.value.mac_address
+
+}
+
 ##### ETHERNETS #####
 
 locals {
@@ -109,20 +133,60 @@ locals {
         switchport_mode_private_vlan_host        = try(int.switchport.mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.switchport.mode, null) == "private-vlan-host" ? true : null
         switchport_mode_private_vlan_promiscuous = try(int.switchport.mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.switchport.mode, null) == "private-vlan-promiscuous" ? true : null
         switchport_nonegotiate                   = try(int.switchport.nonegotiate, local.defaults.iosxe.devices.configuration.interfaces.ethernets.switchport.nonegotiate, null)
+        # NEW v2 trunk allowed VLANs - supports all/none/vlans/add/except/remove
         switchport_trunk_allowed_vlans = try(
           provider::utils::normalize_vlans(
-            try(int.switchport.trunk_allowed_vlans, local.defaults.iosxe.devices.configuration.interfaces.ethernets.switchport.trunk_allowed_vlans),
+            try(int.switchport.trunk_allowed_vlans.vlans, local.defaults.iosxe.devices.configuration.interfaces.ethernets.switchport.trunk_allowed_vlans.vlans),
             "string"
           ),
           null
         )
-        switchport_trunk_allowed_vlans_none = length(try(
+        switchport_trunk_allowed_vlans_none = try(int.switchport.trunk_allowed_vlans.none, local.defaults.iosxe.devices.configuration.interfaces.ethernets.switchport.trunk_allowed_vlans.none, null)
+        # Default to all VLANs allowed if trunk mode and no trunk_allowed_vlans specified (native IOS-XE behavior)
+        switchport_trunk_allowed_vlans_all = try(
+          int.switchport.trunk_allowed_vlans.all,
+          local.defaults.iosxe.devices.configuration.interfaces.ethernets.switchport.trunk_allowed_vlans.all,
+          # Default to true for trunk mode if trunk_allowed_vlans is not specified at all
+          (try(int.switchport.trunk_allowed_vlans, null) == null &&
+            try(local.defaults.iosxe.devices.configuration.interfaces.ethernets.switchport.trunk_allowed_vlans, null) == null &&
+          contains(["trunk", "private-vlan-trunk"], try(int.switchport.mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.switchport.mode, ""))) ? true : null
+        )
+        switchport_trunk_allowed_vlans_add = try(
           provider::utils::normalize_vlans(
-            try(int.switchport.trunk_allowed_vlans, local.defaults.iosxe.devices.configuration.interfaces.ethernets.switchport.trunk_allowed_vlans),
+            try(int.switchport.trunk_allowed_vlans.add, local.defaults.iosxe.devices.configuration.interfaces.ethernets.switchport.trunk_allowed_vlans.add),
+            "string"
+          ),
+          null
+        )
+        switchport_trunk_allowed_vlans_except = try(
+          provider::utils::normalize_vlans(
+            try(int.switchport.trunk_allowed_vlans.except, local.defaults.iosxe.devices.configuration.interfaces.ethernets.switchport.trunk_allowed_vlans.except),
+            "string"
+          ),
+          null
+        )
+        switchport_trunk_allowed_vlans_remove = try(
+          provider::utils::normalize_vlans(
+            try(int.switchport.trunk_allowed_vlans.remove, local.defaults.iosxe.devices.configuration.interfaces.ethernets.switchport.trunk_allowed_vlans.remove),
+            "string"
+          ),
+          null
+        )
+        # LEGACY trunk allowed VLANs (deprecated) - for backward compatibility
+        switchport_trunk_allowed_vlans_legacy = try(
+          provider::utils::normalize_vlans(
+            try(int.switchport.trunk_allowed_vlans_legacy, local.defaults.iosxe.devices.configuration.interfaces.ethernets.switchport.trunk_allowed_vlans_legacy),
+            "string"
+          ),
+          null
+        )
+        switchport_trunk_allowed_vlans_none_legacy = length(try(
+          provider::utils::normalize_vlans(
+            try(int.switchport.trunk_allowed_vlans_legacy, local.defaults.iosxe.devices.configuration.interfaces.ethernets.switchport.trunk_allowed_vlans_legacy),
             "list"
           ),
           []
-        )) == 0 && contains(["trunk", "private-vlan-trunk"], try(int.switchport.mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.switchport.mode, "")) ? true : null
+        )) == 0 && try(int.switchport.trunk_allowed_vlans_legacy, local.defaults.iosxe.devices.configuration.interfaces.ethernets.switchport.trunk_allowed_vlans_legacy, null) != null ? true : null
         switchport_trunk_native_vlan_tag      = try(int.switchport.trunk_native_vlan_tag, local.defaults.iosxe.devices.configuration.interfaces.ethernets.switchport.trunk_native_vlan_tag, null)
         switchport_trunk_native_vlan          = try(int.switchport.trunk_native_vlan_id, local.defaults.iosxe.devices.configuration.interfaces.ethernets.switchport.trunk_native_vlan_id, null)
         switchport_host                       = try(int.switchport.host, local.defaults.iosxe.devices.configuration.interfaces.ethernets.switchport.host, null)
@@ -223,6 +287,11 @@ locals {
             queue_length = try(int.hold_queue_out, local.defaults.iosxe.devices.configuration.interfaces.ethernets.hold_queue_out, null)
           }] : []
         ]) : []
+        service_instances = try(length(int.service_instances) == 0, true) ? null : [for si in int.service_instances : {
+          id                     = try(si.id, local.defaults.iosxe.devices.configuration.interfaces.ethernets.service_instances.id, null)
+          ethernet               = try(si.type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.service_instances.type, null) == "ethernet" ? true : null
+          encapsulation_untagged = try(si.encapsulation, local.defaults.iosxe.devices.configuration.interfaces.ethernets.service_instances.encapsulation, null) == "untagged" ? true : null
+        }]
       }
     ]
   ])
@@ -343,6 +412,7 @@ resource "iosxe_interface_ethernet" "ethernet" {
   ip_nat_outside                             = each.value.ip_nat_outside
   carrier_delay_msec                         = each.value.carrier_delay_msec
   hold_queues                                = each.value.hold_queues
+  service_instances                          = each.value.service_instances
 
   depends_on = [
     iosxe_vrf.vrf,
@@ -367,11 +437,19 @@ resource "iosxe_interface_switchport" "ethernet_switchport" {
   mode_private_vlan_promiscuous = each.value.switchport_mode_private_vlan_promiscuous
   nonegotiate                   = each.value.switchport_nonegotiate
   access_vlan                   = each.value.switchport_access_vlan
-  trunk_allowed_vlans           = each.value.switchport_trunk_allowed_vlans
-  trunk_allowed_vlans_none      = each.value.switchport_trunk_allowed_vlans_none
-  trunk_native_vlan_tag         = each.value.switchport_trunk_native_vlan_tag
-  trunk_native_vlan             = each.value.switchport_trunk_native_vlan
-  host                          = each.value.switchport_host
+  # NEW v2 trunk allowed VLANs
+  trunk_allowed_vlans        = each.value.switchport_trunk_allowed_vlans
+  trunk_allowed_vlans_none   = each.value.switchport_trunk_allowed_vlans_none
+  trunk_allowed_vlans_all    = each.value.switchport_trunk_allowed_vlans_all
+  trunk_allowed_vlans_except = each.value.switchport_trunk_allowed_vlans_except
+  trunk_allowed_vlans_remove = each.value.switchport_trunk_allowed_vlans_remove
+  trunk_allowed_vlans_add    = each.value.switchport_trunk_allowed_vlans_add != null ? [{ vlans = each.value.switchport_trunk_allowed_vlans_add }] : null
+  # LEGACY trunk allowed VLANs (deprecated)
+  trunk_allowed_vlans_legacy      = each.value.switchport_trunk_allowed_vlans_legacy
+  trunk_allowed_vlans_none_legacy = each.value.switchport_trunk_allowed_vlans_none_legacy
+  trunk_native_vlan_tag           = each.value.switchport_trunk_native_vlan_tag
+  trunk_native_vlan               = each.value.switchport_trunk_native_vlan
+  host                            = each.value.switchport_host
 
   depends_on = [
     iosxe_interface_ethernet.ethernet
@@ -561,6 +639,7 @@ locals {
         ipv6_pim_dr_priority                    = try(int.ipv6.pim.dr_priority, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ipv6.pim.dr_priority, null)
         isis                                    = try(int.isis, null) != null ? true : false
         isis_area_tag                           = try(int.isis.area_tag, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.isis.area_tag, null)
+        isis_network_point_to_point             = try(int.isis.network_point_to_point, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.isis.network_point_to_point, null)
         isis_ipv4_metric_levels = try(length(int.isis.ipv4_metric_levels) == 0, true) ? null : [for level in int.isis.ipv4_metric_levels : {
           level = try(level.level, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.isis.ipv4_metric_levels.level, null)
           value = try(level.value, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.isis.ipv4_metric_levels.value, null)
@@ -705,10 +784,11 @@ resource "iosxe_interface_pim_ipv6" "loopback_pim_ipv6" {
 resource "iosxe_interface_isis" "loopback_isis" {
   for_each = { for v in local.interfaces_loopbacks : v.key => v if v.isis }
 
-  device             = each.value.device
-  type               = "Loopback"
-  name               = each.value.id
-  ipv4_metric_levels = each.value.isis_ipv4_metric_levels
+  device                 = each.value.device
+  type                   = "Loopback"
+  name                   = each.value.id
+  network_point_to_point = each.value.isis_network_point_to_point
+  ipv4_metric_levels     = each.value.isis_ipv4_metric_levels
 
   depends_on = [
     iosxe_interface_loopback.loopback,
@@ -1037,20 +1117,60 @@ locals {
         switchport_mode_private_vlan_host        = try(int.switchport.mode, local.defaults.iosxe.devices.configuration.interfaces.port_channels.switchport.mode, null) == "private-vlan-host" ? true : null
         switchport_mode_private_vlan_promiscuous = try(int.switchport.mode, local.defaults.iosxe.devices.configuration.interfaces.port_channels.switchport.mode, null) == "private-vlan-promiscuous" ? true : null
         switchport_nonegotiate                   = try(int.switchport.nonegotiate, local.defaults.iosxe.devices.configuration.interfaces.port_channels.switchport.nonegotiate, null)
+        # NEW v2 trunk allowed VLANs - supports all/none/vlans/add/except/remove
         switchport_trunk_allowed_vlans = try(
           provider::utils::normalize_vlans(
-            try(int.switchport.trunk_allowed_vlans, local.defaults.iosxe.devices.configuration.interfaces.port_channels.switchport.trunk_allowed_vlans),
+            try(int.switchport.trunk_allowed_vlans.vlans, local.defaults.iosxe.devices.configuration.interfaces.port_channels.switchport.trunk_allowed_vlans.vlans),
             "string"
           ),
           null
         )
-        switchport_trunk_allowed_vlans_none = length(try(
+        switchport_trunk_allowed_vlans_none = try(int.switchport.trunk_allowed_vlans.none, local.defaults.iosxe.devices.configuration.interfaces.port_channels.switchport.trunk_allowed_vlans.none, null)
+        # Default to all VLANs allowed if trunk mode and no trunk_allowed_vlans specified (native IOS-XE behavior)
+        switchport_trunk_allowed_vlans_all = try(
+          int.switchport.trunk_allowed_vlans.all,
+          local.defaults.iosxe.devices.configuration.interfaces.port_channels.switchport.trunk_allowed_vlans.all,
+          # Default to true for trunk mode if trunk_allowed_vlans is not specified at all
+          (try(int.switchport.trunk_allowed_vlans, null) == null &&
+            try(local.defaults.iosxe.devices.configuration.interfaces.port_channels.switchport.trunk_allowed_vlans, null) == null &&
+          contains(["trunk", "private-vlan-trunk"], try(int.switchport.mode, local.defaults.iosxe.devices.configuration.interfaces.port_channels.switchport.mode, ""))) ? true : null
+        )
+        switchport_trunk_allowed_vlans_add = try(
           provider::utils::normalize_vlans(
-            try(int.switchport.trunk_allowed_vlans, local.defaults.iosxe.devices.configuration.interfaces.port_channels.switchport.trunk_allowed_vlans),
+            try(int.switchport.trunk_allowed_vlans.add, local.defaults.iosxe.devices.configuration.interfaces.port_channels.switchport.trunk_allowed_vlans.add),
+            "string"
+          ),
+          null
+        )
+        switchport_trunk_allowed_vlans_except = try(
+          provider::utils::normalize_vlans(
+            try(int.switchport.trunk_allowed_vlans.except, local.defaults.iosxe.devices.configuration.interfaces.port_channels.switchport.trunk_allowed_vlans.except),
+            "string"
+          ),
+          null
+        )
+        switchport_trunk_allowed_vlans_remove = try(
+          provider::utils::normalize_vlans(
+            try(int.switchport.trunk_allowed_vlans.remove, local.defaults.iosxe.devices.configuration.interfaces.port_channels.switchport.trunk_allowed_vlans.remove),
+            "string"
+          ),
+          null
+        )
+        # LEGACY trunk allowed VLANs (deprecated) - for backward compatibility
+        switchport_trunk_allowed_vlans_legacy = try(
+          provider::utils::normalize_vlans(
+            try(int.switchport.trunk_allowed_vlans_legacy, local.defaults.iosxe.devices.configuration.interfaces.port_channels.switchport.trunk_allowed_vlans_legacy),
+            "string"
+          ),
+          null
+        )
+        switchport_trunk_allowed_vlans_none_legacy = length(try(
+          provider::utils::normalize_vlans(
+            try(int.switchport.trunk_allowed_vlans_legacy, local.defaults.iosxe.devices.configuration.interfaces.port_channels.switchport.trunk_allowed_vlans_legacy),
             "list"
           ),
           []
-        )) == 0 && contains(["trunk", "private-vlan-trunk"], try(int.switchport.mode, local.defaults.iosxe.devices.configuration.interfaces.port_channels.switchport.mode, "")) ? true : null
+        )) == 0 && try(int.switchport.trunk_allowed_vlans_legacy, local.defaults.iosxe.devices.configuration.interfaces.port_channels.switchport.trunk_allowed_vlans_legacy, null) != null ? true : null
         switchport_trunk_native_vlan_tag      = try(int.switchport.trunk_native_vlan_tag, local.defaults.iosxe.devices.configuration.interfaces.port_channels.switchport.trunk_native_vlan_tag, null)
         switchport_trunk_native_vlan          = try(int.switchport.trunk_native_vlan_id, local.defaults.iosxe.devices.configuration.interfaces.port_channels.switchport.trunk_native_vlan_id, null)
         switchport_host                       = try(int.switchport.host, local.defaults.iosxe.devices.configuration.interfaces.port_channels.switchport.host, null)
@@ -1201,11 +1321,19 @@ resource "iosxe_interface_switchport" "port_channel_switchport" {
   mode_private_vlan_promiscuous = each.value.switchport_mode_private_vlan_promiscuous
   nonegotiate                   = each.value.switchport_nonegotiate
   access_vlan                   = each.value.switchport_access_vlan
-  trunk_allowed_vlans           = each.value.switchport_trunk_allowed_vlans
-  trunk_allowed_vlans_none      = each.value.switchport_trunk_allowed_vlans_none
-  trunk_native_vlan_tag         = each.value.switchport_trunk_native_vlan_tag
-  trunk_native_vlan             = each.value.switchport_trunk_native_vlan
-  host                          = each.value.switchport_host
+  # NEW v2 trunk allowed VLANs
+  trunk_allowed_vlans        = each.value.switchport_trunk_allowed_vlans
+  trunk_allowed_vlans_none   = each.value.switchport_trunk_allowed_vlans_none
+  trunk_allowed_vlans_all    = each.value.switchport_trunk_allowed_vlans_all
+  trunk_allowed_vlans_except = each.value.switchport_trunk_allowed_vlans_except
+  trunk_allowed_vlans_remove = each.value.switchport_trunk_allowed_vlans_remove
+  trunk_allowed_vlans_add    = each.value.switchport_trunk_allowed_vlans_add != null ? [{ vlans = each.value.switchport_trunk_allowed_vlans_add }] : null
+  # LEGACY trunk allowed VLANs (deprecated)
+  trunk_allowed_vlans_legacy      = each.value.switchport_trunk_allowed_vlans_legacy
+  trunk_allowed_vlans_none_legacy = each.value.switchport_trunk_allowed_vlans_none_legacy
+  trunk_native_vlan_tag           = each.value.switchport_trunk_native_vlan_tag
+  trunk_native_vlan               = each.value.switchport_trunk_native_vlan
+  host                            = each.value.switchport_host
 
   depends_on = [
     iosxe_interface_port_channel.port_channel

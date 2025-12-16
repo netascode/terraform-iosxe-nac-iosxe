@@ -64,7 +64,8 @@ resource "iosxe_vlan_configuration" "vlan_configuration" {
   evpn_instance_profile_protected = each.value.evpn_instance_profile_protected
 
   depends_on = [
-    iosxe_evpn_instance.evpn_instance
+    iosxe_evpn_instance.evpn_instance,
+    iosxe_evpn_profile.evpn_profile
   ]
 }
 
