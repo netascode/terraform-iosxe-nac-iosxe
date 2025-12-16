@@ -46,6 +46,9 @@ locals {
           }
         ]
 
+        ipv4_import_map = try(vrf.address_family_ipv4.import_map, local.defaults.iosxe.configuration.vrfs.address_family_ipv4.import_map, null)
+        ipv4_export_map = try(vrf.address_family_ipv4.export_map, local.defaults.iosxe.configuration.vrfs.address_family_ipv4.export_map, null)
+
         ipv6_route_target_import = try(length(vrf.address_family_ipv6.import_route_targets) == 0, true) ? null : [
           for rt in vrf.address_family_ipv6.import_route_targets : {
             value = rt
@@ -69,6 +72,9 @@ locals {
             value = rt
           }
         ]
+
+        ipv6_import_map = try(vrf.address_family_ipv6.import_map, local.defaults.iosxe.configuration.vrfs.address_family_ipv6.import_map, null)
+        ipv6_export_map = try(vrf.address_family_ipv6.export_map, local.defaults.iosxe.configuration.vrfs.address_family_ipv6.export_map, null)
 
         ipv4_evpn_mcast_mdt_default_address = try(
           vrf.address_family_ipv4.evpn_mcast.mdt_default_address,
@@ -196,11 +202,15 @@ resource "iosxe_vrf" "vrf" {
   ipv4_route_target_export           = each.value.ipv4_route_target_export
   ipv4_route_target_export_stitching = each.value.ipv4_route_target_export_stitching
   ipv4_route_replicate               = each.value.ipv4_route_replicate
+  ipv4_import_map                    = each.value.ipv4_import_map
+  ipv4_export_map                    = each.value.ipv4_export_map
 
   ipv6_route_target_import           = each.value.ipv6_route_target_import
   ipv6_route_target_import_stitching = each.value.ipv6_route_target_import_stitching
   ipv6_route_target_export           = each.value.ipv6_route_target_export
   ipv6_route_target_export_stitching = each.value.ipv6_route_target_export_stitching
+  ipv6_import_map                    = each.value.ipv6_import_map
+  ipv6_export_map                    = each.value.ipv6_export_map
 
   ipv4_evpn_mcast_mdt_default_address = each.value.ipv4_evpn_mcast_mdt_default_address
   ipv4_evpn_mcast_anycast             = each.value.ipv4_evpn_mcast_anycast
