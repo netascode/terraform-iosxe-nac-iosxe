@@ -20,7 +20,7 @@ resource "iosxe_spanning_tree" "spanning_tree" {
     )
   }]
 
-  vlans = try(length(local.device_config[each.value.name].spanning_tree.vlans) == 0, true) ? null : [for v in local.device_config[each.value.name].spanning_tree.vlans : {
+  vlans = try(length(local.device_config[each.value.name].spanning_tree.vlans) == 0, true) ? null : [for v in try(local.device_config[each.value.name].spanning_tree.vlans, local.defaults.iosxe.configuration.spanning_tree.vlans, []) : {
     id       = try(tostring(v.id), local.defaults.iosxe.configuration.spanning_tree.vlans.id, null)
     priority = try(v.priority, local.defaults.iosxe.configuration.spanning_tree.vlans.priority, null)
   }]
