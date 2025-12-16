@@ -252,6 +252,8 @@ resource "iosxe_system" "system" {
       ]
     }
   ]
+  mld_snooping         = try(local.device_config[each.value.name].system.ipv6_mld_snooping, local.defaults.iosxe.configuration.system.ipv6_mld_snooping, null)
+  mld_snooping_querier = try(local.device_config[each.value.name].system.ipv6_mld_snooping_querier, local.defaults.iosxe.configuration.system.ipv6_mld_snooping_querier, null)
 
   depends_on = [
     iosxe_vrf.vrf,
