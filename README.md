@@ -40,7 +40,7 @@ module "iosxe" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.8.0 |
-| <a name="requirement_iosxe"></a> [iosxe](#requirement\_iosxe) | >= 0.13.0 |
+| <a name="requirement_iosxe"></a> [iosxe](#requirement\_iosxe) | >= 0.14.4 |
 | <a name="requirement_utils"></a> [utils](#requirement\_utils) | = 1.1.0-beta3 |
 ## Inputs
 
@@ -85,6 +85,8 @@ module "iosxe" {
 | [iosxe_bgp_address_family_ipv6.bgp_address_family_ipv6](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/bgp_address_family_ipv6) | resource |
 | [iosxe_bgp_address_family_ipv6_vrf.bgp_address_family_ipv6_vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/bgp_address_family_ipv6_vrf) | resource |
 | [iosxe_bgp_address_family_l2vpn.bgp_address_family_l2vpn](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/bgp_address_family_l2vpn) | resource |
+| [iosxe_bgp_address_family_vpnv4.bgp_address_family_vpnv4](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/bgp_address_family_vpnv4) | resource |
+| [iosxe_bgp_address_family_vpnv6.bgp_address_family_vpnv6](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/bgp_address_family_vpnv6) | resource |
 | [iosxe_bgp_ipv4_mvpn_neighbor.bgp_ipv4_mvpn_neighbor](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/bgp_ipv4_mvpn_neighbor) | resource |
 | [iosxe_bgp_ipv4_unicast_neighbor.bgp_ipv4_unicast_neighbor](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/bgp_ipv4_unicast_neighbor) | resource |
 | [iosxe_bgp_ipv4_unicast_vrf_neighbor.bgp_ipv4_unicast_vrf_neighbor](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/bgp_ipv4_unicast_vrf_neighbor) | resource |
@@ -93,6 +95,7 @@ module "iosxe" {
 | [iosxe_bgp_neighbor.bgp_neighbor](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/bgp_neighbor) | resource |
 | [iosxe_bgp_peer_policy_template.bgp_peer_policy_template](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/bgp_peer_policy_template) | resource |
 | [iosxe_bgp_peer_session_template.bgp_peer_session_template](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/bgp_peer_session_template) | resource |
+| [iosxe_bridge_domain.bridge_domain](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/bridge_domain) | resource |
 | [iosxe_cdp.cdp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/cdp) | resource |
 | [iosxe_class_map.class_map](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/class_map) | resource |
 | [iosxe_cli.cli_0](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/cli) | resource |
@@ -131,6 +134,7 @@ module "iosxe" {
 | [iosxe_flow_exporter.flow_exporter](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/flow_exporter) | resource |
 | [iosxe_flow_monitor.flow_monitor](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/flow_monitor) | resource |
 | [iosxe_flow_record.flow_record](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/flow_record) | resource |
+| [iosxe_interface_bdi.bdi](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_bdi) | resource |
 | [iosxe_interface_ethernet.ethernet](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_ethernet) | resource |
 | [iosxe_interface_isis.loopback_isis](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_isis) | resource |
 | [iosxe_interface_loopback.loopback](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_loopback) | resource |

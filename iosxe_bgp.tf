@@ -253,6 +253,22 @@ resource "iosxe_bgp_address_family_ipv4_mvpn" "bgp_address_family_ipv4_mvpn" {
   af_name = "mvpn"
 }
 
+resource "iosxe_bgp_address_family_vpnv4" "bgp_address_family_vpnv4" {
+  for_each = { for device in local.devices : device.name => device if try(local.device_config[device.name].routing.bgp.address_family.vpnv4_unicast.enable, null) != null }
+  device   = each.value.name
+
+  asn     = iosxe_bgp.bgp[each.value.name].asn
+  af_name = "unicast"
+}
+
+resource "iosxe_bgp_address_family_vpnv6" "bgp_address_family_vpnv6" {
+  for_each = { for device in local.devices : device.name => device if try(local.device_config[device.name].routing.bgp.address_family.vpnv6_unicast.enable, null) != null }
+  device   = each.value.name
+
+  asn     = iosxe_bgp.bgp[each.value.name].asn
+  af_name = "unicast"
+}
+
 resource "iosxe_bgp_address_family_ipv4_vrf" "bgp_address_family_ipv4_vrf" {
   for_each = { for device in local.devices : device.name => device if try(local.device_config[device.name].routing.bgp.address_family.ipv4_unicast.vrfs, null) != null }
   device   = each.value.name
@@ -345,6 +361,7 @@ locals {
           in_out         = try(rm.direction, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.neighbors.route_maps.direction, null)
           route_map_name = try(rm.name, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.neighbors.route_maps.name, null)
         }]
+        inherit_peer_policy = try(neighbor.inherit_peer_policy, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv4_unicast.neighbors.inherit_peer_policy, null)
       }
     ]
   ])
@@ -363,6 +380,7 @@ resource "iosxe_bgp_ipv4_unicast_neighbor" "bgp_ipv4_unicast_neighbor" {
   default_originate           = each.value.default_originate
   default_originate_route_map = each.value.default_originate_route_map
   route_maps                  = each.value.route_maps
+  inherit_peer_policy         = each.value.inherit_peer_policy
 
   depends_on = [
     iosxe_bgp_neighbor.bgp_neighbor,
@@ -425,6 +443,7 @@ locals {
         send_community         = try(neighbor.send_community, local.defaults.iosxe.configuration.routing.bgp.address_family.l2vpn_evpn.neighbors.send_community, null)
         route_reflector_client = try(neighbor.route_reflector_client, local.defaults.iosxe.configuration.routing.bgp.address_family.l2vpn_evpn.neighbors.route_reflector_client, null)
         soft_reconfiguration   = try(neighbor.soft_reconfiguration, local.defaults.iosxe.configuration.routing.bgp.address_family.l2vpn_evpn.neighbors.soft_reconfiguration, null)
+        inherit_peer_policy    = try(neighbor.inherit_peer_policy, local.defaults.iosxe.configuration.routing.bgp.address_family.l2vpn_evpn.neighbors.inherit_peer_policy, null)
         route_maps = try(length(neighbor.route_maps) == 0, true) ? null : [for rm in neighbor.route_maps : {
           in_out         = try(rm.in_out, local.defaults.iosxe.configuration.routing.bgp.address_family.l2vpn_evpn.neighbors.route_maps.in_out, null)
           route_map_name = try(rm.name, local.defaults.iosxe.configuration.routing.bgp.address_family.l2vpn_evpn.neighbors.route_maps.name, null)
@@ -444,6 +463,7 @@ resource "iosxe_bgp_l2vpn_evpn_neighbor" "bgp_l2vpn_evpn_neighbor" {
   send_community         = each.value.send_community
   route_reflector_client = each.value.route_reflector_client
   soft_reconfiguration   = each.value.soft_reconfiguration
+  inherit_peer_policy    = each.value.inherit_peer_policy
   route_maps             = each.value.route_maps
 
   depends_on = [
