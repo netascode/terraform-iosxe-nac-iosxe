@@ -5,3 +5,6 @@ defaults:
     devices:
       managed: true
       configuration:
+        interfaces:
+          ethernets:
+            managed: true
