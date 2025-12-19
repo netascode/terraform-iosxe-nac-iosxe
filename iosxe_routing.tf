@@ -75,6 +75,15 @@ resource "iosxe_static_route" "static_route" {
   mask                 = each.value.mask
   next_hops            = each.value.next_hops
   next_hops_with_track = each.value.next_hops_with_track
+
+  depends_on = [
+    iosxe_interface_ethernet.ethernet,
+    iosxe_interface_loopback.loopback,
+    iosxe_interface_vlan.vlan,
+    iosxe_interface_port_channel.port_channel,
+    iosxe_interface_port_channel_subinterface.port_channel_subinterface,
+    iosxe_interface_tunnel.tunnel
+  ]
 }
 
 resource "iosxe_static_routes_vrf" "static_routes_vrf" {
@@ -85,4 +94,13 @@ resource "iosxe_static_routes_vrf" "static_routes_vrf" {
   device = each.value.device_name
   vrf    = each.value.vrf
   routes = each.value.routes
+
+  depends_on = [
+    iosxe_interface_ethernet.ethernet,
+    iosxe_interface_loopback.loopback,
+    iosxe_interface_vlan.vlan,
+    iosxe_interface_port_channel.port_channel,
+    iosxe_interface_port_channel_subinterface.port_channel_subinterface,
+    iosxe_interface_tunnel.tunnel
+  ]
 }

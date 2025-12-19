@@ -419,7 +419,8 @@ resource "iosxe_interface_ethernet" "ethernet" {
     iosxe_access_list_standard.access_list_standard,
     iosxe_access_list_extended.access_list_extended,
     iosxe_policy_map.policy_map,
-    iosxe_evpn_ethernet_segment.evpn_ethernet_segment
+    iosxe_evpn_ethernet_segment.evpn_ethernet_segment,
+    iosxe_flow_exporter.flow_exporter
   ]
 }
 
