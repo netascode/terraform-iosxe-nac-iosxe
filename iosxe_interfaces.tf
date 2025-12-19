@@ -557,7 +557,7 @@ resource "iosxe_interface_ethernet" "ethernet_unmanaged" {
 }
 
 resource "iosxe_interface_switchport" "ethernet_switchport" {
-  for_each = { for v in local.interfaces_ethernets : v.key => v if v.managed && (v.switchport || v.switchport_mode != null) }
+  for_each = { for v in local.interfaces_ethernets : v.key => v if v.managed && (v.switchport == true || v.switchport_mode != null) }
 
   device                        = each.value.device
   type                          = each.value.type
@@ -590,7 +590,7 @@ resource "iosxe_interface_switchport" "ethernet_switchport" {
 }
 
 resource "iosxe_interface_switchport" "ethernet_switchport_unmanaged" {
-  for_each = { for v in local.interfaces_ethernets : v.key => v if !v.managed && (v.switchport || v.switchport_mode != null) }
+  for_each = { for v in local.interfaces_ethernets : v.key => v if !v.managed && (v.switchport == true || v.switchport_mode != null) }
 
   device                        = each.value.device
   type                          = each.value.type
@@ -627,7 +627,7 @@ resource "iosxe_interface_switchport" "ethernet_switchport_unmanaged" {
 }
 
 resource "iosxe_interface_mpls" "ethernet_mpls" {
-  for_each = { for v in local.interfaces_ethernets : v.key => v if v.managed && (v.mpls_ip || v.mpls_mtu != null) }
+  for_each = { for v in local.interfaces_ethernets : v.key => v if v.managed && (v.mpls_ip == true || v.mpls_mtu != null) }
 
   device = each.value.device
   type   = each.value.type
@@ -641,7 +641,7 @@ resource "iosxe_interface_mpls" "ethernet_mpls" {
 }
 
 resource "iosxe_interface_mpls" "ethernet_mpls_unmanaged" {
-  for_each = { for v in local.interfaces_ethernets : v.key => v if !v.managed && (v.mpls_ip || v.mpls_mtu != null) }
+  for_each = { for v in local.interfaces_ethernets : v.key => v if !v.managed && (v.mpls_ip == true || v.mpls_mtu != null) }
 
   device = each.value.device
   type   = each.value.type
