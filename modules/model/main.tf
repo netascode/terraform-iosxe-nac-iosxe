@@ -6,10 +6,11 @@ locals {
   interface_groups = try(local.iosxe.interface_groups, [])
 
   all_devices = [for device in local.devices : {
-    name    = device.name
-    url     = try(device.url, null)
-    host    = try(device.host, null)
-    managed = try(device.managed, local.defaults.iosxe.devices.managed, true)
+    name     = device.name
+    url      = try(device.url, null)
+    host     = try(device.host, null)
+    protocol = try(device.protocol, null)
+    managed  = try(device.managed, local.defaults.iosxe.devices.managed, true)
   }]
 
   managed_devices = [
@@ -190,10 +191,11 @@ locals {
     iosxe = {
       devices = [
         for device in try(local.managed_devices, []) : {
-          name    = device.name
-          url     = try(device.url, null)
-          host    = try(device.host, null)
-          managed = try(device.managed, local.defaults.iosxe.devices.managed, true)
+          name     = device.name
+          url      = try(device.url, null)
+          host     = try(device.host, null)
+          protocol = try(device.protocol, null)
+          managed  = try(device.managed, local.defaults.iosxe.devices.managed, true)
           configuration = merge(
             { for k, v in try(local.devices_config[device.name], {}) : k => v if k != "interfaces" },
             {

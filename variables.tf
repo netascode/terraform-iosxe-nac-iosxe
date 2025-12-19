@@ -29,7 +29,7 @@ variable "managed_devices" {
 }
 
 variable "device_transaction" {
-  description = "Enable device transaction mode. This will group all changes into a single transaction. Only valid if NETCONF is used."
+  description = "Enable device transaction mode. This will group all changes into a single transaction. This enables NETCONF as protocol."
   type        = bool
   default     = false
 }

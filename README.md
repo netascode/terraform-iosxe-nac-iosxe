@@ -46,7 +46,7 @@ module "iosxe" {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_device_transaction"></a> [device\_transaction](#input\_device\_transaction) | Enable device transaction mode. This will group all changes into a single transaction. Only valid if NETCONF is used. | `bool` | `false` | no |
+| <a name="input_device_transaction"></a> [device\_transaction](#input\_device\_transaction) | Enable device transaction mode. This will group all changes into a single transaction. This enables NETCONF as protocol. | `bool` | `false` | no |
 | <a name="input_managed_device_groups"></a> [managed\_device\_groups](#input\_managed\_device\_groups) | List of device group names to be managed. By default all device groups will be managed. | `list(string)` | `[]` | no |
 | <a name="input_managed_devices"></a> [managed\_devices](#input\_managed\_devices) | List of device names to be managed. By default all devices will be managed. | `list(string)` | `[]` | no |
 | <a name="input_model"></a> [model](#input\_model) | As an alternative to YAML files, a native Terraform data structure can be provided as well. | `map(any)` | `{}` | no |

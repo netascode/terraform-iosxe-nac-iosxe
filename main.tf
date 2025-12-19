@@ -24,7 +24,9 @@ locals {
 }
 
 provider "iosxe" {
-  devices = local.provider_devices
+  devices     = local.provider_devices
+  protocol    = var.device_transaction ? "netconf" : null
+  auto_commit = var.device_transaction ? false : null
 }
 
 locals {
