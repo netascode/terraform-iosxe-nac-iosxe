@@ -52,8 +52,6 @@ resource "iosxe_aaa" "aaa" {
     iosxe_interface_port_channel.port_channel,
     iosxe_interface_port_channel_subinterface.port_channel_subinterface,
     iosxe_interface_vlan.vlan,
-    iosxe_radius.radius,
-    iosxe_tacacs_server.tacacs_server
   ]
 }
 
@@ -384,6 +382,10 @@ resource "iosxe_radius" "radius" {
   automate_tester_probe_on_config  = each.value.automate_tester_probe_on_config
   pac_key                          = each.value.pac_key
   pac_key_encryption               = each.value.pac_key_encryption
+
+  depends_on = [
+    iosxe_aaa.aaa
+  ]
 }
 
 resource "iosxe_radius_server" "radius_server" {
@@ -409,9 +411,11 @@ resource "iosxe_radius_server" "radius_server" {
       ]
     }
   ]
+
+  depends_on = [
+    iosxe_aaa.aaa
+  ]
 }
-
-
 
 locals {
   tacacs_servers = flatten([
@@ -441,6 +445,9 @@ resource "iosxe_tacacs" "tacacs" {
   encryption   = each.value.encryption
   key          = each.value.key
 
+  depends_on = [
+    iosxe_aaa.aaa
+  ]
 }
 
 resource "iosxe_tacacs_server" "tacacs_server" {
