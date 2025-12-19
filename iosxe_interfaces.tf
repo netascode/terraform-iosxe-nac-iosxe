@@ -31,6 +31,7 @@ locals {
         key                                     = format("%s/%s%s", device.name, try(int.type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.type, null), trimprefix(int.id, "$string "))
         device                                  = device.name
         id                                      = trimprefix(int.id, "$string ")
+        managed                                 = try(int.managed, local.defaults.iosxe.devices.configuration.interfaces.ethernets.managed, true)
         type                                    = try(int.type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.type, null)
         media_type                              = try(int.media_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.media_type, null)
         bandwidth                               = try(int.bandwidth, local.defaults.iosxe.devices.configuration.interfaces.ethernets.bandwidth, null)
@@ -298,7 +299,7 @@ locals {
 }
 
 resource "iosxe_interface_ethernet" "ethernet" {
-  for_each = { for v in local.interfaces_ethernets : v.key => v }
+  for_each = { for v in local.interfaces_ethernets : v.key => v if v.managed }
   device   = each.value.device
 
   type                                       = each.value.type
@@ -424,8 +425,139 @@ resource "iosxe_interface_ethernet" "ethernet" {
   ]
 }
 
+resource "iosxe_interface_ethernet" "ethernet_unmanaged" {
+  for_each = { for v in local.interfaces_ethernets : v.key => v if !v.managed }
+  device   = each.value.device
+
+  type                                       = each.value.type
+  name                                       = each.value.id
+  media_type                                 = each.value.media_type
+  bandwidth                                  = each.value.bandwidth
+  mtu                                        = each.value.mtu
+  description                                = each.value.description
+  shutdown                                   = each.value.shutdown
+  vrf_forwarding                             = each.value.vrf_forwarding
+  ipv4_address                               = each.value.ipv4_address
+  ipv4_address_mask                          = each.value.ipv4_address_mask
+  ip_proxy_arp                               = each.value.ip_proxy_arp
+  ip_arp_inspection_trust                    = each.value.ip_arp_inspection_trust
+  ip_arp_inspection_limit_rate               = each.value.ip_arp_inspection_limit_rate
+  ip_dhcp_snooping_trust                     = each.value.ip_dhcp_snooping_trust
+  ip_dhcp_relay_source_interface             = each.value.ip_dhcp_relay_source_interface
+  ip_dhcp_relay_information_option_vpn_id    = each.value.ip_dhcp_relay_information_option_vpn_id
+  helper_addresses                           = each.value.helper_addresses
+  ip_access_group_in                         = each.value.ip_access_group_in
+  ip_access_group_in_enable                  = each.value.ip_access_group_in_enable
+  ip_access_group_out                        = each.value.ip_access_group_out
+  ip_access_group_out_enable                 = each.value.ip_access_group_out_enable
+  ip_flow_monitors                           = each.value.ip_flow_monitors
+  ip_nbar_protocol_discovery                 = each.value.ip_nbar_protocol_discovery
+  ip_redirects                               = each.value.ip_redirects
+  ip_unreachables                            = each.value.ip_unreachables
+  ip_igmp_version                            = each.value.ip_igmp_version
+  unnumbered                                 = each.value.unnumbered
+  ipv6_address_autoconfig_default            = each.value.ipv6_address_autoconfig_default
+  ipv6_address_dhcp                          = each.value.ipv6_address_dhcp
+  ipv6_addresses                             = each.value.ipv6_addresses
+  ipv6_enable                                = each.value.ipv6_enable
+  ipv6_link_local_addresses                  = each.value.ipv6_link_local_addresses
+  ipv6_mtu                                   = each.value.ipv6_mtu
+  ipv6_nd_ra_suppress_all                    = each.value.ipv6_nd_ra_suppress_all
+  ipv6_flow_monitors                         = each.value.ipv6_flow_monitors
+  bfd_enable                                 = each.value.bfd_enable
+  bfd_template                               = each.value.bfd_template
+  bfd_local_address                          = each.value.bfd_local_address
+  bfd_interval                               = each.value.bfd_interval
+  bfd_interval_min_rx                        = each.value.bfd_interval_min_rx
+  bfd_interval_multiplier                    = each.value.bfd_interval_multiplier
+  bfd_echo                                   = each.value.bfd_echo
+  spanning_tree_guard                        = each.value.spanning_tree_guard
+  spanning_tree_link_type                    = each.value.spanning_tree_link_type
+  spanning_tree_portfast_trunk               = each.value.spanning_tree_portfast_trunk
+  spanning_tree_portfast                     = each.value.spanning_tree_portfast
+  spanning_tree_portfast_disable             = each.value.spanning_tree_portfast_disable
+  spanning_tree_portfast_edge                = each.value.spanning_tree_portfast_edge
+  bpduguard_enable                           = each.value.bpduguard_enable
+  bpduguard_disable                          = each.value.bpduguard_disable
+  speed_100                                  = each.value.speed_100
+  speed_1000                                 = each.value.speed_1000
+  speed_2500                                 = each.value.speed_2500
+  speed_5000                                 = each.value.speed_5000
+  speed_10000                                = each.value.speed_10000
+  speed_25000                                = each.value.speed_25000
+  speed_40000                                = each.value.speed_40000
+  speed_100000                               = each.value.speed_100000
+  speed_nonegotiate                          = each.value.speed_nonegotiate
+  channel_group_number                       = each.value.channel_group_number
+  channel_group_mode                         = each.value.channel_group_mode
+  source_template                            = each.value.source_templates
+  arp_timeout                                = each.value.arp_timeout
+  negotiation_auto                           = each.value.negotiation_auto
+  service_policy_input                       = each.value.service_policy_input
+  service_policy_output                      = each.value.service_policy_output
+  load_interval                              = each.value.load_interval
+  snmp_trap_link_status                      = each.value.snmp_trap_link_status
+  logging_event_link_status_enable           = each.value.logging_event_link_status_enable
+  device_tracking                            = each.value.device_tracking
+  device_tracking_attached_policies          = each.value.device_tracking_attached_policies
+  encapsulation_dot1q_vlan_id                = each.value.encapsulation_dot1q_vlan_id
+  switchport                                 = each.value.switchport
+  auto_qos_classify                          = each.value.auto_qos_classify
+  auto_qos_classify_police                   = each.value.auto_qos_classify_police
+  auto_qos_trust                             = each.value.auto_qos_trust
+  auto_qos_trust_cos                         = each.value.auto_qos_trust_cos
+  auto_qos_trust_dscp                        = each.value.auto_qos_trust_dscp
+  auto_qos_video_cts                         = each.value.auto_qos_video_cts
+  auto_qos_video_ip_camera                   = each.value.auto_qos_video_ip_camera
+  auto_qos_video_media_player                = each.value.auto_qos_video_media_player
+  auto_qos_voip                              = each.value.auto_qos_voip
+  auto_qos_voip_cisco_phone                  = each.value.auto_qos_voip_cisco_phone
+  auto_qos_voip_cisco_softphone              = each.value.auto_qos_voip_cisco_softphone
+  auto_qos_voip_trust                        = each.value.auto_qos_voip_trust
+  trust_device                               = each.value.trust_device
+  authentication_periodic                    = each.value.authentication_periodic
+  authentication_timer_reauthenticate        = each.value.authentication_timer_reauthenticate
+  authentication_timer_reauthenticate_server = each.value.authentication_timer_reauthenticate_server
+  mab                                        = each.value.mab
+  mab_eap                                    = each.value.mab_eap
+  dot1x_pae                                  = each.value.dot1x_pae
+  dot1x_timeout_auth_period                  = each.value.dot1x_timeout_auth_period
+  dot1x_timeout_held_period                  = each.value.dot1x_timeout_held_period
+  dot1x_timeout_quiet_period                 = each.value.dot1x_timeout_quiet_period
+  dot1x_timeout_ratelimit_period             = each.value.dot1x_timeout_ratelimit_period
+  dot1x_timeout_server_timeout               = each.value.dot1x_timeout_server_timeout
+  dot1x_timeout_start_period                 = each.value.dot1x_timeout_start_period
+  dot1x_timeout_supp_timeout                 = each.value.dot1x_timeout_supp_timeout
+  dot1x_timeout_tx_period                    = each.value.dot1x_timeout_tx_period
+  dot1x_max_reauth_req                       = each.value.dot1x_max_reauth_req
+  dot1x_max_req                              = each.value.dot1x_max_req
+  cdp_enable                                 = each.value.cdp_enable
+  cdp_tlv_app                                = each.value.cdp_tlv_app
+  cdp_tlv_location                           = each.value.cdp_tlv_location
+  cdp_tlv_server_location                    = each.value.cdp_tlv_server_location
+  evpn_ethernet_segments                     = each.value.evpn_ethernet_segments
+  ip_nat_inside                              = each.value.ip_nat_inside
+  ip_nat_outside                             = each.value.ip_nat_outside
+  carrier_delay_msec                         = each.value.carrier_delay_msec
+  hold_queues                                = each.value.hold_queues
+  service_instances                          = each.value.service_instances
+
+  depends_on = [
+    iosxe_vrf.vrf,
+    iosxe_access_list_standard.access_list_standard,
+    iosxe_access_list_extended.access_list_extended,
+    iosxe_policy_map.policy_map,
+    iosxe_evpn_ethernet_segment.evpn_ethernet_segment,
+    iosxe_flow_monitor.flow_monitor
+  ]
+
+  lifecycle {
+    ignore_changes = all
+  }
+}
+
 resource "iosxe_interface_switchport" "ethernet_switchport" {
-  for_each = { for v in local.interfaces_ethernets : v.key => v if v.switchport == true || v.switchport_mode != null }
+  for_each = { for v in local.interfaces_ethernets : v.key => v if v.managed && (v.switchport || v.switchport_mode != null) }
 
   device                        = each.value.device
   type                          = each.value.type
@@ -457,8 +589,45 @@ resource "iosxe_interface_switchport" "ethernet_switchport" {
   ]
 }
 
+resource "iosxe_interface_switchport" "ethernet_switchport_unmanaged" {
+  for_each = { for v in local.interfaces_ethernets : v.key => v if !v.managed && (v.switchport || v.switchport_mode != null) }
+
+  device                        = each.value.device
+  type                          = each.value.type
+  name                          = each.value.id
+  mode_access                   = each.value.switchport_mode_access
+  mode_trunk                    = each.value.switchport_mode_trunk
+  mode_dot1q_tunnel             = each.value.switchport_mode_dot1q_tunnel
+  mode_private_vlan_trunk       = each.value.switchport_mode_private_vlan_trunk
+  mode_private_vlan_host        = each.value.switchport_mode_private_vlan_host
+  mode_private_vlan_promiscuous = each.value.switchport_mode_private_vlan_promiscuous
+  nonegotiate                   = each.value.switchport_nonegotiate
+  access_vlan                   = each.value.switchport_access_vlan
+  # NEW v2 trunk allowed VLANs
+  trunk_allowed_vlans        = each.value.switchport_trunk_allowed_vlans
+  trunk_allowed_vlans_none   = each.value.switchport_trunk_allowed_vlans_none
+  trunk_allowed_vlans_all    = each.value.switchport_trunk_allowed_vlans_all
+  trunk_allowed_vlans_except = each.value.switchport_trunk_allowed_vlans_except
+  trunk_allowed_vlans_remove = each.value.switchport_trunk_allowed_vlans_remove
+  trunk_allowed_vlans_add    = each.value.switchport_trunk_allowed_vlans_add != null ? [{ vlans = each.value.switchport_trunk_allowed_vlans_add }] : null
+  # LEGACY trunk allowed VLANs (deprecated)
+  trunk_allowed_vlans_legacy      = each.value.switchport_trunk_allowed_vlans_legacy
+  trunk_allowed_vlans_none_legacy = each.value.switchport_trunk_allowed_vlans_none_legacy
+  trunk_native_vlan_tag           = each.value.switchport_trunk_native_vlan_tag
+  trunk_native_vlan               = each.value.switchport_trunk_native_vlan
+  host                            = each.value.switchport_host
+
+  depends_on = [
+    iosxe_interface_ethernet.ethernet_unmanaged
+  ]
+
+  lifecycle {
+    ignore_changes = all
+  }
+}
+
 resource "iosxe_interface_mpls" "ethernet_mpls" {
-  for_each = { for v in local.interfaces_ethernets : v.key => v if v.mpls_ip == true || v.mpls_mtu != null }
+  for_each = { for v in local.interfaces_ethernets : v.key => v if v.managed && (v.mpls_ip || v.mpls_mtu != null) }
 
   device = each.value.device
   type   = each.value.type
@@ -471,8 +640,26 @@ resource "iosxe_interface_mpls" "ethernet_mpls" {
   ]
 }
 
+resource "iosxe_interface_mpls" "ethernet_mpls_unmanaged" {
+  for_each = { for v in local.interfaces_ethernets : v.key => v if !v.managed && (v.mpls_ip || v.mpls_mtu != null) }
+
+  device = each.value.device
+  type   = each.value.type
+  name   = each.value.id
+  ip     = each.value.mpls_ip
+  mtu    = each.value.mpls_mtu
+
+  depends_on = [
+    iosxe_interface_ethernet.ethernet_unmanaged
+  ]
+
+  lifecycle {
+    ignore_changes = all
+  }
+}
+
 resource "iosxe_interface_ospf" "ethernet_ospf" {
-  for_each = { for v in local.interfaces_ethernets : v.key => v if v.ospf }
+  for_each = { for v in local.interfaces_ethernets : v.key => v if v.managed && v.ospf }
 
   device                           = each.value.device
   type                             = each.value.type
@@ -498,8 +685,39 @@ resource "iosxe_interface_ospf" "ethernet_ospf" {
   ]
 }
 
+resource "iosxe_interface_ospf" "ethernet_ospf_unmanaged" {
+  for_each = { for v in local.interfaces_ethernets : v.key => v if !v.managed && v.ospf }
+
+  device                           = each.value.device
+  type                             = each.value.type
+  name                             = each.value.id
+  cost                             = each.value.ospf_cost
+  dead_interval                    = each.value.ospf_dead_interval
+  hello_interval                   = each.value.ospf_hello_interval
+  message_digest_keys              = each.value.ospf_message_digest_keys
+  mtu_ignore                       = each.value.ospf_mtu_ignore
+  multi_area_ids                   = each.value.ospf_multi_area_ids
+  network_type_broadcast           = each.value.ospf_network_type_broadcast
+  network_type_non_broadcast       = each.value.ospf_network_type_non_broadcast
+  network_type_point_to_multipoint = each.value.ospf_network_type_point_to_multipoint
+  network_type_point_to_point      = each.value.ospf_network_type_point_to_point
+  priority                         = each.value.ospf_priority
+  process_ids                      = each.value.ospf_process_ids
+  ttl_security_hops                = each.value.ospf_ttl_security_hops
+
+  depends_on = [
+    iosxe_interface_ethernet.ethernet_unmanaged,
+    iosxe_ospf.ospf,
+    iosxe_ospf_vrf.ospf_vrf
+  ]
+
+  lifecycle {
+    ignore_changes = all
+  }
+}
+
 resource "iosxe_interface_ospfv3" "ethernet_ospfv3" {
-  for_each = { for v in local.interfaces_ethernets : v.key => v if v.ospfv3 }
+  for_each = { for v in local.interfaces_ethernets : v.key => v if v.ospfv3 && v.managed }
 
   device                           = each.value.device
   type                             = each.value.type
@@ -517,8 +735,31 @@ resource "iosxe_interface_ospfv3" "ethernet_ospfv3" {
   ]
 }
 
+resource "iosxe_interface_ospfv3" "ethernet_ospfv3_unmanaged" {
+  for_each = { for v in local.interfaces_ethernets : v.key => v if v.ospfv3 && !v.managed }
+
+  device                           = each.value.device
+  type                             = each.value.type
+  name                             = each.value.id
+  network_type_broadcast           = each.value.ospfv3_network_type_broadcast
+  network_type_non_broadcast       = each.value.ospfv3_network_type_non_broadcast
+  network_type_point_to_multipoint = each.value.ospfv3_network_type_point_to_multipoint
+  network_type_point_to_point      = each.value.ospfv3_network_type_point_to_point
+  cost                             = each.value.ospfv3_cost
+
+  depends_on = [
+    iosxe_interface_ethernet.ethernet_unmanaged,
+    iosxe_ospf.ospf,
+    iosxe_ospf_vrf.ospf_vrf
+  ]
+
+  lifecycle {
+    ignore_changes = all
+  }
+}
+
 resource "iosxe_interface_pim" "ethernet_pim" {
-  for_each = { for v in local.interfaces_ethernets : v.key => v if v.pim }
+  for_each = { for v in local.interfaces_ethernets : v.key => v if v.managed && v.pim }
 
   device            = each.value.device
   type              = each.value.type
@@ -537,8 +778,32 @@ resource "iosxe_interface_pim" "ethernet_pim" {
   ]
 }
 
+resource "iosxe_interface_pim" "ethernet_pim_unmanaged" {
+  for_each = { for v in local.interfaces_ethernets : v.key => v if !v.managed && v.pim }
+
+  device            = each.value.device
+  type              = each.value.type
+  name              = each.value.id
+  passive           = each.value.pim_passive
+  dense_mode        = each.value.pim_dense_mode
+  sparse_mode       = each.value.pim_sparse_mode
+  sparse_dense_mode = each.value.pim_sparse_dense_mode
+  bfd               = each.value.pim_bfd
+  border            = each.value.pim_border
+  bsr_border        = each.value.pim_bsr_border
+  dr_priority       = each.value.pim_dr_priority
+
+  depends_on = [
+    iosxe_interface_ethernet.ethernet_unmanaged
+  ]
+
+  lifecycle {
+    ignore_changes = all
+  }
+}
+
 resource "iosxe_interface_pim_ipv6" "ethernet_pim_ipv6" {
-  for_each = { for v in local.interfaces_ethernets : v.key => v if v.ipv6_pim }
+  for_each = { for v in local.interfaces_ethernets : v.key => v if v.managed && v.ipv6_pim }
 
   device      = each.value.device
   type        = each.value.type
@@ -551,6 +816,26 @@ resource "iosxe_interface_pim_ipv6" "ethernet_pim_ipv6" {
   depends_on = [
     iosxe_interface_ethernet.ethernet
   ]
+}
+
+resource "iosxe_interface_pim_ipv6" "ethernet_pim_ipv6_unmanaged" {
+  for_each = { for v in local.interfaces_ethernets : v.key => v if !v.managed && v.ipv6_pim }
+
+  device      = each.value.device
+  type        = each.value.type
+  name        = each.value.id
+  pim         = each.value.ipv6_pim_pim
+  bfd         = each.value.ipv6_pim_bfd
+  bsr_border  = each.value.ipv6_pim_bsr_border
+  dr_priority = each.value.ipv6_pim_dr_priority
+
+  depends_on = [
+    iosxe_interface_ethernet.ethernet_unmanaged
+  ]
+
+  lifecycle {
+    ignore_changes = all
+  }
 }
 
 ##### LOOPBACKS #####
