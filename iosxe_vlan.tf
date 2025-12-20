@@ -51,7 +51,7 @@ locals {
 }
 
 resource "iosxe_vlan_configuration" "vlan_configuration" {
-  for_each = { for e in local.vlan_config : e.key => e }
+  for_each = { for e in local.vlan_config : e.key => e if(e.vni != null || e.access_vfi != null || e.evpn_instance != null || e.evpn_instance_vni != null || e.evpn_instance_protected != null || e.evpn_instance_profile != null || e.evpn_instance_profile_protected != null) }
   device   = each.value.device
 
   vlan_id                         = each.value.id
