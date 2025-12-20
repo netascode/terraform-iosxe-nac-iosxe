@@ -2,9 +2,9 @@ locals {
   bridge_domains = flatten([
     for device in local.devices : [
       for bd in try(local.device_config[device.name].bridge_domains, []) : {
-        key        = format("%s/BD%s", device.name, try(bd.id, null))
+        key        = format("%s/BD%s", device.name, bd.id)
         device     = device.name
-        id         = trimprefix(bd.id, "$string ")
+        id         = bd.id
         member_vni = try(bd.member_vni, null)
         member_interfaces = try(length(bd.member_interfaces) == 0, true) ? null : [for mi in bd.member_interfaces : {
           interface = try(mi.name, null)

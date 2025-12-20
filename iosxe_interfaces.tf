@@ -4,9 +4,9 @@ locals {
   interfaces_bdis = flatten([
     for device in local.devices : [
       for int in try(local.device_config[device.name].interfaces.bdis, []) : {
-        key         = format("%s/BDI%s", device.name, try(int.id, null))
+        key         = format("%s/BDI%s", device.name, int.id)
         device      = device.name
-        id          = trimprefix(int.id, "$string ")
+        id          = int.id
         mac_address = try(int.mac_address, null)
       }
     ]
