@@ -859,6 +859,8 @@ locals {
         ip_access_group_out_enable = try(int.ipv4.access_group_out, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ipv4.access_group_out, null) != null ? true : null
         ip_redirects               = try(int.ipv4.redirects, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ipv4.redirects, null)
         ip_unreachables            = try(int.ipv4.unreachables, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ipv4.unreachables, null)
+        ip_nat_inside              = try(int.ipv4.nat_inside, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ipv4.nat_inside, null)
+        ip_nat_outside             = try(int.ipv4.nat_outside, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ipv4.nat_outside, null)
         source_template            = try(int.source_template, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.source_template, [])
         ipv6_enable                = try(int.ipv6.enable, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ipv6.enable, null)
         ipv6_addresses = try(length(int.ipv6.addresses) == 0, true) ? null : [for addr in int.ipv6.addresses : {
@@ -953,6 +955,8 @@ resource "iosxe_interface_loopback" "loopback" {
   ip_access_group_out_enable      = each.value.ip_access_group_out_enable
   ip_redirects                    = each.value.ip_redirects
   ip_unreachables                 = each.value.ip_unreachables
+  ip_nat_inside                   = each.value.ip_nat_inside
+  ip_nat_outside                  = each.value.ip_nat_outside
   ip_igmp_version                 = each.value.ip_igmp_version
   ipv6_enable                     = each.value.ipv6_enable
   ipv6_addresses                  = each.value.ipv6_addresses
@@ -1114,6 +1118,8 @@ locals {
         ip_access_group_out_enable = try(int.ipv4.access_group_out, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.access_group_out, null) != null ? true : null
         ip_redirects               = try(int.ipv4.redirects, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.redirects, null)
         ip_unreachables            = try(int.ipv4.unreachables, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.unreachables, null)
+        ip_nat_inside              = try(int.ipv4.nat_inside, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.nat_inside, null)
+        ip_nat_outside             = try(int.ipv4.nat_outside, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.nat_outside, null)
         unnumbered                 = try("${try(int.ipv4.unnumbered_interface_type, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.unnumbered_interface_type)}${try(int.ipv4.unnumbered_interface_id, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.unnumbered_interface_id)}", null)
         ipv6_enable                = try(int.ipv6.enable, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv6.enable, null)
         ipv6_addresses = try(length(int.ipv6.addresses) == 0, true) ? null : [for addr in int.ipv6.addresses : {
@@ -1211,6 +1217,8 @@ resource "iosxe_interface_vlan" "vlan" {
   ip_access_group_out_enable              = each.value.ip_access_group_out_enable
   ip_redirects                            = each.value.ip_redirects
   ip_unreachables                         = each.value.ip_unreachables
+  ip_nat_inside                           = each.value.ip_nat_inside
+  ip_nat_outside                          = each.value.ip_nat_outside
   ip_igmp_version                         = each.value.ip_igmp_version
   unnumbered                              = each.value.unnumbered
   ipv6_address_autoconfig_default         = each.value.ipv6_address_autoconfig_default
@@ -1354,6 +1362,8 @@ locals {
         ip_access_group_out_enable     = try(int.ipv4.access_group_out, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv4.access_group_out, null) != null ? true : null
         ip_redirects                   = try(int.ipv4.redirects, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv4.redirects, null)
         ip_unreachables                = try(int.ipv4.unreachables, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv4.unreachables, null)
+        ip_nat_inside                  = try(int.ipv4.nat_inside, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv4.nat_inside, null)
+        ip_nat_outside                 = try(int.ipv4.nat_outside, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv4.nat_outside, null)
         ip_arp_inspection_trust        = try(int.ipv4.arp_inspection_trust, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv4.arp_inspection_trust, null)
         ip_arp_inspection_limit_rate   = try(int.ipv4.arp_inspection_limit_rate, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv4.arp_inspection_limit_rate, null)
         ip_dhcp_snooping_trust         = try(int.ipv4.dhcp_snooping_trust, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv4.dhcp_snooping_trust, null)
@@ -1546,6 +1556,8 @@ resource "iosxe_interface_port_channel" "port_channel" {
   ip_access_group_out              = each.value.ip_access_group_out
   ip_redirects                     = each.value.ip_redirects
   ip_unreachables                  = each.value.ip_unreachables
+  ip_nat_inside                    = each.value.ip_nat_inside
+  ip_nat_outside                   = each.value.ip_nat_outside
   ip_igmp_version                  = each.value.ip_igmp_version
   ip_arp_inspection_trust          = each.value.ip_arp_inspection_trust
   ip_arp_inspection_limit_rate     = each.value.ip_arp_inspection_limit_rate
@@ -1748,6 +1760,8 @@ locals {
           ip_access_group_out_enable = try(sub.ipv4.access_group_out, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv4.access_group_out, null) != null ? true : null
           ip_redirects               = try(sub.ipv4.redirects, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv4.redirects, null)
           ip_unreachables            = try(sub.ipv4.unreachables, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv4.unreachables, null)
+          ip_nat_inside              = try(sub.ipv4.nat_inside, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv4.nat_inside, null)
+          ip_nat_outside             = try(sub.ipv4.nat_outside, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv4.nat_outside, null)
           ipv6_enable                = try(sub.ipv6.enable, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv6.enable, null)
           ipv6_addresses = try(length(sub.ipv6.addresses) == 0, true) ? null : [for addr in sub.ipv6.addresses : {
             prefix = try(addr.prefix, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv6.addresses.prefix, null)
@@ -1840,6 +1854,8 @@ resource "iosxe_interface_port_channel_subinterface" "port_channel_subinterface"
   ip_proxy_arp                    = each.value.ip_proxy_arp
   ip_redirects                    = each.value.ip_redirects
   ip_unreachables                 = each.value.ip_unreachables
+  ip_nat_inside                   = each.value.ip_nat_inside
+  ip_nat_outside                  = each.value.ip_nat_outside
   vrf_forwarding                  = each.value.vrf_forwarding
   ipv4_address                    = each.value.ipv4_address
   ipv4_address_mask               = each.value.ipv4_address_mask
@@ -2044,6 +2060,8 @@ locals {
         ip_access_group_out_enable = try(int.ipv4.access_group_out, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.access_group_out, null) != null ? true : null
         ip_redirects               = try(int.ipv4.redirects, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.redirects, null)
         ip_unreachables            = try(int.ipv4.unreachables, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.unreachables, null)
+        ip_nat_inside              = try(int.ipv4.nat_inside, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.nat_inside, null)
+        ip_nat_outside             = try(int.ipv4.nat_outside, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.nat_outside, null)
         unnumbered                 = try("${try(int.ipv4.unnumbered_interface_type, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.unnumbered_interface_type)}${try(int.ipv4.unnumbered_interface_id, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.unnumbered_interface_id)}", null)
         ipv6_enable                = try(int.ipv6.enable, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv6.enable, null)
         ipv6_addresses = try(length(int.ipv6.addresses) == 0, true) ? null : [for addr in int.ipv6.addresses : {
@@ -2128,6 +2146,8 @@ resource "iosxe_interface_tunnel" "tunnel" {
   ip_access_group_out_enable       = each.value.ip_access_group_out_enable
   ip_redirects                     = each.value.ip_redirects
   ip_unreachables                  = each.value.ip_unreachables
+  ip_nat_inside                    = each.value.ip_nat_inside
+  ip_nat_outside                   = each.value.ip_nat_outside
   unnumbered                       = each.value.unnumbered
   ipv6_enable                      = each.value.ipv6_enable
   ipv6_addresses                   = each.value.ipv6_addresses
