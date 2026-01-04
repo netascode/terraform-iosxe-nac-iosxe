@@ -19,7 +19,7 @@ resource "iosxe_logging" "logging" {
   file_min_size       = try(local.device_config[each.value.name].logging.file_min_size, local.defaults.iosxe.configuration.logging.file_min_size, null)
   file_severity       = try(local.device_config[each.value.name].logging.file_severity, local.defaults.iosxe.configuration.logging.file_severity, null)
   source_interface    = try("${try(local.device_config[each.value.name].logging.source_interface_type, local.defaults.iosxe.configuration.logging.source_interface_type)}${try(trimprefix(local.device_config[each.value.name].logging.source_interface_id, "$string "), local.defaults.iosxe.configuration.logging.source_interface_id)}", null)
-  logging_count       = try(local.device_config[each.value.name].logging.logging_count, local.defaults.iosxe.configuration.logging.logging_count, null)
+  logging_count       = try(local.device_config[each.value.name].logging.count, local.defaults.iosxe.configuration.logging.count, null)
   persistent_url      = try(local.device_config[each.value.name].logging.persistent_url, local.defaults.iosxe.configuration.logging.persistent_url, null)
   persistent_size     = try(local.device_config[each.value.name].logging.persistent_size, local.defaults.iosxe.configuration.logging.persistent_size, null)
   persistent_filesize = try(local.device_config[each.value.name].logging.persistent_filesize, local.defaults.iosxe.configuration.logging.persistent_filesize, null)
