@@ -20,17 +20,15 @@ locals {
         detector_rpc_max_sessions      = try(local.device_config[device.name].eem.detector_rpc_max_sessions, local.defaults.iosxe.configuration.eem.detector_rpc_max_sessions, null)
         detector_routing_bootup_delay  = try(local.device_config[device.name].eem.detector_routing_bootup_delay, local.defaults.iosxe.configuration.eem.detector_routing_bootup_delay, null)
 
-        # Scheduler thread class - for now, use first entry if list exists
+        # Scheduler thread class
         scheduler_applet_thread_class_default = try(
-          length(local.device_config[device.name].eem.scheduler_applet_thread_classes) > 0 ?
-          contains(local.device_config[device.name].eem.scheduler_applet_thread_classes[0].classes, "default") : false,
-          local.defaults.iosxe.configuration.eem.scheduler_applet_thread_classes.classes,
+          contains(local.device_config[device.name].eem.scheduler_applet_thread_class.classes, "default"),
+          local.defaults.iosxe.configuration.eem.scheduler_applet_thread_class.classes,
           null
         )
         scheduler_applet_thread_class_number = try(
-          length(local.device_config[device.name].eem.scheduler_applet_thread_classes) > 0 ?
-          local.device_config[device.name].eem.scheduler_applet_thread_classes[0].number : null,
-          local.defaults.iosxe.configuration.eem.scheduler_applet_thread_classes.number,
+          local.device_config[device.name].eem.scheduler_applet_thread_class.number,
+          local.defaults.iosxe.configuration.eem.scheduler_applet_thread_class.number,
           null
         )
 
