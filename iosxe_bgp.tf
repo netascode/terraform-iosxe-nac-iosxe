@@ -6,9 +6,9 @@ resource "iosxe_bgp" "bgp" {
   default_ipv4_unicast = try(local.device_config[each.value.name].routing.bgp.default_ipv4_unicast, local.defaults.iosxe.configuration.routing.bgp.default_ipv4_unicast, null)
   log_neighbor_changes = try(local.device_config[each.value.name].routing.bgp.log_neighbor_changes, local.defaults.iosxe.configuration.routing.bgp.log_neighbor_changes, null)
   router_id_loopback   = try(local.device_config[each.value.name].routing.bgp.router_id_interface_type, local.defaults.iosxe.configuration.routing.bgp.router_id_interface_type, null) == "Loopback" ? try(local.device_config[each.value.name].routing.bgp.router_id_interface_id, local.defaults.iosxe.configuration.routing.bgp.router_id_interface_id, null) : null
-  router_id_ip         = try(local.device_config[each.value.name].routing.bgp.router_id_ip, local.defaults.iosxe.configuration.routing.bgp.router_id_ip, null)
-  bgp_graceful_restart = try(local.device_config[each.value.name].routing.bgp.bgp_graceful_restart, local.defaults.iosxe.configuration.routing.bgp.bgp_graceful_restart, null)
-  bgp_update_delay     = try(local.device_config[each.value.name].routing.bgp.bgp_update_delay, local.defaults.iosxe.configuration.routing.bgp.bgp_update_delay, null)
+  router_id_ip         = try(local.device_config[each.value.name].routing.bgp.router_id, local.defaults.iosxe.configuration.routing.bgp.router_id, null)
+  bgp_graceful_restart = try(local.device_config[each.value.name].routing.bgp.graceful_restart, local.defaults.iosxe.configuration.routing.bgp.graceful_restart, null)
+  bgp_update_delay     = try(local.device_config[each.value.name].routing.bgp.update_delay, local.defaults.iosxe.configuration.routing.bgp.update_delay, null)
 
   depends_on = [
     iosxe_interface_loopback.loopback,
