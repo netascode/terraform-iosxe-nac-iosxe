@@ -42,6 +42,7 @@ module "iosxe" {
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.8.0 |
 | <a name="requirement_iosxe"></a> [iosxe](#requirement\_iosxe) | = 0.15.0 |
 | <a name="requirement_utils"></a> [utils](#requirement\_utils) | = 1.1.0-beta3 |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -55,12 +56,14 @@ module "iosxe" {
 | <a name="input_write_model_file"></a> [write\_model\_file](#input\_write\_model\_file) | Write the full model including all resolved templates to a single YAML file. Value is a path pointing to the file to be created. | `string` | `""` | no |
 | <a name="input_yaml_directories"></a> [yaml\_directories](#input\_yaml\_directories) | List of paths to YAML directories. | `list(string)` | `[]` | no |
 | <a name="input_yaml_files"></a> [yaml\_files](#input\_yaml\_files) | List of paths to YAML files. | `list(string)` | `[]` | no |
+
 ## Outputs
 
 | Name | Description |
 |------|-------------|
 | <a name="output_default_values"></a> [default\_values](#output\_default\_values) | All default values. |
 | <a name="output_model"></a> [model](#output\_model) | Full model. |
+
 ## Resources
 
 | Name | Type |
@@ -221,6 +224,7 @@ module "iosxe" {
 | [iosxe_vlan_group.vlan_group](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.15.0/docs/resources/vlan_group) | resource |
 | [iosxe_vrf.vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.15.0/docs/resources/vrf) | resource |
 | [iosxe_vtp.vtp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.15.0/docs/resources/vtp) | resource |
+
 ## Modules
 
 | Name | Source | Version |
