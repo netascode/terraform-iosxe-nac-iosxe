@@ -287,7 +287,7 @@ locals {
             direction    = "out"
             queue_length = try(int.hold_queue_out, local.defaults.iosxe.devices.configuration.interfaces.ethernets.hold_queue_out, null)
           }] : []
-        ]) : []
+        ]) : null
         service_instances = try(length(int.service_instances) == 0, true) ? null : [for si in int.service_instances : {
           id                     = try(si.id, local.defaults.iosxe.devices.configuration.interfaces.ethernets.service_instances.id, null)
           ethernet               = try(si.type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.service_instances.type, null) == "ethernet" ? true : null
