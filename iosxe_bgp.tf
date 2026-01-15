@@ -154,7 +154,7 @@ locals {
         allowas_in_as_number      = try(peer_policy.allowas_in_as_number, null)
         as_override_split_horizon = try(peer_policy.as_override_split_horizon, null)
         route_maps = try(length(peer_policy.route_maps) == 0, true) ? null : [for route_map in peer_policy.route_maps : {
-          in_out         = try(route_map.in_out, null)
+          in_out         = try(route_map.direction, null)
           route_map_name = try(route_map.route_map_name, null)
         }]
       }
