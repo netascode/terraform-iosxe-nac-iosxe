@@ -91,6 +91,17 @@ locals {
             police_target_bitrate                     = try(action.police_target_bitrate, local.defaults.iosxe.configuration.policy.policy_maps.classes.actions.police_target_bitrate, null)
             police_target_bitrate_conform_burst_byte  = try(action.police_target_bitrate_conform_burst_byte, local.defaults.iosxe.configuration.policy.policy_maps.classes.actions.police_target_bitrate_conform_burst_byte, null)
             police_target_bitrate_excess_burst_byte   = try(action.police_target_bitrate_excess_burst_byte, local.defaults.iosxe.configuration.policy.policy_maps.classes.actions.police_target_bitrate_excess_burst_byte, null)
+            police_target_bitrate_exceed_drop         = try(action.police_target_bitrate_exceed_drop, local.defaults.iosxe.configuration.policy.policy_maps.classes.actions.police_target_bitrate_exceed_drop, null)
+            police_cir                                = try(action.police_cir, local.defaults.iosxe.configuration.policy.policy_maps.classes.actions.police_cir, null)
+            police_bc                                 = try(action.police_bc, local.defaults.iosxe.configuration.policy.policy_maps.classes.actions.police_bc, null)
+            police_be                                 = try(action.police_be, local.defaults.iosxe.configuration.policy.policy_maps.classes.actions.police_be, null)
+            police_pir                                = try(action.police_pir, local.defaults.iosxe.configuration.policy.policy_maps.classes.actions.police_pir, null)
+            police_pir_be                             = try(action.police_pir_be, local.defaults.iosxe.configuration.policy.policy_maps.classes.actions.police_pir_be, null)
+            police_cir_conform_transmit               = try(action.police_cir_conform_transmit, local.defaults.iosxe.configuration.policy.policy_maps.classes.actions.police_cir_conform_transmit, null)
+            police_cir_exceed_drop                    = try(action.police_cir_exceed_drop, local.defaults.iosxe.configuration.policy.policy_maps.classes.actions.police_cir_exceed_drop, null)
+            police_rate_percent                       = try(action.police_rate_percent, local.defaults.iosxe.configuration.policy.policy_maps.classes.actions.police_rate_percent, null)
+            queue_buffers_ratio                       = try(action.queue_buffers_ratio, local.defaults.iosxe.configuration.policy.policy_maps.classes.actions.queue_buffers_ratio, null)
+            set_dscp                                  = try(action.set_dscp, local.defaults.iosxe.configuration.policy.policy_maps.classes.actions.set_dscp, null)
           }]
         }]
       }
