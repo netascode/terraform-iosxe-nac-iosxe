@@ -38,20 +38,24 @@ locals {
         switchport_voice_vlan                                    = try(template.switchport.voice_vlan, local.defaults.iosxe.configuration.templates.switchport.voice_vlan, null)
         switchport_private_vlan_host_association_primary_range   = try(template.switchport.private_vlan_host_association_primary_range, local.defaults.iosxe.configuration.templates.switchport.private_vlan_host_association_primary_range, null)
         switchport_private_vlan_host_association_secondary_range = try(template.switchport.private_vlan_host_association_secondary_range, local.defaults.iosxe.configuration.templates.switchport.private_vlan_host_association_secondary_range, null)
+        # NEW v2 trunk allowed VLANs - supports all/none/vlans
         switchport_trunk_allowed_vlans = try(
           provider::utils::normalize_vlans(
-            try(template.switchport.trunk_allowed_vlans, local.defaults.iosxe.configuration.templates.switchport.trunk_allowed_vlans),
+            try(template.switchport.trunk_allowed_vlans.vlans, local.defaults.iosxe.configuration.templates.switchport.trunk_allowed_vlans.vlans),
             "string"
           ),
           null
         )
-        switchport_trunk_allowed_vlans_none = length(try(
-          provider::utils::normalize_vlans(
-            try(template.switchport.trunk_allowed_vlans, local.defaults.iosxe.configuration.templates.switchport.trunk_allowed_vlans),
-            "list"
-          ),
-          []
-        )) == 0 ? true : null
+        switchport_trunk_allowed_vlans_none = try(template.switchport.trunk_allowed_vlans.none, local.defaults.iosxe.configuration.templates.switchport.trunk_allowed_vlans.none, null)
+        # Default to all VLANs allowed if trunk mode and no trunk_allowed_vlans specified (native IOS-XE behavior)
+        switchport_trunk_allowed_vlans_all = try(
+          template.switchport.trunk_allowed_vlans.all,
+          local.defaults.iosxe.configuration.templates.switchport.trunk_allowed_vlans.all,
+          # Default to true for trunk mode if trunk_allowed_vlans is not specified at all
+          (try(template.switchport.trunk_allowed_vlans, null) == null &&
+            try(local.defaults.iosxe.configuration.templates.switchport.trunk_allowed_vlans, null) == null &&
+          try(template.switchport.mode, local.defaults.iosxe.configuration.templates.switchport.mode, null) == "trunk") ? true : null
+        )
         switchport_trunk_native_vlan_tag               = try(template.switchport.trunk_native_vlan_tag, local.defaults.iosxe.configuration.templates.switchport.trunk_native_vlan_tag, null)
         switchport_trunk_native_vlan_vlan_id           = try(template.switchport.trunk_native_vlan_id, local.defaults.iosxe.configuration.templates.switchport.trunk_native_vlan, null)
         mab                                            = try(template.network_access_control.mab, local.defaults.iosxe.configuration.templates.network_access_control.mab, null)
@@ -147,6 +151,7 @@ resource "iosxe_template" "template" {
   switchport_private_vlan_host_association_secondary_range = each.value.switchport_private_vlan_host_association_secondary_range
   switchport_trunk_allowed_vlans                           = each.value.switchport_trunk_allowed_vlans
   switchport_trunk_allowed_vlans_none                      = each.value.switchport_trunk_allowed_vlans_none
+  switchport_trunk_allowed_vlans_all                       = each.value.switchport_trunk_allowed_vlans_all
   switchport_trunk_native_vlan_tag                         = each.value.switchport_trunk_native_vlan_tag
   switchport_trunk_native_vlan_vlan_id                     = each.value.switchport_trunk_native_vlan_vlan_id
   mab                                                      = each.value.mab
