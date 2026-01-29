@@ -51,6 +51,7 @@ resource "iosxe_cts" "cts" {
   depends_on = [
     iosxe_access_list_standard.access_list_standard,
     iosxe_access_list_extended.access_list_extended,
+    iosxe_access_list_role_based.access_list_role_based,
     iosxe_vrf.vrf
   ]
 }
