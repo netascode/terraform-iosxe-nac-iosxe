@@ -101,12 +101,6 @@ resource "iosxe_aaa_accounting" "aaa_accounting" {
     stop_only_group2     = try(e.stop_only_groups[1], local.defaults.iosxe.configuration.aaa.accounting.connections.stop_only_groups[1], null)
     stop_only_group3     = try(e.stop_only_groups[2], local.defaults.iosxe.configuration.aaa.accounting.connections.stop_only_groups[2], null)
     stop_only_group4     = try(e.stop_only_groups[3], local.defaults.iosxe.configuration.aaa.accounting.connections.stop_only_groups[3], null)
-    wait_start_broadcast = try(e.wait_start_broadcast, local.defaults.iosxe.configuration.aaa.accounting.connections.wait_start_broadcast, null)
-    wait_start_logger    = try(e.wait_start_group_logger, local.defaults.iosxe.configuration.aaa.accounting.connections.wait_start_group_logger, null)
-    wait_start_group1    = try(e.wait_start_groups[0], local.defaults.iosxe.configuration.aaa.accounting.connections.wait_start_groups[0], null)
-    wait_start_group2    = try(e.wait_start_groups[1], local.defaults.iosxe.configuration.aaa.accounting.connections.wait_start_groups[1], null)
-    wait_start_group3    = try(e.wait_start_groups[2], local.defaults.iosxe.configuration.aaa.accounting.connections.wait_start_groups[2], null)
-    wait_start_group4    = try(e.wait_start_groups[3], local.defaults.iosxe.configuration.aaa.accounting.connections.wait_start_groups[3], null)
   }]
   execs = try(length(local.device_config[each.value.name].aaa.accounting.execs) == 0, true) ? null : [for e in local.device_config[each.value.name].aaa.accounting.execs : {
     name                 = try(e.name, local.defaults.iosxe.configuration.aaa.accounting.execs.name, null)
@@ -123,12 +117,6 @@ resource "iosxe_aaa_accounting" "aaa_accounting" {
     stop_only_group2     = try(e.stop_only_groups[1], local.defaults.iosxe.configuration.aaa.accounting.execs.stop_only_groups[1], null)
     stop_only_group3     = try(e.stop_only_groups[2], local.defaults.iosxe.configuration.aaa.accounting.execs.stop_only_groups[2], null)
     stop_only_group4     = try(e.stop_only_groups[3], local.defaults.iosxe.configuration.aaa.accounting.execs.stop_only_groups[3], null)
-    wait_start_broadcast = try(e.wait_start_broadcast, local.defaults.iosxe.configuration.aaa.accounting.execs.wait_start_broadcast, null)
-    wait_start_logger    = try(e.wait_start_group_logger, local.defaults.iosxe.configuration.aaa.accounting.execs.wait_start_group_logger, null)
-    wait_start_group1    = try(e.wait_start_groups[0], local.defaults.iosxe.configuration.aaa.accounting.execs.wait_start_groups[0], null)
-    wait_start_group2    = try(e.wait_start_groups[1], local.defaults.iosxe.configuration.aaa.accounting.execs.wait_start_groups[1], null)
-    wait_start_group3    = try(e.wait_start_groups[2], local.defaults.iosxe.configuration.aaa.accounting.execs.wait_start_groups[2], null)
-    wait_start_group4    = try(e.wait_start_groups[3], local.defaults.iosxe.configuration.aaa.accounting.execs.wait_start_groups[3], null)
   }]
   networks = try(length(local.device_config[each.value.name].aaa.accounting.networks) == 0, true) ? null : [for e in local.device_config[each.value.name].aaa.accounting.networks : {
     id                = try(e.name, local.defaults.iosxe.configuration.aaa.accounting.networks.name, null)
