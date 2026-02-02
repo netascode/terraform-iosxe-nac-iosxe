@@ -77,7 +77,6 @@ resource "iosxe_aaa_accounting" "aaa_accounting" {
     level           = try(e.level, local.defaults.iosxe.configuration.aaa.accounting.commands.level, null)
     list_name       = try(e.list_name, local.defaults.iosxe.configuration.aaa.accounting.commands.list_name, null)
     action_type     = try(e.action_type, local.defaults.iosxe.configuration.aaa.accounting.commands.action_type, null)
-    broadcast       = try(e.broadcast, local.defaults.iosxe.configuration.aaa.accounting.commands.broadcast, null)
     group_broadcast = try(e.group_broadcast, local.defaults.iosxe.configuration.aaa.accounting.commands.group_broadcast, null)
     group_logger    = try(e.group_logger, local.defaults.iosxe.configuration.aaa.accounting.commands.group_logger, null)
     group1_group    = try(e.groups[0], local.defaults.iosxe.configuration.aaa.accounting.commands.groups[0], null)
