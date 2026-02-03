@@ -68,7 +68,7 @@ locals {
         ipv6_enable                = try(int.ipv6.enable, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv6.enable, null)
         ipv6_addresses = try(length(int.ipv6.addresses) == 0, true) ? null : [for addr in int.ipv6.addresses : {
           prefix = try(addr.prefix, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv6.addresses.prefix, null)
-          eui64  = try(addr.eui64, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv6.addresses.eui64, null)
+          eui_64 = try(addr.eui_64, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv6.addresses.eui_64, null)
         }]
         ipv6_link_local_addresses = try(length(int.ipv6.link_local_addresses) == 0, true) ? null : [for addr in int.ipv6.link_local_addresses : {
           address    = addr
@@ -865,7 +865,7 @@ locals {
         ipv6_enable                = try(int.ipv6.enable, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ipv6.enable, null)
         ipv6_addresses = try(length(int.ipv6.addresses) == 0, true) ? null : [for addr in int.ipv6.addresses : {
           prefix = try(addr.prefix, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ipv6.addresses.prefix, null)
-          eui64  = try(addr.eui64, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ipv6.addresses.eui64, null)
+          eui_64 = try(addr.eui_64, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ipv6.addresses.eui_64, null)
         }]
         ipv6_link_local_addresses = try(length(int.ipv6.link_local_addresses) == 0, true) ? null : [for addr in int.ipv6.link_local_addresses : {
           address    = addr
@@ -1128,7 +1128,7 @@ locals {
         ipv6_enable                = try(int.ipv6.enable, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv6.enable, null)
         ipv6_addresses = try(length(int.ipv6.addresses) == 0, true) ? null : [for addr in int.ipv6.addresses : {
           prefix = try(addr.prefix, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv6.addresses.prefix, null)
-          eui64  = try(addr.eui64, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv6.addresses.eui64, null)
+          eui_64 = try(addr.eui_64, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv6.addresses.eui_64, null)
         }]
         ipv6_link_local_addresses = try(length(int.ipv6.link_local_addresses) == 0, true) ? null : [for addr in int.ipv6.link_local_addresses : {
           address    = addr
@@ -1494,8 +1494,10 @@ locals {
         ospf_priority                         = try(int.ospf.priority, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ospf.priority, null)
         ospf_ttl_security_hops                = try(int.ospf.ttl_security_hops, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ospf.ttl_security_hops, null)
         ospf_process_ids = try(length(int.ospf.process_ids) == 0, true) ? null : [for pid in int.ospf.process_ids : {
-          id    = try(pid.id, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ospf.process_ids.id, null)
-          areas = try(pid.areas, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ospf.process_ids.areas, null)
+          id = try(pid.id, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ospf.process_ids.id, null)
+          areas = try(length(pid.areas) == 0, true) ? null : [for area in pid.areas : {
+            area_id = area
+          }]
         }]
         ospf_message_digest_keys = try(length(int.ospf.message_digest_keys) == 0, true) ? null : [for key in int.ospf.message_digest_keys : {
           id            = try(key.id, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ospf.message_digest_keys.id, null)
@@ -2197,7 +2199,8 @@ resource "iosxe_interface_tunnel" "tunnel" {
   depends_on = [
     iosxe_vrf.vrf,
     iosxe_access_list_standard.access_list_standard,
-    iosxe_access_list_extended.access_list_extended
+    iosxe_access_list_extended.access_list_extended,
+    iosxe_crypto_ipsec_profile.crypto_ipsec_profile
   ]
 }
 
