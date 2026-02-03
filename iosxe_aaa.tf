@@ -86,8 +86,9 @@ resource "iosxe_aaa_accounting" "aaa_accounting" {
     group4_group    = try(e.groups[3], local.defaults.iosxe.configuration.aaa.accounting.commands.groups[3], null)
   }]
   connections = try(length(local.device_config[each.value.name].aaa.accounting.connections) == 0, true) ? null : [for e in local.device_config[each.value.name].aaa.accounting.connections : {
-    name                 = try(e.name, local.defaults.iosxe.configuration.aaa.accounting.connections.name, null)
-    default              = try(e.default, local.defaults.iosxe.configuration.aaa.accounting.connections.default, null)
+    name = try(e.name, local.defaults.iosxe.configuration.aaa.accounting.connections.name, null)
+    # Note: The 'default' leaf should NOT be set for connection accounting - use name: "default" instead
+    default              = null
     none                 = try(e.none, local.defaults.iosxe.configuration.aaa.accounting.connections.none, null)
     start_stop_broadcast = try(e.start_stop_broadcast, local.defaults.iosxe.configuration.aaa.accounting.connections.start_stop_broadcast, null)
     start_stop_logger    = try(e.start_stop_group_logger, local.defaults.iosxe.configuration.aaa.accounting.connections.start_stop_group_logger, null)
