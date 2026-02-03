@@ -2199,7 +2199,8 @@ resource "iosxe_interface_tunnel" "tunnel" {
   depends_on = [
     iosxe_vrf.vrf,
     iosxe_access_list_standard.access_list_standard,
-    iosxe_access_list_extended.access_list_extended
+    iosxe_access_list_extended.access_list_extended,
+    iosxe_crypto_ipsec_profile.crypto_ipsec_profile
   ]
 }
 
