@@ -1494,8 +1494,10 @@ locals {
         ospf_priority                         = try(int.ospf.priority, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ospf.priority, null)
         ospf_ttl_security_hops                = try(int.ospf.ttl_security_hops, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ospf.ttl_security_hops, null)
         ospf_process_ids = try(length(int.ospf.process_ids) == 0, true) ? null : [for pid in int.ospf.process_ids : {
-          id    = try(pid.id, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ospf.process_ids.id, null)
-          areas = try(pid.areas, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ospf.process_ids.areas, null)
+          id = try(pid.id, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ospf.process_ids.id, null)
+          areas = try(length(pid.areas) == 0, true) ? null : [for area in pid.areas : {
+            area_id = area
+          }]
         }]
         ospf_message_digest_keys = try(length(int.ospf.message_digest_keys) == 0, true) ? null : [for key in int.ospf.message_digest_keys : {
           id            = try(key.id, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ospf.message_digest_keys.id, null)
