@@ -231,27 +231,34 @@ locals {
         ospf_multi_area_ids = try(length(int.ospf.multi_area_ids) == 0, true) ? null : [for area in int.ospf.multi_area_ids : {
           area_id = area
         }]
-        ospfv3                                     = try(int.ospfv3, null) != null ? true : false
-        ospfv3_network_type_broadcast              = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.network_type, null) == "broadcast" ? true : null
-        ospfv3_network_type_non_broadcast          = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.network_type, null) == "non-broadcast" ? true : null
-        ospfv3_network_type_point_to_multipoint    = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.network_type, null) == "point-to-multipoint" ? true : null
-        ospfv3_network_type_point_to_point         = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.network_type, null) == "point-to-point" ? true : null
-        ospfv3_cost                                = try(int.ospfv3.cost, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.cost, null)
-        pim                                        = try(int.pim.passive, int.pim.dense_mode, int.pim.sparse_mode, int.pim.sparse_dense_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.dense_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.sparse_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.sparse_dense_mode, null) != null ? true : false
-        pim_passive                                = try(int.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.passive, null)
-        pim_dense_mode                             = try(int.pim.dense_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.dense_mode, null)
-        pim_sparse_mode                            = try(int.pim.sparse_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.sparse_mode, null)
-        pim_sparse_dense_mode                      = try(int.pim.sparse_dense_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.sparse_dense_mode, null)
-        pim_bfd                                    = try(int.pim.bfd, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.bfd, null)
-        pim_border                                 = try(int.pim.border, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.border, null)
-        pim_bsr_border                             = try(int.pim.bsr_border, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.bsr_border, null)
-        pim_dr_priority                            = try(int.pim.dr_priority, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.dr_priority, null)
-        ipv6_pim                                   = try(int.ipv6.pim, null) != null ? true : false
-        ipv6_pim_pim                               = try(int.ipv6.pim.pim, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv6.pim.pim, null)
-        ipv6_pim_bfd                               = try(int.ipv6.pim.bfd, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv6.pim.bfd, null)
-        ipv6_pim_bsr_border                        = try(int.ipv6.pim.bsr_border, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv6.pim.bsr_border, null)
-        ipv6_pim_dr_priority                       = try(int.ipv6.pim.dr_priority, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv6.pim.dr_priority, null)
-        ip_igmp_version                            = try(int.igmp.version, local.defaults.iosxe.devices.configuration.interfaces.ethernets.igmp.version, null)
+        ospfv3                                  = try(int.ospfv3, null) != null ? true : false
+        ospfv3_network_type_broadcast           = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.network_type, null) == "broadcast" ? true : null
+        ospfv3_network_type_non_broadcast       = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.network_type, null) == "non-broadcast" ? true : null
+        ospfv3_network_type_point_to_multipoint = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.network_type, null) == "point-to-multipoint" ? true : null
+        ospfv3_network_type_point_to_point      = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.network_type, null) == "point-to-point" ? true : null
+        ospfv3_cost                             = try(int.ospfv3.cost, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.cost, null)
+        pim                                     = try(int.pim.passive, int.pim.dense_mode, int.pim.sparse_mode, int.pim.sparse_dense_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.dense_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.sparse_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.sparse_dense_mode, null) != null ? true : false
+        pim_passive                             = try(int.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.passive, null)
+        pim_dense_mode                          = try(int.pim.dense_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.dense_mode, null)
+        pim_sparse_mode                         = try(int.pim.sparse_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.sparse_mode, null)
+        pim_sparse_dense_mode                   = try(int.pim.sparse_dense_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.sparse_dense_mode, null)
+        pim_bfd                                 = try(int.pim.bfd, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.bfd, null)
+        pim_border                              = try(int.pim.border, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.border, null)
+        pim_bsr_border                          = try(int.pim.bsr_border, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.bsr_border, null)
+        pim_dr_priority                         = try(int.pim.dr_priority, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.dr_priority, null)
+        ipv6_pim                                = try(int.ipv6.pim, null) != null ? true : false
+        ipv6_pim_pim                            = try(int.ipv6.pim.pim, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv6.pim.pim, null)
+        ipv6_pim_bfd                            = try(int.ipv6.pim.bfd, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv6.pim.bfd, null)
+        ipv6_pim_bsr_border                     = try(int.ipv6.pim.bsr_border, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv6.pim.bsr_border, null)
+        ipv6_pim_dr_priority                    = try(int.ipv6.pim.dr_priority, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv6.pim.dr_priority, null)
+        ip_igmp_version                         = try(int.igmp.version, local.defaults.iosxe.devices.configuration.interfaces.ethernets.igmp.version, null)
+        isis_area_tag                           = try(int.isis.area_tag, local.defaults.iosxe.devices.configuration.interfaces.ethernets.isis.area_tag, null)
+        isis                                    = try(int.isis, null) != null ? true : false
+        isis_network_point_to_point             = try(int.isis.network_point_to_point, local.defaults.iosxe.devices.configuration.interfaces.ethernets.isis.network_point_to_point, null)
+        isis_ipv4_metric_levels = try(length(int.isis.ipv4_metric_levels) == 0, true) ? null : [for level in int.isis.ipv4_metric_levels : {
+          level = try(level.level, local.defaults.iosxe.devices.configuration.interfaces.ethernets.isis.ipv4_metric_levels.level, null)
+          value = try(level.value, local.defaults.iosxe.devices.configuration.interfaces.ethernets.isis.ipv4_metric_levels.value, null)
+        }]
         authentication_periodic                    = try(int.network_access_control.authentication_periodic, local.defaults.iosxe.devices.configuration.interfaces.ethernets.network_access_control.authentication_periodic, null)
         authentication_timer_reauthenticate        = try(int.network_access_control.authentication_timer_reauthenticate, local.defaults.iosxe.devices.configuration.interfaces.ethernets.network_access_control.authentication_timer_reauthenticate, null)
         authentication_timer_reauthenticate_server = try(int.network_access_control.authentication_timer_reauthenticate_server, local.defaults.iosxe.devices.configuration.interfaces.ethernets.network_access_control.authentication_timer_reauthenticate_server, null)
@@ -414,6 +421,7 @@ resource "iosxe_interface_ethernet" "ethernet" {
   carrier_delay_msec                         = each.value.carrier_delay_msec
   hold_queues                                = each.value.hold_queues
   service_instances                          = each.value.service_instances
+  ip_router_isis                             = each.value.isis_area_tag
 
   depends_on = [
     iosxe_vrf.vrf,
@@ -421,7 +429,8 @@ resource "iosxe_interface_ethernet" "ethernet" {
     iosxe_access_list_extended.access_list_extended,
     iosxe_policy_map.policy_map,
     iosxe_evpn_ethernet_segment.evpn_ethernet_segment,
-    iosxe_flow_monitor.flow_monitor
+    iosxe_flow_monitor.flow_monitor,
+    iosxe_isis.isis
   ]
 }
 
@@ -975,7 +984,8 @@ resource "iosxe_interface_loopback" "loopback" {
     iosxe_vrf.vrf,
     iosxe_access_list_standard.access_list_standard,
     iosxe_access_list_extended.access_list_extended,
-    iosxe_policy_map.policy_map
+    iosxe_policy_map.policy_map,
+    iosxe_isis.isis
   ]
 }
 
@@ -1086,6 +1096,21 @@ resource "iosxe_interface_isis" "loopback_isis" {
 
   depends_on = [
     iosxe_interface_loopback.loopback,
+    iosxe_isis.isis
+  ]
+}
+
+resource "iosxe_interface_isis" "ethernet_isis" {
+  for_each = { for v in local.interfaces_ethernets : v.key => v if v.managed && v.isis }
+
+  device                 = each.value.device
+  type                   = each.value.type
+  name                   = each.value.id
+  network_point_to_point = each.value.isis_network_point_to_point
+  ipv4_metric_levels     = each.value.isis_ipv4_metric_levels
+
+  depends_on = [
+    iosxe_interface_ethernet.ethernet,
     iosxe_isis.isis
   ]
 }
