@@ -230,6 +230,16 @@ locals {
                       )))
                     )
                   ]
+                },
+                {
+                  "port_channels" = [
+                    for port_channel in try(local.devices_config[device.name].interfaces.port_channels, []) : merge(
+                      yamldecode(provider::utils::yaml_merge(concat(
+                        [for g in try(port_channel.interface_groups, []) : try([for ig in local.interface_groups_config[device.name] : yamlencode(ig.configuration) if ig.name == g][0], "")],
+                        [yamlencode(port_channel)]
+                      )))
+                    )
+                  ]
                 }
               )
             }
