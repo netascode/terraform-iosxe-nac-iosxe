@@ -56,7 +56,7 @@ locals {
         name                                    = try(template.name, local.defaults.iosxe.configuration.bfd.multi_hop_templates.name, null)
         authentication_md5_keychain             = try(template.authentication_md5_keychain, local.defaults.iosxe.configuration.bfd.multi_hop_templates.authentication_md5_keychain, null)
         authentication_meticulous_md5_keychain  = try(template.authentication_meticulous_md5_keychain, local.defaults.iosxe.configuration.bfd.multi_hop_templates.authentication_meticulous_md5_keychain, null)
-        authentication_meticulous_sha_1keychain = try(template.authentication_meticulous_sha_1keychain, local.defaults.iosxe.configuration.bfd.multi_hop_templates.authentication_meticulous_sha_1keychain, null)
+        authentication_meticulous_sha_1_keychain = try(template.authentication_meticulous_sha_1_keychain, local.defaults.iosxe.configuration.bfd.multi_hop_templates.authentication_meticulous_sha_1_keychain, null)
         authentication_sha_1_keychain           = try(template.authentication_sha_1_keychain, local.defaults.iosxe.configuration.bfd.multi_hop_templates.authentication_sha_1_keychain, null)
         interval_milliseconds_both              = try(template.interval_milliseconds_both, local.defaults.iosxe.configuration.bfd.multi_hop_templates.interval_milliseconds_both, null)
         interval_milliseconds_min_tx            = try(template.interval_milliseconds_min_tx, local.defaults.iosxe.configuration.bfd.multi_hop_templates.interval_milliseconds_min_tx, null)
@@ -86,7 +86,7 @@ resource "iosxe_bfd_template_multi_hop" "bfd_template_multi_hop" {
   name                                    = each.value.name
   authentication_md5_keychain             = each.value.authentication_md5_keychain
   authentication_meticulous_md5_keychain  = each.value.authentication_meticulous_md5_keychain
-  authentication_meticulous_sha_1keychain = each.value.authentication_meticulous_sha_1keychain
+  authentication_meticulous_sha_1_keychain = each.value.authentication_meticulous_sha_1_keychain
   authentication_sha_1_keychain           = each.value.authentication_sha_1_keychain
   interval_milliseconds_both              = each.value.interval_milliseconds_both
   interval_milliseconds_min_tx            = each.value.interval_milliseconds_min_tx
