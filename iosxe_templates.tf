@@ -2,30 +2,38 @@ locals {
   templates = flatten([
     for device in local.devices : [
       for template in try(local.device_config[device.name].templates, []) : {
-        key                                            = format("%s/%s", device.name, template.name)
-        device                                         = device.name
-        name                                           = template.name
-        dot1x_pae                                      = try(template.network_access_control.dot1x_pae, local.defaults.iosxe.configuration.templates.network_access_control.dot1x_pae, null)
-        dot1x_max_reauth_req                           = try(template.network_access_control.dot1x_max_reauth_req, local.defaults.iosxe.configuration.templates.network_access_control.dot1x_max_reauth_req, null)
-        dot1x_max_req                                  = try(template.network_access_control.dot1x_max_req, local.defaults.iosxe.configuration.templates.network_access_control.dot1x_max_req, null)
-        dot1x_timeout_tx_period                        = try(template.network_access_control.dot1x_timeout_tx_period, local.defaults.iosxe.configuration.templates.network_access_control.dot1x_timeout_tx_period, null)
-        dot1x_timeout_quiet_period                     = try(template.network_access_control.dot1x_timeout_quiet_period, local.defaults.iosxe.configuration.templates.network_access_control.dot1x_timeout_quiet_period, null)
-        dot1x_timeout_supp_timeout                     = try(template.network_access_control.dot1x_timeout_supp_timeout, local.defaults.iosxe.configuration.templates.network_access_control.dot1x_timeout_supp_timeout, null)
-        dot1x_timeout_ratelimit_period                 = try(template.network_access_control.dot1x_timeout_ratelimit_period, local.defaults.iosxe.configuration.templates.network_access_control.dot1x_timeout_ratelimit_period, null)
-        dot1x_timeout_server_timeout                   = try(template.network_access_control.dot1x_timeout_server_timeout, local.defaults.iosxe.configuration.templates.network_access_control.dot1x_timeout_server_timeout, null)
-        service_policy_type_control_subscriber         = try(template.service_policy_type_control_subscriber, local.defaults.iosxe.configuration.templates.service_policy_type_control_subscriber, null)
-        service_policy_input                           = try(template.service_policy_input, local.defaults.iosxe.configuration.templates.service_policy_input, null)
-        service_policy_output                          = try(template.service_policy_output, local.defaults.iosxe.configuration.templates.service_policy_output, null)
-        source_template                                = try(template.source_template, local.defaults.iosxe.configuration.templates.source_template, null)
-        switchport_mode_trunk                          = try(template.switchport.mode, local.defaults.iosxe.configuration.templates.switchport.mode, null) == "trunk" ? true : false
-        switchport_mode_access                         = try(template.switchport.mode, local.defaults.iosxe.configuration.templates.switchport.mode, null) == "access" ? true : false
-        switchport_nonegotiate                         = try(template.switchport.nonegotiate, local.defaults.iosxe.configuration.templates.switchport.nonegotiate, null)
-        switchport_block_unicast                       = try(template.switchport.block_unicast, local.defaults.iosxe.configuration.templates.switchport.block_unicast, null)
-        switchport_port_security                       = try(template.switchport.port_security, local.defaults.iosxe.configuration.templates.switchport.port_security, null)
-        switchport_port_security_aging_static          = try(template.switchport.port_security_aging_static, local.defaults.iosxe.configuration.templates.switchport.port_security_aging_static, null)
-        switchport_port_security_aging_time            = try(template.switchport.port_security_aging_time, local.defaults.iosxe.configuration.templates.switchport.port_security_aging_time, null)
-        switchport_port_security_aging_type            = try(template.switchport.port_security_aging_type, local.defaults.iosxe.configuration.templates.switchport.port_security_aging_type, null)
-        switchport_port_security_aging_type_inactivity = try(template.switchport.port_security_aging_type_inactivity, local.defaults.iosxe.configuration.templates.switchport.port_security_aging_type_inactivity, null)
+        key                                    = format("%s/%s", device.name, template.name)
+        device                                 = device.name
+        name                                   = template.name
+        dot1x_pae                              = try(template.network_access_control.dot1x_pae, local.defaults.iosxe.configuration.templates.network_access_control.dot1x_pae, null)
+        dot1x_max_reauth_req                   = try(template.network_access_control.dot1x_max_reauth_req, local.defaults.iosxe.configuration.templates.network_access_control.dot1x_max_reauth_req, null)
+        dot1x_max_req                          = try(template.network_access_control.dot1x_max_req, local.defaults.iosxe.configuration.templates.network_access_control.dot1x_max_req, null)
+        dot1x_timeout_tx_period                = try(template.network_access_control.dot1x_timeout_tx_period, local.defaults.iosxe.configuration.templates.network_access_control.dot1x_timeout_tx_period, null)
+        dot1x_timeout_quiet_period             = try(template.network_access_control.dot1x_timeout_quiet_period, local.defaults.iosxe.configuration.templates.network_access_control.dot1x_timeout_quiet_period, null)
+        dot1x_timeout_supp_timeout             = try(template.network_access_control.dot1x_timeout_supp_timeout, local.defaults.iosxe.configuration.templates.network_access_control.dot1x_timeout_supp_timeout, null)
+        dot1x_timeout_ratelimit_period         = try(template.network_access_control.dot1x_timeout_ratelimit_period, local.defaults.iosxe.configuration.templates.network_access_control.dot1x_timeout_ratelimit_period, null)
+        dot1x_timeout_server_timeout           = try(template.network_access_control.dot1x_timeout_server_timeout, local.defaults.iosxe.configuration.templates.network_access_control.dot1x_timeout_server_timeout, null)
+        service_policy_type_control_subscriber = try(template.service_policy_type_control_subscriber, local.defaults.iosxe.configuration.templates.service_policy_type_control_subscriber, null)
+        service_policy_input                   = try(template.service_policy_input, local.defaults.iosxe.configuration.templates.service_policy_input, null)
+        service_policy_output                  = try(template.service_policy_output, local.defaults.iosxe.configuration.templates.service_policy_output, null)
+        source_template                        = try(template.source_template, local.defaults.iosxe.configuration.templates.source_template, null)
+        switchport_mode_trunk                  = try(template.switchport.mode, local.defaults.iosxe.configuration.templates.switchport.mode, null) == "trunk" ? true : false
+        switchport_mode_access                 = try(template.switchport.mode, local.defaults.iosxe.configuration.templates.switchport.mode, null) == "access" ? true : false
+        switchport_nonegotiate                 = try(template.switchport.nonegotiate, local.defaults.iosxe.configuration.templates.switchport.nonegotiate, null)
+        switchport_block_unicast               = try(template.switchport.block_unicast, local.defaults.iosxe.configuration.templates.switchport.block_unicast, null)
+        switchport_port_security               = try(template.switchport.port_security, local.defaults.iosxe.configuration.templates.switchport.port_security, null)
+        switchport_port_security_aging_static  = try(template.switchport.port_security_aging_static, local.defaults.iosxe.configuration.templates.switchport.port_security_aging_static, null)
+        switchport_port_security_aging_time    = try(template.switchport.port_security_aging_time, local.defaults.iosxe.configuration.templates.switchport.port_security_aging_time, null)
+        switchport_port_security_aging_type = try(
+          try(template.switchport.port_security_aging_type, local.defaults.iosxe.configuration.templates.switchport.port_security_aging_type, null) == "inactivity" ? true :
+          try(template.switchport.port_security_aging_type, local.defaults.iosxe.configuration.templates.switchport.port_security_aging_type, null) == "absolute" ? null :
+          try(template.switchport.port_security_aging_type, local.defaults.iosxe.configuration.templates.switchport.port_security_aging_type, null),
+          null
+        )
+        switchport_port_security_aging_type_inactivity = try(
+          try(template.switchport.port_security_aging_type, local.defaults.iosxe.configuration.templates.switchport.port_security_aging_type, null) == "inactivity" ? true : null,
+          null
+        )
         switchport_port_security_maximum_range = try(length(template.switchport.port_security_maximum_ranges) == 0, true) ? null : [for range in template.switchport.port_security_maximum_ranges : {
           range       = try(range.range, local.defaults.iosxe.configuration.templates.switchport.port_security_maximum_ranges.range, null)
           vlan        = try(range.vlan, local.defaults.iosxe.configuration.templates.switchport.port_security_maximum_ranges.vlans, null)
@@ -38,20 +46,24 @@ locals {
         switchport_voice_vlan                                    = try(template.switchport.voice_vlan, local.defaults.iosxe.configuration.templates.switchport.voice_vlan, null)
         switchport_private_vlan_host_association_primary_range   = try(template.switchport.private_vlan_host_association_primary_range, local.defaults.iosxe.configuration.templates.switchport.private_vlan_host_association_primary_range, null)
         switchport_private_vlan_host_association_secondary_range = try(template.switchport.private_vlan_host_association_secondary_range, local.defaults.iosxe.configuration.templates.switchport.private_vlan_host_association_secondary_range, null)
+        # NEW v2 trunk allowed VLANs - supports all/none/vlans
         switchport_trunk_allowed_vlans = try(
           provider::utils::normalize_vlans(
-            try(template.switchport.trunk_allowed_vlans, local.defaults.iosxe.configuration.templates.switchport.trunk_allowed_vlans),
+            try(template.switchport.trunk_allowed_vlans.vlans, local.defaults.iosxe.configuration.templates.switchport.trunk_allowed_vlans.vlans),
             "string"
           ),
           null
         )
-        switchport_trunk_allowed_vlans_none = length(try(
-          provider::utils::normalize_vlans(
-            try(template.switchport.trunk_allowed_vlans, local.defaults.iosxe.configuration.templates.switchport.trunk_allowed_vlans),
-            "list"
-          ),
-          []
-        )) == 0 ? true : null
+        switchport_trunk_allowed_vlans_none = try(template.switchport.trunk_allowed_vlans.none, local.defaults.iosxe.configuration.templates.switchport.trunk_allowed_vlans.none, null)
+        # Default to all VLANs allowed if trunk mode and no trunk_allowed_vlans specified (native IOS-XE behavior)
+        switchport_trunk_allowed_vlans_all = try(
+          template.switchport.trunk_allowed_vlans.all,
+          local.defaults.iosxe.configuration.templates.switchport.trunk_allowed_vlans.all,
+          # Default to true for trunk mode if trunk_allowed_vlans is not specified at all
+          (try(template.switchport.trunk_allowed_vlans, null) == null &&
+            try(local.defaults.iosxe.configuration.templates.switchport.trunk_allowed_vlans, null) == null &&
+          try(template.switchport.mode, local.defaults.iosxe.configuration.templates.switchport.mode, null) == "trunk") ? true : null
+        )
         switchport_trunk_native_vlan_tag               = try(template.switchport.trunk_native_vlan_tag, local.defaults.iosxe.configuration.templates.switchport.trunk_native_vlan_tag, null)
         switchport_trunk_native_vlan_vlan_id           = try(template.switchport.trunk_native_vlan_id, local.defaults.iosxe.configuration.templates.switchport.trunk_native_vlan, null)
         mab                                            = try(template.network_access_control.mab, local.defaults.iosxe.configuration.templates.network_access_control.mab, null)
@@ -147,6 +159,7 @@ resource "iosxe_template" "template" {
   switchport_private_vlan_host_association_secondary_range = each.value.switchport_private_vlan_host_association_secondary_range
   switchport_trunk_allowed_vlans                           = each.value.switchport_trunk_allowed_vlans
   switchport_trunk_allowed_vlans_none                      = each.value.switchport_trunk_allowed_vlans_none
+  switchport_trunk_allowed_vlans_all                       = each.value.switchport_trunk_allowed_vlans_all
   switchport_trunk_native_vlan_tag                         = each.value.switchport_trunk_native_vlan_tag
   switchport_trunk_native_vlan_vlan_id                     = each.value.switchport_trunk_native_vlan_vlan_id
   mab                                                      = each.value.mab

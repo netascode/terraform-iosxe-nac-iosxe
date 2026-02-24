@@ -342,6 +342,13 @@ resource "iosxe_snmp_server" "snmp_server" {
     )
   }]
 
+  lifecycle {
+    ignore_changes = [
+      hosts, # Workaround as current resource has "community_or_user" as 'write-only' *and* 'id' attribute
+      vrf_hosts,
+    ]
+  }
+
   depends_on = [
     iosxe_interface_ethernet.ethernet,
     iosxe_interface_loopback.loopback,
@@ -349,6 +356,7 @@ resource "iosxe_snmp_server" "snmp_server" {
     iosxe_interface_port_channel.port_channel,
     iosxe_interface_port_channel_subinterface.port_channel_subinterface,
     iosxe_access_list_standard.access_list_standard,
-    iosxe_access_list_extended.access_list_extended
+    iosxe_access_list_extended.access_list_extended,
+    iosxe_vrf.vrf
   ]
 }
