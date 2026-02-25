@@ -200,7 +200,7 @@ locals {
             { for k, v in try(local.devices_config[device.name], {}) : k => v if k != "interfaces" },
             {
               interfaces = merge(
-                { for k, v in try(local.devices_config[device.name].interfaces, {}) : k => v if k != "ethernets" && k != "loopbacks" && k != "vlans" },
+                { for k, v in try(local.devices_config[device.name].interfaces, {}) : k => v if k != "ethernets" && k != "loopbacks" && k != "vlans" && k != "port_channels" && k != "tunnels" },
                 {
                   "ethernets" = [
                     for ethernet in try(local.devices_config[device.name].interfaces.ethernets, []) : merge(
@@ -237,6 +237,16 @@ locals {
                       yamldecode(provider::utils::yaml_merge(concat(
                         [for g in try(port_channel.interface_groups, []) : try([for ig in local.interface_groups_config[device.name] : yamlencode(ig.configuration) if ig.name == g][0], "")],
                         [yamlencode(port_channel)]
+                      )))
+                    )
+                  ]
+                },
+                {
+                  "tunnels" = [
+                    for tunnel in try(local.devices_config[device.name].interfaces.tunnels, []) : merge(
+                      yamldecode(provider::utils::yaml_merge(concat(
+                        [for g in try(tunnel.interface_groups, []) : try([for ig in local.interface_groups_config[device.name] : yamlencode(ig.configuration) if ig.name == g][0], "")],
+                        [yamlencode(tunnel)]
                       )))
                     )
                   ]
