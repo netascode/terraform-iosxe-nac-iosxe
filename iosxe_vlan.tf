@@ -105,7 +105,7 @@ locals {
   vlan_filters = flatten([
     for device in local.devices : [
       for filter in try(local.device_config[device.name].vlan.filters, []) : {
-        key        = format("%s/%s", device.name, filter.word)
+        key        = format("%s/%s", device.name, filter.name)
         device     = device.name
         word       = try(filter.name, local.defaults.iosxe.configuration.vlan.filters.name, null)
         vlan_lists = try(filter.vlan_lists, local.defaults.iosxe.configuration.vlan.filters.vlan_lists, null)
