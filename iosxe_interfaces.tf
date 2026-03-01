@@ -939,7 +939,6 @@ locals {
         ipv6_pim_dr_priority                    = try(int.ipv6.pim.dr_priority, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ipv6.pim.dr_priority, null)
         isis                                    = try(int.isis, null) != null ? true : false
         isis_area_tag                           = try(int.isis.area_tag, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.isis.area_tag, null)
-        isis_network_point_to_point             = try(int.isis.network_point_to_point, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.isis.network_point_to_point, null)
         isis_ipv4_metric_levels = try(length(int.isis.ipv4_metric_levels) == 0, true) ? null : [for level in int.isis.ipv4_metric_levels : {
           level = try(level.level, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.isis.ipv4_metric_levels.level, null)
           value = try(level.value, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.isis.ipv4_metric_levels.value, null)
@@ -1088,11 +1087,10 @@ resource "iosxe_interface_pim_ipv6" "loopback_pim_ipv6" {
 resource "iosxe_interface_isis" "loopback_isis" {
   for_each = { for v in local.interfaces_loopbacks : v.key => v if v.isis }
 
-  device                 = each.value.device
-  type                   = "Loopback"
-  name                   = each.value.id
-  network_point_to_point = each.value.isis_network_point_to_point
-  ipv4_metric_levels     = each.value.isis_ipv4_metric_levels
+  device             = each.value.device
+  type               = "Loopback"
+  name               = each.value.id
+  ipv4_metric_levels = each.value.isis_ipv4_metric_levels
 
   depends_on = [
     iosxe_interface_loopback.loopback,
@@ -1221,6 +1219,13 @@ locals {
         ipv6_pim_bsr_border                     = try(int.ipv6.pim.bsr_border, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv6.pim.bsr_border, null)
         ipv6_pim_dr_priority                    = try(int.ipv6.pim.dr_priority, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv6.pim.dr_priority, null)
         ip_igmp_version                         = try(int.igmp.version, local.defaults.iosxe.devices.configuration.interfaces.vlans.igmp.version, null)
+        isis_area_tag                           = try(int.isis.area_tag, local.defaults.iosxe.devices.configuration.interfaces.vlans.isis.area_tag, null)
+        isis                                    = try(int.isis, null) != null ? true : false
+        isis_network_point_to_point             = try(int.isis.network_point_to_point, local.defaults.iosxe.devices.configuration.interfaces.vlans.isis.network_point_to_point, null)
+        isis_ipv4_metric_levels = try(length(int.isis.ipv4_metric_levels) == 0, true) ? null : [for level in int.isis.ipv4_metric_levels : {
+          level = try(level.level, local.defaults.iosxe.devices.configuration.interfaces.vlans.isis.ipv4_metric_levels.level, null)
+          value = try(level.value, local.defaults.iosxe.devices.configuration.interfaces.vlans.isis.ipv4_metric_levels.value, null)
+        }]
       }
     ]
   ])
@@ -1268,12 +1273,14 @@ resource "iosxe_interface_vlan" "vlan" {
   bfd_interval_multiplier                 = each.value.bfd_interval_multiplier
   bfd_echo                                = each.value.bfd_echo
   load_interval                           = each.value.load_interval
+  ip_router_isis                          = each.value.isis_area_tag
 
   depends_on = [
     iosxe_vrf.vrf,
     iosxe_access_list_standard.access_list_standard,
     iosxe_access_list_extended.access_list_extended,
-    iosxe_policy_map.policy_map
+    iosxe_policy_map.policy_map,
+    iosxe_isis.isis
   ]
 }
 
@@ -1370,6 +1377,21 @@ resource "iosxe_interface_pim_ipv6" "vlan_pim_ipv6" {
 
   depends_on = [
     iosxe_interface_vlan.vlan
+  ]
+}
+
+resource "iosxe_interface_isis" "vlan_isis" {
+  for_each = { for v in local.interfaces_vlans : v.key => v if v.isis }
+
+  device                 = each.value.device
+  type                   = "Vlan"
+  name                   = each.value.id
+  network_point_to_point = each.value.isis_network_point_to_point
+  ipv4_metric_levels     = each.value.isis_ipv4_metric_levels
+
+  depends_on = [
+    iosxe_interface_vlan.vlan,
+    iosxe_isis.isis
   ]
 }
 
@@ -1554,20 +1576,27 @@ locals {
         ipv6_pim_bsr_border                     = try(int.ipv6.pim.bsr_border, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv6.pim.bsr_border, null)
         ipv6_pim_dr_priority                    = try(int.ipv6.pim.dr_priority, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv6.pim.dr_priority, null)
         ip_igmp_version                         = try(int.igmp.version, local.defaults.iosxe.devices.configuration.interfaces.port_channels.igmp.version, null)
-        auto_qos_classify                       = try(int.auto_qos.classify, local.defaults.iosxe.devices.configuration.interfaces.port_channels.auto_qos.classify, null)
-        auto_qos_classify_police                = try(int.auto_qos.classify_police, local.defaults.iosxe.devices.configuration.interfaces.port_channels.auto_qos.classify_police, null)
-        auto_qos_trust                          = try(int.auto_qos.trust, local.defaults.iosxe.devices.configuration.interfaces.port_channels.auto_qos.trust, null)
-        auto_qos_trust_cos                      = try(int.auto_qos.trust_cos, local.defaults.iosxe.devices.configuration.interfaces.port_channels.auto_qos.trust_cos, null)
-        auto_qos_trust_dscp                     = try(int.auto_qos.trust_dscp, local.defaults.iosxe.devices.configuration.interfaces.port_channels.auto_qos.trust_dscp, null)
-        auto_qos_video_cts                      = try(int.auto_qos.video_cts, local.defaults.iosxe.devices.configuration.interfaces.port_channels.auto_qos.video_cts, null)
-        auto_qos_video_ip_camera                = try(int.auto_qos.video_ip_camera, local.defaults.iosxe.devices.configuration.interfaces.port_channels.auto_qos.video_ip_camera, null)
-        auto_qos_video_media_player             = try(int.auto_qos.video_media_player, local.defaults.iosxe.devices.configuration.interfaces.port_channels.auto_qos.video_media_player, null)
-        auto_qos_voip                           = try(int.auto_qos.voip, local.defaults.iosxe.devices.configuration.interfaces.port_channels.auto_qos.voip, null)
-        auto_qos_voip_cisco_phone               = try(int.auto_qos.voip_cisco_phone, local.defaults.iosxe.devices.configuration.interfaces.port_channels.auto_qos.voip_cisco_phone, null)
-        auto_qos_voip_cisco_softphone           = try(int.auto_qos.voip_cisco_softphone, local.defaults.iosxe.devices.configuration.interfaces.port_channels.auto_qos.voip_cisco_softphone, null)
-        auto_qos_voip_trust                     = try(int.auto_qos.voip_trust, local.defaults.iosxe.devices.configuration.interfaces.port_channels.auto_qos.voip_trust, null)
-        trust_device                            = try(int.auto_qos.trust_device, local.defaults.iosxe.devices.configuration.interfaces.port_channels.auto_qos.trust_device, null)
-        negotiation_auto                        = try(int.negotiation_auto, local.defaults.iosxe.devices.configuration.interfaces.port_channels.negotiation_auto, null)
+        isis_area_tag                           = try(int.isis.area_tag, local.defaults.iosxe.devices.configuration.interfaces.port_channels.isis.area_tag, null)
+        isis                                    = try(int.isis, null) != null ? true : false
+        isis_network_point_to_point             = try(int.isis.network_point_to_point, local.defaults.iosxe.devices.configuration.interfaces.port_channels.isis.network_point_to_point, null)
+        isis_ipv4_metric_levels = try(length(int.isis.ipv4_metric_levels) == 0, true) ? null : [for level in int.isis.ipv4_metric_levels : {
+          level = try(level.level, local.defaults.iosxe.devices.configuration.interfaces.port_channels.isis.ipv4_metric_levels.level, null)
+          value = try(level.value, local.defaults.iosxe.devices.configuration.interfaces.port_channels.isis.ipv4_metric_levels.value, null)
+        }]
+        auto_qos_classify             = try(int.auto_qos.classify, local.defaults.iosxe.devices.configuration.interfaces.port_channels.auto_qos.classify, null)
+        auto_qos_classify_police      = try(int.auto_qos.classify_police, local.defaults.iosxe.devices.configuration.interfaces.port_channels.auto_qos.classify_police, null)
+        auto_qos_trust                = try(int.auto_qos.trust, local.defaults.iosxe.devices.configuration.interfaces.port_channels.auto_qos.trust, null)
+        auto_qos_trust_cos            = try(int.auto_qos.trust_cos, local.defaults.iosxe.devices.configuration.interfaces.port_channels.auto_qos.trust_cos, null)
+        auto_qos_trust_dscp           = try(int.auto_qos.trust_dscp, local.defaults.iosxe.devices.configuration.interfaces.port_channels.auto_qos.trust_dscp, null)
+        auto_qos_video_cts            = try(int.auto_qos.video_cts, local.defaults.iosxe.devices.configuration.interfaces.port_channels.auto_qos.video_cts, null)
+        auto_qos_video_ip_camera      = try(int.auto_qos.video_ip_camera, local.defaults.iosxe.devices.configuration.interfaces.port_channels.auto_qos.video_ip_camera, null)
+        auto_qos_video_media_player   = try(int.auto_qos.video_media_player, local.defaults.iosxe.devices.configuration.interfaces.port_channels.auto_qos.video_media_player, null)
+        auto_qos_voip                 = try(int.auto_qos.voip, local.defaults.iosxe.devices.configuration.interfaces.port_channels.auto_qos.voip, null)
+        auto_qos_voip_cisco_phone     = try(int.auto_qos.voip_cisco_phone, local.defaults.iosxe.devices.configuration.interfaces.port_channels.auto_qos.voip_cisco_phone, null)
+        auto_qos_voip_cisco_softphone = try(int.auto_qos.voip_cisco_softphone, local.defaults.iosxe.devices.configuration.interfaces.port_channels.auto_qos.voip_cisco_softphone, null)
+        auto_qos_voip_trust           = try(int.auto_qos.voip_trust, local.defaults.iosxe.devices.configuration.interfaces.port_channels.auto_qos.voip_trust, null)
+        trust_device                  = try(int.auto_qos.trust_device, local.defaults.iosxe.devices.configuration.interfaces.port_channels.auto_qos.trust_device, null)
+        negotiation_auto              = try(int.negotiation_auto, local.defaults.iosxe.devices.configuration.interfaces.port_channels.negotiation_auto, null)
         evpn_ethernet_segments = try(length(int.evpn_ethernet_segments) == 0, true) ? null : [for es in int.evpn_ethernet_segments : {
           es_value = try(es.es_value, local.defaults.iosxe.devices.configuration.interfaces.port_channels.evpn_ethernet_segments.es_value, null)
         }]
@@ -1637,9 +1666,11 @@ resource "iosxe_interface_port_channel" "port_channel" {
   trust_device                     = each.value.trust_device
   negotiation_auto                 = each.value.negotiation_auto
   evpn_ethernet_segments           = each.value.evpn_ethernet_segments
+  ip_router_isis                   = each.value.isis_area_tag
 
   depends_on = [
-    iosxe_evpn_ethernet_segment.evpn_ethernet_segment
+    iosxe_evpn_ethernet_segment.evpn_ethernet_segment,
+    iosxe_isis.isis
   ]
 }
 
@@ -1770,6 +1801,21 @@ resource "iosxe_interface_pim_ipv6" "port_channel_pim_ipv6" {
   ]
 }
 
+resource "iosxe_interface_isis" "port_channel_isis" {
+  for_each = { for v in local.interfaces_port_channels : v.key => v if v.isis }
+
+  device                 = each.value.device
+  type                   = "Port-channel"
+  name                   = each.value.name
+  network_point_to_point = each.value.isis_network_point_to_point
+  ipv4_metric_levels     = each.value.isis_ipv4_metric_levels
+
+  depends_on = [
+    iosxe_interface_port_channel.port_channel,
+    iosxe_isis.isis
+  ]
+}
+
 ##### PORT-CHANNEL SUBINTERFACES #####
 
 locals {
@@ -1879,6 +1925,13 @@ locals {
           pim_bsr_border                          = try(sub.pim.bsr_border, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.pim.bsr_border, null)
           pim_dr_priority                         = try(sub.pim.dr_priority, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.pim.dr_priority, null)
           ip_igmp_version                         = try(sub.igmp.version, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.igmp.version, null)
+          isis_area_tag                           = try(sub.isis.area_tag, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.isis.area_tag, null)
+          isis                                    = try(sub.isis, null) != null ? true : false
+          isis_network_point_to_point             = try(sub.isis.network_point_to_point, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.isis.network_point_to_point, null)
+          isis_ipv4_metric_levels = try(length(sub.isis.ipv4_metric_levels) == 0, true) ? null : [for level in sub.isis.ipv4_metric_levels : {
+            level = try(level.level, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.isis.ipv4_metric_levels.level, null)
+            value = try(level.value, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.isis.ipv4_metric_levels.value, null)
+          }]
         }
       ]
     ]
@@ -1937,12 +1990,14 @@ resource "iosxe_interface_port_channel_subinterface" "port_channel_subinterface"
   trust_device                    = each.value.trust_device
   ip_arp_inspection_trust         = each.value.ip_arp_inspection_trust
   ip_arp_inspection_limit_rate    = each.value.ip_arp_inspection_limit_rate
+  ip_router_isis                  = each.value.isis_area_tag
 
   depends_on = [
     iosxe_vrf.vrf,
     iosxe_access_list_standard.access_list_standard,
     iosxe_access_list_extended.access_list_extended,
-    iosxe_policy_map.policy_map
+    iosxe_policy_map.policy_map,
+    iosxe_isis.isis
   ]
 }
 
@@ -2023,6 +2078,21 @@ resource "iosxe_interface_pim" "port_channel_subinterface_pim" {
 
   depends_on = [
     iosxe_interface_port_channel_subinterface.port_channel_subinterface
+  ]
+}
+
+resource "iosxe_interface_isis" "port_channel_subinterface_isis" {
+  for_each = { for v in local.interfaces_port_channel_subinterfaces : v.key => v if v.isis }
+
+  device                 = each.value.device
+  type                   = "Port-channel-subinterface/Port-channel"
+  name                   = each.value.name
+  network_point_to_point = each.value.isis_network_point_to_point
+  ipv4_metric_levels     = each.value.isis_ipv4_metric_levels
+
+  depends_on = [
+    iosxe_interface_port_channel_subinterface.port_channel_subinterface,
+    iosxe_isis.isis
   ]
 }
 
