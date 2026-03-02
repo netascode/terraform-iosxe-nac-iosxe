@@ -431,6 +431,7 @@ resource "iosxe_interface_ethernet" "ethernet" {
     iosxe_evpn_ethernet_segment.evpn_ethernet_segment,
     iosxe_flow_monitor.flow_monitor,
     iosxe_dot1x.dot1x,
+    iosxe_aaa_authentication.aaa_authentication,
     iosxe_isis.isis
   ]
 }
@@ -559,7 +560,8 @@ resource "iosxe_interface_ethernet" "ethernet_unmanaged" {
     iosxe_policy_map.policy_map,
     iosxe_evpn_ethernet_segment.evpn_ethernet_segment,
     iosxe_flow_monitor.flow_monitor,
-    iosxe_dot1x.dot1x
+    iosxe_dot1x.dot1x,
+    iosxe_aaa_authentication.aaa_authentication
   ]
 
   lifecycle {
