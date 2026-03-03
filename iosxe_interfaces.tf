@@ -783,6 +783,7 @@ resource "iosxe_interface_pim" "ethernet_pim" {
   dr_priority       = each.value.pim_dr_priority
 
   depends_on = [
+    iosxe_system.system,
     iosxe_interface_ethernet.ethernet
   ]
 }
@@ -803,6 +804,7 @@ resource "iosxe_interface_pim" "ethernet_pim_unmanaged" {
   dr_priority       = each.value.pim_dr_priority
 
   depends_on = [
+    iosxe_system.system,
     iosxe_interface_ethernet.ethernet_unmanaged
   ]
 
@@ -1064,6 +1066,7 @@ resource "iosxe_interface_pim" "loopback_pim" {
   dr_priority       = each.value.pim_dr_priority
 
   depends_on = [
+    iosxe_system.system,
     iosxe_interface_loopback.loopback
   ]
 }
@@ -1360,6 +1363,7 @@ resource "iosxe_interface_pim" "vlan_pim" {
   dr_priority       = each.value.pim_dr_priority
 
   depends_on = [
+    iosxe_system.system,
     iosxe_interface_vlan.vlan
   ]
 }
@@ -1781,6 +1785,7 @@ resource "iosxe_interface_pim" "port_channel_pim" {
   dr_priority       = each.value.pim_dr_priority
 
   depends_on = [
+    iosxe_system.system,
     iosxe_interface_port_channel.port_channel
   ]
 }
@@ -2077,6 +2082,7 @@ resource "iosxe_interface_pim" "port_channel_subinterface_pim" {
   dr_priority       = each.value.pim_dr_priority
 
   depends_on = [
+    iosxe_system.system,
     iosxe_interface_port_channel_subinterface.port_channel_subinterface
   ]
 }
