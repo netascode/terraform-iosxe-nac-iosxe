@@ -46,6 +46,10 @@ jobs:
       - name: Terraform Validate
         run: terraform validate -no-color
 
+      - name: Set short SHA
+        if: always()
+        run: echo "SHORT_SHA=${GITHUB_SHA::8}" >> $GITHUB_ENV
+
       - name: Webex Notification
         if: always() && github.event_name != 'pull_request'
         uses: qsnyder/action-wxt@master
@@ -53,8 +57,24 @@ jobs:
           TOKEN: ${{ secrets.WEBEX_TOKEN }}
           ROOMID: ${{ secrets.WEBEX_ROOM_ID }}
           MESSAGE: |
-            [**[${{ job.status }}] ${{ github.repository }} #${{ github.run_number }}**](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
-            * Commit: [${{ github.event.head_commit.message }}](${{ github.event.head_commit.url }})[${{ github.event.pull_request.title }}](${{ github.event.pull_request.html_url }})
-            * Author: ${{ github.event.sender.login }}
-            * Branch: ${{ github.ref }} ${{ github.head_ref }}
-            * Event: ${{ github.event_name }}
+            ## ${{ job.status == 'success' && '✅' || '❌' }} NaC IOS-XE Module Pipeline ${{ job.status == 'success' && 'Passed' || 'Failed' }}
+
+            ---
+            **Build Information:**
+            * **Pipeline:** ${{ github.repository }}
+            * **Run:** [#${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            * **Branch:** `${{ github.ref_name }}`
+            * **Event:** ${{ github.event_name }}
+            * **Context:** **main** — Pre-commit + Terraform Init + Validate
+
+            **Git Information:**
+            * **Commit:** [`${{ env.SHORT_SHA }}`](https://github.com/${{ github.repository }}/commit/${{ github.sha }}) — _${{ github.event.head_commit.message }}_
+            * **Author:** ${{ github.event.head_commit.author.name }}
+
+            **Pipeline Stages:**
+            * **Pre-commit:** tflint, terraform-fmt, terraform-docs
+            * **Terraform Init:** provider and module initialization
+            * **Terraform Validate:** configuration syntax validation
+
+            **Quick Links:**
+            * [Workflow Run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) | [Commit Diff](https://github.com/${{ github.repository }}/commit/${{ github.sha }})
