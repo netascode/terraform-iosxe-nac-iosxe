@@ -269,6 +269,10 @@ resource "iosxe_system" "system" {
 
   depends_on = [
     iosxe_vrf.vrf,
+    iosxe_interface_loopback.loopback,
+    iosxe_interface_vlan.vlan,
+    iosxe_interface_port_channel.port_channel,
+    iosxe_interface_port_channel_subinterface.port_channel_subinterface,
     iosxe_policy_map.policy_map
   ]
 }
@@ -295,6 +299,10 @@ resource "iosxe_sla" "sla" {
 
   depends_on = [
     iosxe_vrf.vrf,
+    iosxe_interface_loopback.loopback,
+    iosxe_interface_vlan.vlan,
+    iosxe_interface_port_channel.port_channel,
+    iosxe_interface_port_channel_subinterface.port_channel_subinterface,
     iosxe_policy_map.policy_map
   ]
 }
