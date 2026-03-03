@@ -65,7 +65,6 @@ jobs:
             * **Run:** [#${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
             * **Branch:** `${{ github.ref_name }}`
             * **Event:** ${{ github.event_name }}
-            * **Context:** **main** — Pre-commit + Terraform Init + Validate
 
             **Git Information:**
             * **Commit:** [`${{ env.SHORT_SHA }}`](https://github.com/${{ github.repository }}/commit/${{ github.sha }}) — _${{ github.event.head_commit.message }}_
