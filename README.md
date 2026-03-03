@@ -139,6 +139,9 @@ module "iosxe" {
 | [iosxe_interface_ethernet.ethernet_unmanaged](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.16.0/docs/resources/interface_ethernet) | resource |
 | [iosxe_interface_isis.ethernet_isis](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.16.0/docs/resources/interface_isis) | resource |
 | [iosxe_interface_isis.loopback_isis](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.16.0/docs/resources/interface_isis) | resource |
+| [iosxe_interface_isis.port_channel_isis](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.16.0/docs/resources/interface_isis) | resource |
+| [iosxe_interface_isis.port_channel_subinterface_isis](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.16.0/docs/resources/interface_isis) | resource |
+| [iosxe_interface_isis.vlan_isis](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.16.0/docs/resources/interface_isis) | resource |
 | [iosxe_interface_loopback.loopback](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.16.0/docs/resources/interface_loopback) | resource |
 | [iosxe_interface_mpls.ethernet_mpls](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.16.0/docs/resources/interface_mpls) | resource |
 | [iosxe_interface_mpls.ethernet_mpls_unmanaged](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.16.0/docs/resources/interface_mpls) | resource |
