@@ -430,7 +430,10 @@ resource "iosxe_interface_ethernet" "ethernet" {
     iosxe_policy_map.policy_map,
     iosxe_evpn_ethernet_segment.evpn_ethernet_segment,
     iosxe_flow_monitor.flow_monitor,
-    iosxe_isis.isis
+    iosxe_dot1x.dot1x,
+    iosxe_aaa_authentication.aaa_authentication,
+    iosxe_isis.isis,
+    iosxe_interface_switchport.ethernet_switchport
   ]
 }
 
@@ -557,7 +560,10 @@ resource "iosxe_interface_ethernet" "ethernet_unmanaged" {
     iosxe_access_list_extended.access_list_extended,
     iosxe_policy_map.policy_map,
     iosxe_evpn_ethernet_segment.evpn_ethernet_segment,
-    iosxe_flow_monitor.flow_monitor
+    iosxe_flow_monitor.flow_monitor,
+    iosxe_dot1x.dot1x,
+    iosxe_aaa_authentication.aaa_authentication,
+    iosxe_interface_switchport.ethernet_switchport_unmanaged
   ]
 
   lifecycle {
@@ -594,7 +600,9 @@ resource "iosxe_interface_switchport" "ethernet_switchport" {
   host                            = each.value.switchport_host
 
   depends_on = [
-    iosxe_interface_ethernet.ethernet
+    iosxe_vrf.vrf,
+    iosxe_dot1x.dot1x,
+    iosxe_aaa_authentication.aaa_authentication
   ]
 }
 
@@ -627,7 +635,9 @@ resource "iosxe_interface_switchport" "ethernet_switchport_unmanaged" {
   host                            = each.value.switchport_host
 
   depends_on = [
-    iosxe_interface_ethernet.ethernet_unmanaged
+    iosxe_vrf.vrf,
+    iosxe_dot1x.dot1x,
+    iosxe_aaa_authentication.aaa_authentication
   ]
 
   lifecycle {

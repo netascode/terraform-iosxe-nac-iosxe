@@ -47,7 +47,6 @@ resource "iosxe_aaa" "aaa" {
   }]
 
   depends_on = [
-    iosxe_interface_ethernet.ethernet,
     iosxe_interface_loopback.loopback,
     iosxe_interface_port_channel.port_channel,
     iosxe_interface_port_channel_subinterface.port_channel_subinterface,
