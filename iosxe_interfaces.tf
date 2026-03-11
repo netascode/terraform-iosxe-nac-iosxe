@@ -2191,8 +2191,12 @@ locals {
         ip_unreachables            = try(int.ipv4.unreachables, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.unreachables, null)
         ip_nat_inside              = try(int.ipv4.nat_inside, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.nat_inside, null)
         ip_nat_outside             = try(int.ipv4.nat_outside, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.nat_outside, null)
-        unnumbered                 = try("${try(int.ipv4.unnumbered_interface_type, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.unnumbered_interface_type)}${try(int.ipv4.unnumbered_interface_id, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.unnumbered_interface_id)}", null)
-        ipv6_enable                = try(int.ipv6.enable, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv6.enable, null)
+        ip_flow_monitors = try(length(int.ipv4.flow_monitors) == 0, true) ? null : [for fm in int.ipv4.flow_monitors : {
+          name      = try(fm.name, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.flow_monitors.name, null)
+          direction = try(fm.direction, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.flow_monitors.direction, null)
+        }]
+        unnumbered  = try("${try(int.ipv4.unnumbered_interface_type, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.unnumbered_interface_type)}${try(int.ipv4.unnumbered_interface_id, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.unnumbered_interface_id)}", null)
+        ipv6_enable = try(int.ipv6.enable, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv6.enable, null)
         ipv6_addresses = try(length(int.ipv6.addresses) == 0, true) ? null : [for addr in int.ipv6.addresses : {
           prefix = try(addr.prefix, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv6.addresses.prefix, null)
           eui_64 = try(addr.eui_64, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv6.addresses.eui_64, null)
@@ -2201,10 +2205,14 @@ locals {
           address    = addr
           link_local = true
         }]
-        ipv6_address_autoconfig_default       = try(int.ipv6.address_autoconfig_default, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv6.address_autoconfig_default, null)
-        ipv6_address_dhcp                     = try(int.ipv6.address_dhcp, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv6.address_dhcp, null)
-        ipv6_mtu                              = try(int.ipv6.mtu, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv6.mtu, null)
-        ipv6_nd_ra_suppress_all               = try(int.ipv6.nd_ra_suppress_all, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv6.nd_ra_suppress_all, null)
+        ipv6_address_autoconfig_default = try(int.ipv6.address_autoconfig_default, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv6.address_autoconfig_default, null)
+        ipv6_address_dhcp               = try(int.ipv6.address_dhcp, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv6.address_dhcp, null)
+        ipv6_mtu                        = try(int.ipv6.mtu, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv6.mtu, null)
+        ipv6_nd_ra_suppress_all         = try(int.ipv6.nd_ra_suppress_all, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv6.nd_ra_suppress_all, null)
+        ipv6_flow_monitors = try(length(int.ipv6.flow_monitors) == 0, true) ? null : [for fm in int.ipv6.flow_monitors : {
+          name      = try(fm.name, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv6.flow_monitors.name, null)
+          direction = try(fm.direction, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv6.flow_monitors.direction, null)
+        }]
         bfd_enable                            = try(int.bfd.enable, local.defaults.iosxe.devices.configuration.interfaces.tunnels.bfd.enable, null)
         bfd_template                          = try(int.bfd.template, local.defaults.iosxe.devices.configuration.interfaces.tunnels.bfd.template, null)
         bfd_local_address                     = try(int.bfd.local_address, local.defaults.iosxe.devices.configuration.interfaces.tunnels.bfd.local_address, null)
@@ -2280,6 +2288,7 @@ resource "iosxe_interface_tunnel" "tunnel" {
   ip_unreachables                  = each.value.ip_unreachables
   ip_nat_inside                    = each.value.ip_nat_inside
   ip_nat_outside                   = each.value.ip_nat_outside
+  ip_flow_monitors                 = each.value.ip_flow_monitors
   unnumbered                       = each.value.unnumbered
   ipv6_enable                      = each.value.ipv6_enable
   ipv6_addresses                   = each.value.ipv6_addresses
@@ -2288,6 +2297,7 @@ resource "iosxe_interface_tunnel" "tunnel" {
   ipv6_address_dhcp                = each.value.ipv6_address_dhcp
   ipv6_mtu                         = each.value.ipv6_mtu
   ipv6_nd_ra_suppress_all          = each.value.ipv6_nd_ra_suppress_all
+  ipv6_flow_monitors               = each.value.ipv6_flow_monitors
   bfd_enable                       = each.value.bfd_enable
   bfd_template                     = each.value.bfd_template
   bfd_local_address                = each.value.bfd_local_address
@@ -2311,7 +2321,8 @@ resource "iosxe_interface_tunnel" "tunnel" {
     iosxe_vrf.vrf,
     iosxe_access_list_standard.access_list_standard,
     iosxe_access_list_extended.access_list_extended,
-    iosxe_crypto_ipsec_profile.crypto_ipsec_profile
+    iosxe_crypto_ipsec_profile.crypto_ipsec_profile,
+    iosxe_flow_monitor.flow_monitor
   ]
 }
 
