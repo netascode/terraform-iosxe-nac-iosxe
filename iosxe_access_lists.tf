@@ -87,7 +87,7 @@ locals {
           tos                           = try(e.tos, local.defaults.iosxe.configuration.access_lists.extended.entries.tos, null)
           icmp_named_msg_type           = can(tonumber(try(e.icmp_message_type, local.defaults.iosxe.configuration.access_lists.extended.entries.icmp_message_type, ""))) ? null : try(e.icmp_message_type, local.defaults.iosxe.configuration.access_lists.extended.entries.icmp_message_type, null)
           icmp_msg_type                 = can(tonumber(try(e.icmp_message_type, local.defaults.iosxe.configuration.access_lists.extended.entries.icmp_message_type, ""))) ? try(e.icmp_message_type, local.defaults.iosxe.configuration.access_lists.extended.entries.icmp_message_type, null) : null
-          icmp_msg_code                 = try(e.icmp_message_code, local.defaults.iosxe.configuration.access_lists.extended.entries.icmp_message_code, null)
+          icmp_msg_code                 = can(tonumber(try(e.icmp_message_type, local.defaults.iosxe.configuration.access_lists.extended.entries.icmp_message_type, ""))) ? try(e.icmp_message_code, local.defaults.iosxe.configuration.access_lists.extended.entries.icmp_message_code, null) : null
           log                           = try(e.log, local.defaults.iosxe.configuration.access_lists.extended.entries.log, null)
           log_input                     = try(e.log_input, local.defaults.iosxe.configuration.access_lists.extended.entries.log_input, null)
         }]
