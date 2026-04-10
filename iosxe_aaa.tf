@@ -51,6 +51,7 @@ resource "iosxe_aaa" "aaa" {
     iosxe_interface_port_channel.port_channel,
     iosxe_interface_port_channel_subinterface.port_channel_subinterface,
     iosxe_interface_vlan.vlan,
+    iosxe_vrf.vrf,
   ]
 }
 
