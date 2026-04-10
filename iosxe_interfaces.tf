@@ -2246,6 +2246,20 @@ locals {
         ospfv3_network_type_point_to_multipoint = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ospfv3.network_type, null) == "point-to-multipoint" ? true : null
         ospfv3_network_type_point_to_point      = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ospfv3.network_type, null) == "point-to-point" ? true : null
         ospfv3_cost                             = try(int.ospfv3.cost, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ospfv3.cost, null)
+        pim                                     = try(int.pim.passive, int.pim.dense_mode, int.pim.sparse_mode, int.pim.sparse_dense_mode, local.defaults.iosxe.devices.configuration.interfaces.tunnels.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.tunnels.pim.dense_mode, local.defaults.iosxe.devices.configuration.interfaces.tunnels.pim.sparse_mode, local.defaults.iosxe.devices.configuration.interfaces.tunnels.pim.sparse_dense_mode, null) != null ? true : false
+        pim_passive                             = try(int.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.tunnels.pim.passive, null)
+        pim_dense_mode                          = try(int.pim.dense_mode, local.defaults.iosxe.devices.configuration.interfaces.tunnels.pim.dense_mode, null)
+        pim_sparse_mode                         = try(int.pim.sparse_mode, local.defaults.iosxe.devices.configuration.interfaces.tunnels.pim.sparse_mode, null)
+        pim_sparse_dense_mode                   = try(int.pim.sparse_dense_mode, local.defaults.iosxe.devices.configuration.interfaces.tunnels.pim.sparse_dense_mode, null)
+        pim_bfd                                 = try(int.pim.bfd, local.defaults.iosxe.devices.configuration.interfaces.tunnels.pim.bfd, null)
+        pim_border                              = try(int.pim.border, local.defaults.iosxe.devices.configuration.interfaces.tunnels.pim.border, null)
+        pim_bsr_border                          = try(int.pim.bsr_border, local.defaults.iosxe.devices.configuration.interfaces.tunnels.pim.bsr_border, null)
+        pim_dr_priority                         = try(int.pim.dr_priority, local.defaults.iosxe.devices.configuration.interfaces.tunnels.pim.dr_priority, null)
+        ipv6_pim                                = try(int.ipv6.pim, null) != null ? true : false
+        ipv6_pim_pim                            = try(int.ipv6.pim.pim, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv6.pim.pim, null)
+        ipv6_pim_bfd                            = try(int.ipv6.pim.bfd, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv6.pim.bfd, null)
+        ipv6_pim_bsr_border                     = try(int.ipv6.pim.bsr_border, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv6.pim.bsr_border, null)
+        ipv6_pim_dr_priority                    = try(int.ipv6.pim.dr_priority, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv6.pim.dr_priority, null)
         ip_igmp_version                         = try(int.igmp.version, local.defaults.iosxe.devices.configuration.interfaces.tunnels.igmp.version, null)
       }
     ]
@@ -2351,5 +2365,42 @@ resource "iosxe_interface_ospfv3" "tunnel_ospfv3" {
     iosxe_interface_tunnel.tunnel,
     iosxe_ospf.ospf,
     iosxe_ospf_vrf.ospf_vrf
+  ]
+}
+
+resource "iosxe_interface_pim" "tunnel_pim" {
+  for_each = { for v in local.interfaces_tunnels : v.key => v if v.pim }
+
+  device            = each.value.device
+  type              = "Tunnel"
+  name              = each.value.name
+  passive           = each.value.pim_passive
+  dense_mode        = each.value.pim_dense_mode
+  sparse_mode       = each.value.pim_sparse_mode
+  sparse_dense_mode = each.value.pim_sparse_dense_mode
+  bfd               = each.value.pim_bfd
+  border            = each.value.pim_border
+  bsr_border        = each.value.pim_bsr_border
+  dr_priority       = each.value.pim_dr_priority
+
+  depends_on = [
+    iosxe_system.system,
+    iosxe_interface_tunnel.tunnel
+  ]
+}
+
+resource "iosxe_interface_pim_ipv6" "tunnel_pim_ipv6" {
+  for_each = { for v in local.interfaces_tunnels : v.key => v if v.ipv6_pim }
+
+  device      = each.value.device
+  type        = "Tunnel"
+  name        = each.value.name
+  pim         = each.value.ipv6_pim_pim
+  bfd         = each.value.ipv6_pim_bfd
+  bsr_border  = each.value.ipv6_pim_bsr_border
+  dr_priority = each.value.ipv6_pim_dr_priority
+
+  depends_on = [
+    iosxe_interface_tunnel.tunnel
   ]
 }
