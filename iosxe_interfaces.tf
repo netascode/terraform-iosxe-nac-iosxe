@@ -199,7 +199,6 @@ locals {
         auto_qos_video_cts                    = try(int.auto_qos.video_cts, local.defaults.iosxe.devices.configuration.interfaces.ethernets.auto_qos.video_cts, null)
         auto_qos_video_ip_camera              = try(int.auto_qos.video_ip_camera, local.defaults.iosxe.devices.configuration.interfaces.ethernets.auto_qos.video_ip_camera, null)
         auto_qos_video_media_player           = try(int.auto_qos.video_media_player, local.defaults.iosxe.devices.configuration.interfaces.ethernets.auto_qos.video_media_player, null)
-        auto_qos_voip                         = try(int.auto_qos.voip, local.defaults.iosxe.devices.configuration.interfaces.ethernets.auto_qos.voip, null)
         auto_qos_voip_cisco_phone             = try(int.auto_qos.voip_cisco_phone, local.defaults.iosxe.devices.configuration.interfaces.ethernets.auto_qos.voip_cisco_phone, null)
         auto_qos_voip_cisco_softphone         = try(int.auto_qos.voip_cisco_softphone, local.defaults.iosxe.devices.configuration.interfaces.ethernets.auto_qos.voip_cisco_softphone, null)
         auto_qos_voip_trust                   = try(int.auto_qos.voip_trust, local.defaults.iosxe.devices.configuration.interfaces.ethernets.auto_qos.voip_trust, null)
@@ -390,7 +389,6 @@ resource "iosxe_interface_ethernet" "ethernet" {
   auto_qos_video_cts                         = each.value.auto_qos_video_cts
   auto_qos_video_ip_camera                   = each.value.auto_qos_video_ip_camera
   auto_qos_video_media_player                = each.value.auto_qos_video_media_player
-  auto_qos_voip                              = each.value.auto_qos_voip
   auto_qos_voip_cisco_phone                  = each.value.auto_qos_voip_cisco_phone
   auto_qos_voip_cisco_softphone              = each.value.auto_qos_voip_cisco_softphone
   auto_qos_voip_trust                        = each.value.auto_qos_voip_trust
@@ -522,7 +520,6 @@ resource "iosxe_interface_ethernet" "ethernet_unmanaged" {
   auto_qos_video_cts                         = each.value.auto_qos_video_cts
   auto_qos_video_ip_camera                   = each.value.auto_qos_video_ip_camera
   auto_qos_video_media_player                = each.value.auto_qos_video_media_player
-  auto_qos_voip                              = each.value.auto_qos_voip
   auto_qos_voip_cisco_phone                  = each.value.auto_qos_voip_cisco_phone
   auto_qos_voip_cisco_softphone              = each.value.auto_qos_voip_cisco_softphone
   auto_qos_voip_trust                        = each.value.auto_qos_voip_trust
@@ -1605,7 +1602,6 @@ locals {
         auto_qos_video_cts            = try(int.auto_qos.video_cts, local.defaults.iosxe.devices.configuration.interfaces.port_channels.auto_qos.video_cts, null)
         auto_qos_video_ip_camera      = try(int.auto_qos.video_ip_camera, local.defaults.iosxe.devices.configuration.interfaces.port_channels.auto_qos.video_ip_camera, null)
         auto_qos_video_media_player   = try(int.auto_qos.video_media_player, local.defaults.iosxe.devices.configuration.interfaces.port_channels.auto_qos.video_media_player, null)
-        auto_qos_voip                 = try(int.auto_qos.voip, local.defaults.iosxe.devices.configuration.interfaces.port_channels.auto_qos.voip, null)
         auto_qos_voip_cisco_phone     = try(int.auto_qos.voip_cisco_phone, local.defaults.iosxe.devices.configuration.interfaces.port_channels.auto_qos.voip_cisco_phone, null)
         auto_qos_voip_cisco_softphone = try(int.auto_qos.voip_cisco_softphone, local.defaults.iosxe.devices.configuration.interfaces.port_channels.auto_qos.voip_cisco_softphone, null)
         auto_qos_voip_trust           = try(int.auto_qos.voip_trust, local.defaults.iosxe.devices.configuration.interfaces.port_channels.auto_qos.voip_trust, null)
@@ -1673,7 +1669,6 @@ resource "iosxe_interface_port_channel" "port_channel" {
   auto_qos_video_cts               = each.value.auto_qos_video_cts
   auto_qos_video_ip_camera         = each.value.auto_qos_video_ip_camera
   auto_qos_video_media_player      = each.value.auto_qos_video_media_player
-  auto_qos_voip                    = each.value.auto_qos_voip
   auto_qos_voip_cisco_phone        = each.value.auto_qos_voip_cisco_phone
   auto_qos_voip_cisco_softphone    = each.value.auto_qos_voip_cisco_softphone
   auto_qos_voip_trust              = each.value.auto_qos_voip_trust
@@ -1892,7 +1887,6 @@ locals {
           auto_qos_video_cts                    = try(sub.auto_qos.video_cts, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.auto_qos.video_cts, null)
           auto_qos_video_ip_camera              = try(sub.auto_qos.video_ip_camera, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.auto_qos.video_ip_camera, null)
           auto_qos_video_media_player           = try(sub.auto_qos.video_media_player, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.auto_qos.video_media_player, null)
-          auto_qos_voip                         = try(sub.auto_qos.voip, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.auto_qos.voip, null)
           auto_qos_voip_cisco_phone             = try(sub.auto_qos.voip_cisco_phone, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.auto_qos.voip_cisco_phone, null)
           auto_qos_voip_cisco_softphone         = try(sub.auto_qos.voip_cisco_softphone, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.auto_qos.voip_cisco_softphone, null)
           auto_qos_voip_trust                   = try(sub.auto_qos.voip_trust, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.auto_qos.voip_trust, null)
@@ -1998,7 +1992,6 @@ resource "iosxe_interface_port_channel_subinterface" "port_channel_subinterface"
   auto_qos_video_cts              = each.value.auto_qos_video_cts
   auto_qos_video_ip_camera        = each.value.auto_qos_video_ip_camera
   auto_qos_video_media_player     = each.value.auto_qos_video_media_player
-  auto_qos_voip                   = each.value.auto_qos_voip
   auto_qos_voip_cisco_phone       = each.value.auto_qos_voip_cisco_phone
   auto_qos_voip_cisco_softphone   = each.value.auto_qos_voip_cisco_softphone
   auto_qos_voip_trust             = each.value.auto_qos_voip_trust
