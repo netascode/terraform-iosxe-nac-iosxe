@@ -136,6 +136,7 @@ module "iosxe" {
 | [iosxe_flow_record.flow_record](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.16.0/docs/resources/flow_record) | resource |
 | [iosxe_interface_bdi.bdi](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.16.0/docs/resources/interface_bdi) | resource |
 | [iosxe_interface_ethernet.ethernet](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.16.0/docs/resources/interface_ethernet) | resource |
+| [iosxe_interface_ethernet.ethernet_sub](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.16.0/docs/resources/interface_ethernet) | resource |
 | [iosxe_interface_ethernet.ethernet_unmanaged](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.16.0/docs/resources/interface_ethernet) | resource |
 | [iosxe_interface_isis.ethernet_isis](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.16.0/docs/resources/interface_isis) | resource |
 | [iosxe_interface_isis.loopback_isis](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.16.0/docs/resources/interface_isis) | resource |
