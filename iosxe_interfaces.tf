@@ -2005,7 +2005,8 @@ resource "iosxe_interface_port_channel_subinterface" "port_channel_subinterface"
     iosxe_access_list_standard.access_list_standard,
     iosxe_access_list_extended.access_list_extended,
     iosxe_policy_map.policy_map,
-    iosxe_isis.isis
+    iosxe_isis.isis,
+    iosxe_interface_port_channel.port_channel
   ]
 }
 
