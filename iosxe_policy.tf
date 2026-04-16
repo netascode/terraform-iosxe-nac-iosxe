@@ -25,7 +25,11 @@ locals {
         match_access_group_name                        = can(class_map.match.access_groups) ? sort(class_map.match.access_groups) : null
         match_ip_dscp                                  = can(class_map.match.ip_dscp) ? sort(class_map.match.ip_dscp) : null
         match_ip_precedence                            = can(class_map.match.ip_precedence) ? sort(class_map.match.ip_precedence) : null
-        description                                    = try(class_map.description, local.defaults.iosxe.configuration.policy.class_maps.description, null)
+        match_protocol = try(length(class_map.match.protocols) == 0, true) ? null : [for protocol in class_map.match.protocols : {
+          protocols = protocol
+        }]
+        match_class_map = can(class_map.match.class_maps) ? sort(class_map.match.class_maps) : null
+        description     = try(class_map.description, local.defaults.iosxe.configuration.policy.class_maps.description, null)
       }
     ]
   ])
@@ -54,6 +58,8 @@ resource "iosxe_class_map" "class_map" {
   match_access_group_name                        = each.value.match_access_group_name
   match_ip_dscp                                  = each.value.match_ip_dscp
   match_ip_precedence                            = each.value.match_ip_precedence
+  match_protocol                                 = each.value.match_protocol
+  match_class_map                                = each.value.match_class_map
   description                                    = each.value.description
 }
 
