@@ -5,6 +5,7 @@ locals {
         key                                = format("%s/%s", device.name, pm.name)
         device                             = device.name
         name                               = try(pm.name, local.defaults.iosxe.configuration.policy.parameter_maps.name, null)
+        type                               = try(pm.type, local.defaults.iosxe.configuration.policy.parameter_maps.type, null)
         alert                              = try(pm.alert, local.defaults.iosxe.configuration.policy.parameter_maps.alert, null)
         application_inspect_dns            = try(pm.application_inspect_dns, local.defaults.iosxe.configuration.policy.parameter_maps.application_inspect_dns, null)
         application_inspect_exec           = try(pm.application_inspect_exec, local.defaults.iosxe.configuration.policy.parameter_maps.application_inspect_exec, null)
