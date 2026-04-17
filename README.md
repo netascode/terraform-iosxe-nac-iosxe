@@ -198,7 +198,7 @@ module "iosxe" {
 | [iosxe_ntp.ntp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.16.0/docs/resources/ntp) | resource |
 | [iosxe_ospf.ospf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.16.0/docs/resources/ospf) | resource |
 | [iosxe_ospf_vrf.ospf_vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.16.0/docs/resources/ospf_vrf) | resource |
-| [iosxe_parameter_map_type_inspect.parameter_map_type_inspect](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.16.0/docs/resources/parameter_map_type_inspect) | resource |
+| [iosxe_parameter_map.parameter_map](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.16.0/docs/resources/parameter_map) | resource |
 | [iosxe_pim.pim](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.16.0/docs/resources/pim) | resource |
 | [iosxe_pim_ipv6.pim_ipv6](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.16.0/docs/resources/pim_ipv6) | resource |
 | [iosxe_platform.platform](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.16.0/docs/resources/platform) | resource |
