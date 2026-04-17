@@ -227,6 +227,7 @@ module "iosxe" {
 | [iosxe_vlan_group.vlan_group](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.16.0/docs/resources/vlan_group) | resource |
 | [iosxe_vrf.vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.16.0/docs/resources/vrf) | resource |
 | [iosxe_vtp.vtp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.16.0/docs/resources/vtp) | resource |
+| [iosxe_zone_pair_security.zone_pair_security](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.16.0/docs/resources/zone_pair_security) | resource |
 ## Modules
 
 | Name | Source | Version |
