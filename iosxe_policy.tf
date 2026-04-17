@@ -130,7 +130,8 @@ resource "iosxe_policy_map" "policy_map" {
   classes     = each.value.classes
 
   depends_on = [
-    iosxe_class_map.class_map
+    iosxe_class_map.class_map,
+    iosxe_parameter_map_type_inspect.parameter_map_type_inspect
   ]
 }
 
