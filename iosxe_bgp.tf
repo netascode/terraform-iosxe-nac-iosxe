@@ -403,8 +403,8 @@ locals {
         default_originate           = try(neighbor.default_originate, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv6_unicast.neighbors.default_originate, null)
         default_originate_route_map = try(neighbor.default_originate_route_map, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv6_unicast.neighbors.default_originate_route_map, null)
         route_maps = try(length(neighbor.route_maps) == 0, true) ? null : [for rm in neighbor.route_maps : {
-          in_out         = try(rm.in_out, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv6_unicast.neighbors.route_maps.in_out, null)
-          route_map_name = try(rm.route_map_name, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv6_unicast.neighbors.route_maps.route_map_name, null)
+          in_out         = try(rm.direction, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv6_unicast.neighbors.route_maps.direction, null)
+          route_map_name = try(rm.name, local.defaults.iosxe.configuration.routing.bgp.address_family.ipv6_unicast.neighbors.route_maps.name, null)
         }]
       }
     ]
