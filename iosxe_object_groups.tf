@@ -22,6 +22,10 @@ locals {
           ipv4_address = n.address
           ipv4_mask    = n.mask
         }]
+        address_ranges = try(length(og.address_ranges) == 0, true) ? null : [for r in og.address_ranges : {
+          start = r.start
+          end   = r.end
+        }]
         group_objects = try(length(og.group_objects) == 0, true) ? null : [for g in og.group_objects : {
           group_name = g
         }]
