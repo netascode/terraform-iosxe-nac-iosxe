@@ -24,4 +24,13 @@ resource "iosxe_spanning_tree" "spanning_tree" {
     id       = try(tostring(v.id), local.defaults.iosxe.configuration.spanning_tree.vlans.id, null)
     priority = try(v.priority, local.defaults.iosxe.configuration.spanning_tree.vlans.priority, null)
   }]
+
+  disabled_vlans = try(local.device_config[each.value.name].spanning_tree.disabled.vlans, null) == null ? null : [
+    for id in provider::utils::normalize_vlans(
+      try(local.device_config[each.value.name].spanning_tree.disabled.vlans, local.defaults.iosxe.configuration.spanning_tree.disabled.vlans),
+      "list"
+      ) : {
+      id = tostring(id)
+    }
+  ]
 }
