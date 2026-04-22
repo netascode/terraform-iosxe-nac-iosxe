@@ -51,6 +51,15 @@ locals {
           source_host                   = try(e.source.host, local.defaults.iosxe.configuration.access_lists.extended.entries.source.host, null)
           source_object_group           = try(e.source.object_group, local.defaults.iosxe.configuration.access_lists.extended.entries.source.object_group, null)
           source_port_equal             = try(e.source.port_type, local.defaults.iosxe.configuration.access_lists.extended.entries.source.port_type, null) == "equal" ? try(e.source.port, null) : null
+          source_port_equal_2           = try(e.source.additional_equal_ports[0], local.defaults.iosxe.configuration.access_lists.extended.entries.source.additional_equal_ports[0], null)
+          source_port_equal_3           = try(e.source.additional_equal_ports[1], local.defaults.iosxe.configuration.access_lists.extended.entries.source.additional_equal_ports[1], null)
+          source_port_equal_4           = try(e.source.additional_equal_ports[2], local.defaults.iosxe.configuration.access_lists.extended.entries.source.additional_equal_ports[2], null)
+          source_port_equal_5           = try(e.source.additional_equal_ports[3], local.defaults.iosxe.configuration.access_lists.extended.entries.source.additional_equal_ports[3], null)
+          source_port_equal_6           = try(e.source.additional_equal_ports[4], local.defaults.iosxe.configuration.access_lists.extended.entries.source.additional_equal_ports[4], null)
+          source_port_equal_7           = try(e.source.additional_equal_ports[5], local.defaults.iosxe.configuration.access_lists.extended.entries.source.additional_equal_ports[5], null)
+          source_port_equal_8           = try(e.source.additional_equal_ports[6], local.defaults.iosxe.configuration.access_lists.extended.entries.source.additional_equal_ports[6], null)
+          source_port_equal_9           = try(e.source.additional_equal_ports[7], local.defaults.iosxe.configuration.access_lists.extended.entries.source.additional_equal_ports[7], null)
+          source_port_equal_10          = try(e.source.additional_equal_ports[8], local.defaults.iosxe.configuration.access_lists.extended.entries.source.additional_equal_ports[8], null)
           source_port_greater_than      = try(e.source.port_type, local.defaults.iosxe.configuration.access_lists.extended.entries.source.port_type, null) == "greater_than" ? try(e.source.port, null) : null
           source_port_lesser_than       = try(e.source.port_type, local.defaults.iosxe.configuration.access_lists.extended.entries.source.port_type, null) == "lesser_than" ? try(e.source.port, null) : null
           source_port_range_from        = try(e.source.port_type, local.defaults.iosxe.configuration.access_lists.extended.entries.source.port_type, null) == "range" ? try(e.source.port_range_from, null) : null
