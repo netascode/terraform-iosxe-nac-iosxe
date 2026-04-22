@@ -170,11 +170,13 @@ module "iosxe" {
 | [iosxe_interface_pim.loopback_pim](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.16.0/docs/resources/interface_pim) | resource |
 | [iosxe_interface_pim.port_channel_pim](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.16.0/docs/resources/interface_pim) | resource |
 | [iosxe_interface_pim.port_channel_subinterface_pim](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.16.0/docs/resources/interface_pim) | resource |
+| [iosxe_interface_pim.tunnel_pim](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.16.0/docs/resources/interface_pim) | resource |
 | [iosxe_interface_pim.vlan_pim](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.16.0/docs/resources/interface_pim) | resource |
 | [iosxe_interface_pim_ipv6.ethernet_pim_ipv6](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.16.0/docs/resources/interface_pim_ipv6) | resource |
 | [iosxe_interface_pim_ipv6.ethernet_pim_ipv6_unmanaged](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.16.0/docs/resources/interface_pim_ipv6) | resource |
 | [iosxe_interface_pim_ipv6.loopback_pim_ipv6](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.16.0/docs/resources/interface_pim_ipv6) | resource |
 | [iosxe_interface_pim_ipv6.port_channel_pim_ipv6](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.16.0/docs/resources/interface_pim_ipv6) | resource |
+| [iosxe_interface_pim_ipv6.tunnel_pim_ipv6](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.16.0/docs/resources/interface_pim_ipv6) | resource |
 | [iosxe_interface_pim_ipv6.vlan_pim_ipv6](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.16.0/docs/resources/interface_pim_ipv6) | resource |
 | [iosxe_interface_port_channel.port_channel](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.16.0/docs/resources/interface_port_channel) | resource |
 | [iosxe_interface_port_channel_subinterface.port_channel_subinterface](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.16.0/docs/resources/interface_port_channel_subinterface) | resource |
