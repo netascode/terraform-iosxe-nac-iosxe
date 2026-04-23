@@ -236,6 +236,11 @@ locals {
         ospfv3_network_type_point_to_multipoint = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.network_type, null) == "point-to-multipoint" ? true : null
         ospfv3_network_type_point_to_point      = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.network_type, null) == "point-to-point" ? true : null
         ospfv3_cost                             = try(int.ospfv3.cost, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.cost, null)
+        ospfv3_bfd                              = try(int.ospfv3.bfd, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.bfd, null)
+        ospfv3_dead_interval                    = try(int.ospfv3.dead_interval, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.dead_interval, null)
+        ospfv3_hello_interval                   = try(int.ospfv3.hello_interval, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.hello_interval, null)
+        ospfv3_mtu_ignore                       = try(int.ospfv3.mtu_ignore, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.mtu_ignore, null)
+        ospfv3_priority                         = try(int.ospfv3.priority, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.priority, null)
         pim                                     = try(int.pim.passive, int.pim.dense_mode, int.pim.sparse_mode, int.pim.sparse_dense_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.dense_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.sparse_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.sparse_dense_mode, null) != null ? true : false
         pim_passive                             = try(int.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.passive, null)
         pim_dense_mode                          = try(int.pim.dense_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.dense_mode, null)
@@ -743,6 +748,11 @@ resource "iosxe_interface_ospfv3" "ethernet_ospfv3" {
   network_type_point_to_multipoint = each.value.ospfv3_network_type_point_to_multipoint
   network_type_point_to_point      = each.value.ospfv3_network_type_point_to_point
   cost                             = each.value.ospfv3_cost
+  bfd                              = each.value.ospfv3_bfd
+  dead_interval                    = each.value.ospfv3_dead_interval
+  hello_interval                   = each.value.ospfv3_hello_interval
+  mtu_ignore                       = each.value.ospfv3_mtu_ignore
+  priority                         = each.value.ospfv3_priority
 
   depends_on = [
     iosxe_interface_ethernet.ethernet,
@@ -762,6 +772,11 @@ resource "iosxe_interface_ospfv3" "ethernet_ospfv3_unmanaged" {
   network_type_point_to_multipoint = each.value.ospfv3_network_type_point_to_multipoint
   network_type_point_to_point      = each.value.ospfv3_network_type_point_to_point
   cost                             = each.value.ospfv3_cost
+  bfd                              = each.value.ospfv3_bfd
+  dead_interval                    = each.value.ospfv3_dead_interval
+  hello_interval                   = each.value.ospfv3_hello_interval
+  mtu_ignore                       = each.value.ospfv3_mtu_ignore
+  priority                         = each.value.ospfv3_priority
 
   depends_on = [
     iosxe_interface_ethernet.ethernet_unmanaged,
@@ -932,6 +947,11 @@ locals {
         ospfv3_network_type_point_to_multipoint = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospfv3.network_type, null) == "point-to-multipoint" ? true : null
         ospfv3_network_type_point_to_point      = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospfv3.network_type, null) == "point-to-point" ? true : null
         ospfv3_cost                             = try(int.ospfv3.cost, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospfv3.cost, null)
+        ospfv3_bfd                              = try(int.ospfv3.bfd, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospfv3.bfd, null)
+        ospfv3_dead_interval                    = try(int.ospfv3.dead_interval, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospfv3.dead_interval, null)
+        ospfv3_hello_interval                   = try(int.ospfv3.hello_interval, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospfv3.hello_interval, null)
+        ospfv3_mtu_ignore                       = try(int.ospfv3.mtu_ignore, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospfv3.mtu_ignore, null)
+        ospfv3_priority                         = try(int.ospfv3.priority, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospfv3.priority, null)
         pim                                     = try(int.pim.passive, int.pim.dense_mode, int.pim.sparse_mode, int.pim.sparse_dense_mode, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.pim.dense_mode, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.pim.sparse_mode, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.pim.sparse_dense_mode, null) != null ? true : false
         pim_passive                             = try(int.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.pim.passive, null)
         pim_dense_mode                          = try(int.pim.dense_mode, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.pim.dense_mode, null)
@@ -1049,6 +1069,11 @@ resource "iosxe_interface_ospfv3" "loopback_ospfv3" {
   network_type_point_to_multipoint = each.value.ospfv3_network_type_point_to_multipoint
   network_type_point_to_point      = each.value.ospfv3_network_type_point_to_point
   cost                             = each.value.ospfv3_cost
+  bfd                              = each.value.ospfv3_bfd
+  dead_interval                    = each.value.ospfv3_dead_interval
+  hello_interval                   = each.value.ospfv3_hello_interval
+  mtu_ignore                       = each.value.ospfv3_mtu_ignore
+  priority                         = each.value.ospfv3_priority
 
   depends_on = [
     iosxe_interface_loopback.loopback,
@@ -1214,6 +1239,11 @@ locals {
         ospfv3_network_type_point_to_multipoint = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospfv3.network_type, null) == "point-to-multipoint" ? true : null
         ospfv3_network_type_point_to_point      = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospfv3.network_type, null) == "point-to-point" ? true : null
         ospfv3_cost                             = try(int.ospfv3.cost, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospfv3.cost, null)
+        ospfv3_bfd                              = try(int.ospfv3.bfd, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospfv3.bfd, null)
+        ospfv3_dead_interval                    = try(int.ospfv3.dead_interval, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospfv3.dead_interval, null)
+        ospfv3_hello_interval                   = try(int.ospfv3.hello_interval, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospfv3.hello_interval, null)
+        ospfv3_mtu_ignore                       = try(int.ospfv3.mtu_ignore, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospfv3.mtu_ignore, null)
+        ospfv3_priority                         = try(int.ospfv3.priority, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospfv3.priority, null)
         pim                                     = try(int.pim.passive, int.pim.dense_mode, int.pim.sparse_mode, int.pim.sparse_dense_mode, local.defaults.iosxe.devices.configuration.interfaces.vlans.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.vlans.pim.dense_mode, local.defaults.iosxe.devices.configuration.interfaces.vlans.pim.sparse_mode, local.defaults.iosxe.devices.configuration.interfaces.vlans.pim.sparse_dense_mode, null) != null ? true : false
         pim_passive                             = try(int.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.vlans.pim.passive, null)
         pim_dense_mode                          = try(int.pim.dense_mode, local.defaults.iosxe.devices.configuration.interfaces.vlans.pim.dense_mode, null)
@@ -1346,6 +1376,11 @@ resource "iosxe_interface_ospfv3" "vlan_ospfv3" {
   network_type_point_to_multipoint = each.value.ospfv3_network_type_point_to_multipoint
   network_type_point_to_point      = each.value.ospfv3_network_type_point_to_point
   cost                             = each.value.ospfv3_cost
+  bfd                              = each.value.ospfv3_bfd
+  dead_interval                    = each.value.ospfv3_dead_interval
+  hello_interval                   = each.value.ospfv3_hello_interval
+  mtu_ignore                       = each.value.ospfv3_mtu_ignore
+  priority                         = each.value.ospfv3_priority
 
   depends_on = [
     iosxe_interface_vlan.vlan,
@@ -1580,6 +1615,11 @@ locals {
         ospfv3_network_type_point_to_multipoint = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ospfv3.network_type, null) == "point-to-multipoint" ? true : false
         ospfv3_network_type_point_to_point      = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ospfv3.network_type, null) == "point-to-point" ? true : false
         ospfv3_cost                             = try(int.ospfv3.cost, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ospfv3.cost, null)
+        ospfv3_bfd                              = try(int.ospfv3.bfd, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ospfv3.bfd, null)
+        ospfv3_dead_interval                    = try(int.ospfv3.dead_interval, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ospfv3.dead_interval, null)
+        ospfv3_hello_interval                   = try(int.ospfv3.hello_interval, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ospfv3.hello_interval, null)
+        ospfv3_mtu_ignore                       = try(int.ospfv3.mtu_ignore, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ospfv3.mtu_ignore, null)
+        ospfv3_priority                         = try(int.ospfv3.priority, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ospfv3.priority, null)
         pim                                     = try(int.pim.passive, int.pim.dense_mode, int.pim.sparse_mode, int.pim.sparse_dense_mode, local.defaults.iosxe.devices.configuration.interfaces.port_channels.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.port_channels.pim.dense_mode, local.defaults.iosxe.devices.configuration.interfaces.port_channels.pim.sparse_mode, local.defaults.iosxe.devices.configuration.interfaces.port_channels.pim.sparse_dense_mode, null) != null ? true : false
         pim_passive                             = try(int.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.port_channels.pim.passive, null)
         pim_dense_mode                          = try(int.pim.dense_mode, local.defaults.iosxe.devices.configuration.interfaces.port_channels.pim.dense_mode, null)
@@ -1779,6 +1819,11 @@ resource "iosxe_interface_ospfv3" "port_channel_ospfv3" {
   network_type_point_to_multipoint = each.value.ospfv3_network_type_point_to_multipoint
   network_type_point_to_point      = each.value.ospfv3_network_type_point_to_point
   cost                             = each.value.ospfv3_cost
+  bfd                              = each.value.ospfv3_bfd
+  dead_interval                    = each.value.ospfv3_dead_interval
+  hello_interval                   = each.value.ospfv3_hello_interval
+  mtu_ignore                       = each.value.ospfv3_mtu_ignore
+  priority                         = each.value.ospfv3_priority
 
   depends_on = [
     iosxe_interface_port_channel.port_channel
@@ -1943,6 +1988,11 @@ locals {
           ospfv3_network_type_point_to_multipoint = try(sub.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ospfv3.network_type, null) == "point-to-multipoint" ? true : null
           ospfv3_network_type_point_to_point      = try(sub.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ospfv3.network_type, null) == "point-to-point" ? true : null
           ospfv3_cost                             = try(sub.ospfv3.cost, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ospfv3.cost, null)
+          ospfv3_bfd                              = try(sub.ospfv3.bfd, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ospfv3.bfd, null)
+          ospfv3_dead_interval                    = try(sub.ospfv3.dead_interval, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ospfv3.dead_interval, null)
+          ospfv3_hello_interval                   = try(sub.ospfv3.hello_interval, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ospfv3.hello_interval, null)
+          ospfv3_mtu_ignore                       = try(sub.ospfv3.mtu_ignore, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ospfv3.mtu_ignore, null)
+          ospfv3_priority                         = try(sub.ospfv3.priority, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ospfv3.priority, null)
           pim                                     = try(sub.pim.passive, sub.pim.dense_mode, sub.pim.sparse_mode, sub.pim.sparse_dense_mode, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.pim.dense_mode, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.pim.sparse_mode, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.pim.sparse_dense_mode, null) != null ? true : false
           pim_passive                             = try(sub.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.pim.passive, null)
           pim_dense_mode                          = try(sub.pim.dense_mode, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.pim.dense_mode, null)
@@ -2084,6 +2134,11 @@ resource "iosxe_interface_ospfv3" "port_channel_subinterface_ospfv3" {
   network_type_point_to_multipoint = each.value.ospfv3_network_type_point_to_multipoint
   network_type_point_to_point      = each.value.ospfv3_network_type_point_to_point
   cost                             = each.value.ospfv3_cost
+  bfd                              = each.value.ospfv3_bfd
+  dead_interval                    = each.value.ospfv3_dead_interval
+  hello_interval                   = each.value.ospfv3_hello_interval
+  mtu_ignore                       = each.value.ospfv3_mtu_ignore
+  priority                         = each.value.ospfv3_priority
 
   depends_on = [
     iosxe_interface_port_channel_subinterface.port_channel_subinterface,
@@ -2277,6 +2332,11 @@ locals {
         ospfv3_network_type_point_to_multipoint = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ospfv3.network_type, null) == "point-to-multipoint" ? true : null
         ospfv3_network_type_point_to_point      = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ospfv3.network_type, null) == "point-to-point" ? true : null
         ospfv3_cost                             = try(int.ospfv3.cost, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ospfv3.cost, null)
+        ospfv3_bfd                              = try(int.ospfv3.bfd, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ospfv3.bfd, null)
+        ospfv3_dead_interval                    = try(int.ospfv3.dead_interval, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ospfv3.dead_interval, null)
+        ospfv3_hello_interval                   = try(int.ospfv3.hello_interval, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ospfv3.hello_interval, null)
+        ospfv3_mtu_ignore                       = try(int.ospfv3.mtu_ignore, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ospfv3.mtu_ignore, null)
+        ospfv3_priority                         = try(int.ospfv3.priority, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ospfv3.priority, null)
         pim                                     = try(int.pim.passive, int.pim.dense_mode, int.pim.sparse_mode, int.pim.sparse_dense_mode, local.defaults.iosxe.devices.configuration.interfaces.tunnels.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.tunnels.pim.dense_mode, local.defaults.iosxe.devices.configuration.interfaces.tunnels.pim.sparse_mode, local.defaults.iosxe.devices.configuration.interfaces.tunnels.pim.sparse_dense_mode, null) != null ? true : false
         pim_passive                             = try(int.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.tunnels.pim.passive, null)
         pim_dense_mode                          = try(int.pim.dense_mode, local.defaults.iosxe.devices.configuration.interfaces.tunnels.pim.dense_mode, null)
@@ -2393,6 +2453,11 @@ resource "iosxe_interface_ospfv3" "tunnel_ospfv3" {
   network_type_point_to_multipoint = each.value.ospfv3_network_type_point_to_multipoint
   network_type_point_to_point      = each.value.ospfv3_network_type_point_to_point
   cost                             = each.value.ospfv3_cost
+  bfd                              = each.value.ospfv3_bfd
+  dead_interval                    = each.value.ospfv3_dead_interval
+  hello_interval                   = each.value.ospfv3_hello_interval
+  mtu_ignore                       = each.value.ospfv3_mtu_ignore
+  priority                         = each.value.ospfv3_priority
 
   depends_on = [
     iosxe_interface_tunnel.tunnel,
