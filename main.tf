@@ -155,6 +155,7 @@ resource "iosxe_cli" "cli_0" {
     iosxe_bgp_ipv6_unicast_neighbor.bgp_ipv6_unicast_neighbor,
     iosxe_bgp_l2vpn_evpn_neighbor.bgp_l2vpn_evpn_neighbor,
     iosxe_bgp_ipv4_unicast_vrf_neighbor.bgp_ipv4_unicast_vrf_neighbor,
+    iosxe_bgp_bmp_server.bgp_bmp_server,
     iosxe_cdp.cdp,
     iosxe_class_map.class_map,
     iosxe_clock.clock,
