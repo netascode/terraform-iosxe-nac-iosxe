@@ -1610,6 +1610,9 @@ locals {
         evpn_ethernet_segments = try(length(int.evpn_ethernet_segments) == 0, true) ? null : [for es in int.evpn_ethernet_segments : {
           es_value = try(es.es_value, local.defaults.iosxe.devices.configuration.interfaces.port_channels.evpn_ethernet_segments.es_value, null)
         }]
+        evpn_ethernet_segments_legacy = try(length(int.evpn_ethernet_segments_legacy) == 0, true) ? null : [for es in int.evpn_ethernet_segments_legacy : {
+          es_value = try(es.es_value, local.defaults.iosxe.devices.configuration.interfaces.port_channels.evpn_ethernet_segments_legacy.es_value, null)
+        }]
       }
     ]
   ])
@@ -1675,6 +1678,7 @@ resource "iosxe_interface_port_channel" "port_channel" {
   trust_device                     = each.value.trust_device
   negotiation_auto                 = each.value.negotiation_auto
   evpn_ethernet_segments           = each.value.evpn_ethernet_segments
+  evpn_ethernet_segments_legacy    = each.value.evpn_ethernet_segments_legacy
   ip_router_isis                   = each.value.isis_area_tag
 
   depends_on = [
