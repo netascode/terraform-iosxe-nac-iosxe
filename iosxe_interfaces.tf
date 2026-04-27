@@ -867,7 +867,7 @@ locals {
         id                         = int.id
         description                = try(int.description, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.description, null)
         shutdown                   = try(int.shutdown, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.shutdown, null)
-        mtu                        = try(int.mtu, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.mtu, null)
+        ip_mtu                     = try(int.ip_mtu, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ip_mtu, null)
         vrf_forwarding             = try(int.vrf_forwarding, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.vrf_forwarding, null)
         ipv4_address               = try(int.ipv4.address, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ipv4.address, null)
         ipv4_address_mask          = try(int.ipv4.address_mask, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ipv4.address_mask, null)
@@ -966,7 +966,7 @@ resource "iosxe_interface_loopback" "loopback" {
   name                            = each.value.id
   description                     = each.value.description
   shutdown                        = each.value.shutdown
-  mtu                             = each.value.mtu
+  ip_mtu                          = each.value.ip_mtu
   vrf_forwarding                  = each.value.vrf_forwarding
   ipv4_address                    = each.value.ipv4_address
   ipv4_address_mask               = each.value.ipv4_address_mask
@@ -1137,7 +1137,7 @@ locals {
         type                                    = try(int.type, local.defaults.iosxe.devices.configuration.interfaces.vlans.type, null)
         description                             = try(int.description, local.defaults.iosxe.devices.configuration.interfaces.vlans.description, null)
         shutdown                                = try(int.shutdown, local.defaults.iosxe.devices.configuration.interfaces.vlans.shutdown, null)
-        mtu                                     = try(int.mtu, local.defaults.iosxe.devices.configuration.interfaces.vlans.mtu, null)
+        ip_mtu                                  = try(int.ip_mtu, local.defaults.iosxe.devices.configuration.interfaces.vlans.ip_mtu, null)
         autostate                               = try(int.autostate, local.defaults.iosxe.devices.configuration.interfaces.vlans.autostate, null)
         vrf_forwarding                          = try(int.vrf_forwarding, local.defaults.iosxe.devices.configuration.interfaces.vlans.vrf_forwarding, null)
         ipv4_address                            = try(int.ipv4.address, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.address, null)
@@ -1251,7 +1251,7 @@ resource "iosxe_interface_vlan" "vlan" {
   name                                    = each.value.id
   description                             = each.value.description
   shutdown                                = each.value.shutdown
-  mtu                                     = each.value.mtu
+  ip_mtu                                  = each.value.ip_mtu
   autostate                               = each.value.autostate
   vrf_forwarding                          = each.value.vrf_forwarding
   ipv4_address                            = each.value.ipv4_address
@@ -2172,7 +2172,6 @@ locals {
         name                           = int.name
         description                    = try(int.description, local.defaults.iosxe.devices.configuration.interfaces.tunnels.description, null)
         shutdown                       = try(int.shutdown, local.defaults.iosxe.devices.configuration.interfaces.tunnels.shutdown, null)
-        mtu                            = try(int.mtu, local.defaults.iosxe.devices.configuration.interfaces.tunnels.mtu, null)
         vrf_forwarding                 = try(int.vrf_forwarding, local.defaults.iosxe.devices.configuration.interfaces.tunnels.vrf_forwarding, null)
         ipv4_address                   = try(int.ipv4.address, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.address, null)
         ipv4_address_mask              = try(int.ipv4.address_mask, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.address_mask, null)
@@ -2280,7 +2279,6 @@ resource "iosxe_interface_tunnel" "tunnel" {
   name                             = each.value.name
   description                      = each.value.description
   shutdown                         = each.value.shutdown
-  mtu                              = each.value.mtu
   vrf_forwarding                   = each.value.vrf_forwarding
   ipv4_address                     = each.value.ipv4_address
   ipv4_address_mask                = each.value.ipv4_address_mask
