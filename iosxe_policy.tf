@@ -22,8 +22,8 @@ locals {
         match_method_mab                               = try(class_map.match.method_mab, local.defaults.iosxe.configuration.policy.class_maps.match.method_mab, null)
         match_result_type_method_mab_authoritative     = try(class_map.match.result_type_method_mab_authoritative, local.defaults.iosxe.configuration.policy.class_maps.match.result_type_method_mab_authoritative, null)
         match_dscp                                     = can(class_map.match.dscp) ? sort(class_map.match.dscp) : null
-        match_access_group_index                       = try(class_map.match.access_group_index, local.defaults.iosxe.configuration.policy.class_maps.match.access_group_index, null)
-        match_access_group_name                        = can(class_map.match.access_groups) ? sort(class_map.match.access_groups) : null
+        match_access_group_index                       = try(tostring([for v in class_map.match.access_groups : v if can(tonumber(v))][0]), null)
+        match_access_group_name                        = try(sort([for v in class_map.match.access_groups : tostring(v) if !can(tonumber(v))]), null)
         match_ip_dscp                                  = can(class_map.match.ip_dscp) ? sort(class_map.match.ip_dscp) : null
         match_ip_precedence                            = can(class_map.match.ip_precedence) ? sort(class_map.match.ip_precedence) : null
         description                                    = try(class_map.description, local.defaults.iosxe.configuration.policy.class_maps.description, null)
