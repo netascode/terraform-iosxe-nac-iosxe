@@ -1,5 +1,5 @@
 resource "iosxe_device_tracking" "device_tracking" {
-  for_each = { for device in local.devices : device.name => device if try(local.device_config[device.name].device_tracking, local.defaults.iosxe.configuration.device_tracking, null) != null }
+  for_each = { for device in local.devices : device.name => device if try(local.device_config[device.name].device_tracking, null) != null || try(local.defaults.iosxe.configuration.device_tracking, null) != null }
   device   = each.value.name
 
   logging_theft                          = try(local.device_config[each.value.name].device_tracking.logging_theft, local.defaults.iosxe.configuration.device_tracking.logging_theft, null)
@@ -13,7 +13,7 @@ locals {
   device_tracking_policies = flatten([
     for device in local.devices : [
       for policy in try(local.device_config[device.name].device_tracking.policies, []) : {
-        key                                         = format("%s/%s", device.name, try(policy.name, null))
+        key                                         = format("%s/%s", device.name, policy.name)
         device                                      = device.name
         name                                        = try(policy.name, local.defaults.iosxe.configuration.device_tracking.policies.name, null)
         trusted_port                                = try(policy.trusted_port, local.defaults.iosxe.configuration.device_tracking.policies.trusted_port, null)
@@ -86,4 +86,6 @@ resource "iosxe_device_tracking_policy" "device_tracking_policy" {
   security_level_guard                        = each.value.security_level_guard
   security_level_inspect                      = each.value.security_level_inspect
   medium_type_wireless                        = each.value.medium_type_wireless
+
+  depends_on = [iosxe_device_tracking.device_tracking]
 }
