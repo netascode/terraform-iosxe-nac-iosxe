@@ -180,6 +180,7 @@ resource "iosxe_cli" "cli_0" {
     iosxe_flow_monitor.flow_monitor,
     iosxe_flow_record.flow_record,
     iosxe_interface_ethernet.ethernet,
+    iosxe_interface_ethernet.ethernet_sub,
     iosxe_interface_switchport.ethernet_switchport,
     iosxe_interface_mpls.ethernet_mpls,
     iosxe_interface_ospf.ethernet_ospf,
