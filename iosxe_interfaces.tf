@@ -8,6 +8,7 @@ locals {
         device      = device.name
         id          = int.id
         mac_address = try(int.mac_address, null)
+        ip_mtu      = try(int.ip_mtu, local.defaults.iosxe.devices.configuration.interfaces.bdis.ip_mtu, null)
       }
     ]
   ])
@@ -19,6 +20,7 @@ resource "iosxe_interface_bdi" "bdi" {
 
   name        = each.value.id
   mac_address = each.value.mac_address
+  ip_mtu      = each.value.ip_mtu
 
 }
 
@@ -1855,6 +1857,7 @@ locals {
             global  = try(ha.global, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv4.helper_addresses.global, null)
             vrf     = try(ha.vrf, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv4.helper_addresses.vrf, null)
           }]
+          ip_mtu                     = try(sub.ip_mtu, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ip_mtu, null)
           ip_access_group_in         = try(sub.ipv4.access_group_in, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv4.access_group_in, null)
           ip_access_group_in_enable  = try(sub.ipv4.access_group_in, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv4.access_group_in, null) != null ? true : null
           ip_access_group_out        = try(sub.ipv4.access_group_out, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv4.access_group_out, null)
@@ -1964,6 +1967,7 @@ resource "iosxe_interface_port_channel_subinterface" "port_channel_subinterface"
   ip_proxy_arp                    = each.value.ip_proxy_arp
   ip_redirects                    = each.value.ip_redirects
   ip_unreachables                 = each.value.ip_unreachables
+  ip_mtu                          = each.value.ip_mtu
   ip_nat_inside                   = each.value.ip_nat_inside
   ip_nat_outside                  = each.value.ip_nat_outside
   vrf_forwarding                  = each.value.vrf_forwarding
