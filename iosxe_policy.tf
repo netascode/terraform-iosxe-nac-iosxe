@@ -22,7 +22,7 @@ locals {
         match_method_mab                               = try(class_map.match.method_mab, local.defaults.iosxe.configuration.policy.class_maps.match.method_mab, null)
         match_result_type_method_mab_authoritative     = try(class_map.match.result_type_method_mab_authoritative, local.defaults.iosxe.configuration.policy.class_maps.match.result_type_method_mab_authoritative, null)
         match_dscp                                     = can(class_map.match.dscp) ? sort(class_map.match.dscp) : null
-        match_access_group_index                       = try(tostring([for v in class_map.match.access_groups : v if can(tonumber(v))][0]), null)
+        match_access_group_index_legacy                = try(tostring([for v in class_map.match.access_groups : v if can(tonumber(v))][0]), null)
         match_access_group_name                        = try(sort([for v in class_map.match.access_groups : tostring(v) if !can(tonumber(v))]), null)
         match_ip_dscp                                  = can(class_map.match.ip_dscp) ? sort(class_map.match.ip_dscp) : null
         match_ip_precedence                            = can(class_map.match.ip_precedence) ? sort(class_map.match.ip_precedence) : null
@@ -52,7 +52,7 @@ resource "iosxe_class_map" "class_map" {
   match_method_mab                               = each.value.match_method_mab
   match_result_type_method_mab_authoritative     = each.value.match_result_type_method_mab_authoritative
   match_dscp                                     = each.value.match_dscp
-  match_access_group_index                       = each.value.match_access_group_index
+  match_access_group_index_legacy                = each.value.match_access_group_index_legacy
   match_access_group_name                        = each.value.match_access_group_name
   match_ip_dscp                                  = each.value.match_ip_dscp
   match_ip_precedence                            = each.value.match_ip_precedence
