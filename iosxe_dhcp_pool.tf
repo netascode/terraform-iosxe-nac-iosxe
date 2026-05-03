@@ -40,6 +40,7 @@ locals {
             ascii       = try(opt.ascii, local.defaults.iosxe.configuration.dhcp_pools.options.ascii, null)
             hex         = try(opt.hex, local.defaults.iosxe.configuration.dhcp_pools.options.hex, null)
             ip          = try(opt.ip, local.defaults.iosxe.configuration.dhcp_pools.options.ip, null)
+            ip_legacy   = try(opt.ip_legacy, local.defaults.iosxe.configuration.dhcp_pools.options.ip_legacy, null)
           }
         ]
       }
