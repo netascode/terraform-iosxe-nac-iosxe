@@ -102,6 +102,7 @@ locals {
             police_rate_percent                       = try(action.police_rate_percent, local.defaults.iosxe.configuration.policy.policy_maps.classes.actions.police_rate_percent, null)
             queue_buffers_ratio                       = try(action.queue_buffers_ratio, local.defaults.iosxe.configuration.policy.policy_maps.classes.actions.queue_buffers_ratio, null)
             set_dscp                                  = try(action.set_dscp, local.defaults.iosxe.configuration.policy.policy_maps.classes.actions.set_dscp, null)
+            service_policy                            = try(action.service_policy, local.defaults.iosxe.configuration.policy.policy_maps.classes.actions.service_policy, null)
           }]
         }]
       }
