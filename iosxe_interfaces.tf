@@ -236,6 +236,11 @@ locals {
         ospfv3_network_type_point_to_multipoint = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.network_type, null) == "point-to-multipoint" ? true : null
         ospfv3_network_type_point_to_point      = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.network_type, null) == "point-to-point" ? true : null
         ospfv3_cost                             = try(int.ospfv3.cost, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.cost, null)
+        ospfv3_bfd                              = try(int.ospfv3.bfd, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.bfd, null)
+        ospfv3_dead_interval                    = try(int.ospfv3.dead_interval, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.dead_interval, null)
+        ospfv3_hello_interval                   = try(int.ospfv3.hello_interval, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.hello_interval, null)
+        ospfv3_mtu_ignore                       = try(int.ospfv3.mtu_ignore, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.mtu_ignore, null)
+        ospfv3_priority                         = try(int.ospfv3.priority, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospfv3.priority, null)
         pim                                     = try(int.pim.passive, int.pim.dense_mode, int.pim.sparse_mode, int.pim.sparse_dense_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.dense_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.sparse_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.sparse_dense_mode, null) != null ? true : false
         pim_passive                             = try(int.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.passive, null)
         pim_dense_mode                          = try(int.pim.dense_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.pim.dense_mode, null)
@@ -305,7 +310,7 @@ locals {
 }
 
 resource "iosxe_interface_ethernet" "ethernet" {
-  for_each = { for v in local.interfaces_ethernets : v.key => v if v.managed }
+  for_each = { for v in local.interfaces_ethernets : v.key => v if v.managed && !strcontains(v.id, ".") }
   device   = each.value.device
 
   type                                       = each.value.type
@@ -432,6 +437,138 @@ resource "iosxe_interface_ethernet" "ethernet" {
     iosxe_aaa_authentication.aaa_authentication,
     iosxe_isis.isis,
     iosxe_interface_switchport.ethernet_switchport
+  ]
+}
+
+resource "iosxe_interface_ethernet" "ethernet_sub" {
+  for_each = { for v in local.interfaces_ethernets : v.key => v if v.managed && strcontains(v.id, ".") }
+  device   = each.value.device
+
+  type                                       = each.value.type
+  name                                       = each.value.id
+  media_type                                 = each.value.media_type
+  bandwidth                                  = each.value.bandwidth
+  mtu                                        = each.value.mtu
+  description                                = each.value.description
+  shutdown                                   = each.value.shutdown
+  vrf_forwarding                             = each.value.vrf_forwarding
+  ipv4_address                               = each.value.ipv4_address
+  ipv4_address_mask                          = each.value.ipv4_address_mask
+  ip_proxy_arp                               = each.value.ip_proxy_arp
+  ip_arp_inspection_trust                    = each.value.ip_arp_inspection_trust
+  ip_arp_inspection_limit_rate               = each.value.ip_arp_inspection_limit_rate
+  ip_dhcp_snooping_trust                     = each.value.ip_dhcp_snooping_trust
+  ip_dhcp_relay_source_interface             = each.value.ip_dhcp_relay_source_interface
+  ip_dhcp_relay_information_option_vpn_id    = each.value.ip_dhcp_relay_information_option_vpn_id
+  helper_addresses                           = each.value.helper_addresses
+  ip_access_group_in                         = each.value.ip_access_group_in
+  ip_access_group_in_enable                  = each.value.ip_access_group_in_enable
+  ip_access_group_out                        = each.value.ip_access_group_out
+  ip_access_group_out_enable                 = each.value.ip_access_group_out_enable
+  ip_flow_monitors                           = each.value.ip_flow_monitors
+  ip_nbar_protocol_discovery                 = each.value.ip_nbar_protocol_discovery
+  ip_redirects                               = each.value.ip_redirects
+  ip_unreachables                            = each.value.ip_unreachables
+  ip_igmp_version                            = each.value.ip_igmp_version
+  unnumbered                                 = each.value.unnumbered
+  ipv6_address_autoconfig_default            = each.value.ipv6_address_autoconfig_default
+  ipv6_address_dhcp                          = each.value.ipv6_address_dhcp
+  ipv6_addresses                             = each.value.ipv6_addresses
+  ipv6_enable                                = each.value.ipv6_enable
+  ipv6_link_local_addresses                  = each.value.ipv6_link_local_addresses
+  ipv6_mtu                                   = each.value.ipv6_mtu
+  ipv6_nd_ra_suppress_all                    = each.value.ipv6_nd_ra_suppress_all
+  ipv6_flow_monitors                         = each.value.ipv6_flow_monitors
+  bfd_enable                                 = each.value.bfd_enable
+  bfd_template                               = each.value.bfd_template
+  bfd_local_address                          = each.value.bfd_local_address
+  bfd_interval                               = each.value.bfd_interval
+  bfd_interval_min_rx                        = each.value.bfd_interval_min_rx
+  bfd_interval_multiplier                    = each.value.bfd_interval_multiplier
+  bfd_echo                                   = each.value.bfd_echo
+  spanning_tree_guard                        = each.value.spanning_tree_guard
+  spanning_tree_link_type                    = each.value.spanning_tree_link_type
+  spanning_tree_portfast_trunk               = each.value.spanning_tree_portfast_trunk
+  spanning_tree_portfast                     = each.value.spanning_tree_portfast
+  spanning_tree_portfast_disable             = each.value.spanning_tree_portfast_disable
+  spanning_tree_portfast_edge                = each.value.spanning_tree_portfast_edge
+  bpduguard_enable                           = each.value.bpduguard_enable
+  bpduguard_disable                          = each.value.bpduguard_disable
+  speed_100                                  = each.value.speed_100
+  speed_1000                                 = each.value.speed_1000
+  speed_2500                                 = each.value.speed_2500
+  speed_5000                                 = each.value.speed_5000
+  speed_10000                                = each.value.speed_10000
+  speed_25000                                = each.value.speed_25000
+  speed_40000                                = each.value.speed_40000
+  speed_100000                               = each.value.speed_100000
+  speed_nonegotiate                          = each.value.speed_nonegotiate
+  channel_group_number                       = each.value.channel_group_number
+  channel_group_mode                         = each.value.channel_group_mode
+  source_template                            = each.value.source_templates
+  arp_timeout                                = each.value.arp_timeout
+  negotiation_auto                           = each.value.negotiation_auto
+  service_policy_input                       = each.value.service_policy_input
+  service_policy_output                      = each.value.service_policy_output
+  load_interval                              = each.value.load_interval
+  snmp_trap_link_status                      = each.value.snmp_trap_link_status
+  logging_event_link_status_enable           = each.value.logging_event_link_status_enable
+  device_tracking                            = each.value.device_tracking
+  device_tracking_attached_policies          = each.value.device_tracking_attached_policies
+  encapsulation_dot1q_vlan_id                = each.value.encapsulation_dot1q_vlan_id
+  switchport                                 = each.value.switchport
+  auto_qos_classify                          = each.value.auto_qos_classify
+  auto_qos_classify_police                   = each.value.auto_qos_classify_police
+  auto_qos_trust                             = each.value.auto_qos_trust
+  auto_qos_trust_cos                         = each.value.auto_qos_trust_cos
+  auto_qos_trust_dscp                        = each.value.auto_qos_trust_dscp
+  auto_qos_video_cts                         = each.value.auto_qos_video_cts
+  auto_qos_video_ip_camera                   = each.value.auto_qos_video_ip_camera
+  auto_qos_video_media_player                = each.value.auto_qos_video_media_player
+  auto_qos_voip_cisco_phone                  = each.value.auto_qos_voip_cisco_phone
+  auto_qos_voip_cisco_softphone              = each.value.auto_qos_voip_cisco_softphone
+  auto_qos_voip_trust                        = each.value.auto_qos_voip_trust
+  trust_device                               = each.value.trust_device
+  authentication_periodic                    = each.value.authentication_periodic
+  authentication_timer_reauthenticate        = each.value.authentication_timer_reauthenticate
+  authentication_timer_reauthenticate_server = each.value.authentication_timer_reauthenticate_server
+  mab                                        = each.value.mab
+  mab_eap                                    = each.value.mab_eap
+  dot1x_pae                                  = each.value.dot1x_pae
+  dot1x_timeout_auth_period                  = each.value.dot1x_timeout_auth_period
+  dot1x_timeout_held_period                  = each.value.dot1x_timeout_held_period
+  dot1x_timeout_quiet_period                 = each.value.dot1x_timeout_quiet_period
+  dot1x_timeout_ratelimit_period             = each.value.dot1x_timeout_ratelimit_period
+  dot1x_timeout_server_timeout               = each.value.dot1x_timeout_server_timeout
+  dot1x_timeout_start_period                 = each.value.dot1x_timeout_start_period
+  dot1x_timeout_supp_timeout                 = each.value.dot1x_timeout_supp_timeout
+  dot1x_timeout_tx_period                    = each.value.dot1x_timeout_tx_period
+  dot1x_max_reauth_req                       = each.value.dot1x_max_reauth_req
+  dot1x_max_req                              = each.value.dot1x_max_req
+  cdp_enable                                 = each.value.cdp_enable
+  cdp_tlv_app                                = each.value.cdp_tlv_app
+  cdp_tlv_location                           = each.value.cdp_tlv_location
+  cdp_tlv_server_location                    = each.value.cdp_tlv_server_location
+  evpn_ethernet_segments                     = each.value.evpn_ethernet_segments
+  ip_nat_inside                              = each.value.ip_nat_inside
+  ip_nat_outside                             = each.value.ip_nat_outside
+  carrier_delay_msec                         = each.value.carrier_delay_msec
+  hold_queues                                = each.value.hold_queues
+  service_instances                          = each.value.service_instances
+  ip_router_isis                             = each.value.isis_area_tag
+
+  depends_on = [
+    iosxe_vrf.vrf,
+    iosxe_access_list_standard.access_list_standard,
+    iosxe_access_list_extended.access_list_extended,
+    iosxe_policy_map.policy_map,
+    iosxe_evpn_ethernet_segment.evpn_ethernet_segment,
+    iosxe_flow_monitor.flow_monitor,
+    iosxe_dot1x.dot1x,
+    iosxe_aaa_authentication.aaa_authentication,
+    iosxe_isis.isis,
+    iosxe_interface_switchport.ethernet_switchport,
+    iosxe_interface_ethernet.ethernet
   ]
 }
 
@@ -652,7 +789,8 @@ resource "iosxe_interface_mpls" "ethernet_mpls" {
   mtu    = each.value.mpls_mtu
 
   depends_on = [
-    iosxe_interface_ethernet.ethernet
+    iosxe_interface_ethernet.ethernet,
+    iosxe_interface_ethernet.ethernet_sub
   ]
 }
 
@@ -696,6 +834,7 @@ resource "iosxe_interface_ospf" "ethernet_ospf" {
 
   depends_on = [
     iosxe_interface_ethernet.ethernet,
+    iosxe_interface_ethernet.ethernet_sub,
     iosxe_ospf.ospf,
     iosxe_ospf_vrf.ospf_vrf
   ]
@@ -743,9 +882,15 @@ resource "iosxe_interface_ospfv3" "ethernet_ospfv3" {
   network_type_point_to_multipoint = each.value.ospfv3_network_type_point_to_multipoint
   network_type_point_to_point      = each.value.ospfv3_network_type_point_to_point
   cost                             = each.value.ospfv3_cost
+  bfd                              = each.value.ospfv3_bfd
+  dead_interval                    = each.value.ospfv3_dead_interval
+  hello_interval                   = each.value.ospfv3_hello_interval
+  mtu_ignore                       = each.value.ospfv3_mtu_ignore
+  priority                         = each.value.ospfv3_priority
 
   depends_on = [
     iosxe_interface_ethernet.ethernet,
+    iosxe_interface_ethernet.ethernet_sub,
     iosxe_ospf.ospf,
     iosxe_ospf_vrf.ospf_vrf
   ]
@@ -762,6 +907,11 @@ resource "iosxe_interface_ospfv3" "ethernet_ospfv3_unmanaged" {
   network_type_point_to_multipoint = each.value.ospfv3_network_type_point_to_multipoint
   network_type_point_to_point      = each.value.ospfv3_network_type_point_to_point
   cost                             = each.value.ospfv3_cost
+  bfd                              = each.value.ospfv3_bfd
+  dead_interval                    = each.value.ospfv3_dead_interval
+  hello_interval                   = each.value.ospfv3_hello_interval
+  mtu_ignore                       = each.value.ospfv3_mtu_ignore
+  priority                         = each.value.ospfv3_priority
 
   depends_on = [
     iosxe_interface_ethernet.ethernet_unmanaged,
@@ -791,7 +941,8 @@ resource "iosxe_interface_pim" "ethernet_pim" {
 
   depends_on = [
     iosxe_system.system,
-    iosxe_interface_ethernet.ethernet
+    iosxe_interface_ethernet.ethernet,
+    iosxe_interface_ethernet.ethernet_sub
   ]
 }
 
@@ -832,7 +983,8 @@ resource "iosxe_interface_pim_ipv6" "ethernet_pim_ipv6" {
   dr_priority = each.value.ipv6_pim_dr_priority
 
   depends_on = [
-    iosxe_interface_ethernet.ethernet
+    iosxe_interface_ethernet.ethernet,
+    iosxe_interface_ethernet.ethernet_sub
   ]
 }
 
@@ -932,6 +1084,11 @@ locals {
         ospfv3_network_type_point_to_multipoint = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospfv3.network_type, null) == "point-to-multipoint" ? true : null
         ospfv3_network_type_point_to_point      = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospfv3.network_type, null) == "point-to-point" ? true : null
         ospfv3_cost                             = try(int.ospfv3.cost, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospfv3.cost, null)
+        ospfv3_bfd                              = try(int.ospfv3.bfd, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospfv3.bfd, null)
+        ospfv3_dead_interval                    = try(int.ospfv3.dead_interval, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospfv3.dead_interval, null)
+        ospfv3_hello_interval                   = try(int.ospfv3.hello_interval, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospfv3.hello_interval, null)
+        ospfv3_mtu_ignore                       = try(int.ospfv3.mtu_ignore, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospfv3.mtu_ignore, null)
+        ospfv3_priority                         = try(int.ospfv3.priority, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospfv3.priority, null)
         pim                                     = try(int.pim.passive, int.pim.dense_mode, int.pim.sparse_mode, int.pim.sparse_dense_mode, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.pim.dense_mode, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.pim.sparse_mode, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.pim.sparse_dense_mode, null) != null ? true : false
         pim_passive                             = try(int.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.pim.passive, null)
         pim_dense_mode                          = try(int.pim.dense_mode, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.pim.dense_mode, null)
@@ -1049,6 +1206,11 @@ resource "iosxe_interface_ospfv3" "loopback_ospfv3" {
   network_type_point_to_multipoint = each.value.ospfv3_network_type_point_to_multipoint
   network_type_point_to_point      = each.value.ospfv3_network_type_point_to_point
   cost                             = each.value.ospfv3_cost
+  bfd                              = each.value.ospfv3_bfd
+  dead_interval                    = each.value.ospfv3_dead_interval
+  hello_interval                   = each.value.ospfv3_hello_interval
+  mtu_ignore                       = each.value.ospfv3_mtu_ignore
+  priority                         = each.value.ospfv3_priority
 
   depends_on = [
     iosxe_interface_loopback.loopback,
@@ -1119,6 +1281,7 @@ resource "iosxe_interface_isis" "ethernet_isis" {
 
   depends_on = [
     iosxe_interface_ethernet.ethernet,
+    iosxe_interface_ethernet.ethernet_sub,
     iosxe_isis.isis
   ]
 }
@@ -1214,6 +1377,11 @@ locals {
         ospfv3_network_type_point_to_multipoint = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospfv3.network_type, null) == "point-to-multipoint" ? true : null
         ospfv3_network_type_point_to_point      = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospfv3.network_type, null) == "point-to-point" ? true : null
         ospfv3_cost                             = try(int.ospfv3.cost, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospfv3.cost, null)
+        ospfv3_bfd                              = try(int.ospfv3.bfd, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospfv3.bfd, null)
+        ospfv3_dead_interval                    = try(int.ospfv3.dead_interval, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospfv3.dead_interval, null)
+        ospfv3_hello_interval                   = try(int.ospfv3.hello_interval, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospfv3.hello_interval, null)
+        ospfv3_mtu_ignore                       = try(int.ospfv3.mtu_ignore, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospfv3.mtu_ignore, null)
+        ospfv3_priority                         = try(int.ospfv3.priority, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospfv3.priority, null)
         pim                                     = try(int.pim.passive, int.pim.dense_mode, int.pim.sparse_mode, int.pim.sparse_dense_mode, local.defaults.iosxe.devices.configuration.interfaces.vlans.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.vlans.pim.dense_mode, local.defaults.iosxe.devices.configuration.interfaces.vlans.pim.sparse_mode, local.defaults.iosxe.devices.configuration.interfaces.vlans.pim.sparse_dense_mode, null) != null ? true : false
         pim_passive                             = try(int.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.vlans.pim.passive, null)
         pim_dense_mode                          = try(int.pim.dense_mode, local.defaults.iosxe.devices.configuration.interfaces.vlans.pim.dense_mode, null)
@@ -1346,6 +1514,11 @@ resource "iosxe_interface_ospfv3" "vlan_ospfv3" {
   network_type_point_to_multipoint = each.value.ospfv3_network_type_point_to_multipoint
   network_type_point_to_point      = each.value.ospfv3_network_type_point_to_point
   cost                             = each.value.ospfv3_cost
+  bfd                              = each.value.ospfv3_bfd
+  dead_interval                    = each.value.ospfv3_dead_interval
+  hello_interval                   = each.value.ospfv3_hello_interval
+  mtu_ignore                       = each.value.ospfv3_mtu_ignore
+  priority                         = each.value.ospfv3_priority
 
   depends_on = [
     iosxe_interface_vlan.vlan,
@@ -1426,13 +1599,17 @@ locals {
         ip_access_group_in_enable      = try(int.ipv4.access_group_in, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv4.access_group_in, null) != null ? true : null
         ip_access_group_out            = try(int.ipv4.access_group_out, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv4.access_group_out, null)
         ip_access_group_out_enable     = try(int.ipv4.access_group_out, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv4.access_group_out, null) != null ? true : null
-        ip_redirects                   = try(int.ipv4.redirects, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv4.redirects, null)
-        ip_unreachables                = try(int.ipv4.unreachables, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv4.unreachables, null)
-        ip_nat_inside                  = try(int.ipv4.nat_inside, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv4.nat_inside, null)
-        ip_nat_outside                 = try(int.ipv4.nat_outside, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv4.nat_outside, null)
-        ip_arp_inspection_trust        = try(int.ipv4.arp_inspection_trust, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv4.arp_inspection_trust, null)
-        ip_arp_inspection_limit_rate   = try(int.ipv4.arp_inspection_limit_rate, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv4.arp_inspection_limit_rate, null)
-        ip_dhcp_snooping_trust         = try(int.ipv4.dhcp_snooping_trust, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv4.dhcp_snooping_trust, null)
+        ip_flow_monitors = try(length(int.ipv4.flow_monitors) == 0, true) ? null : [for fm in int.ipv4.flow_monitors : {
+          name      = try(fm.name, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv4.flow_monitors.name, null)
+          direction = try(fm.direction, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv4.flow_monitors.direction, null)
+        }]
+        ip_redirects                 = try(int.ipv4.redirects, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv4.redirects, null)
+        ip_unreachables              = try(int.ipv4.unreachables, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv4.unreachables, null)
+        ip_nat_inside                = try(int.ipv4.nat_inside, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv4.nat_inside, null)
+        ip_nat_outside               = try(int.ipv4.nat_outside, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv4.nat_outside, null)
+        ip_arp_inspection_trust      = try(int.ipv4.arp_inspection_trust, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv4.arp_inspection_trust, null)
+        ip_arp_inspection_limit_rate = try(int.ipv4.arp_inspection_limit_rate, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv4.arp_inspection_limit_rate, null)
+        ip_dhcp_snooping_trust       = try(int.ipv4.dhcp_snooping_trust, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv4.dhcp_snooping_trust, null)
         helper_addresses = try(length(int.ipv4.helper_addresses) == 0, true) ? null : [for addr in int.ipv4.helper_addresses : {
           address = try(addr.address, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv4.helper_addresses.address, null)
           global  = try(addr.global, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv4.helper_addresses.global, false)
@@ -1450,7 +1627,11 @@ locals {
           address    = addr
           link_local = true
         }]
-        ipv6_address_autoconfig_default  = try(int.ipv6.address_autoconfig_default, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv6.address_autoconfig_default, null)
+        ipv6_address_autoconfig_default = try(int.ipv6.address_autoconfig_default, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv6.address_autoconfig_default, null)
+        ipv6_flow_monitors = try(length(int.ipv6.flow_monitors) == 0, true) ? null : [for fm in int.ipv6.flow_monitors : {
+          name      = try(fm.name, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv6.flow_monitors.name, null)
+          direction = try(fm.direction, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv6.flow_monitors.direction, null)
+        }]
         bfd_template                     = try(int.bfd.template, local.defaults.iosxe.devices.configuration.interfaces.port_channels.bfd.template, null)
         bfd_enable                       = try(int.bfd.enable, local.defaults.iosxe.devices.configuration.interfaces.port_channels.bfd.enable, null)
         bfd_local_address                = try(int.bfd.local_address, local.defaults.iosxe.devices.configuration.interfaces.port_channels.bfd.local_address, null)
@@ -1572,6 +1753,11 @@ locals {
         ospfv3_network_type_point_to_multipoint = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ospfv3.network_type, null) == "point-to-multipoint" ? true : false
         ospfv3_network_type_point_to_point      = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ospfv3.network_type, null) == "point-to-point" ? true : false
         ospfv3_cost                             = try(int.ospfv3.cost, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ospfv3.cost, null)
+        ospfv3_bfd                              = try(int.ospfv3.bfd, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ospfv3.bfd, null)
+        ospfv3_dead_interval                    = try(int.ospfv3.dead_interval, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ospfv3.dead_interval, null)
+        ospfv3_hello_interval                   = try(int.ospfv3.hello_interval, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ospfv3.hello_interval, null)
+        ospfv3_mtu_ignore                       = try(int.ospfv3.mtu_ignore, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ospfv3.mtu_ignore, null)
+        ospfv3_priority                         = try(int.ospfv3.priority, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ospfv3.priority, null)
         pim                                     = try(int.pim.passive, int.pim.dense_mode, int.pim.sparse_mode, int.pim.sparse_dense_mode, local.defaults.iosxe.devices.configuration.interfaces.port_channels.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.port_channels.pim.dense_mode, local.defaults.iosxe.devices.configuration.interfaces.port_channels.pim.sparse_mode, local.defaults.iosxe.devices.configuration.interfaces.port_channels.pim.sparse_dense_mode, null) != null ? true : false
         pim_passive                             = try(int.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.port_channels.pim.passive, null)
         pim_dense_mode                          = try(int.pim.dense_mode, local.defaults.iosxe.devices.configuration.interfaces.port_channels.pim.dense_mode, null)
@@ -1631,6 +1817,7 @@ resource "iosxe_interface_port_channel" "port_channel" {
   ip_access_group_in               = each.value.ip_access_group_in
   ip_access_group_out_enable       = each.value.ip_access_group_out_enable
   ip_access_group_out              = each.value.ip_access_group_out
+  ip_flow_monitors                 = each.value.ip_flow_monitors
   ip_redirects                     = each.value.ip_redirects
   ip_unreachables                  = each.value.ip_unreachables
   ip_nat_inside                    = each.value.ip_nat_inside
@@ -1647,6 +1834,7 @@ resource "iosxe_interface_port_channel" "port_channel" {
   ipv6_addresses                   = each.value.ipv6_addresses
   ipv6_link_local_addresses        = each.value.ipv6_link_local_addresses
   ipv6_address_autoconfig_default  = each.value.ipv6_address_autoconfig_default
+  ipv6_flow_monitors               = each.value.ipv6_flow_monitors
   bfd_template                     = each.value.bfd_template
   bfd_enable                       = each.value.bfd_enable
   bfd_local_address                = each.value.bfd_local_address
@@ -1679,6 +1867,7 @@ resource "iosxe_interface_port_channel" "port_channel" {
 
   depends_on = [
     iosxe_evpn_ethernet_segment.evpn_ethernet_segment,
+    iosxe_flow_monitor.flow_monitor,
     iosxe_isis.isis
   ]
 }
@@ -1768,6 +1957,11 @@ resource "iosxe_interface_ospfv3" "port_channel_ospfv3" {
   network_type_point_to_multipoint = each.value.ospfv3_network_type_point_to_multipoint
   network_type_point_to_point      = each.value.ospfv3_network_type_point_to_point
   cost                             = each.value.ospfv3_cost
+  bfd                              = each.value.ospfv3_bfd
+  dead_interval                    = each.value.ospfv3_dead_interval
+  hello_interval                   = each.value.ospfv3_hello_interval
+  mtu_ignore                       = each.value.ospfv3_mtu_ignore
+  priority                         = each.value.ospfv3_priority
 
   depends_on = [
     iosxe_interface_port_channel.port_channel
@@ -1853,11 +2047,15 @@ locals {
           ip_access_group_in_enable  = try(sub.ipv4.access_group_in, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv4.access_group_in, null) != null ? true : null
           ip_access_group_out        = try(sub.ipv4.access_group_out, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv4.access_group_out, null)
           ip_access_group_out_enable = try(sub.ipv4.access_group_out, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv4.access_group_out, null) != null ? true : null
-          ip_redirects               = try(sub.ipv4.redirects, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv4.redirects, null)
-          ip_unreachables            = try(sub.ipv4.unreachables, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv4.unreachables, null)
-          ip_nat_inside              = try(sub.ipv4.nat_inside, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv4.nat_inside, null)
-          ip_nat_outside             = try(sub.ipv4.nat_outside, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv4.nat_outside, null)
-          ipv6_enable                = try(sub.ipv6.enable, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv6.enable, null)
+          ip_flow_monitors = try(length(sub.ipv4.flow_monitors) == 0, true) ? null : [for fm in sub.ipv4.flow_monitors : {
+            name      = try(fm.name, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv4.flow_monitors.name, null)
+            direction = try(fm.direction, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv4.flow_monitors.direction, null)
+          }]
+          ip_redirects    = try(sub.ipv4.redirects, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv4.redirects, null)
+          ip_unreachables = try(sub.ipv4.unreachables, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv4.unreachables, null)
+          ip_nat_inside   = try(sub.ipv4.nat_inside, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv4.nat_inside, null)
+          ip_nat_outside  = try(sub.ipv4.nat_outside, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv4.nat_outside, null)
+          ipv6_enable     = try(sub.ipv6.enable, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv6.enable, null)
           ipv6_addresses = try(length(sub.ipv6.addresses) == 0, true) ? null : [for addr in sub.ipv6.addresses : {
             prefix = try(addr.prefix, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv6.addresses.prefix, null)
             eui_64 = try(addr.eui_64, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv6.addresses.eui_64, null)
@@ -1866,10 +2064,14 @@ locals {
             address    = addr
             link_local = true
           }]
-          ipv6_address_autoconfig_default       = try(sub.ipv6.address_autoconfig_default, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv6.address_autoconfig_default, null)
-          ipv6_address_dhcp                     = try(sub.ipv6.address_dhcp, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv6.address_dhcp, null)
-          ipv6_mtu                              = try(sub.ipv6.mtu, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv6.mtu, null)
-          ipv6_nd_ra_suppress_all               = try(sub.ipv6.nd_ra_suppress_all, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv6.nd_ra_suppress_all, null)
+          ipv6_address_autoconfig_default = try(sub.ipv6.address_autoconfig_default, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv6.address_autoconfig_default, null)
+          ipv6_address_dhcp               = try(sub.ipv6.address_dhcp, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv6.address_dhcp, null)
+          ipv6_mtu                        = try(sub.ipv6.mtu, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv6.mtu, null)
+          ipv6_nd_ra_suppress_all         = try(sub.ipv6.nd_ra_suppress_all, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv6.nd_ra_suppress_all, null)
+          ipv6_flow_monitors = try(length(sub.ipv6.flow_monitors) == 0, true) ? null : [for fm in sub.ipv6.flow_monitors : {
+            name      = try(fm.name, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv6.flow_monitors.name, null)
+            direction = try(fm.direction, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv6.flow_monitors.direction, null)
+          }]
           bfd_enable                            = try(sub.bfd.enable, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.bfd.enable, null)
           bfd_template                          = try(sub.bfd.template, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.bfd.template, null)
           bfd_local_address                     = try(sub.bfd.local_address, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.bfd.local_address, null)
@@ -1924,6 +2126,11 @@ locals {
           ospfv3_network_type_point_to_multipoint = try(sub.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ospfv3.network_type, null) == "point-to-multipoint" ? true : null
           ospfv3_network_type_point_to_point      = try(sub.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ospfv3.network_type, null) == "point-to-point" ? true : null
           ospfv3_cost                             = try(sub.ospfv3.cost, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ospfv3.cost, null)
+          ospfv3_bfd                              = try(sub.ospfv3.bfd, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ospfv3.bfd, null)
+          ospfv3_dead_interval                    = try(sub.ospfv3.dead_interval, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ospfv3.dead_interval, null)
+          ospfv3_hello_interval                   = try(sub.ospfv3.hello_interval, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ospfv3.hello_interval, null)
+          ospfv3_mtu_ignore                       = try(sub.ospfv3.mtu_ignore, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ospfv3.mtu_ignore, null)
+          ospfv3_priority                         = try(sub.ospfv3.priority, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ospfv3.priority, null)
           pim                                     = try(sub.pim.passive, sub.pim.dense_mode, sub.pim.sparse_mode, sub.pim.sparse_dense_mode, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.pim.dense_mode, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.pim.sparse_mode, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.pim.sparse_dense_mode, null) != null ? true : false
           pim_passive                             = try(sub.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.pim.passive, null)
           pim_dense_mode                          = try(sub.pim.dense_mode, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.pim.dense_mode, null)
@@ -1967,6 +2174,7 @@ resource "iosxe_interface_port_channel_subinterface" "port_channel_subinterface"
   ip_access_group_in              = each.value.ip_access_group_in
   ip_access_group_out_enable      = each.value.ip_access_group_out_enable
   ip_access_group_out             = each.value.ip_access_group_out
+  ip_flow_monitors                = each.value.ip_flow_monitors
   ip_igmp_version                 = each.value.ip_igmp_version
   helper_addresses                = each.value.helper_addresses
   bfd_template                    = each.value.bfd_template
@@ -1983,6 +2191,7 @@ resource "iosxe_interface_port_channel_subinterface" "port_channel_subinterface"
   ipv6_link_local_addresses       = each.value.ipv6_link_local_addresses
   ipv6_addresses                  = each.value.ipv6_addresses
   ipv6_address_autoconfig_default = each.value.ipv6_address_autoconfig_default
+  ipv6_flow_monitors              = each.value.ipv6_flow_monitors
   arp_timeout                     = each.value.arp_timeout
   auto_qos_classify               = each.value.auto_qos_classify
   auto_qos_classify_police        = each.value.auto_qos_classify_police
@@ -2001,9 +2210,11 @@ resource "iosxe_interface_port_channel_subinterface" "port_channel_subinterface"
   ip_router_isis                  = each.value.isis_area_tag
 
   depends_on = [
+    iosxe_interface_port_channel.port_channel,
     iosxe_vrf.vrf,
     iosxe_access_list_standard.access_list_standard,
     iosxe_access_list_extended.access_list_extended,
+    iosxe_flow_monitor.flow_monitor,
     iosxe_policy_map.policy_map,
     iosxe_isis.isis
   ]
@@ -2061,6 +2272,11 @@ resource "iosxe_interface_ospfv3" "port_channel_subinterface_ospfv3" {
   network_type_point_to_multipoint = each.value.ospfv3_network_type_point_to_multipoint
   network_type_point_to_point      = each.value.ospfv3_network_type_point_to_point
   cost                             = each.value.ospfv3_cost
+  bfd                              = each.value.ospfv3_bfd
+  dead_interval                    = each.value.ospfv3_dead_interval
+  hello_interval                   = each.value.ospfv3_hello_interval
+  mtu_ignore                       = each.value.ospfv3_mtu_ignore
+  priority                         = each.value.ospfv3_priority
 
   depends_on = [
     iosxe_interface_port_channel_subinterface.port_channel_subinterface,
@@ -2180,12 +2396,16 @@ locals {
         ip_access_group_in_enable  = try(int.ipv4.access_group_in, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.access_group_in, null) != null ? true : null
         ip_access_group_out        = try(int.ipv4.access_group_out, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.access_group_out, null)
         ip_access_group_out_enable = try(int.ipv4.access_group_out, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.access_group_out, null) != null ? true : null
-        ip_redirects               = try(int.ipv4.redirects, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.redirects, null)
-        ip_unreachables            = try(int.ipv4.unreachables, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.unreachables, null)
-        ip_nat_inside              = try(int.ipv4.nat_inside, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.nat_inside, null)
-        ip_nat_outside             = try(int.ipv4.nat_outside, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.nat_outside, null)
-        unnumbered                 = try("${try(int.ipv4.unnumbered_interface_type, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.unnumbered_interface_type)}${try(int.ipv4.unnumbered_interface_id, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.unnumbered_interface_id)}", null)
-        ipv6_enable                = try(int.ipv6.enable, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv6.enable, null)
+        ip_flow_monitors = try(length(int.ipv4.flow_monitors) == 0, true) ? null : [for fm in int.ipv4.flow_monitors : {
+          name      = try(fm.name, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.flow_monitors.name, null)
+          direction = try(fm.direction, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.flow_monitors.direction, null)
+        }]
+        ip_redirects    = try(int.ipv4.redirects, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.redirects, null)
+        ip_unreachables = try(int.ipv4.unreachables, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.unreachables, null)
+        ip_nat_inside   = try(int.ipv4.nat_inside, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.nat_inside, null)
+        ip_nat_outside  = try(int.ipv4.nat_outside, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.nat_outside, null)
+        unnumbered      = try("${try(int.ipv4.unnumbered_interface_type, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.unnumbered_interface_type)}${try(int.ipv4.unnumbered_interface_id, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.unnumbered_interface_id)}", null)
+        ipv6_enable     = try(int.ipv6.enable, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv6.enable, null)
         ipv6_addresses = try(length(int.ipv6.addresses) == 0, true) ? null : [for addr in int.ipv6.addresses : {
           prefix = try(addr.prefix, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv6.addresses.prefix, null)
           eui_64 = try(addr.eui_64, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv6.addresses.eui_64, null)
@@ -2194,10 +2414,14 @@ locals {
           address    = addr
           link_local = true
         }]
-        ipv6_address_autoconfig_default       = try(int.ipv6.address_autoconfig_default, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv6.address_autoconfig_default, null)
-        ipv6_address_dhcp                     = try(int.ipv6.address_dhcp, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv6.address_dhcp, null)
-        ipv6_mtu                              = try(int.ipv6.mtu, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv6.mtu, null)
-        ipv6_nd_ra_suppress_all               = try(int.ipv6.nd_ra_suppress_all, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv6.nd_ra_suppress_all, null)
+        ipv6_address_autoconfig_default = try(int.ipv6.address_autoconfig_default, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv6.address_autoconfig_default, null)
+        ipv6_address_dhcp               = try(int.ipv6.address_dhcp, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv6.address_dhcp, null)
+        ipv6_mtu                        = try(int.ipv6.mtu, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv6.mtu, null)
+        ipv6_nd_ra_suppress_all         = try(int.ipv6.nd_ra_suppress_all, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv6.nd_ra_suppress_all, null)
+        ipv6_flow_monitors = try(length(int.ipv6.flow_monitors) == 0, true) ? null : [for fm in int.ipv6.flow_monitors : {
+          name      = try(fm.name, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv6.flow_monitors.name, null)
+          direction = try(fm.direction, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv6.flow_monitors.direction, null)
+        }]
         bfd_enable                            = try(int.bfd.enable, local.defaults.iosxe.devices.configuration.interfaces.tunnels.bfd.enable, null)
         bfd_template                          = try(int.bfd.template, local.defaults.iosxe.devices.configuration.interfaces.tunnels.bfd.template, null)
         bfd_local_address                     = try(int.bfd.local_address, local.defaults.iosxe.devices.configuration.interfaces.tunnels.bfd.local_address, null)
@@ -2246,6 +2470,11 @@ locals {
         ospfv3_network_type_point_to_multipoint = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ospfv3.network_type, null) == "point-to-multipoint" ? true : null
         ospfv3_network_type_point_to_point      = try(int.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ospfv3.network_type, null) == "point-to-point" ? true : null
         ospfv3_cost                             = try(int.ospfv3.cost, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ospfv3.cost, null)
+        ospfv3_bfd                              = try(int.ospfv3.bfd, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ospfv3.bfd, null)
+        ospfv3_dead_interval                    = try(int.ospfv3.dead_interval, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ospfv3.dead_interval, null)
+        ospfv3_hello_interval                   = try(int.ospfv3.hello_interval, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ospfv3.hello_interval, null)
+        ospfv3_mtu_ignore                       = try(int.ospfv3.mtu_ignore, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ospfv3.mtu_ignore, null)
+        ospfv3_priority                         = try(int.ospfv3.priority, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ospfv3.priority, null)
         pim                                     = try(int.pim.passive, int.pim.dense_mode, int.pim.sparse_mode, int.pim.sparse_dense_mode, local.defaults.iosxe.devices.configuration.interfaces.tunnels.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.tunnels.pim.dense_mode, local.defaults.iosxe.devices.configuration.interfaces.tunnels.pim.sparse_mode, local.defaults.iosxe.devices.configuration.interfaces.tunnels.pim.sparse_dense_mode, null) != null ? true : false
         pim_passive                             = try(int.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.tunnels.pim.passive, null)
         pim_dense_mode                          = try(int.pim.dense_mode, local.defaults.iosxe.devices.configuration.interfaces.tunnels.pim.dense_mode, null)
@@ -2283,6 +2512,7 @@ resource "iosxe_interface_tunnel" "tunnel" {
   ip_access_group_in_enable        = each.value.ip_access_group_in_enable
   ip_access_group_out              = each.value.ip_access_group_out
   ip_access_group_out_enable       = each.value.ip_access_group_out_enable
+  ip_flow_monitors                 = each.value.ip_flow_monitors
   ip_redirects                     = each.value.ip_redirects
   ip_unreachables                  = each.value.ip_unreachables
   ip_nat_inside                    = each.value.ip_nat_inside
@@ -2295,6 +2525,7 @@ resource "iosxe_interface_tunnel" "tunnel" {
   ipv6_address_dhcp                = each.value.ipv6_address_dhcp
   ipv6_mtu                         = each.value.ipv6_mtu
   ipv6_nd_ra_suppress_all          = each.value.ipv6_nd_ra_suppress_all
+  ipv6_flow_monitors               = each.value.ipv6_flow_monitors
   bfd_enable                       = each.value.bfd_enable
   bfd_template                     = each.value.bfd_template
   bfd_local_address                = each.value.bfd_local_address
@@ -2360,6 +2591,11 @@ resource "iosxe_interface_ospfv3" "tunnel_ospfv3" {
   network_type_point_to_multipoint = each.value.ospfv3_network_type_point_to_multipoint
   network_type_point_to_point      = each.value.ospfv3_network_type_point_to_point
   cost                             = each.value.ospfv3_cost
+  bfd                              = each.value.ospfv3_bfd
+  dead_interval                    = each.value.ospfv3_dead_interval
+  hello_interval                   = each.value.ospfv3_hello_interval
+  mtu_ignore                       = each.value.ospfv3_mtu_ignore
+  priority                         = each.value.ospfv3_priority
 
   depends_on = [
     iosxe_interface_tunnel.tunnel,
