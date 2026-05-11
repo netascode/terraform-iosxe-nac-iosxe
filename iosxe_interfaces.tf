@@ -436,7 +436,8 @@ resource "iosxe_interface_ethernet" "ethernet" {
     iosxe_dot1x.dot1x,
     iosxe_aaa_authentication.aaa_authentication,
     iosxe_isis.isis,
-    iosxe_interface_switchport.ethernet_switchport
+    iosxe_interface_switchport.ethernet_switchport,
+    iosxe_interface_port_channel.port_channel
   ]
 }
 
@@ -697,7 +698,8 @@ resource "iosxe_interface_ethernet" "ethernet_unmanaged" {
     iosxe_flow_monitor.flow_monitor,
     iosxe_dot1x.dot1x,
     iosxe_aaa_authentication.aaa_authentication,
-    iosxe_interface_switchport.ethernet_switchport_unmanaged
+    iosxe_interface_switchport.ethernet_switchport_unmanaged,
+    iosxe_interface_port_channel.port_channel
   ]
 
   lifecycle {
