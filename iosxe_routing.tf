@@ -78,6 +78,7 @@ resource "iosxe_static_route" "static_route" {
 
   depends_on = [
     iosxe_interface_ethernet.ethernet,
+    iosxe_interface_ethernet.ethernet_sub,
     iosxe_interface_loopback.loopback,
     iosxe_interface_vlan.vlan,
     iosxe_interface_port_channel.port_channel,
@@ -97,6 +98,7 @@ resource "iosxe_static_routes_vrf" "static_routes_vrf" {
 
   depends_on = [
     iosxe_interface_ethernet.ethernet,
+    iosxe_interface_ethernet.ethernet_sub,
     iosxe_interface_loopback.loopback,
     iosxe_interface_vlan.vlan,
     iosxe_interface_port_channel.port_channel,
