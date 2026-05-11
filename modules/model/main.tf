@@ -200,16 +200,35 @@ locals {
             { for k, v in try(local.devices_config[device.name], {}) : k => v if k != "interfaces" },
             {
               interfaces = merge(
-                { for k, v in try(local.devices_config[device.name].interfaces, {}) : k => v if k != "ethernets" && k != "loopbacks" && k != "vlans" && k != "port_channels" && k != "tunnels" },
+                { for k, v in try(local.devices_config[device.name].interfaces, {}) : k => v if k != "ethernets" && k != "loopbacks" && k != "vlans" && k != "port_channels" && k != "tunnels" && k != "ranges" },
                 {
-                  "ethernets" = [
-                    for ethernet in try(local.devices_config[device.name].interfaces.ethernets, []) : merge(
-                      yamldecode(provider::utils::yaml_merge(concat(
-                        [for g in try(ethernet.interface_groups, []) : try([for ig in local.interface_groups_config[device.name] : yamlencode(ig.configuration) if ig.name == g][0], "")],
-                        [yamlencode(ethernet)]
-                      )))
-                    )
-                  ]
+                  "ethernets" = concat(
+                    [
+                      for ethernet in try(local.devices_config[device.name].interfaces.ethernets, []) : merge(
+                        yamldecode(provider::utils::yaml_merge(concat(
+                          [for g in try(ethernet.interface_groups, []) : try([for ig in local.interface_groups_config[device.name] : yamlencode(ig.configuration) if ig.name == g][0], "")],
+                          [yamlencode(ethernet)]
+                        )))
+                      )
+                    ],
+                    flatten([
+                      for ethernet_range in try(local.devices_config[device.name].interfaces.ranges.ethernets, []) : [
+                        for generated_id in [for i in range(
+                          tonumber(regex("[0-9]+$", tostring(ethernet_range.from))),
+                          tonumber(regex("[0-9]+$", tostring(ethernet_range.to))) + 1
+                          ) : format("%s%d", regex("^(.*?)[0-9]+$", tostring(ethernet_range.from))[0], i)] : merge(
+                          yamldecode(provider::utils::yaml_merge(concat(
+                            [for g in try(ethernet_range.interface_groups, []) : try([for ig in local.interface_groups_config[device.name] : yamlencode(ig.configuration) if ig.name == g][0], "")],
+                            [yamlencode({
+                              type    = try(ethernet_range.type, null)
+                              id      = generated_id
+                              managed = try(ethernet_range.managed, null)
+                            })]
+                          )))
+                        )
+                      ]
+                    ])
+                  )
                 },
                 {
                   "vlans" = [
@@ -232,14 +251,29 @@ locals {
                   ]
                 },
                 {
-                  "port_channels" = [
-                    for port_channel in try(local.devices_config[device.name].interfaces.port_channels, []) : merge(
-                      yamldecode(provider::utils::yaml_merge(concat(
-                        [for g in try(port_channel.interface_groups, []) : try([for ig in local.interface_groups_config[device.name] : yamlencode(ig.configuration) if ig.name == g][0], "")],
-                        [yamlencode(port_channel)]
-                      )))
-                    )
-                  ]
+                  "port_channels" = concat(
+                    [
+                      for port_channel in try(local.devices_config[device.name].interfaces.port_channels, []) : merge(
+                        yamldecode(provider::utils::yaml_merge(concat(
+                          [for g in try(port_channel.interface_groups, []) : try([for ig in local.interface_groups_config[device.name] : yamlencode(ig.configuration) if ig.name == g][0], "")],
+                          [yamlencode(port_channel)]
+                        )))
+                      )
+                    ],
+                    flatten([
+                      for pc_range in try(local.devices_config[device.name].interfaces.ranges.port_channels, []) : [
+                        for generated_id in range(tonumber(pc_range.from), tonumber(pc_range.to) + 1) : merge(
+                          yamldecode(provider::utils::yaml_merge(concat(
+                            [for g in try(pc_range.interface_groups, []) : try([for ig in local.interface_groups_config[device.name] : yamlencode(ig.configuration) if ig.name == g][0], "")],
+                            [yamlencode({
+                              id      = generated_id
+                              managed = try(pc_range.managed, null)
+                            })]
+                          )))
+                        )
+                      ]
+                    ])
+                  )
                 },
                 {
                   "tunnels" = [
