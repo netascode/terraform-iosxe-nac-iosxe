@@ -10,6 +10,7 @@ locals {
         prematch                                = try(class_map.prematch, local.defaults.iosxe.configuration.policy.class_maps.prematch, null)
         match_authorization_status_authorized   = try(class_map.match.authorization_status_authorized, local.defaults.iosxe.configuration.policy.class_maps.match.authorization_status_authorized, null)
         match_result_type_aaa_timeout           = try(class_map.match.result_type_aaa_timeout, local.defaults.iosxe.configuration.policy.class_maps.match.result_type_aaa_timeout, null)
+        match_result_type_success               = try(class_map.match.result_type_success, local.defaults.iosxe.configuration.policy.class_maps.match.result_type_success, null)
         match_authorization_status_unauthorized = try(class_map.match.authorization_status_unauthorized, local.defaults.iosxe.configuration.policy.class_maps.match.authorization_status_unauthorized, null)
         match_activated_service_templates = try(length(class_map.match.activated_service_templates) == 0, true) ? null : [for template in class_map.match.activated_service_templates : {
           service_name = try(template.service_name, local.defaults.iosxe.configuration.policy.class_maps.match.activated_service_templates.service_name, null)
@@ -45,6 +46,7 @@ resource "iosxe_class_map" "class_map" {
   prematch                                       = each.value.prematch
   match_authorization_status_authorized          = each.value.match_authorization_status_authorized
   match_result_type_aaa_timeout                  = each.value.match_result_type_aaa_timeout
+  match_result_type_success                      = each.value.match_result_type_success
   match_authorization_status_unauthorized        = each.value.match_authorization_status_unauthorized
   match_activated_service_templates              = each.value.match_activated_service_templates
   match_authorizing_method_priority_greater_than = each.value.match_authorizing_method_priority_greater_than
