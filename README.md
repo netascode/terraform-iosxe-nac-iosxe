@@ -200,6 +200,7 @@ module "iosxe" {
 | [iosxe_multicast.multicast](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/multicast) | resource |
 | [iosxe_nat.nat](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/nat) | resource |
 | [iosxe_ntp.ntp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/ntp) | resource |
+| [iosxe_object_group.object_group](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/object_group) | resource |
 | [iosxe_ospf.ospf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/ospf) | resource |
 | [iosxe_ospf_vrf.ospf_vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/ospf_vrf) | resource |
 | [iosxe_pim.pim](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/pim) | resource |
