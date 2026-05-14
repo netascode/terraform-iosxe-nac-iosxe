@@ -188,6 +188,7 @@ module "iosxe" {
 | [iosxe_interface_switchport.port_channel_switchport](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/interface_switchport) | resource |
 | [iosxe_interface_tunnel.tunnel](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/interface_tunnel) | resource |
 | [iosxe_interface_vlan.vlan](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/interface_vlan) | resource |
+| [iosxe_ipv6_prefix_list.ipv6_prefix_list](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/ipv6_prefix_list) | resource |
 | [iosxe_isis.isis](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/isis) | resource |
 | [iosxe_l2_vfi.l2_vfi](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/l2_vfi) | resource |
 | [iosxe_license.license](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/license) | resource |
