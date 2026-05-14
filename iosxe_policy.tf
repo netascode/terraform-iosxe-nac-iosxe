@@ -76,7 +76,11 @@ locals {
         subscriber  = try(policy_map.subscriber, local.defaults.iosxe.configuration.policy.policy_maps.subscriber, null)
         description = try(policy_map.description, local.defaults.iosxe.configuration.policy.policy_maps.description, null)
         classes = try(length(policy_map.classes) == 0, true) ? null : [for class in policy_map.classes : {
-          name = try(class.name, local.defaults.iosxe.configuration.policy.policy_maps.classes.name, null)
+          name                 = try(class.name, local.defaults.iosxe.configuration.policy.policy_maps.classes.name, null)
+          class_type           = try(class.type, local.defaults.iosxe.configuration.policy.policy_maps.classes.type, null)
+          policy_action        = try(class.action, local.defaults.iosxe.configuration.policy.policy_maps.classes.action, null)
+          policy_log           = try(class.log, local.defaults.iosxe.configuration.policy.policy_maps.classes.log, null)
+          policy_parameter_map = try(class.parameter_map, local.defaults.iosxe.configuration.policy.policy_maps.classes.parameter_map, null)
           actions = try(length(class.actions) == 0, true) ? null : [for action in class.actions : {
             type                                      = try(action.type, local.defaults.iosxe.configuration.policy.policy_maps.classes.actions.type, null)
             bandwidth_bits                            = try(action.bandwidth_bits, local.defaults.iosxe.configuration.policy.policy_maps.classes.actions.bandwidth_bits, null)
