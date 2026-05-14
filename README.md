@@ -233,6 +233,7 @@ module "iosxe" {
 | [iosxe_vrf.vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/vrf) | resource |
 | [iosxe_vtp.vtp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/vtp) | resource |
 | [iosxe_zone_pair_security.zone_pair_security](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/zone_pair_security) | resource |
+| [iosxe_zone_security.zone_security](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/zone_security) | resource |
 ## Modules
 
 | Name | Source | Version |
