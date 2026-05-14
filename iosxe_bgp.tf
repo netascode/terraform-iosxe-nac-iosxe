@@ -606,3 +606,52 @@ resource "iosxe_bgp_ipv4_unicast_vrf_neighbor" "bgp_ipv4_unicast_vrf_neighbor" {
     iosxe_bgp_address_family_ipv4_vrf.bgp_address_family_ipv4_vrf
   ]
 }
+
+locals {
+  bgp_bmp_servers = flatten([
+    for device in local.devices : [
+      for server in try(local.device_config[device.name].routing.bgp.bmp_servers, []) : {
+        key                                = format("%s/%s", device.name, server.id)
+        device                             = device.name
+        asn                                = iosxe_bgp.bgp[device.name].asn
+        server_id                          = try(server.id, null)
+        address                            = try(server.address, local.defaults.iosxe.configuration.routing.bgp.bmp_servers.address, null)
+        port_number                        = try(server.port_number, local.defaults.iosxe.configuration.routing.bgp.bmp_servers.port_number, null)
+        activate                           = try(server.activate, local.defaults.iosxe.configuration.routing.bgp.bmp_servers.activate, null)
+        description                        = try(server.description, local.defaults.iosxe.configuration.routing.bgp.bmp_servers.description, null)
+        failure_retry_delay                = try(server.failure_retry_delay, local.defaults.iosxe.configuration.routing.bgp.bmp_servers.failure_retry_delay, null)
+        flapping_delay                     = try(server.flapping_delay, local.defaults.iosxe.configuration.routing.bgp.bmp_servers.flapping_delay, null)
+        initial_delay                      = try(server.initial_delay, local.defaults.iosxe.configuration.routing.bgp.bmp_servers.initial_delay, null)
+        stats_reporting_period             = try(server.stats_reporting_period, local.defaults.iosxe.configuration.routing.bgp.bmp_servers.stats_reporting_period, null)
+        update_source_loopback             = try(server.update_source_interface_type, local.defaults.iosxe.configuration.routing.bgp.bmp_servers.update_source_interface_type, null) == "Loopback" ? try(server.update_source_interface_id, local.defaults.iosxe.configuration.routing.bgp.bmp_servers.update_source_interface_id, null) : null
+        update_source_gigabit_ethernet     = try(server.update_source_interface_type, local.defaults.iosxe.configuration.routing.bgp.bmp_servers.update_source_interface_type, null) == "GigabitEthernet" ? try(server.update_source_interface_id, local.defaults.iosxe.configuration.routing.bgp.bmp_servers.update_source_interface_id, null) : null
+        update_source_ten_gigabit_ethernet = try(server.update_source_interface_type, local.defaults.iosxe.configuration.routing.bgp.bmp_servers.update_source_interface_type, null) == "TenGigabitEthernet" ? try(server.update_source_interface_id, local.defaults.iosxe.configuration.routing.bgp.bmp_servers.update_source_interface_id, null) : null
+        update_source_vlan                 = try(server.update_source_interface_type, local.defaults.iosxe.configuration.routing.bgp.bmp_servers.update_source_interface_type, null) == "Vlan" ? try(server.update_source_interface_id, local.defaults.iosxe.configuration.routing.bgp.bmp_servers.update_source_interface_id, null) : null
+      }
+    ]
+  ])
+}
+
+resource "iosxe_bgp_bmp_server" "bgp_bmp_server" {
+  for_each = { for e in local.bgp_bmp_servers : e.key => e }
+  device   = each.value.device
+
+  asn                                = each.value.asn
+  server_id                          = each.value.server_id
+  address                            = each.value.address
+  port_number                        = each.value.port_number
+  activate                           = each.value.activate
+  description                        = each.value.description
+  failure_retry_delay                = each.value.failure_retry_delay
+  flapping_delay                     = each.value.flapping_delay
+  initial_delay                      = each.value.initial_delay
+  stats_reporting_period             = each.value.stats_reporting_period
+  update_source_loopback             = each.value.update_source_loopback
+  update_source_gigabit_ethernet     = each.value.update_source_gigabit_ethernet
+  update_source_ten_gigabit_ethernet = each.value.update_source_ten_gigabit_ethernet
+  update_source_vlan                 = each.value.update_source_vlan
+
+  depends_on = [
+    iosxe_bgp.bgp
+  ]
+}
