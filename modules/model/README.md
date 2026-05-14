@@ -27,7 +27,7 @@ module "model" {
 
 | Name | Version |
 |------|---------|
-| <a name="provider_local"></a> [local](#provider\_local) | 2.8.0 |
+| <a name="provider_local"></a> [local](#provider\_local) | >= 2.5.2 |
 
 ## Inputs
 
