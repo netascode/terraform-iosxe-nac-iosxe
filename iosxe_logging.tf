@@ -156,6 +156,7 @@ resource "iosxe_logging" "logging" {
   depends_on = [
     iosxe_vrf.vrf,
     iosxe_interface_ethernet.ethernet,
+    iosxe_interface_ethernet.ethernet_sub,
     iosxe_interface_loopback.loopback,
     iosxe_interface_vlan.vlan,
     iosxe_interface_port_channel.port_channel,
