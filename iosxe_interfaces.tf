@@ -424,6 +424,7 @@ resource "iosxe_interface_ethernet" "ethernet" {
   evpn_ethernet_segments                     = each.value.evpn_ethernet_segments
   ip_nat_inside                              = each.value.ip_nat_inside
   ip_nat_outside                             = each.value.ip_nat_outside
+  zone_member_security                       = each.value.zone_member_security
   carrier_delay_msec                         = each.value.carrier_delay_msec
   hold_queues                                = each.value.hold_queues
   service_instances                          = each.value.service_instances
@@ -431,6 +432,7 @@ resource "iosxe_interface_ethernet" "ethernet" {
 
   depends_on = [
     iosxe_vrf.vrf,
+    iosxe_zone_security.zone_security,
     iosxe_access_list_standard.access_list_standard,
     iosxe_access_list_extended.access_list_extended,
     iosxe_policy_map.policy_map,
