@@ -8,6 +8,7 @@ locals {
         device      = device.name
         id          = int.id
         mac_address = try(int.mac_address, null)
+        ip_mtu      = try(int.ip_mtu, local.defaults.iosxe.devices.configuration.interfaces.bdis.ip_mtu, null)
       }
     ]
   ])
@@ -19,6 +20,7 @@ resource "iosxe_interface_bdi" "bdi" {
 
   name        = each.value.id
   mac_address = each.value.mac_address
+  ip_mtu      = each.value.ip_mtu
 
 }
 
@@ -1024,6 +1026,7 @@ locals {
         id                         = int.id
         description                = try(int.description, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.description, null)
         shutdown                   = try(int.shutdown, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.shutdown, null)
+        ip_mtu                     = try(int.ip_mtu, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ip_mtu, null)
         vrf_forwarding             = try(int.vrf_forwarding, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.vrf_forwarding, null)
         ipv4_address               = try(int.ipv4.address, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ipv4.address, null)
         ipv4_address_mask          = try(int.ipv4.address_mask, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ipv4.address_mask, null)
@@ -1128,6 +1131,7 @@ resource "iosxe_interface_loopback" "loopback" {
   name                            = each.value.id
   description                     = each.value.description
   shutdown                        = each.value.shutdown
+  ip_mtu                          = each.value.ip_mtu
   vrf_forwarding                  = each.value.vrf_forwarding
   ipv4_address                    = each.value.ipv4_address
   ipv4_address_mask               = each.value.ipv4_address_mask
@@ -1305,6 +1309,7 @@ locals {
         type                                    = try(int.type, local.defaults.iosxe.devices.configuration.interfaces.vlans.type, null)
         description                             = try(int.description, local.defaults.iosxe.devices.configuration.interfaces.vlans.description, null)
         shutdown                                = try(int.shutdown, local.defaults.iosxe.devices.configuration.interfaces.vlans.shutdown, null)
+        ip_mtu                                  = try(int.ip_mtu, local.defaults.iosxe.devices.configuration.interfaces.vlans.ip_mtu, null)
         autostate                               = try(int.autostate, local.defaults.iosxe.devices.configuration.interfaces.vlans.autostate, null)
         vrf_forwarding                          = try(int.vrf_forwarding, local.defaults.iosxe.devices.configuration.interfaces.vlans.vrf_forwarding, null)
         ipv4_address                            = try(int.ipv4.address, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.address, null)
@@ -1424,6 +1429,7 @@ resource "iosxe_interface_vlan" "vlan" {
   name                                    = each.value.id
   description                             = each.value.description
   shutdown                                = each.value.shutdown
+  ip_mtu                                  = each.value.ip_mtu
   autostate                               = each.value.autostate
   vrf_forwarding                          = each.value.vrf_forwarding
   ipv4_address                            = each.value.ipv4_address
@@ -1599,6 +1605,7 @@ locals {
         name                           = trimprefix(int.id, "$string ")
         description                    = try(int.description, local.defaults.iosxe.devices.configuration.interfaces.port_channels.description, null)
         shutdown                       = try(int.shutdown, local.defaults.iosxe.devices.configuration.interfaces.port_channels.shutdown, null)
+        mtu                            = try(int.mtu, local.defaults.iosxe.devices.configuration.interfaces.port_channels.mtu, null)
         vrf_forwarding                 = try(int.vrf_forwarding, local.defaults.iosxe.devices.configuration.interfaces.port_channels.vrf_forwarding, null)
         ipv4_address                   = try(int.ipv4.address, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv4.address, null)
         ipv4_address_mask              = try(int.ipv4.address_mask, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv4.address_mask, null)
@@ -1818,6 +1825,7 @@ resource "iosxe_interface_port_channel" "port_channel" {
   name                             = each.value.name
   description                      = each.value.description
   shutdown                         = each.value.shutdown
+  mtu                              = each.value.mtu
   vrf_forwarding                   = each.value.vrf_forwarding
   ipv4_address                     = each.value.ipv4_address
   ipv4_address_mask                = each.value.ipv4_address_mask
@@ -2055,6 +2063,7 @@ locals {
             global  = try(ha.global, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv4.helper_addresses.global, null)
             vrf     = try(ha.vrf, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv4.helper_addresses.vrf, null)
           }]
+          ip_mtu                     = try(sub.ip_mtu, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ip_mtu, null)
           ip_access_group_in         = try(sub.ipv4.access_group_in, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv4.access_group_in, null)
           ip_access_group_in_enable  = try(sub.ipv4.access_group_in, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv4.access_group_in, null) != null ? true : null
           ip_access_group_out        = try(sub.ipv4.access_group_out, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv4.access_group_out, null)
@@ -2177,6 +2186,7 @@ resource "iosxe_interface_port_channel_subinterface" "port_channel_subinterface"
   ip_proxy_arp                    = each.value.ip_proxy_arp
   ip_redirects                    = each.value.ip_redirects
   ip_unreachables                 = each.value.ip_unreachables
+  ip_mtu                          = each.value.ip_mtu
   ip_nat_inside                   = each.value.ip_nat_inside
   ip_nat_outside                  = each.value.ip_nat_outside
   vrf_forwarding                  = each.value.vrf_forwarding
