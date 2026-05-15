@@ -75,4 +75,8 @@ resource "iosxe_dhcp_pool" "dhcp_pool" {
   utilization_mark_low_log  = each.value.utilization_mark_low_log
   subnet_prefix_length      = each.value.subnet_prefix_length
   options                   = each.value.options
+
+  depends_on = [
+    iosxe_vrf.vrf
+  ]
 }
