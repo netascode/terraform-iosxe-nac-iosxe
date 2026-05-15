@@ -24,10 +24,23 @@ locals {
         match_result_type_method_mab_authoritative     = try(class_map.match.result_type_method_mab_authoritative, local.defaults.iosxe.configuration.policy.class_maps.match.result_type_method_mab_authoritative, null)
         match_dscp                                     = can(class_map.match.dscp) ? sort(class_map.match.dscp) : null
         match_access_group_index_legacy                = try(tostring([for v in class_map.match.access_groups_legacy : v if can(tonumber(v))][0]), null)
-        match_access_group_index_list                  = try(sort([for v in class_map.match.access_groups : tostring(v) if can(tonumber(v))]), null)
-        match_access_group_name                        = try(sort([for v in class_map.match.access_groups : tostring(v) if !can(tonumber(v))]), sort([for v in class_map.match.access_groups_legacy : tostring(v) if !can(tonumber(v))]), null)
-        match_ip_dscp                                  = can(class_map.match.ip_dscp) ? sort(class_map.match.ip_dscp) : null
-        match_ip_precedence                            = can(class_map.match.ip_precedence) ? sort(class_map.match.ip_precedence) : null
+        match_access_group_index_list = try(
+          (length([for x in class_map.match.access_groups : x if can(tonumber(x))]) > 0
+            ? [for v in sort([for x in class_map.match.access_groups : format("%05d", tonumber(x)) if can(tonumber(x))]) : tostring(tonumber(v))]
+          : null),
+          null
+        )
+        match_access_group_name = try(
+          (length([for v in class_map.match.access_groups : v if !can(tonumber(v))]) > 0
+            ? sort([for v in class_map.match.access_groups : tostring(v) if !can(tonumber(v))])
+          : null),
+          (length([for v in class_map.match.access_groups_legacy : v if !can(tonumber(v))]) > 0
+            ? sort([for v in class_map.match.access_groups_legacy : tostring(v) if !can(tonumber(v))])
+          : null),
+          null
+        )
+        match_ip_dscp       = can(class_map.match.ip_dscp) ? sort(class_map.match.ip_dscp) : null
+        match_ip_precedence = can(class_map.match.ip_precedence) ? sort(class_map.match.ip_precedence) : null
         match_protocol = try(length(class_map.match.protocols) == 0, true) ? null : [for protocol in class_map.match.protocols : {
           protocols = protocol
         }]
