@@ -250,7 +250,8 @@ resource "iosxe_snmp_server" "snmp_server" {
     grpname  = try(user.group, local.defaults.iosxe.configuration.snmp_server.users.group, null)
 
     # Authentication settings
-    v3_auth_algorithm = try(user.v3_authentication.algorithm, local.defaults.iosxe.configuration.snmp_server.users.v3_authentication.algorithm, null)
+    v3_auth_algorithm = try(contains(["md5", "sha"], user.v3_authentication.algorithm) ? user.v3_authentication.algorithm : null, null)
+    v3_auth_sha2      = try(startswith(user.v3_authentication.algorithm, "sha-2-") ? replace(user.v3_authentication.algorithm, "sha-2-", "") : null, null)
     v3_auth_password  = try(user.v3_authentication.password, local.defaults.iosxe.configuration.snmp_server.users.v3_authentication.password, null)
 
     # Authentication access settings
