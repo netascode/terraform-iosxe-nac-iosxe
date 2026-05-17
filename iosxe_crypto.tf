@@ -5,10 +5,13 @@ locals {
         key    = format("%s/%s", device.name, profile.name)
         device = device.name
 
-        name               = profile.name
-        set_transform_set  = try(profile.set_transform_set, local.defaults.iosxe.configuration.crypto.ipsec_profiles.set_transform_set, null)
-        set_ikev2_profile  = try(profile.set_ikev2_profile, local.defaults.iosxe.configuration.crypto.ipsec_profiles.set_ikev2_profile, null)
-        set_isakmp_profile = try(profile.set_isakmp_profile, local.defaults.iosxe.configuration.crypto.ipsec_profiles.set_isakmp_profile, null)
+        name                                             = profile.name
+        set_transform_set                                = try(profile.set_transform_set, local.defaults.iosxe.configuration.crypto.ipsec_profiles.set_transform_set, null)
+        set_ikev2_profile                                = try(profile.set_ikev2_profile, local.defaults.iosxe.configuration.crypto.ipsec_profiles.set_ikev2_profile, null)
+        set_isakmp_profile                               = try(profile.set_isakmp_profile, local.defaults.iosxe.configuration.crypto.ipsec_profiles.set_isakmp_profile, null)
+        set_pfs_group                                    = try(profile.set_pfs_group, local.defaults.iosxe.configuration.crypto.ipsec_profiles.set_pfs_group, null)
+        set_security_association_lifetime_seconds        = try(profile.set_security_association_lifetime_seconds, local.defaults.iosxe.configuration.crypto.ipsec_profiles.set_security_association_lifetime_seconds, null)
+        set_security_association_lifetime_seconds_legacy = try(profile.set_security_association_lifetime_seconds_legacy, local.defaults.iosxe.configuration.crypto.ipsec_profiles.set_security_association_lifetime_seconds_legacy, null)
       }
     ]
   ])
@@ -19,9 +22,12 @@ resource "iosxe_crypto_ipsec_profile" "crypto_ipsec_profile" {
   device   = each.value.device
   name     = each.value.name
 
-  set_transform_set  = each.value.set_transform_set
-  set_ikev2_profile  = each.value.set_ikev2_profile
-  set_isakmp_profile = each.value.set_isakmp_profile
+  set_transform_set                                = each.value.set_transform_set
+  set_ikev2_profile                                = each.value.set_ikev2_profile
+  set_isakmp_profile                               = each.value.set_isakmp_profile
+  set_pfs_group                                    = each.value.set_pfs_group
+  set_security_association_lifetime_seconds        = each.value.set_security_association_lifetime_seconds
+  set_security_association_lifetime_seconds_legacy = each.value.set_security_association_lifetime_seconds_legacy
 
   depends_on = [
     iosxe_crypto_ikev2_profile.crypto_ikev2_profile,
@@ -73,21 +79,26 @@ locals {
         key    = format("%s/%s", device.name, profile.name)
         device = device.name
 
-        name                            = profile.name
-        authentication_local_pre_share  = try(profile.authentication_local_pre_share, local.defaults.iosxe.configuration.crypto.ikev2.profiles.authentication_local_pre_share, null)
-        authentication_remote_pre_share = try(profile.authentication_remote_pre_share, local.defaults.iosxe.configuration.crypto.ikev2.profiles.authentication_remote_pre_share, null)
-        config_exchange_request         = try(profile.config_exchange_request, local.defaults.iosxe.configuration.crypto.ikev2.profiles.config_exchange_request, null)
-        description                     = try(profile.description, local.defaults.iosxe.configuration.crypto.ikev2.profiles.description, null)
-        dpd_interval                    = try(profile.dpd_interval, local.defaults.iosxe.configuration.crypto.ikev2.profiles.dpd_interval, null)
-        dpd_query                       = try(profile.dpd_query, local.defaults.iosxe.configuration.crypto.ikev2.profiles.dpd_query, null)
-        dpd_retry                       = try(profile.dpd_retry, local.defaults.iosxe.configuration.crypto.ikev2.profiles.dpd_retry, null)
-        identity_local_address          = try(profile.identity_local_address, local.defaults.iosxe.configuration.crypto.ikev2.profiles.identity_local_address, null)
-        identity_local_key_id           = try(profile.identity_local_key_id, local.defaults.iosxe.configuration.crypto.ikev2.profiles.identity_local_key_id, null)
-        ivrf                            = try(profile.ivrf, local.defaults.iosxe.configuration.crypto.ikev2.profiles.ivrf, null)
-        keyring_local                   = try(profile.keyring_local, local.defaults.iosxe.configuration.crypto.ikev2.profiles.keyring_local, null)
-        match_address_local_ip          = try(profile.match_address_local_ip, local.defaults.iosxe.configuration.crypto.ikev2.profiles.match_address_local_ip, null)
-        match_fvrf                      = try(profile.match_fvrf, local.defaults.iosxe.configuration.crypto.ikev2.profiles.match_fvrf, null)
-        match_fvrf_any                  = try(profile.match_fvrf_any, local.defaults.iosxe.configuration.crypto.ikev2.profiles.match_fvrf_any, null)
+        name                                          = profile.name
+        authentication_local_pre_share                = try(profile.authentication_local_pre_share, local.defaults.iosxe.configuration.crypto.ikev2.profiles.authentication_local_pre_share, null)
+        authentication_remote_pre_share               = try(profile.authentication_remote_pre_share, local.defaults.iosxe.configuration.crypto.ikev2.profiles.authentication_remote_pre_share, null)
+        config_exchange_request                       = try(profile.config_exchange_request, local.defaults.iosxe.configuration.crypto.ikev2.profiles.config_exchange_request, null)
+        description                                   = try(profile.description, local.defaults.iosxe.configuration.crypto.ikev2.profiles.description, null)
+        dpd_interval                                  = try(profile.dpd_interval, local.defaults.iosxe.configuration.crypto.ikev2.profiles.dpd_interval, null)
+        dpd_query                                     = try(profile.dpd_query, local.defaults.iosxe.configuration.crypto.ikev2.profiles.dpd_query, null)
+        dpd_retry                                     = try(profile.dpd_retry, local.defaults.iosxe.configuration.crypto.ikev2.profiles.dpd_retry, null)
+        identity_local_address                        = try(profile.identity_local_address, local.defaults.iosxe.configuration.crypto.ikev2.profiles.identity_local_address, null)
+        identity_local_key_id                         = try(profile.identity_local_key_id, local.defaults.iosxe.configuration.crypto.ikev2.profiles.identity_local_key_id, null)
+        lifetime                                      = try(profile.lifetime, local.defaults.iosxe.configuration.crypto.ikev2.profiles.lifetime, null)
+        match_address_local_interface_loopback_legacy = try(profile.match_address_local_interface_loopback_legacy, local.defaults.iosxe.configuration.crypto.ikev2.profiles.match_address_local_interface_loopback_legacy, null)
+        match_address_local_interface_loopback = try(length(profile.match_address_local_interface_loopback) == 0, true) ? null : [for e in profile.match_address_local_interface_loopback : {
+          loopback_number = e.loopback_number
+        }]
+        ivrf                   = try(profile.ivrf, local.defaults.iosxe.configuration.crypto.ikev2.profiles.ivrf, null)
+        keyring_local          = try(profile.keyring_local, local.defaults.iosxe.configuration.crypto.ikev2.profiles.keyring_local, null)
+        match_address_local_ip = try(profile.match_address_local_ip, local.defaults.iosxe.configuration.crypto.ikev2.profiles.match_address_local_ip, null)
+        match_fvrf             = try(profile.match_fvrf, local.defaults.iosxe.configuration.crypto.ikev2.profiles.match_fvrf, null)
+        match_fvrf_any         = try(profile.match_fvrf_any, local.defaults.iosxe.configuration.crypto.ikev2.profiles.match_fvrf_any, null)
         match_identity_remote_ipv4_addresses = try(length(profile.match_identity_remote_ipv4_addresses) == 0, true) ? null : [for e in profile.match_identity_remote_ipv4_addresses : {
           address = e.address
           mask    = try(e.mask, local.defaults.iosxe.configuration.crypto.ikev2.profiles.match_identity_remote_ipv4_addresses.mask, null)
@@ -104,25 +115,28 @@ resource "iosxe_crypto_ikev2_profile" "crypto_ikev2_profile" {
   for_each = { for e in local.ikev2_profiles : e.key => e }
   device   = each.value.device
 
-  name                                 = each.value.name
-  authentication_local_pre_share       = each.value.authentication_local_pre_share
-  authentication_remote_pre_share      = each.value.authentication_remote_pre_share
-  config_exchange_request              = each.value.config_exchange_request
-  description                          = each.value.description
-  dpd_interval                         = each.value.dpd_interval
-  dpd_query                            = each.value.dpd_query
-  dpd_retry                            = each.value.dpd_retry
-  identity_local_address               = each.value.identity_local_address
-  identity_local_key_id                = each.value.identity_local_key_id
-  ivrf                                 = each.value.ivrf
-  keyring_local                        = each.value.keyring_local
-  match_address_local_ip               = each.value.match_address_local_ip
-  match_fvrf                           = each.value.match_fvrf
-  match_fvrf_any                       = each.value.match_fvrf_any
-  match_identity_remote_ipv4_addresses = each.value.match_identity_remote_ipv4_addresses
-  match_identity_remote_ipv6_prefixes  = each.value.match_identity_remote_ipv6_prefixes
-  match_identity_remote_keys           = each.value.match_identity_remote_keys
-  match_inbound_only                   = each.value.match_inbound_only
+  name                                          = each.value.name
+  authentication_local_pre_share                = each.value.authentication_local_pre_share
+  authentication_remote_pre_share               = each.value.authentication_remote_pre_share
+  config_exchange_request                       = each.value.config_exchange_request
+  description                                   = each.value.description
+  dpd_interval                                  = each.value.dpd_interval
+  dpd_query                                     = each.value.dpd_query
+  dpd_retry                                     = each.value.dpd_retry
+  identity_local_address                        = each.value.identity_local_address
+  identity_local_key_id                         = each.value.identity_local_key_id
+  lifetime                                      = each.value.lifetime
+  match_address_local_interface_loopback_legacy = each.value.match_address_local_interface_loopback_legacy
+  match_address_local_interface_loopback        = each.value.match_address_local_interface_loopback
+  ivrf                                          = each.value.ivrf
+  keyring_local                                 = each.value.keyring_local
+  match_address_local_ip                        = each.value.match_address_local_ip
+  match_fvrf                                    = each.value.match_fvrf
+  match_fvrf_any                                = each.value.match_fvrf_any
+  match_identity_remote_ipv4_addresses          = each.value.match_identity_remote_ipv4_addresses
+  match_identity_remote_ipv6_prefixes           = each.value.match_identity_remote_ipv6_prefixes
+  match_identity_remote_keys                    = each.value.match_identity_remote_keys
+  match_inbound_only                            = each.value.match_inbound_only
 
   depends_on = [
     iosxe_vrf.vrf,
