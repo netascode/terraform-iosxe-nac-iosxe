@@ -2482,7 +2482,12 @@ locals {
         tunnel_vrf                            = try(int.tunnel_vrf, local.defaults.iosxe.devices.configuration.interfaces.tunnels.tunnel_vrf, null)
         tunnel_mode_ipsec_ipv4                = try(int.tunnel_mode_ipsec_ipv4, local.defaults.iosxe.devices.configuration.interfaces.tunnels.tunnel_mode_ipsec_ipv4, null)
         tunnel_protection_ipsec_profile       = try(int.tunnel_protection_ipsec_profile, local.defaults.iosxe.devices.configuration.interfaces.tunnels.tunnel_protection_ipsec_profile, null)
+        tunnel_bandwidth_transmit             = try(int.tunnel_bandwidth_transmit, local.defaults.iosxe.devices.configuration.interfaces.tunnels.tunnel_bandwidth_transmit, null)
+        tunnel_bandwidth_receive              = try(int.tunnel_bandwidth_receive, local.defaults.iosxe.devices.configuration.interfaces.tunnels.tunnel_bandwidth_receive, null)
+        service_policy_input                  = try(int.service_policy_input, local.defaults.iosxe.devices.configuration.interfaces.tunnels.service_policy_input, null)
+        service_policy_output                 = try(int.service_policy_output, local.defaults.iosxe.devices.configuration.interfaces.tunnels.service_policy_output, null)
         arp_timeout                           = try(int.arp_timeout, local.defaults.iosxe.devices.configuration.interfaces.tunnels.arp_timeout, null)
+        bandwidth                             = try(int.bandwidth, local.defaults.iosxe.devices.configuration.interfaces.tunnels.bandwidth, null)
         ip_mtu                                = try(int.ip_mtu, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ip_mtu, null)
         load_interval                         = try(int.load_interval, local.defaults.iosxe.devices.configuration.interfaces.tunnels.load_interval, null)
         snmp_trap_link_status                 = try(int.snmp_trap_link_status, local.defaults.iosxe.devices.configuration.interfaces.tunnels.snmp_trap_link_status, null)
@@ -2588,6 +2593,11 @@ resource "iosxe_interface_tunnel" "tunnel" {
   tunnel_vrf                       = each.value.tunnel_vrf
   tunnel_mode_ipsec_ipv4           = each.value.tunnel_mode_ipsec_ipv4
   tunnel_protection_ipsec_profile  = each.value.tunnel_protection_ipsec_profile
+  tunnel_bandwidth_transmit        = each.value.tunnel_bandwidth_transmit
+  tunnel_bandwidth_receive         = each.value.tunnel_bandwidth_receive
+  bandwidth                        = each.value.bandwidth
+  service_policy_input             = each.value.service_policy_input
+  service_policy_output            = each.value.service_policy_output
   arp_timeout                      = each.value.arp_timeout
   ip_mtu                           = each.value.ip_mtu
   load_interval                    = each.value.load_interval
@@ -2600,7 +2610,8 @@ resource "iosxe_interface_tunnel" "tunnel" {
     iosxe_zone_security.zone_security,
     iosxe_access_list_standard.access_list_standard,
     iosxe_access_list_extended.access_list_extended,
-    iosxe_crypto_ipsec_profile.crypto_ipsec_profile
+    iosxe_crypto_ipsec_profile.crypto_ipsec_profile,
+    iosxe_policy_map.policy_map
   ]
 }
 
