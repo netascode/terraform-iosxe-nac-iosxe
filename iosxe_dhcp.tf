@@ -7,6 +7,7 @@ resource "iosxe_dhcp" "dhcp" {
   relay_information_trust_all                           = try(local.device_config[each.value.name].dhcp.relay_information_trust_all, local.defaults.iosxe.configuration.dhcp.relay_information_trust_all, null)
   relay_information_option_default                      = try(local.device_config[each.value.name].dhcp.relay_information_option_default, local.defaults.iosxe.configuration.dhcp.relay_information_option_default, null)
   relay_information_option_vpn                          = try(local.device_config[each.value.name].dhcp.relay_information_option_vpn, local.defaults.iosxe.configuration.dhcp.relay_information_option_vpn, null)
+  relay_bootp_ignore                                    = try(local.device_config[each.value.name].dhcp.relay_bootp_ignore, local.defaults.iosxe.configuration.dhcp.relay_bootp_ignore, null)
   snooping                                              = try(local.device_config[each.value.name].dhcp.snooping, local.defaults.iosxe.configuration.dhcp.snooping, null)
   snooping_information_option                           = try(local.device_config[each.value.name].dhcp.snooping_information_option, local.defaults.iosxe.configuration.dhcp.snooping_information_option, null)
   snooping_information_option_allow_untrusted           = try(local.device_config[each.value.name].dhcp.snooping_information_option_allow_untrusted, local.defaults.iosxe.configuration.dhcp.snooping_information_option_allow_untrusted, null)
