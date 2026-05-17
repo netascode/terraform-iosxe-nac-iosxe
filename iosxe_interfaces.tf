@@ -289,9 +289,10 @@ locals {
         evpn_ethernet_segments = try(length(int.evpn_ethernet_segments) == 0, true) ? null : [for es in int.evpn_ethernet_segments : {
           es_value = try(es.es_value, local.defaults.iosxe.devices.configuration.interfaces.ethernets.evpn_ethernet_segments.es_value, null)
         }]
-        ip_nat_inside      = try(int.ipv4.nat_inside, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv4.nat_inside, null)
-        ip_nat_outside     = try(int.ipv4.nat_outside, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv4.nat_outside, null)
-        carrier_delay_msec = try(int.carrier_delay_msec, local.defaults.iosxe.devices.configuration.interfaces.ethernets.carrier_delay_msec, null)
+        ip_nat_inside        = try(int.ipv4.nat_inside, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv4.nat_inside, null)
+        ip_nat_outside       = try(int.ipv4.nat_outside, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ipv4.nat_outside, null)
+        zone_member_security = try(int.zone_member_security, local.defaults.iosxe.devices.configuration.interfaces.ethernets.zone_member_security, null)
+        carrier_delay_msec   = try(int.carrier_delay_msec, local.defaults.iosxe.devices.configuration.interfaces.ethernets.carrier_delay_msec, null)
         hold_queues = (contains(keys(int), "hold_queue_in") || contains(keys(int), "hold_queue_out") || try(local.defaults.iosxe.devices.configuration.interfaces.ethernets.hold_queue_in, null) != null || try(local.defaults.iosxe.devices.configuration.interfaces.ethernets.hold_queue_out, null) != null) ? flatten([
           (contains(keys(int), "hold_queue_in") || try(local.defaults.iosxe.devices.configuration.interfaces.ethernets.hold_queue_in, null) != null) ? [{
             direction    = "in"
@@ -425,6 +426,7 @@ resource "iosxe_interface_ethernet" "ethernet" {
   evpn_ethernet_segments                     = each.value.evpn_ethernet_segments
   ip_nat_inside                              = each.value.ip_nat_inside
   ip_nat_outside                             = each.value.ip_nat_outside
+  zone_member_security                       = each.value.zone_member_security
   carrier_delay_msec                         = each.value.carrier_delay_msec
   hold_queues                                = each.value.hold_queues
   service_instances                          = each.value.service_instances
@@ -432,6 +434,7 @@ resource "iosxe_interface_ethernet" "ethernet" {
 
   depends_on = [
     iosxe_vrf.vrf,
+    iosxe_zone_security.zone_security,
     iosxe_access_list_standard.access_list_standard,
     iosxe_access_list_extended.access_list_extended,
     iosxe_policy_map.policy_map,
@@ -557,6 +560,7 @@ resource "iosxe_interface_ethernet" "ethernet_sub" {
   evpn_ethernet_segments                     = each.value.evpn_ethernet_segments
   ip_nat_inside                              = each.value.ip_nat_inside
   ip_nat_outside                             = each.value.ip_nat_outside
+  zone_member_security                       = each.value.zone_member_security
   carrier_delay_msec                         = each.value.carrier_delay_msec
   hold_queues                                = each.value.hold_queues
   service_instances                          = each.value.service_instances
@@ -564,6 +568,7 @@ resource "iosxe_interface_ethernet" "ethernet_sub" {
 
   depends_on = [
     iosxe_vrf.vrf,
+    iosxe_zone_security.zone_security,
     iosxe_access_list_standard.access_list_standard,
     iosxe_access_list_extended.access_list_extended,
     iosxe_policy_map.policy_map,
@@ -690,12 +695,14 @@ resource "iosxe_interface_ethernet" "ethernet_unmanaged" {
   evpn_ethernet_segments                     = each.value.evpn_ethernet_segments
   ip_nat_inside                              = each.value.ip_nat_inside
   ip_nat_outside                             = each.value.ip_nat_outside
+  zone_member_security                       = each.value.zone_member_security
   carrier_delay_msec                         = each.value.carrier_delay_msec
   hold_queues                                = each.value.hold_queues
   service_instances                          = each.value.service_instances
 
   depends_on = [
     iosxe_vrf.vrf,
+    iosxe_zone_security.zone_security,
     iosxe_access_list_standard.access_list_standard,
     iosxe_access_list_extended.access_list_extended,
     iosxe_policy_map.policy_map,
@@ -1040,6 +1047,7 @@ locals {
         ip_unreachables            = try(int.ipv4.unreachables, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ipv4.unreachables, null)
         ip_nat_inside              = try(int.ipv4.nat_inside, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ipv4.nat_inside, null)
         ip_nat_outside             = try(int.ipv4.nat_outside, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ipv4.nat_outside, null)
+        zone_member_security       = try(int.zone_member_security, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.zone_member_security, null)
         source_template            = try(int.source_template, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.source_template, [])
         ipv6_enable                = try(int.ipv6.enable, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ipv6.enable, null)
         ipv6_addresses = try(length(int.ipv6.addresses) == 0, true) ? null : [for addr in int.ipv6.addresses : {
@@ -1145,6 +1153,7 @@ resource "iosxe_interface_loopback" "loopback" {
   ip_unreachables                 = each.value.ip_unreachables
   ip_nat_inside                   = each.value.ip_nat_inside
   ip_nat_outside                  = each.value.ip_nat_outside
+  zone_member_security            = each.value.zone_member_security
   ip_igmp_version                 = each.value.ip_igmp_version
   ipv6_enable                     = each.value.ipv6_enable
   ipv6_addresses                  = each.value.ipv6_addresses
@@ -1158,6 +1167,7 @@ resource "iosxe_interface_loopback" "loopback" {
 
   depends_on = [
     iosxe_vrf.vrf,
+    iosxe_zone_security.zone_security,
     iosxe_access_list_standard.access_list_standard,
     iosxe_access_list_extended.access_list_extended,
     iosxe_policy_map.policy_map,
@@ -1333,6 +1343,7 @@ locals {
         ip_unreachables            = try(int.ipv4.unreachables, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.unreachables, null)
         ip_nat_inside              = try(int.ipv4.nat_inside, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.nat_inside, null)
         ip_nat_outside             = try(int.ipv4.nat_outside, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.nat_outside, null)
+        zone_member_security       = try(int.zone_member_security, local.defaults.iosxe.devices.configuration.interfaces.vlans.zone_member_security, null)
         unnumbered                 = try("${try(int.ipv4.unnumbered_interface_type, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.unnumbered_interface_type)}${try(int.ipv4.unnumbered_interface_id, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv4.unnumbered_interface_id)}", null)
         ipv6_enable                = try(int.ipv6.enable, local.defaults.iosxe.devices.configuration.interfaces.vlans.ipv6.enable, null)
         ipv6_addresses = try(length(int.ipv6.addresses) == 0, true) ? null : [for addr in int.ipv6.addresses : {
@@ -1449,6 +1460,7 @@ resource "iosxe_interface_vlan" "vlan" {
   ip_unreachables                         = each.value.ip_unreachables
   ip_nat_inside                           = each.value.ip_nat_inside
   ip_nat_outside                          = each.value.ip_nat_outside
+  zone_member_security                    = each.value.zone_member_security
   ip_igmp_version                         = each.value.ip_igmp_version
   unnumbered                              = each.value.unnumbered
   ipv6_address_autoconfig_default         = each.value.ipv6_address_autoconfig_default
@@ -1470,6 +1482,7 @@ resource "iosxe_interface_vlan" "vlan" {
 
   depends_on = [
     iosxe_vrf.vrf,
+    iosxe_zone_security.zone_security,
     iosxe_access_list_standard.access_list_standard,
     iosxe_access_list_extended.access_list_extended,
     iosxe_policy_map.policy_map,
@@ -1624,6 +1637,7 @@ locals {
         ip_unreachables              = try(int.ipv4.unreachables, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv4.unreachables, null)
         ip_nat_inside                = try(int.ipv4.nat_inside, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv4.nat_inside, null)
         ip_nat_outside               = try(int.ipv4.nat_outside, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv4.nat_outside, null)
+        zone_member_security         = try(int.zone_member_security, local.defaults.iosxe.devices.configuration.interfaces.port_channels.zone_member_security, null)
         ip_arp_inspection_trust      = try(int.ipv4.arp_inspection_trust, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv4.arp_inspection_trust, null)
         ip_arp_inspection_limit_rate = try(int.ipv4.arp_inspection_limit_rate, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv4.arp_inspection_limit_rate, null)
         ip_dhcp_snooping_trust       = try(int.ipv4.dhcp_snooping_trust, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ipv4.dhcp_snooping_trust, null)
@@ -1844,6 +1858,7 @@ resource "iosxe_interface_port_channel" "port_channel" {
   ip_unreachables                  = each.value.ip_unreachables
   ip_nat_inside                    = each.value.ip_nat_inside
   ip_nat_outside                   = each.value.ip_nat_outside
+  zone_member_security             = each.value.zone_member_security
   ip_igmp_version                  = each.value.ip_igmp_version
   ip_arp_inspection_trust          = each.value.ip_arp_inspection_trust
   ip_arp_inspection_limit_rate     = each.value.ip_arp_inspection_limit_rate
@@ -1889,6 +1904,7 @@ resource "iosxe_interface_port_channel" "port_channel" {
   ip_router_isis                   = each.value.isis_area_tag
 
   depends_on = [
+    iosxe_zone_security.zone_security,
     iosxe_evpn_ethernet_segment.evpn_ethernet_segment,
     iosxe_flow_monitor.flow_monitor,
     iosxe_isis.isis
@@ -2076,11 +2092,12 @@ locals {
             name      = try(fm.name, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv4.flow_monitors.name, null)
             direction = try(fm.direction, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv4.flow_monitors.direction, null)
           }]
-          ip_redirects    = try(sub.ipv4.redirects, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv4.redirects, null)
-          ip_unreachables = try(sub.ipv4.unreachables, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv4.unreachables, null)
-          ip_nat_inside   = try(sub.ipv4.nat_inside, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv4.nat_inside, null)
-          ip_nat_outside  = try(sub.ipv4.nat_outside, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv4.nat_outside, null)
-          ipv6_enable     = try(sub.ipv6.enable, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv6.enable, null)
+          ip_redirects         = try(sub.ipv4.redirects, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv4.redirects, null)
+          ip_unreachables      = try(sub.ipv4.unreachables, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv4.unreachables, null)
+          ip_nat_inside        = try(sub.ipv4.nat_inside, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv4.nat_inside, null)
+          ip_nat_outside       = try(sub.ipv4.nat_outside, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv4.nat_outside, null)
+          zone_member_security = try(sub.zone_member_security, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.zone_member_security, null)
+          ipv6_enable          = try(sub.ipv6.enable, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv6.enable, null)
           ipv6_addresses = try(length(sub.ipv6.addresses) == 0, true) ? null : [for addr in sub.ipv6.addresses : {
             prefix = try(addr.prefix, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv6.addresses.prefix, null)
             eui_64 = try(addr.eui_64, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ipv6.addresses.eui_64, null)
@@ -2193,6 +2210,7 @@ resource "iosxe_interface_port_channel_subinterface" "port_channel_subinterface"
   ip_mtu                          = each.value.ip_mtu
   ip_nat_inside                   = each.value.ip_nat_inside
   ip_nat_outside                  = each.value.ip_nat_outside
+  zone_member_security            = each.value.zone_member_security
   vrf_forwarding                  = each.value.vrf_forwarding
   ipv4_address                    = each.value.ipv4_address
   ipv4_address_mask               = each.value.ipv4_address_mask
@@ -2239,6 +2257,7 @@ resource "iosxe_interface_port_channel_subinterface" "port_channel_subinterface"
   depends_on = [
     iosxe_interface_port_channel.port_channel,
     iosxe_vrf.vrf,
+    iosxe_zone_security.zone_security,
     iosxe_access_list_standard.access_list_standard,
     iosxe_access_list_extended.access_list_extended,
     iosxe_flow_monitor.flow_monitor,
@@ -2428,12 +2447,13 @@ locals {
           name      = try(fm.name, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.flow_monitors.name, null)
           direction = try(fm.direction, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.flow_monitors.direction, null)
         }]
-        ip_redirects    = try(int.ipv4.redirects, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.redirects, null)
-        ip_unreachables = try(int.ipv4.unreachables, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.unreachables, null)
-        ip_nat_inside   = try(int.ipv4.nat_inside, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.nat_inside, null)
-        ip_nat_outside  = try(int.ipv4.nat_outside, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.nat_outside, null)
-        unnumbered      = try("${try(int.ipv4.unnumbered_interface_type, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.unnumbered_interface_type)}${try(int.ipv4.unnumbered_interface_id, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.unnumbered_interface_id)}", null)
-        ipv6_enable     = try(int.ipv6.enable, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv6.enable, null)
+        ip_redirects         = try(int.ipv4.redirects, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.redirects, null)
+        ip_unreachables      = try(int.ipv4.unreachables, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.unreachables, null)
+        ip_nat_inside        = try(int.ipv4.nat_inside, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.nat_inside, null)
+        ip_nat_outside       = try(int.ipv4.nat_outside, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.nat_outside, null)
+        zone_member_security = try(int.zone_member_security, local.defaults.iosxe.devices.configuration.interfaces.tunnels.zone_member_security, null)
+        unnumbered           = try("${try(int.ipv4.unnumbered_interface_type, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.unnumbered_interface_type)}${try(int.ipv4.unnumbered_interface_id, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv4.unnumbered_interface_id)}", null)
+        ipv6_enable          = try(int.ipv6.enable, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv6.enable, null)
         ipv6_addresses = try(length(int.ipv6.addresses) == 0, true) ? null : [for addr in int.ipv6.addresses : {
           prefix = try(addr.prefix, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv6.addresses.prefix, null)
           eui_64 = try(addr.eui_64, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ipv6.addresses.eui_64, null)
@@ -2462,7 +2482,12 @@ locals {
         tunnel_vrf                            = try(int.tunnel_vrf, local.defaults.iosxe.devices.configuration.interfaces.tunnels.tunnel_vrf, null)
         tunnel_mode_ipsec_ipv4                = try(int.tunnel_mode_ipsec_ipv4, local.defaults.iosxe.devices.configuration.interfaces.tunnels.tunnel_mode_ipsec_ipv4, null)
         tunnel_protection_ipsec_profile       = try(int.tunnel_protection_ipsec_profile, local.defaults.iosxe.devices.configuration.interfaces.tunnels.tunnel_protection_ipsec_profile, null)
+        tunnel_bandwidth_transmit             = try(int.tunnel_bandwidth_transmit, local.defaults.iosxe.devices.configuration.interfaces.tunnels.tunnel_bandwidth_transmit, null)
+        tunnel_bandwidth_receive              = try(int.tunnel_bandwidth_receive, local.defaults.iosxe.devices.configuration.interfaces.tunnels.tunnel_bandwidth_receive, null)
+        service_policy_input                  = try(int.service_policy_input, local.defaults.iosxe.devices.configuration.interfaces.tunnels.service_policy_input, null)
+        service_policy_output                 = try(int.service_policy_output, local.defaults.iosxe.devices.configuration.interfaces.tunnels.service_policy_output, null)
         arp_timeout                           = try(int.arp_timeout, local.defaults.iosxe.devices.configuration.interfaces.tunnels.arp_timeout, null)
+        bandwidth                             = try(int.bandwidth, local.defaults.iosxe.devices.configuration.interfaces.tunnels.bandwidth, null)
         ip_mtu                                = try(int.ip_mtu, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ip_mtu, null)
         load_interval                         = try(int.load_interval, local.defaults.iosxe.devices.configuration.interfaces.tunnels.load_interval, null)
         snmp_trap_link_status                 = try(int.snmp_trap_link_status, local.defaults.iosxe.devices.configuration.interfaces.tunnels.snmp_trap_link_status, null)
@@ -2546,6 +2571,7 @@ resource "iosxe_interface_tunnel" "tunnel" {
   ip_unreachables                  = each.value.ip_unreachables
   ip_nat_inside                    = each.value.ip_nat_inside
   ip_nat_outside                   = each.value.ip_nat_outside
+  zone_member_security             = each.value.zone_member_security
   unnumbered                       = each.value.unnumbered
   ipv6_enable                      = each.value.ipv6_enable
   ipv6_addresses                   = each.value.ipv6_addresses
@@ -2567,6 +2593,11 @@ resource "iosxe_interface_tunnel" "tunnel" {
   tunnel_vrf                       = each.value.tunnel_vrf
   tunnel_mode_ipsec_ipv4           = each.value.tunnel_mode_ipsec_ipv4
   tunnel_protection_ipsec_profile  = each.value.tunnel_protection_ipsec_profile
+  tunnel_bandwidth_transmit        = each.value.tunnel_bandwidth_transmit
+  tunnel_bandwidth_receive         = each.value.tunnel_bandwidth_receive
+  bandwidth                        = each.value.bandwidth
+  service_policy_input             = each.value.service_policy_input
+  service_policy_output            = each.value.service_policy_output
   arp_timeout                      = each.value.arp_timeout
   ip_mtu                           = each.value.ip_mtu
   load_interval                    = each.value.load_interval
@@ -2576,9 +2607,11 @@ resource "iosxe_interface_tunnel" "tunnel" {
 
   depends_on = [
     iosxe_vrf.vrf,
+    iosxe_zone_security.zone_security,
     iosxe_access_list_standard.access_list_standard,
     iosxe_access_list_extended.access_list_extended,
-    iosxe_crypto_ipsec_profile.crypto_ipsec_profile
+    iosxe_crypto_ipsec_profile.crypto_ipsec_profile,
+    iosxe_policy_map.policy_map
   ]
 }
 
