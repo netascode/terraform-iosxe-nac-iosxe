@@ -91,6 +91,7 @@ resource "iosxe_ipv6_dhcp_pool" "ipv6_dhcp_pool" {
   information_refresh_infinite = each.value.information_refresh_infinite
 
   depends_on = [
+    iosxe_vrf.vrf,
     iosxe_ipv6_local_pool.ipv6_local_pool
   ]
 }

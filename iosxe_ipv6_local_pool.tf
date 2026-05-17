@@ -22,4 +22,8 @@ resource "iosxe_ipv6_local_pool" "ipv6_local_pool" {
   start_address = each.value.start_address
   prefix_length = each.value.prefix_length
   group         = each.value.group
+
+  depends_on = [
+    iosxe_vrf.vrf
+  ]
 }
