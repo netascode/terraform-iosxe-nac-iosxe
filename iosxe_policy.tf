@@ -52,7 +52,7 @@ locals {
 }
 
 resource "iosxe_class_map" "class_map" {
-  for_each = { for e in local.class_maps : e.key => e }
+  for_each = { for e in local.class_maps : e.key => e if e.match_class_map == null }
   device   = each.value.device
 
   name                                           = each.value.name
@@ -80,6 +80,41 @@ resource "iosxe_class_map" "class_map" {
   match_protocol                                 = each.value.match_protocol
   match_class_map                                = each.value.match_class_map
   description                                    = each.value.description
+}
+
+resource "iosxe_class_map" "class_map_nested" {
+  for_each = { for e in local.class_maps : e.key => e if e.match_class_map != null }
+  device   = each.value.device
+
+  name                                           = each.value.name
+  type                                           = each.value.type
+  subscriber                                     = each.value.subscriber
+  prematch                                       = each.value.prematch
+  match_authorization_status_authorized          = each.value.match_authorization_status_authorized
+  match_result_type_aaa_timeout                  = each.value.match_result_type_aaa_timeout
+  match_result_type_success                      = each.value.match_result_type_success
+  match_authorization_status_unauthorized        = each.value.match_authorization_status_unauthorized
+  match_activated_service_templates              = each.value.match_activated_service_templates
+  match_authorizing_method_priority_greater_than = each.value.match_authorizing_method_priority_greater_than
+  match_method_dot1x                             = each.value.match_method_dot1x
+  match_result_type_method_dot1x_authoritative   = each.value.match_result_type_method_dot1x_authoritative
+  match_result_type_method_dot1x_agent_not_found = each.value.match_result_type_method_dot1x_agent_not_found
+  match_result_type_method_dot1x_method_timeout  = each.value.match_result_type_method_dot1x_method_timeout
+  match_method_mab                               = each.value.match_method_mab
+  match_result_type_method_mab_authoritative     = each.value.match_result_type_method_mab_authoritative
+  match_dscp                                     = each.value.match_dscp
+  match_access_group_index_legacy                = each.value.match_access_group_index_legacy
+  match_access_group_index_list                  = each.value.match_access_group_index_list
+  match_access_group_name                        = each.value.match_access_group_name
+  match_ip_dscp                                  = each.value.match_ip_dscp
+  match_ip_precedence                            = each.value.match_ip_precedence
+  match_protocol                                 = each.value.match_protocol
+  match_class_map                                = each.value.match_class_map
+  description                                    = each.value.description
+
+  depends_on = [
+    iosxe_class_map.class_map
+  ]
 }
 
 locals {
@@ -150,7 +185,8 @@ resource "iosxe_policy_map" "policy_map" {
   classes     = each.value.classes
 
   depends_on = [
-    iosxe_class_map.class_map
+    iosxe_class_map.class_map,
+    iosxe_class_map.class_map_nested
   ]
 }
 
