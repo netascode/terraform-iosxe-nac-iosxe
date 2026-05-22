@@ -99,6 +99,7 @@ module "iosxe" {
 | [iosxe_bridge_domain.bridge_domain](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/bridge_domain) | resource |
 | [iosxe_cdp.cdp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/cdp) | resource |
 | [iosxe_class_map.class_map](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/class_map) | resource |
+| [iosxe_class_map.class_map_nested](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/class_map) | resource |
 | [iosxe_cli.cli_0](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/cli) | resource |
 | [iosxe_cli.cli_1](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/cli) | resource |
 | [iosxe_cli.cli_2](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/cli) | resource |
