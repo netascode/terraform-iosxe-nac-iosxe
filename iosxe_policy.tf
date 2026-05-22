@@ -23,9 +23,24 @@ locals {
         match_method_mab                               = try(class_map.match.method_mab, local.defaults.iosxe.configuration.policy.class_maps.match.method_mab, null)
         match_result_type_method_mab_authoritative     = try(class_map.match.result_type_method_mab_authoritative, local.defaults.iosxe.configuration.policy.class_maps.match.result_type_method_mab_authoritative, null)
         match_dscp                                     = can(class_map.match.dscp) ? sort(class_map.match.dscp) : null
-        match_access_group_name                        = can(class_map.match.access_groups) ? sort(class_map.match.access_groups) : null
-        match_ip_dscp                                  = can(class_map.match.ip_dscp) ? sort(class_map.match.ip_dscp) : null
-        match_ip_precedence                            = can(class_map.match.ip_precedence) ? sort(class_map.match.ip_precedence) : null
+        match_access_group_index_legacy                = try(tostring([for v in class_map.match.access_groups_legacy : v if can(tonumber(v))][0]), null)
+        match_access_group_index_list = try(
+          (length([for x in class_map.match.access_groups : x if can(tonumber(x))]) > 0
+            ? [for v in sort([for x in class_map.match.access_groups : format("%05d", tonumber(x)) if can(tonumber(x))]) : tostring(tonumber(v))]
+          : null),
+          null
+        )
+        match_access_group_name = try(
+          (length([for v in class_map.match.access_groups : v if !can(tonumber(v))]) > 0
+            ? sort([for v in class_map.match.access_groups : tostring(v) if !can(tonumber(v))])
+          : null),
+          (length([for v in class_map.match.access_groups_legacy : v if !can(tonumber(v))]) > 0
+            ? sort([for v in class_map.match.access_groups_legacy : tostring(v) if !can(tonumber(v))])
+          : null),
+          null
+        )
+        match_ip_dscp       = can(class_map.match.ip_dscp) ? sort(class_map.match.ip_dscp) : null
+        match_ip_precedence = can(class_map.match.ip_precedence) ? sort(class_map.match.ip_precedence) : null
         match_protocol = try(length(class_map.match.protocols) == 0, true) ? null : [for protocol in class_map.match.protocols : {
           protocols = protocol
         }]
@@ -57,6 +72,8 @@ resource "iosxe_class_map" "class_map" {
   match_method_mab                               = each.value.match_method_mab
   match_result_type_method_mab_authoritative     = each.value.match_result_type_method_mab_authoritative
   match_dscp                                     = each.value.match_dscp
+  match_access_group_index_legacy                = each.value.match_access_group_index_legacy
+  match_access_group_index_list                  = each.value.match_access_group_index_list
   match_access_group_name                        = each.value.match_access_group_name
   match_ip_dscp                                  = each.value.match_ip_dscp
   match_ip_precedence                            = each.value.match_ip_precedence
@@ -114,6 +131,7 @@ locals {
             police_rate_percent                       = try(action.police_rate_percent, local.defaults.iosxe.configuration.policy.policy_maps.classes.actions.police_rate_percent, null)
             queue_buffers_ratio                       = try(action.queue_buffers_ratio, local.defaults.iosxe.configuration.policy.policy_maps.classes.actions.queue_buffers_ratio, null)
             set_dscp                                  = try(action.set_dscp, local.defaults.iosxe.configuration.policy.policy_maps.classes.actions.set_dscp, null)
+            service_policy                            = try(action.service_policy, local.defaults.iosxe.configuration.policy.policy_maps.classes.actions.service_policy, null)
           }]
         }]
       }
@@ -168,8 +186,11 @@ locals {
               authenticate_using_retries                        = try(action.authenticate_using_retries, local.defaults.iosxe.configuration.policy.policy_maps.events.actions.authenticate_using_retries, null)
               authenticate_using_retry_time                     = try(action.authenticate_using_retry_time, local.defaults.iosxe.configuration.policy.policy_maps.events.actions.authenticate_using_retry_time, null)
               authenticate_using_priority                       = try(action.authenticate_using_priority, local.defaults.iosxe.configuration.policy.policy_maps.events.actions.authenticate_using_priority, null)
-              authenticate_using_aaa_authc_list                 = try(action.authenticate_using_aaa_authc_list, local.defaults.iosxe.configuration.policy.policy_maps.events.actions.authenticate_using_aaa_authc_list, null)
-              authenticate_using_aaa_authz_list                 = try(action.authenticate_using_aaa_authz_list, local.defaults.iosxe.configuration.policy.policy_maps.events.actions.authenticate_using_aaa_authz_list, null)
+              authenticate_using_aaa_config                     = try(action.authenticate_using_aaa_config, local.defaults.iosxe.configuration.policy.policy_maps.events.actions.authenticate_using_aaa_config, null)
+              authenticate_using_authc_list                     = try(action.authenticate_using_authc_list, local.defaults.iosxe.configuration.policy.policy_maps.events.actions.authenticate_using_authc_list, null)
+              authenticate_using_authz_list                     = try(action.authenticate_using_authz_list, local.defaults.iosxe.configuration.policy.policy_maps.events.actions.authenticate_using_authz_list, null)
+              authenticate_using_aaa_authc_list_legacy          = try(action.authenticate_using_aaa_authc_list_legacy, local.defaults.iosxe.configuration.policy.policy_maps.events.actions.authenticate_using_aaa_authc_list_legacy, null)
+              authenticate_using_aaa_authz_list_legacy          = try(action.authenticate_using_aaa_authz_list_legacy, local.defaults.iosxe.configuration.policy.policy_maps.events.actions.authenticate_using_aaa_authz_list_legacy, null)
               authenticate_using_both                           = try(action.authenticate_using_both, local.defaults.iosxe.configuration.policy.policy_maps.events.actions.authenticate_using_both, null)
               authenticate_using_parameter_map                  = try(action.authenticate_using_parameter_map, local.defaults.iosxe.configuration.policy.policy_maps.events.actions.authenticate_using_parameter_map, null)
               replace                                           = try(action.replace, local.defaults.iosxe.configuration.policy.policy_maps.events.actions.replace, null)

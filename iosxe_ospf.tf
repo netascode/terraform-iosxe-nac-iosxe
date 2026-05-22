@@ -38,6 +38,21 @@ locals {
           format("%s%s", try(pi.interface_type, local.defaults.iosxe.configuration.routing.ospf_processes.passive_interfaces.interface_type), try(pi.interface_id, local.defaults.iosxe.configuration.routing.ospf_processes.passive_interfaces.interface_id))
         if try(pi.interface_type, local.defaults.iosxe.configuration.routing.ospf_processes.passive_interfaces.interface_type, null) != null && try(pi.interface_id, local.defaults.iosxe.configuration.routing.ospf_processes.passive_interfaces.interface_id, null) != null]
 
+        passive_interface_disable_gigabit_ethernets              = try(length([for npi in ospf.non_passive_interfaces : npi if try(npi.interface_type, "") == "GigabitEthernet"]) > 0, false) ? [for npi in ospf.non_passive_interfaces : { name = npi.interface_id } if try(npi.interface_type, "") == "GigabitEthernet"] : null
+        passive_interface_disable_two_gigabit_ethernets          = try(length([for npi in ospf.non_passive_interfaces : npi if try(npi.interface_type, "") == "TwoGigabitEthernet"]) > 0, false) ? [for npi in ospf.non_passive_interfaces : { name = npi.interface_id } if try(npi.interface_type, "") == "TwoGigabitEthernet"] : null
+        passive_interface_disable_five_gigabit_ethernets         = try(length([for npi in ospf.non_passive_interfaces : npi if try(npi.interface_type, "") == "FiveGigabitEthernet"]) > 0, false) ? [for npi in ospf.non_passive_interfaces : { name = npi.interface_id } if try(npi.interface_type, "") == "FiveGigabitEthernet"] : null
+        passive_interface_disable_ten_gigabit_ethernets          = try(length([for npi in ospf.non_passive_interfaces : npi if try(npi.interface_type, "") == "TenGigabitEthernet"]) > 0, false) ? [for npi in ospf.non_passive_interfaces : { name = npi.interface_id } if try(npi.interface_type, "") == "TenGigabitEthernet"] : null
+        passive_interface_disable_twenty_five_gigabit_ethernets  = try(length([for npi in ospf.non_passive_interfaces : npi if try(npi.interface_type, "") == "TwentyFiveGigabitEthernet"]) > 0, false) ? [for npi in ospf.non_passive_interfaces : { name = npi.interface_id } if try(npi.interface_type, "") == "TwentyFiveGigabitEthernet"] : null
+        passive_interface_disable_forty_gigabit_ethernets        = try(length([for npi in ospf.non_passive_interfaces : npi if try(npi.interface_type, "") == "FortyGigabitEthernet"]) > 0, false) ? [for npi in ospf.non_passive_interfaces : { name = npi.interface_id } if try(npi.interface_type, "") == "FortyGigabitEthernet"] : null
+        passive_interface_disable_hundred_gigabit_ethernets      = try(length([for npi in ospf.non_passive_interfaces : npi if try(npi.interface_type, "") == "HundredGigabitEthernet"]) > 0, false) ? [for npi in ospf.non_passive_interfaces : { name = npi.interface_id } if try(npi.interface_type, "") == "HundredGigabitEthernet"] : null
+        passive_interface_disable_two_hundred_gigabit_ethernets  = try(length([for npi in ospf.non_passive_interfaces : npi if try(npi.interface_type, "") == "TwoHundredGigabitEthernet"]) > 0, false) ? [for npi in ospf.non_passive_interfaces : { name = npi.interface_id } if try(npi.interface_type, "") == "TwoHundredGigabitEthernet"] : null
+        passive_interface_disable_four_hundred_gigabit_ethernets = try(length([for npi in ospf.non_passive_interfaces : npi if try(npi.interface_type, "") == "FourHundredGigabitEthernet"]) > 0, false) ? [for npi in ospf.non_passive_interfaces : { name = npi.interface_id } if try(npi.interface_type, "") == "FourHundredGigabitEthernet"] : null
+        passive_interface_disable_loopbacks                      = try(length([for npi in ospf.non_passive_interfaces : npi if try(npi.interface_type, "") == "Loopback"]) > 0, false) ? [for npi in ospf.non_passive_interfaces : { name = npi.interface_id } if try(npi.interface_type, "") == "Loopback"] : null
+        passive_interface_disable_vlans                          = try(length([for npi in ospf.non_passive_interfaces : npi if try(npi.interface_type, "") == "Vlan"]) > 0, false) ? [for npi in ospf.non_passive_interfaces : { name = npi.interface_id } if try(npi.interface_type, "") == "Vlan"] : null
+        passive_interface_disable_tunnels                        = try(length([for npi in ospf.non_passive_interfaces : npi if try(npi.interface_type, "") == "Tunnel"]) > 0, false) ? [for npi in ospf.non_passive_interfaces : { name = npi.interface_id } if try(npi.interface_type, "") == "Tunnel"] : null
+        passive_interface_disable_port_channels                  = try(length([for npi in ospf.non_passive_interfaces : npi if try(npi.interface_type, "") == "Port-channel"]) > 0, false) ? [for npi in ospf.non_passive_interfaces : { name = npi.interface_id } if try(npi.interface_type, "") == "Port-channel"] : null
+        passive_interface_disable_port_channel_subinterfaces     = try(length([for npi in ospf.non_passive_interfaces : npi if try(npi.interface_type, "") == "Port-channel-subinterface"]) > 0, false) ? [for npi in ospf.non_passive_interfaces : { name = npi.interface_id } if try(npi.interface_type, "") == "Port-channel-subinterface"] : null
+
         neighbor = try(length(ospf.neighbors) == 0, true) ? null : [for neighbor in ospf.neighbors : {
           ip       = try(neighbor.ip, local.defaults.iosxe.configuration.routing.ospf_processes.neighbors.ip, null)
           priority = try(neighbor.priority, local.defaults.iosxe.configuration.routing.ospf_processes.neighbors.priority, null)
@@ -108,6 +123,21 @@ locals {
           format("%s%s", try(pi.interface_type, local.defaults.iosxe.configuration.routing.ospf_processes.passive_interfaces.interface_type), try(pi.interface_id, local.defaults.iosxe.configuration.routing.ospf_processes.passive_interfaces.interface_id))
         if try(pi.interface_type, local.defaults.iosxe.configuration.routing.ospf_processes.passive_interfaces.interface_type, null) != null && try(pi.interface_id, local.defaults.iosxe.configuration.routing.ospf_processes.passive_interfaces.interface_id, null) != null]
 
+        passive_interface_disable_gigabit_ethernets              = try(length([for npi in ospf.non_passive_interfaces : npi if try(npi.interface_type, "") == "GigabitEthernet"]) > 0, false) ? [for npi in ospf.non_passive_interfaces : { name = npi.interface_id } if try(npi.interface_type, "") == "GigabitEthernet"] : null
+        passive_interface_disable_two_gigabit_ethernets          = try(length([for npi in ospf.non_passive_interfaces : npi if try(npi.interface_type, "") == "TwoGigabitEthernet"]) > 0, false) ? [for npi in ospf.non_passive_interfaces : { name = npi.interface_id } if try(npi.interface_type, "") == "TwoGigabitEthernet"] : null
+        passive_interface_disable_five_gigabit_ethernets         = try(length([for npi in ospf.non_passive_interfaces : npi if try(npi.interface_type, "") == "FiveGigabitEthernet"]) > 0, false) ? [for npi in ospf.non_passive_interfaces : { name = npi.interface_id } if try(npi.interface_type, "") == "FiveGigabitEthernet"] : null
+        passive_interface_disable_ten_gigabit_ethernets          = try(length([for npi in ospf.non_passive_interfaces : npi if try(npi.interface_type, "") == "TenGigabitEthernet"]) > 0, false) ? [for npi in ospf.non_passive_interfaces : { name = npi.interface_id } if try(npi.interface_type, "") == "TenGigabitEthernet"] : null
+        passive_interface_disable_twenty_five_gigabit_ethernets  = try(length([for npi in ospf.non_passive_interfaces : npi if try(npi.interface_type, "") == "TwentyFiveGigabitEthernet"]) > 0, false) ? [for npi in ospf.non_passive_interfaces : { name = npi.interface_id } if try(npi.interface_type, "") == "TwentyFiveGigabitEthernet"] : null
+        passive_interface_disable_forty_gigabit_ethernets        = try(length([for npi in ospf.non_passive_interfaces : npi if try(npi.interface_type, "") == "FortyGigabitEthernet"]) > 0, false) ? [for npi in ospf.non_passive_interfaces : { name = npi.interface_id } if try(npi.interface_type, "") == "FortyGigabitEthernet"] : null
+        passive_interface_disable_hundred_gigabit_ethernets      = try(length([for npi in ospf.non_passive_interfaces : npi if try(npi.interface_type, "") == "HundredGigabitEthernet"]) > 0, false) ? [for npi in ospf.non_passive_interfaces : { name = npi.interface_id } if try(npi.interface_type, "") == "HundredGigabitEthernet"] : null
+        passive_interface_disable_two_hundred_gigabit_ethernets  = try(length([for npi in ospf.non_passive_interfaces : npi if try(npi.interface_type, "") == "TwoHundredGigabitEthernet"]) > 0, false) ? [for npi in ospf.non_passive_interfaces : { name = npi.interface_id } if try(npi.interface_type, "") == "TwoHundredGigabitEthernet"] : null
+        passive_interface_disable_four_hundred_gigabit_ethernets = try(length([for npi in ospf.non_passive_interfaces : npi if try(npi.interface_type, "") == "FourHundredGigabitEthernet"]) > 0, false) ? [for npi in ospf.non_passive_interfaces : { name = npi.interface_id } if try(npi.interface_type, "") == "FourHundredGigabitEthernet"] : null
+        passive_interface_disable_loopbacks                      = try(length([for npi in ospf.non_passive_interfaces : npi if try(npi.interface_type, "") == "Loopback"]) > 0, false) ? [for npi in ospf.non_passive_interfaces : { name = npi.interface_id } if try(npi.interface_type, "") == "Loopback"] : null
+        passive_interface_disable_vlans                          = try(length([for npi in ospf.non_passive_interfaces : npi if try(npi.interface_type, "") == "Vlan"]) > 0, false) ? [for npi in ospf.non_passive_interfaces : { name = npi.interface_id } if try(npi.interface_type, "") == "Vlan"] : null
+        passive_interface_disable_tunnels                        = try(length([for npi in ospf.non_passive_interfaces : npi if try(npi.interface_type, "") == "Tunnel"]) > 0, false) ? [for npi in ospf.non_passive_interfaces : { name = npi.interface_id } if try(npi.interface_type, "") == "Tunnel"] : null
+        passive_interface_disable_port_channels                  = try(length([for npi in ospf.non_passive_interfaces : npi if try(npi.interface_type, "") == "Port-channel"]) > 0, false) ? [for npi in ospf.non_passive_interfaces : { name = npi.interface_id } if try(npi.interface_type, "") == "Port-channel"] : null
+        passive_interface_disable_port_channel_subinterfaces     = try(length([for npi in ospf.non_passive_interfaces : npi if try(npi.interface_type, "") == "Port-channel-subinterface"]) > 0, false) ? [for npi in ospf.non_passive_interfaces : { name = npi.interface_id } if try(npi.interface_type, "") == "Port-channel-subinterface"] : null
+
         neighbors = try(length(ospf.neighbors) == 0, true) ? null : [for neighbor in ospf.neighbors : {
           ip       = try(neighbor.ip, local.defaults.iosxe.configuration.routing.ospf_processes.neighbors.ip, null)
           priority = try(neighbor.priority, local.defaults.iosxe.configuration.routing.ospf_processes.neighbors.priority, null)
@@ -144,40 +174,54 @@ resource "iosxe_ospf" "ospf" {
   for_each = { for o in local.ospf_configurations_without_vrf : o.key => o }
   device   = each.value.device
 
-  process_id                                     = each.value.process_id
-  router_id                                      = each.value.router_id
-  shutdown                                       = each.value.shutdown
-  priority                                       = each.value.priority
-  default_metric                                 = each.value.default_metric
-  distance                                       = each.value.distance
-  domain_tag                                     = each.value.domain_tag
-  fast_reroute_per_prefix_enable_prefix_priority = each.value.fast_reroute_per_prefix_enable_prefix_priority
-  log_adjacency_changes                          = each.value.log_adjacency_changes
-  log_adjacency_changes_detail                   = each.value.log_adjacency_changes_detail
-  max_metric_router_lsa                          = each.value.max_metric_router_lsa
-  max_metric_router_lsa_external_lsa_metric      = each.value.max_metric_router_lsa_external_lsa_metric
-  max_metric_router_lsa_include_stub             = each.value.max_metric_router_lsa_include_stub
-  max_metric_router_lsa_on_startup_time          = each.value.max_metric_router_lsa_on_startup_time
-  max_metric_router_lsa_on_startup_wait_for_bgp  = each.value.max_metric_router_lsa_on_startup_wait_for_bgp
-  max_metric_router_lsa_summary_lsa_metric       = each.value.max_metric_router_lsa_summary_lsa_metric
-  mpls_ldp_autoconfig                            = each.value.mpls_ldp_autoconfig
-  mpls_ldp_sync                                  = each.value.mpls_ldp_sync
-  nsf_cisco                                      = each.value.nsf_cisco
-  nsf_cisco_enforce_global                       = each.value.nsf_cisco_enforce_global
-  nsf_ietf                                       = each.value.nsf_ietf
-  nsf_ietf_restart_interval                      = each.value.nsf_ietf_restart_interval
-  redistribute_connected_subnets                 = each.value.redistribute_connected_subnets
-  redistribute_static_subnets                    = each.value.redistribute_static_subnets
-  bfd_all_interfaces                             = each.value.bfd_all_interfaces
-  default_information_originate                  = each.value.default_information_originate
-  default_information_originate_always           = each.value.default_information_originate_always
-  passive_interface_default                      = each.value.passive_interface_default
-  auto_cost_reference_bandwidth                  = each.value.auto_cost_reference_bandwidth
-  passive_interface                              = each.value.passive_interface
-  neighbors                                      = each.value.neighbors
-  networks                                       = each.value.networks
-  summary_addresses                              = each.value.summary_addresses
-  areas                                          = each.value.areas
+  process_id                                               = each.value.process_id
+  router_id                                                = each.value.router_id
+  shutdown                                                 = each.value.shutdown
+  priority                                                 = each.value.priority
+  default_metric                                           = each.value.default_metric
+  distance                                                 = each.value.distance
+  domain_tag                                               = each.value.domain_tag
+  fast_reroute_per_prefix_enable_prefix_priority           = each.value.fast_reroute_per_prefix_enable_prefix_priority
+  log_adjacency_changes                                    = each.value.log_adjacency_changes
+  log_adjacency_changes_detail                             = each.value.log_adjacency_changes_detail
+  max_metric_router_lsa                                    = each.value.max_metric_router_lsa
+  max_metric_router_lsa_external_lsa_metric                = each.value.max_metric_router_lsa_external_lsa_metric
+  max_metric_router_lsa_include_stub                       = each.value.max_metric_router_lsa_include_stub
+  max_metric_router_lsa_on_startup_time                    = each.value.max_metric_router_lsa_on_startup_time
+  max_metric_router_lsa_on_startup_wait_for_bgp            = each.value.max_metric_router_lsa_on_startup_wait_for_bgp
+  max_metric_router_lsa_summary_lsa_metric                 = each.value.max_metric_router_lsa_summary_lsa_metric
+  mpls_ldp_autoconfig                                      = each.value.mpls_ldp_autoconfig
+  mpls_ldp_sync                                            = each.value.mpls_ldp_sync
+  nsf_cisco                                                = each.value.nsf_cisco
+  nsf_cisco_enforce_global                                 = each.value.nsf_cisco_enforce_global
+  nsf_ietf                                                 = each.value.nsf_ietf
+  nsf_ietf_restart_interval                                = each.value.nsf_ietf_restart_interval
+  redistribute_connected_subnets                           = each.value.redistribute_connected_subnets
+  redistribute_static_subnets                              = each.value.redistribute_static_subnets
+  bfd_all_interfaces                                       = each.value.bfd_all_interfaces
+  default_information_originate                            = each.value.default_information_originate
+  default_information_originate_always                     = each.value.default_information_originate_always
+  passive_interface_default                                = each.value.passive_interface_default
+  auto_cost_reference_bandwidth                            = each.value.auto_cost_reference_bandwidth
+  passive_interface                                        = each.value.passive_interface
+  passive_interface_disable_gigabit_ethernets              = each.value.passive_interface_disable_gigabit_ethernets
+  passive_interface_disable_two_gigabit_ethernets          = each.value.passive_interface_disable_two_gigabit_ethernets
+  passive_interface_disable_five_gigabit_ethernets         = each.value.passive_interface_disable_five_gigabit_ethernets
+  passive_interface_disable_ten_gigabit_ethernets          = each.value.passive_interface_disable_ten_gigabit_ethernets
+  passive_interface_disable_twenty_five_gigabit_ethernets  = each.value.passive_interface_disable_twenty_five_gigabit_ethernets
+  passive_interface_disable_forty_gigabit_ethernets        = each.value.passive_interface_disable_forty_gigabit_ethernets
+  passive_interface_disable_hundred_gigabit_ethernets      = each.value.passive_interface_disable_hundred_gigabit_ethernets
+  passive_interface_disable_two_hundred_gigabit_ethernets  = each.value.passive_interface_disable_two_hundred_gigabit_ethernets
+  passive_interface_disable_four_hundred_gigabit_ethernets = each.value.passive_interface_disable_four_hundred_gigabit_ethernets
+  passive_interface_disable_loopbacks                      = each.value.passive_interface_disable_loopbacks
+  passive_interface_disable_vlans                          = each.value.passive_interface_disable_vlans
+  passive_interface_disable_tunnels                        = each.value.passive_interface_disable_tunnels
+  passive_interface_disable_port_channels                  = each.value.passive_interface_disable_port_channels
+  passive_interface_disable_port_channel_subinterfaces     = each.value.passive_interface_disable_port_channel_subinterfaces
+  neighbors                                                = each.value.neighbors
+  networks                                                 = each.value.networks
+  summary_addresses                                        = each.value.summary_addresses
+  areas                                                    = each.value.areas
 
   depends_on = [iosxe_system.system]
 }
@@ -186,40 +230,54 @@ resource "iosxe_ospf_vrf" "ospf_vrf" {
   for_each = { for o in local.ospf_configurations_with_vrf : o.key => o }
   device   = each.value.device
 
-  vrf                                           = each.value.vrf
-  process_id                                    = each.value.process_id
-  router_id                                     = each.value.router_id
-  shutdown                                      = each.value.shutdown
-  priority                                      = each.value.priority
-  default_metric                                = each.value.default_metric
-  distance                                      = each.value.distance
-  domain_tag                                    = each.value.domain_tag
-  log_adjacency_changes                         = each.value.log_adjacency_changes
-  log_adjacency_changes_detail                  = each.value.log_adjacency_changes_detail
-  max_metric_router_lsa                         = each.value.max_metric_router_lsa
-  max_metric_router_lsa_external_lsa_metric     = each.value.max_metric_router_lsa_external_lsa_metric
-  max_metric_router_lsa_include_stub            = each.value.max_metric_router_lsa_include_stub
-  max_metric_router_lsa_on_startup_time         = each.value.max_metric_router_lsa_on_startup_time
-  max_metric_router_lsa_on_startup_wait_for_bgp = each.value.max_metric_router_lsa_on_startup_wait_for_bgp
-  max_metric_router_lsa_summary_lsa_metric      = each.value.max_metric_router_lsa_summary_lsa_metric
-  mpls_ldp_autoconfig                           = each.value.mpls_ldp_autoconfig
-  mpls_ldp_sync                                 = each.value.mpls_ldp_sync
-  nsf_cisco                                     = each.value.nsf_cisco
-  nsf_cisco_enforce_global                      = each.value.nsf_cisco_enforce_global
-  nsf_ietf                                      = each.value.nsf_ietf
-  nsf_ietf_restart_interval                     = each.value.nsf_ietf_restart_interval
-  redistribute_connected_subnets                = each.value.redistribute_connected_subnets
-  redistribute_static_subnets                   = each.value.redistribute_static_subnets
-  bfd_all_interfaces                            = each.value.bfd_all_interfaces
-  default_information_originate                 = each.value.default_information_originate
-  default_information_originate_always          = each.value.default_information_originate_always
-  passive_interface_default                     = each.value.passive_interface_default
-  auto_cost_reference_bandwidth                 = each.value.auto_cost_reference_bandwidth
-  passive_interface                             = each.value.passive_interface
-  neighbor                                      = each.value.neighbor
-  network                                       = each.value.network
-  summary_address                               = each.value.summary_address
-  areas                                         = each.value.areas
+  vrf                                                      = each.value.vrf
+  process_id                                               = each.value.process_id
+  router_id                                                = each.value.router_id
+  shutdown                                                 = each.value.shutdown
+  priority                                                 = each.value.priority
+  default_metric                                           = each.value.default_metric
+  distance                                                 = each.value.distance
+  domain_tag                                               = each.value.domain_tag
+  log_adjacency_changes                                    = each.value.log_adjacency_changes
+  log_adjacency_changes_detail                             = each.value.log_adjacency_changes_detail
+  max_metric_router_lsa                                    = each.value.max_metric_router_lsa
+  max_metric_router_lsa_external_lsa_metric                = each.value.max_metric_router_lsa_external_lsa_metric
+  max_metric_router_lsa_include_stub                       = each.value.max_metric_router_lsa_include_stub
+  max_metric_router_lsa_on_startup_time                    = each.value.max_metric_router_lsa_on_startup_time
+  max_metric_router_lsa_on_startup_wait_for_bgp            = each.value.max_metric_router_lsa_on_startup_wait_for_bgp
+  max_metric_router_lsa_summary_lsa_metric                 = each.value.max_metric_router_lsa_summary_lsa_metric
+  mpls_ldp_autoconfig                                      = each.value.mpls_ldp_autoconfig
+  mpls_ldp_sync                                            = each.value.mpls_ldp_sync
+  nsf_cisco                                                = each.value.nsf_cisco
+  nsf_cisco_enforce_global                                 = each.value.nsf_cisco_enforce_global
+  nsf_ietf                                                 = each.value.nsf_ietf
+  nsf_ietf_restart_interval                                = each.value.nsf_ietf_restart_interval
+  redistribute_connected_subnets                           = each.value.redistribute_connected_subnets
+  redistribute_static_subnets                              = each.value.redistribute_static_subnets
+  bfd_all_interfaces                                       = each.value.bfd_all_interfaces
+  default_information_originate                            = each.value.default_information_originate
+  default_information_originate_always                     = each.value.default_information_originate_always
+  passive_interface_default                                = each.value.passive_interface_default
+  auto_cost_reference_bandwidth                            = each.value.auto_cost_reference_bandwidth
+  passive_interface                                        = each.value.passive_interface
+  passive_interface_disable_gigabit_ethernets              = each.value.passive_interface_disable_gigabit_ethernets
+  passive_interface_disable_two_gigabit_ethernets          = each.value.passive_interface_disable_two_gigabit_ethernets
+  passive_interface_disable_five_gigabit_ethernets         = each.value.passive_interface_disable_five_gigabit_ethernets
+  passive_interface_disable_ten_gigabit_ethernets          = each.value.passive_interface_disable_ten_gigabit_ethernets
+  passive_interface_disable_twenty_five_gigabit_ethernets  = each.value.passive_interface_disable_twenty_five_gigabit_ethernets
+  passive_interface_disable_forty_gigabit_ethernets        = each.value.passive_interface_disable_forty_gigabit_ethernets
+  passive_interface_disable_hundred_gigabit_ethernets      = each.value.passive_interface_disable_hundred_gigabit_ethernets
+  passive_interface_disable_two_hundred_gigabit_ethernets  = each.value.passive_interface_disable_two_hundred_gigabit_ethernets
+  passive_interface_disable_four_hundred_gigabit_ethernets = each.value.passive_interface_disable_four_hundred_gigabit_ethernets
+  passive_interface_disable_loopbacks                      = each.value.passive_interface_disable_loopbacks
+  passive_interface_disable_vlans                          = each.value.passive_interface_disable_vlans
+  passive_interface_disable_tunnels                        = each.value.passive_interface_disable_tunnels
+  passive_interface_disable_port_channels                  = each.value.passive_interface_disable_port_channels
+  passive_interface_disable_port_channel_subinterfaces     = each.value.passive_interface_disable_port_channel_subinterfaces
+  neighbor                                                 = each.value.neighbor
+  network                                                  = each.value.network
+  summary_address                                          = each.value.summary_address
+  areas                                                    = each.value.areas
 
   depends_on = [
     iosxe_vrf.vrf,
