@@ -186,7 +186,8 @@ resource "iosxe_policy_map" "policy_map" {
 
   depends_on = [
     iosxe_class_map.class_map,
-    iosxe_class_map.class_map_nested
+    iosxe_class_map.class_map_nested,
+    iosxe_parameter_map.parameter_map
   ]
 }
 
