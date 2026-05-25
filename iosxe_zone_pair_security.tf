@@ -23,4 +23,9 @@ resource "iosxe_zone_pair_security" "zone_pair_security" {
   destination                 = each.value.destination
   description                 = each.value.description
   service_policy_type_inspect = each.value.service_policy_type_inspect
+
+  depends_on = [
+    iosxe_zone_security.zone_security,
+    iosxe_policy_map.policy_map,
+  ]
 }
