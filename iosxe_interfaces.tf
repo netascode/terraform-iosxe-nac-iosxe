@@ -2367,6 +2367,313 @@ resource "iosxe_interface_isis" "port_channel_subinterface_isis" {
   ]
 }
 
+##### ETHERNET SUBINTERFACES #####
+
+locals {
+  interfaces_ethernet_subinterfaces = flatten([
+    for device in local.devices : [
+      for int in try(local.device_config[device.name].interfaces.ethernets, []) : [
+        for sub in try(int.subinterfaces, []) : {
+          key                          = format("%s/%s%s", device.name, try(int.type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.type, null), trimprefix(sub.id, "$string "))
+          device                       = device.name
+          type                         = try(int.type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.type, null)
+          name                         = trimprefix(sub.id, "$string ")
+          description                  = try(sub.description, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.description, null)
+          shutdown                     = try(sub.shutdown, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.shutdown, null)
+          vrf_forwarding               = try(sub.vrf_forwarding, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.vrf_forwarding, null)
+          ipv4_address                 = try(sub.ipv4.address, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ipv4.address, null)
+          ipv4_address_mask            = try(sub.ipv4.address_mask, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ipv4.address_mask, null)
+          ipv4_address_dhcp            = try(sub.ipv4.address_dhcp, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ipv4.address_dhcp, null)
+          ip_proxy_arp                 = try(sub.ipv4.proxy_arp, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ipv4.proxy_arp, null)
+          ip_arp_inspection_trust      = try(sub.ipv4.arp_inspection_trust, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ipv4.arp_inspection_trust, null)
+          ip_arp_inspection_limit_rate = try(sub.ipv4.arp_inspection_limit_rate, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ipv4.arp_inspection_limit_rate, null)
+          helper_addresses = try(length(sub.ipv4.helper_addresses) == 0, true) ? null : [for ha in sub.ipv4.helper_addresses : {
+            address = try(ha.address, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ipv4.helper_addresses.address, null)
+            global  = try(ha.global, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ipv4.helper_addresses.global, null)
+            vrf     = try(ha.vrf, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ipv4.helper_addresses.vrf, null)
+          }]
+          ip_access_group_in         = try(sub.ipv4.access_group_in, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ipv4.access_group_in, null)
+          ip_access_group_in_enable  = try(sub.ipv4.access_group_in, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ipv4.access_group_in, null) != null ? true : null
+          ip_access_group_out        = try(sub.ipv4.access_group_out, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ipv4.access_group_out, null)
+          ip_access_group_out_enable = try(sub.ipv4.access_group_out, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ipv4.access_group_out, null) != null ? true : null
+          ip_flow_monitors = try(length(sub.ipv4.flow_monitors) == 0, true) ? null : [for fm in sub.ipv4.flow_monitors : {
+            name      = try(fm.name, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ipv4.flow_monitors.name, null)
+            direction = try(fm.direction, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ipv4.flow_monitors.direction, null)
+          }]
+          ip_redirects         = try(sub.ipv4.redirects, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ipv4.redirects, null)
+          ip_unreachables      = try(sub.ipv4.unreachables, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ipv4.unreachables, null)
+          ip_nat_inside        = try(sub.ipv4.nat_inside, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ipv4.nat_inside, null)
+          ip_nat_outside       = try(sub.ipv4.nat_outside, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ipv4.nat_outside, null)
+          zone_member_security = try(sub.zone_member_security, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.zone_member_security, null)
+          ipv6_enable          = try(sub.ipv6.enable, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ipv6.enable, null)
+          ipv6_addresses = try(length(sub.ipv6.addresses) == 0, true) ? null : [for addr in sub.ipv6.addresses : {
+            prefix = try(addr.prefix, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ipv6.addresses.prefix, null)
+            eui_64 = try(addr.eui_64, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ipv6.addresses.eui_64, null)
+          }]
+          ipv6_link_local_addresses = try(length(sub.ipv6.link_local_addresses) == 0, true) ? null : [for addr in sub.ipv6.link_local_addresses : {
+            address    = addr
+            link_local = true
+          }]
+          ipv6_address_autoconfig_default = try(sub.ipv6.address_autoconfig_default, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ipv6.address_autoconfig_default, null)
+          ipv6_address_dhcp               = try(sub.ipv6.address_dhcp, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ipv6.address_dhcp, null)
+          ipv6_mtu                        = try(sub.ipv6.mtu, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ipv6.mtu, null)
+          ipv6_nd_ra_suppress_all         = try(sub.ipv6.nd_ra_suppress_all, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ipv6.nd_ra_suppress_all, null)
+          ipv6_flow_monitors = try(length(sub.ipv6.flow_monitors) == 0, true) ? null : [for fm in sub.ipv6.flow_monitors : {
+            name      = try(fm.name, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ipv6.flow_monitors.name, null)
+            direction = try(fm.direction, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ipv6.flow_monitors.direction, null)
+          }]
+          bfd_enable                            = try(sub.bfd.enable, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.bfd.enable, null)
+          bfd_template                          = try(sub.bfd.template, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.bfd.template, null)
+          bfd_local_address                     = try(sub.bfd.local_address, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.bfd.local_address, null)
+          bfd_interval                          = try(sub.bfd.interval, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.bfd.interval, null)
+          bfd_interval_min_rx                   = try(sub.bfd.interval_min_rx, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.bfd.interval_min_rx, null)
+          bfd_interval_multiplier               = try(sub.bfd.interval_multiplier, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.bfd.interval_multiplier, null)
+          bfd_echo                              = try(sub.bfd.echo, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.bfd.echo, null)
+          encapsulation_dot1q_vlan_id           = try(sub.encapsulation_dot1q_vlan_id, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.encapsulation_dot1q_vlan_id, null)
+          arp_timeout                           = try(sub.arp_timeout, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.arp_timeout, null)
+          auto_qos_classify                     = try(sub.auto_qos.classify, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.auto_qos.classify, null)
+          auto_qos_classify_police              = try(sub.auto_qos.classify_police, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.auto_qos.classify_police, null)
+          auto_qos_trust                        = try(sub.auto_qos.trust, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.auto_qos.trust, null)
+          auto_qos_trust_cos                    = try(sub.auto_qos.trust_cos, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.auto_qos.trust_cos, null)
+          auto_qos_trust_dscp                   = try(sub.auto_qos.trust_dscp, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.auto_qos.trust_dscp, null)
+          auto_qos_video_cts                    = try(sub.auto_qos.video_cts, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.auto_qos.video_cts, null)
+          auto_qos_video_ip_camera              = try(sub.auto_qos.video_ip_camera, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.auto_qos.video_ip_camera, null)
+          auto_qos_video_media_player           = try(sub.auto_qos.video_media_player, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.auto_qos.video_media_player, null)
+          auto_qos_voip_cisco_phone             = try(sub.auto_qos.voip_cisco_phone, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.auto_qos.voip_cisco_phone, null)
+          auto_qos_voip_cisco_softphone         = try(sub.auto_qos.voip_cisco_softphone, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.auto_qos.voip_cisco_softphone, null)
+          auto_qos_voip_trust                   = try(sub.auto_qos.voip_trust, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.auto_qos.voip_trust, null)
+          trust_device                          = try(sub.auto_qos.trust_device, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.auto_qos.trust_device, null)
+          mpls_ip                               = try(sub.mpls.ip, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.mpls.ip, null)
+          mpls_mtu                              = try(sub.mpls.mtu, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.mpls.mtu, null)
+          ospf_cost                             = try(sub.ospf.cost, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ospf.cost, null)
+          ospf_dead_interval                    = try(sub.ospf.dead_interval, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ospf.dead_interval, null)
+          ospf_hello_interval                   = try(sub.ospf.hello_interval, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ospf.hello_interval, null)
+          ospf_mtu_ignore                       = try(sub.ospf.mtu_ignore, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ospf.mtu_ignore, null)
+          ospf                                  = try(sub.ospf, null) != null ? true : false
+          ospf_network_type_broadcast           = try(sub.ospf.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ospf.network_type, null) == "broadcast" ? true : null
+          ospf_network_type_non_broadcast       = try(sub.ospf.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ospf.network_type, null) == "non-broadcast" ? true : null
+          ospf_network_type_point_to_multipoint = try(sub.ospf.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ospf.network_type, null) == "point-to-multipoint" ? true : null
+          ospf_network_type_point_to_point      = try(sub.ospf.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ospf.network_type, null) == "point-to-point" ? true : null
+          ospf_priority                         = try(sub.ospf.priority, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ospf.priority, null)
+          ospf_ttl_security_hops                = try(sub.ospf.ttl_security_hops, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ospf.ttl_security_hops, null)
+          ospf_process_ids = try(length(sub.ospf.process_ids) == 0, true) ? null : [for pid in sub.ospf.process_ids : {
+            id = try(pid.id, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ospf.process_ids.id, null)
+            areas = try(length(pid.areas) == 0, true) ? null : [for area in pid.areas : {
+              area_id = area
+            }]
+          }]
+          ospf_message_digest_keys = try(length(sub.ospf.message_digest_keys) == 0, true) ? null : [for key in sub.ospf.message_digest_keys : {
+            id            = try(key.id, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ospf.message_digest_keys.id, null)
+            md5_auth_key  = try(key.md5_auth_key, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ospf.message_digest_keys.md5_auth_key, null)
+            md5_auth_type = try(key.md5_auth_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ospf.message_digest_keys.md5_auth_type, null)
+          }]
+          ospf_multi_area_ids = try(length(sub.ospf.multi_area_ids) == 0, true) ? null : [for area in sub.ospf.multi_area_ids : {
+            area_id = area
+          }]
+          ospfv3                                  = try(sub.ospfv3, null) != null ? true : false
+          ospfv3_network_type_broadcast           = try(sub.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ospfv3.network_type, null) == "broadcast" ? true : null
+          ospfv3_network_type_non_broadcast       = try(sub.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ospfv3.network_type, null) == "non-broadcast" ? true : null
+          ospfv3_network_type_point_to_multipoint = try(sub.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ospfv3.network_type, null) == "point-to-multipoint" ? true : null
+          ospfv3_network_type_point_to_point      = try(sub.ospfv3.network_type, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ospfv3.network_type, null) == "point-to-point" ? true : null
+          ospfv3_cost                             = try(sub.ospfv3.cost, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ospfv3.cost, null)
+          ospfv3_bfd                              = try(sub.ospfv3.bfd, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ospfv3.bfd, null)
+          ospfv3_dead_interval                    = try(sub.ospfv3.dead_interval, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ospfv3.dead_interval, null)
+          ospfv3_hello_interval                   = try(sub.ospfv3.hello_interval, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ospfv3.hello_interval, null)
+          ospfv3_mtu_ignore                       = try(sub.ospfv3.mtu_ignore, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ospfv3.mtu_ignore, null)
+          ospfv3_priority                         = try(sub.ospfv3.priority, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.ospfv3.priority, null)
+          pim                                     = try(sub.pim.passive, sub.pim.dense_mode, sub.pim.sparse_mode, sub.pim.sparse_dense_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.pim.dense_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.pim.sparse_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.pim.sparse_dense_mode, null) != null ? true : false
+          pim_passive                             = try(sub.pim.passive, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.pim.passive, null)
+          pim_dense_mode                          = try(sub.pim.dense_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.pim.dense_mode, null)
+          pim_sparse_mode                         = try(sub.pim.sparse_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.pim.sparse_mode, null)
+          pim_sparse_dense_mode                   = try(sub.pim.sparse_dense_mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.pim.sparse_dense_mode, null)
+          pim_bfd                                 = try(sub.pim.bfd, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.pim.bfd, null)
+          pim_border                              = try(sub.pim.border, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.pim.border, null)
+          pim_bsr_border                          = try(sub.pim.bsr_border, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.pim.bsr_border, null)
+          pim_dr_priority                         = try(sub.pim.dr_priority, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.pim.dr_priority, null)
+          ip_igmp_version                         = try(sub.igmp.version, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.igmp.version, null)
+          isis_area_tag                           = try(sub.isis.area_tag, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.isis.area_tag, null)
+          isis                                    = try(sub.isis, null) != null ? true : false
+          isis_network_point_to_point             = try(sub.isis.network_point_to_point, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.isis.network_point_to_point, null)
+          isis_ipv4_metric_levels = try(length(sub.isis.ipv4_metric_levels) == 0, true) ? null : [for level in sub.isis.ipv4_metric_levels : {
+            level = try(level.level, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.isis.ipv4_metric_levels.level, null)
+            value = try(level.value, local.defaults.iosxe.devices.configuration.interfaces.ethernets.subinterfaces.isis.ipv4_metric_levels.value, null)
+          }]
+        }
+      ]
+    ]
+  ])
+}
+
+resource "iosxe_interface_ethernet" "ethernet_subinterface" {
+  for_each = { for v in local.interfaces_ethernet_subinterfaces : v.key => v }
+  device   = each.value.device
+
+  type                            = each.value.type
+  name                            = each.value.name
+  encapsulation_dot1q_vlan_id     = each.value.encapsulation_dot1q_vlan_id
+  description                     = each.value.description
+  shutdown                        = each.value.shutdown
+  ip_proxy_arp                    = each.value.ip_proxy_arp
+  ip_redirects                    = each.value.ip_redirects
+  ip_unreachables                 = each.value.ip_unreachables
+  ip_nat_inside                   = each.value.ip_nat_inside
+  ip_nat_outside                  = each.value.ip_nat_outside
+  zone_member_security            = each.value.zone_member_security
+  vrf_forwarding                  = each.value.vrf_forwarding
+  ipv4_address                    = each.value.ipv4_address
+  ipv4_address_mask               = each.value.ipv4_address_mask
+  ipv4_address_dhcp               = each.value.ipv4_address_dhcp
+  ip_access_group_in_enable       = each.value.ip_access_group_in_enable
+  ip_access_group_in              = each.value.ip_access_group_in
+  ip_access_group_out_enable      = each.value.ip_access_group_out_enable
+  ip_access_group_out             = each.value.ip_access_group_out
+  ip_flow_monitors                = each.value.ip_flow_monitors
+  ip_igmp_version                 = each.value.ip_igmp_version
+  helper_addresses                = each.value.helper_addresses
+  bfd_template                    = each.value.bfd_template
+  bfd_enable                      = each.value.bfd_enable
+  bfd_local_address               = each.value.bfd_local_address
+  bfd_interval                    = each.value.bfd_interval
+  bfd_interval_min_rx             = each.value.bfd_interval_min_rx
+  bfd_interval_multiplier         = each.value.bfd_interval_multiplier
+  bfd_echo                        = each.value.bfd_echo
+  ipv6_enable                     = each.value.ipv6_enable
+  ipv6_mtu                        = each.value.ipv6_mtu
+  ipv6_nd_ra_suppress_all         = each.value.ipv6_nd_ra_suppress_all
+  ipv6_address_dhcp               = each.value.ipv6_address_dhcp
+  ipv6_link_local_addresses       = each.value.ipv6_link_local_addresses
+  ipv6_addresses                  = each.value.ipv6_addresses
+  ipv6_address_autoconfig_default = each.value.ipv6_address_autoconfig_default
+  ipv6_flow_monitors              = each.value.ipv6_flow_monitors
+  arp_timeout                     = each.value.arp_timeout
+  auto_qos_classify               = each.value.auto_qos_classify
+  auto_qos_classify_police        = each.value.auto_qos_classify_police
+  auto_qos_trust                  = each.value.auto_qos_trust
+  auto_qos_trust_cos              = each.value.auto_qos_trust_cos
+  auto_qos_trust_dscp             = each.value.auto_qos_trust_dscp
+  auto_qos_video_cts              = each.value.auto_qos_video_cts
+  auto_qos_video_ip_camera        = each.value.auto_qos_video_ip_camera
+  auto_qos_video_media_player     = each.value.auto_qos_video_media_player
+  auto_qos_voip_cisco_phone       = each.value.auto_qos_voip_cisco_phone
+  auto_qos_voip_cisco_softphone   = each.value.auto_qos_voip_cisco_softphone
+  auto_qos_voip_trust             = each.value.auto_qos_voip_trust
+  trust_device                    = each.value.trust_device
+  ip_arp_inspection_trust         = each.value.ip_arp_inspection_trust
+  ip_arp_inspection_limit_rate    = each.value.ip_arp_inspection_limit_rate
+  ip_router_isis                  = each.value.isis_area_tag
+
+  depends_on = [
+    iosxe_interface_ethernet.ethernet,
+    iosxe_vrf.vrf,
+    iosxe_access_list_standard.access_list_standard,
+    iosxe_access_list_extended.access_list_extended,
+    iosxe_flow_monitor.flow_monitor,
+    iosxe_policy_map.policy_map,
+    iosxe_isis.isis
+  ]
+}
+
+resource "iosxe_interface_mpls" "ethernet_subinterface_mpls" {
+  for_each = { for v in local.interfaces_ethernet_subinterfaces : v.key => v if v.mpls_ip == true || v.mpls_mtu != null }
+
+  device = each.value.device
+  type   = each.value.type
+  name   = each.value.name
+  ip     = each.value.mpls_ip
+  mtu    = each.value.mpls_mtu
+
+  depends_on = [
+    iosxe_interface_ethernet.ethernet_subinterface
+  ]
+}
+
+resource "iosxe_interface_ospf" "ethernet_subinterface_ospf" {
+  for_each = { for v in local.interfaces_ethernet_subinterfaces : v.key => v if v.ospf }
+
+  device                           = each.value.device
+  type                             = each.value.type
+  name                             = each.value.name
+  cost                             = each.value.ospf_cost
+  dead_interval                    = each.value.ospf_dead_interval
+  hello_interval                   = each.value.ospf_hello_interval
+  mtu_ignore                       = each.value.ospf_mtu_ignore
+  network_type_broadcast           = each.value.ospf_network_type_broadcast
+  network_type_non_broadcast       = each.value.ospf_network_type_non_broadcast
+  network_type_point_to_multipoint = each.value.ospf_network_type_point_to_multipoint
+  network_type_point_to_point      = each.value.ospf_network_type_point_to_point
+  priority                         = each.value.ospf_priority
+  ttl_security_hops                = each.value.ospf_ttl_security_hops
+  process_ids                      = each.value.ospf_process_ids
+  message_digest_keys              = each.value.ospf_message_digest_keys
+  multi_area_ids                   = each.value.ospf_multi_area_ids
+
+  depends_on = [
+    iosxe_interface_ethernet.ethernet_subinterface,
+    iosxe_ospf.ospf,
+    iosxe_ospf_vrf.ospf_vrf
+  ]
+}
+
+resource "iosxe_interface_ospfv3" "ethernet_subinterface_ospfv3" {
+  for_each = { for v in local.interfaces_ethernet_subinterfaces : v.key => v if v.ospfv3 }
+
+  device                           = each.value.device
+  type                             = each.value.type
+  name                             = each.value.name
+  network_type_broadcast           = each.value.ospfv3_network_type_broadcast
+  network_type_non_broadcast       = each.value.ospfv3_network_type_non_broadcast
+  network_type_point_to_multipoint = each.value.ospfv3_network_type_point_to_multipoint
+  network_type_point_to_point      = each.value.ospfv3_network_type_point_to_point
+  cost                             = each.value.ospfv3_cost
+  bfd                              = each.value.ospfv3_bfd
+  dead_interval                    = each.value.ospfv3_dead_interval
+  hello_interval                   = each.value.ospfv3_hello_interval
+  mtu_ignore                       = each.value.ospfv3_mtu_ignore
+  priority                         = each.value.ospfv3_priority
+
+  depends_on = [
+    iosxe_interface_ethernet.ethernet_subinterface,
+    iosxe_ospf.ospf,
+    iosxe_ospf_vrf.ospf_vrf
+  ]
+}
+
+resource "iosxe_interface_pim" "ethernet_subinterface_pim" {
+  for_each = { for v in local.interfaces_ethernet_subinterfaces : v.key => v if v.pim }
+
+  device            = each.value.device
+  type              = each.value.type
+  name              = each.value.name
+  passive           = each.value.pim_passive
+  dense_mode        = each.value.pim_dense_mode
+  sparse_mode       = each.value.pim_sparse_mode
+  sparse_dense_mode = each.value.pim_sparse_dense_mode
+  bfd               = each.value.pim_bfd
+  border            = each.value.pim_border
+  bsr_border        = each.value.pim_bsr_border
+  dr_priority       = each.value.pim_dr_priority
+
+  depends_on = [
+    iosxe_system.system,
+    iosxe_interface_ethernet.ethernet_subinterface
+  ]
+}
+
+resource "iosxe_interface_isis" "ethernet_subinterface_isis" {
+  for_each = { for v in local.interfaces_ethernet_subinterfaces : v.key => v if v.isis }
+
+  device                 = each.value.device
+  type                   = each.value.type
+  name                   = each.value.name
+  network_point_to_point = each.value.isis_network_point_to_point
+  ipv4_metric_levels     = each.value.isis_ipv4_metric_levels
+
+  depends_on = [
+    iosxe_interface_ethernet.ethernet_subinterface,
+    iosxe_isis.isis
+  ]
+}
+
 ##### NVE #####
 
 locals {
