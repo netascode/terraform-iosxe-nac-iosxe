@@ -39,9 +39,10 @@ module "iosxe" {
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.8.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.9.0 |
 | <a name="requirement_iosxe"></a> [iosxe](#requirement\_iosxe) | = 0.18.0 |
-| <a name="requirement_utils"></a> [utils](#requirement\_utils) | = 1.1.0-beta3 |
+| <a name="requirement_local"></a> [local](#requirement\_local) | >= 2.5.0 |
+| <a name="requirement_utils"></a> [utils](#requirement\_utils) | >= 2.0.0 |
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -51,16 +52,14 @@ module "iosxe" {
 | <a name="input_managed_devices"></a> [managed\_devices](#input\_managed\_devices) | List of device names to be managed. By default all devices will be managed. | `list(string)` | `[]` | no |
 | <a name="input_model"></a> [model](#input\_model) | As an alternative to YAML files, a native Terraform data structure can be provided as well. | `map(any)` | `{}` | no |
 | <a name="input_save_config"></a> [save\_config](#input\_save\_config) | Write changes to startup-config on all devices. | `bool` | `false` | no |
-| <a name="input_write_default_values_file"></a> [write\_default\_values\_file](#input\_write\_default\_values\_file) | Write all default values to a YAML file. Value is a path pointing to the file to be created. | `string` | `""` | no |
+| <a name="input_template_directories"></a> [template\_directories](#input\_template\_directories) | List of paths to directories containing template files. | `list(string)` | `[]` | no |
+| <a name="input_template_files"></a> [template\_files](#input\_template\_files) | List of paths to template files. | `list(string)` | `[]` | no |
 | <a name="input_write_model_file"></a> [write\_model\_file](#input\_write\_model\_file) | Write the full model including all resolved templates to a single YAML file. Value is a path pointing to the file to be created. | `string` | `""` | no |
 | <a name="input_yaml_directories"></a> [yaml\_directories](#input\_yaml\_directories) | List of paths to YAML directories. | `list(string)` | `[]` | no |
 | <a name="input_yaml_files"></a> [yaml\_files](#input\_yaml\_files) | List of paths to YAML files. | `list(string)` | `[]` | no |
 ## Outputs
 
-| Name | Description |
-|------|-------------|
-| <a name="output_default_values"></a> [default\_values](#output\_default\_values) | All default values. |
-| <a name="output_model"></a> [model](#output\_model) | Full model. |
+No outputs.
 ## Resources
 
 | Name | Type |
@@ -241,9 +240,8 @@ module "iosxe" {
 | [iosxe_vtp.vtp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/vtp) | resource |
 | [iosxe_zone_pair_security.zone_pair_security](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/zone_pair_security) | resource |
 | [iosxe_zone_security.zone_security](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/zone_security) | resource |
+| [local_sensitive_file.model](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/sensitive_file) | resource |
 ## Modules
 
-| Name | Source | Version |
-|------|--------|---------|
-| <a name="module_model"></a> [model](#module\_model) | ./modules/model | n/a |
+No modules.
 <!-- END_TF_DOCS -->

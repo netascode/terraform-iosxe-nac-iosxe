@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 1.8.0"
+  required_version = ">= 1.9.0"
 
   required_providers {
     iosxe = {
@@ -8,7 +8,11 @@ terraform {
     }
     utils = {
       source  = "netascode/utils"
-      version = "= 1.1.0-beta3"
+      version = ">= 2.0.0"
+    }
+    local = {
+      source  = "hashicorp/local"
+      version = ">= 2.5.0"
     }
   }
 }
