@@ -149,7 +149,6 @@ locals {
         # Default to all VLANs allowed if trunk mode and no trunk_allowed_vlans specified (native IOS-XE behavior)
         switchport_trunk_allowed_vlans_all = try(int.switchport.trunk_allowed_vlans.all, # Default to true for trunk mode if trunk_allowed_vlans is not specified at all
           (try(int.switchport.trunk_allowed_vlans, null) == null &&
-            null == null &&
         contains(["trunk", "private-vlan-trunk"], try(int.switchport.mode, ""))) ? true : null)
         switchport_trunk_allowed_vlans_add = try(
           provider::utils::normalize_vlans(
@@ -1720,7 +1719,6 @@ locals {
         # Default to all VLANs allowed if trunk mode and no trunk_allowed_vlans specified (native IOS-XE behavior)
         switchport_trunk_allowed_vlans_all = try(int.switchport.trunk_allowed_vlans.all, # Default to true for trunk mode if trunk_allowed_vlans is not specified at all
           (try(int.switchport.trunk_allowed_vlans, null) == null &&
-            null == null &&
         contains(["trunk", "private-vlan-trunk"], try(int.switchport.mode, ""))) ? true : null)
         switchport_trunk_allowed_vlans_add = try(
           provider::utils::normalize_vlans(

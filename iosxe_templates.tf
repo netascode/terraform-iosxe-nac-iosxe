@@ -58,7 +58,6 @@ locals {
         # Default to all VLANs allowed if trunk mode and no trunk_allowed_vlans specified (native IOS-XE behavior)
         switchport_trunk_allowed_vlans_all = try(template.switchport.trunk_allowed_vlans.all, # Default to true for trunk mode if trunk_allowed_vlans is not specified at all
           (try(template.switchport.trunk_allowed_vlans, null) == null &&
-            null == null &&
         try(template.switchport.mode, null) == "trunk") ? true : null)
         switchport_trunk_native_vlan_tag               = try(template.switchport.trunk_native_vlan_tag, null)
         switchport_trunk_native_vlan_vlan_id           = try(template.switchport.trunk_native_vlan_id, null)
