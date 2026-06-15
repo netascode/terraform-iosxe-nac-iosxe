@@ -130,6 +130,7 @@ locals {
         switchport                               = try(int.switchport.enable, local.defaults.iosxe.devices.configuration.interfaces.ethernets.switchport.enable, null)
         switchport_mode                          = try(int.switchport.mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.switchport.mode, null)
         switchport_access_vlan                   = try(int.switchport.access_vlan, local.defaults.iosxe.devices.configuration.interfaces.ethernets.switchport.access_vlan, null)
+        switchport_voice_vlan                    = try(tostring(int.switchport.voice_vlan), tostring(local.defaults.iosxe.devices.configuration.interfaces.ethernets.switchport.voice_vlan), null)
         switchport_mode_access                   = try(int.switchport.mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.switchport.mode, null) == "access" ? true : null
         switchport_mode_trunk                    = try(int.switchport.mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.switchport.mode, null) == "trunk" ? true : null
         switchport_mode_dot1q_tunnel             = try(int.switchport.mode, local.defaults.iosxe.devices.configuration.interfaces.ethernets.switchport.mode, null) == "dot1q-tunnel" ? true : null
@@ -733,6 +734,7 @@ resource "iosxe_interface_switchport" "ethernet_switchport" {
   mode_private_vlan_promiscuous = each.value.switchport_mode_private_vlan_promiscuous
   nonegotiate                   = each.value.switchport_nonegotiate
   access_vlan                   = each.value.switchport_access_vlan
+  voice_vlan                    = each.value.switchport_voice_vlan
   # NEW v2 trunk allowed VLANs
   trunk_allowed_vlans        = each.value.switchport_trunk_allowed_vlans
   trunk_allowed_vlans_none   = each.value.switchport_trunk_allowed_vlans_none
@@ -768,6 +770,7 @@ resource "iosxe_interface_switchport" "ethernet_switchport_unmanaged" {
   mode_private_vlan_promiscuous = each.value.switchport_mode_private_vlan_promiscuous
   nonegotiate                   = each.value.switchport_nonegotiate
   access_vlan                   = each.value.switchport_access_vlan
+  voice_vlan                    = each.value.switchport_voice_vlan
   # NEW v2 trunk allowed VLANs
   trunk_allowed_vlans        = each.value.switchport_trunk_allowed_vlans
   trunk_allowed_vlans_none   = each.value.switchport_trunk_allowed_vlans_none
@@ -1684,6 +1687,7 @@ locals {
         switchport                               = try(int.switchport.enable, local.defaults.iosxe.devices.configuration.interfaces.port_channels.switchport.enable, null)
         switchport_mode                          = try(int.switchport.mode, local.defaults.iosxe.devices.configuration.interfaces.port_channels.switchport.mode, null)
         switchport_access_vlan                   = try(int.switchport.access_vlan, local.defaults.iosxe.devices.configuration.interfaces.port_channels.switchport.access_vlan, null)
+        switchport_voice_vlan                    = try(tostring(int.switchport.voice_vlan), tostring(local.defaults.iosxe.devices.configuration.interfaces.port_channels.switchport.voice_vlan), null)
         switchport_mode_access                   = try(int.switchport.mode, local.defaults.iosxe.devices.configuration.interfaces.port_channels.switchport.mode, null) == "access" ? true : null
         switchport_mode_trunk                    = try(int.switchport.mode, local.defaults.iosxe.devices.configuration.interfaces.port_channels.switchport.mode, null) == "trunk" ? true : null
         switchport_mode_dot1q_tunnel             = try(int.switchport.mode, local.defaults.iosxe.devices.configuration.interfaces.port_channels.switchport.mode, null) == "dot1q-tunnel" ? true : null
@@ -1925,6 +1929,7 @@ resource "iosxe_interface_switchport" "port_channel_switchport" {
   mode_private_vlan_promiscuous = each.value.switchport_mode_private_vlan_promiscuous
   nonegotiate                   = each.value.switchport_nonegotiate
   access_vlan                   = each.value.switchport_access_vlan
+  voice_vlan                    = each.value.switchport_voice_vlan
   # NEW v2 trunk allowed VLANs
   trunk_allowed_vlans        = each.value.switchport_trunk_allowed_vlans
   trunk_allowed_vlans_none   = each.value.switchport_trunk_allowed_vlans_none
