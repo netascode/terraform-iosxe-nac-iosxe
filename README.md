@@ -216,6 +216,7 @@ module "iosxe" {
 | [iosxe_policy_map.policy_map](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/policy_map) | resource |
 | [iosxe_policy_map_event.policy_map_event](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/policy_map_event) | resource |
 | [iosxe_prefix_list.prefix_list](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/prefix_list) | resource |
+| [iosxe_privilege.privilege](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/privilege) | resource |
 | [iosxe_radius.radius](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/radius) | resource |
 | [iosxe_radius_server.radius_server](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/radius_server) | resource |
 | [iosxe_route_map.route_map](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/route_map) | resource |
