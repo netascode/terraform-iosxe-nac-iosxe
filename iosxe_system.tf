@@ -63,6 +63,10 @@ resource "iosxe_system" "system" {
   redundancy                          = try(local.device_config[each.value.name].system.redundancy, local.defaults.iosxe.configuration.system.redundancy, null)
   redundancy_mode                     = try(local.device_config[each.value.name].system.redundancy_mode, local.defaults.iosxe.configuration.system.redundancy_mode, null)
   transceiver_type_all_monitoring     = try(local.device_config[each.value.name].system.transceiver_type_all_monitoring, local.defaults.iosxe.configuration.system.transceiver_type_all_monitoring, null)
+  # Power management (chassis platforms only)
+  power_redundancy_mode_combined = try(local.device_config[each.value.name].system.power_redundancy_mode_combined, local.defaults.iosxe.configuration.system.power_redundancy_mode_combined, null)
+  power_supply_autolc_shutdown   = try(local.device_config[each.value.name].system.power_supply_autolc_shutdown, local.defaults.iosxe.configuration.system.power_supply_autolc_shutdown, null)
+  power_supply_autolc_priority   = try(local.device_config[each.value.name].system.power_supply_autolc_priority, local.defaults.iosxe.configuration.system.power_supply_autolc_priority, null)
 
   # Interface-based source interface mappings
   ip_domain_lookup_source_interface_five_gigabit_ethernet        = try(local.device_config[each.value.name].system.ip_domain_lookup_source_interface_type, local.defaults.iosxe.configuration.system.ip_domain_lookup_source_interface_type, null) == "FiveGigabitEthernet" ? try(trimprefix(local.device_config[each.value.name].system.ip_domain_lookup_source_interface_id, "$string "), local.defaults.iosxe.configuration.system.ip_domain_lookup_source_interface_id, null) : null
