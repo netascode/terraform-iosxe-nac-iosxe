@@ -7,6 +7,7 @@ resource "iosxe_device_tracking" "device_tracking" {
   tracking_auto_source_fallback_mask     = try(local.device_config[each.value.name].device_tracking.tracking_auto_source_fallback_mask, local.defaults.iosxe.configuration.device_tracking.tracking_auto_source_fallback_mask, null)
   tracking_auto_source_fallback_override = try(local.device_config[each.value.name].device_tracking.tracking_auto_source_fallback_override, local.defaults.iosxe.configuration.device_tracking.tracking_auto_source_fallback_override, null)
   tracking_retry_interval                = try(local.device_config[each.value.name].device_tracking.tracking_retry_interval, local.defaults.iosxe.configuration.device_tracking.tracking_retry_interval, null)
+  binding_reachable_lifetime             = try(local.device_config[each.value.name].device_tracking.binding_reachable_lifetime, local.defaults.iosxe.configuration.device_tracking.binding_reachable_lifetime, null)
 }
 
 locals {
