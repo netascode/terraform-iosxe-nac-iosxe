@@ -316,3 +316,10 @@ resource "iosxe_crypto" "crypto_engine" {
 
   engine_compliance_shield_disable = try(local.device_config[each.value.name].crypto.engine.compliance_shield_disable, local.defaults.iosxe.configuration.crypto.engine.compliance_shield_disable, null)
 }
+
+resource "iosxe_crypto_pki_certificate_pool" "crypto_pki_certificate_pool" {
+  for_each = { for device in local.devices : device.name => device if try(local.device_config[device.name].crypto.pki.certificate_pool, null) != null }
+  device   = each.value.name
+
+  cabundle = try(local.device_config[each.value.name].crypto.pki.certificate_pool.cabundle, local.defaults.iosxe.configuration.crypto.pki.certificate_pool.cabundle, null)
+}

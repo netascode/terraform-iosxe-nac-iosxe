@@ -123,6 +123,7 @@ module "iosxe" {
 | [iosxe_crypto_ipsec_profile.crypto_ipsec_profile](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/crypto_ipsec_profile) | resource |
 | [iosxe_crypto_ipsec_transform_set.crypto_ipsec_transform_set](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/crypto_ipsec_transform_set) | resource |
 | [iosxe_crypto_pki.crypto_pki](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/crypto_pki) | resource |
+| [iosxe_crypto_pki_certificate_pool.crypto_pki_certificate_pool](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/crypto_pki_certificate_pool) | resource |
 | [iosxe_cts.cts](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/cts) | resource |
 | [iosxe_device_sensor.device_sensor](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/device_sensor) | resource |
 | [iosxe_device_tracking.device_tracking](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/device_tracking) | resource |
