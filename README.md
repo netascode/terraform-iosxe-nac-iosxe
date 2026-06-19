@@ -233,6 +233,7 @@ module "iosxe" {
 | [iosxe_udld.udld](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/udld) | resource |
 | [iosxe_username.username](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/username) | resource |
 | [iosxe_vlan.vlan](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/vlan) | resource |
+| [iosxe_vlan.vlan_private_association](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/vlan) | resource |
 | [iosxe_vlan_access_map.vlan_access_map](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/vlan_access_map) | resource |
 | [iosxe_vlan_configuration.vlan_configuration](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/vlan_configuration) | resource |
 | [iosxe_vlan_filter.vlan_filter](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/vlan_filter) | resource |
