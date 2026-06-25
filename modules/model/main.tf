@@ -124,7 +124,7 @@ locals {
   }
 
   device_only_config = { for device in local.managed_devices :
-    device.name => try(yamldecode(templatestring(yamlencode(try(device.configuration, {})), local.device_variables[device.name])), {})
+    device.name => try(device.configuration, {})
   }
 
   device_only_interface_groups = { for device in local.managed_devices :
