@@ -208,6 +208,9 @@ locals {
         trust_device                          = try(int.auto_qos.trust_device, local.defaults.iosxe.devices.configuration.interfaces.ethernets.auto_qos.trust_device, null)
         mpls_ip                               = try(int.mpls.ip, local.defaults.iosxe.devices.configuration.interfaces.ethernets.mpls.ip, null)
         mpls_mtu                              = try(int.mpls.mtu, local.defaults.iosxe.devices.configuration.interfaces.ethernets.mpls.mtu, null)
+        ospf_authentication_key_chain         = try(int.ospf.authentication_key_chain, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospf.authentication_key_chain, null)
+        ospf_authentication_message_digest    = try(int.ospf.authentication_message_digest, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospf.authentication_message_digest, null)
+        ospf_authentication_null              = try(int.ospf.authentication_null, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospf.authentication_null, null)
         ospf_cost                             = try(int.ospf.cost, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospf.cost, null)
         ospf_dead_interval                    = try(int.ospf.dead_interval, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospf.dead_interval, null)
         ospf_hello_interval                   = try(int.ospf.hello_interval, local.defaults.iosxe.devices.configuration.interfaces.ethernets.ospf.hello_interval, null)
@@ -832,6 +835,9 @@ resource "iosxe_interface_ospf" "ethernet_ospf" {
   device                           = each.value.device
   type                             = each.value.type
   name                             = each.value.id
+  authentication_key_chain         = each.value.ospf_authentication_key_chain
+  authentication_message_digest    = each.value.ospf_authentication_message_digest
+  authentication_null              = each.value.ospf_authentication_null
   cost                             = each.value.ospf_cost
   dead_interval                    = each.value.ospf_dead_interval
   hello_interval                   = each.value.ospf_hello_interval
@@ -860,6 +866,9 @@ resource "iosxe_interface_ospf" "ethernet_ospf_unmanaged" {
   device                           = each.value.device
   type                             = each.value.type
   name                             = each.value.id
+  authentication_key_chain         = each.value.ospf_authentication_key_chain
+  authentication_message_digest    = each.value.ospf_authentication_message_digest
+  authentication_null              = each.value.ospf_authentication_null
   cost                             = each.value.ospf_cost
   dead_interval                    = each.value.ospf_dead_interval
   hello_interval                   = each.value.ospf_hello_interval
@@ -1070,6 +1079,9 @@ locals {
         load_interval                         = try(int.load_interval, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.load_interval, null)
         mpls_ip                               = try(int.mpls.ip, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.mpls.ip, null)
         mpls_mtu                              = try(int.mpls.mtu, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.mpls.mtu, null)
+        ospf_authentication_key_chain         = try(int.ospf.authentication_key_chain, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospf.authentication_key_chain, null)
+        ospf_authentication_message_digest    = try(int.ospf.authentication_message_digest, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospf.authentication_message_digest, null)
+        ospf_authentication_null              = try(int.ospf.authentication_null, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospf.authentication_null, null)
         ospf_cost                             = try(int.ospf.cost, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospf.cost, null)
         ospf_dead_interval                    = try(int.ospf.dead_interval, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospf.dead_interval, null)
         ospf_hello_interval                   = try(int.ospf.hello_interval, local.defaults.iosxe.devices.configuration.interfaces.loopbacks.ospf.hello_interval, null)
@@ -1195,6 +1207,9 @@ resource "iosxe_interface_ospf" "loopback_ospf" {
   device                           = each.value.device
   type                             = "Loopback"
   name                             = each.value.id
+  authentication_key_chain         = each.value.ospf_authentication_key_chain
+  authentication_message_digest    = each.value.ospf_authentication_message_digest
+  authentication_null              = each.value.ospf_authentication_null
   cost                             = each.value.ospf_cost
   dead_interval                    = each.value.ospf_dead_interval
   hello_interval                   = each.value.ospf_hello_interval
@@ -1370,6 +1385,9 @@ locals {
         logging_event_link_status_enable      = try(int.logging_event_link_status, local.defaults.iosxe.devices.configuration.interfaces.vlans.logging_event_link_status, null)
         mpls_ip                               = try(int.mpls.ip, local.defaults.iosxe.devices.configuration.interfaces.vlans.mpls.ip, null)
         mpls_mtu                              = try(int.mpls.mtu, local.defaults.iosxe.devices.configuration.interfaces.vlans.mpls.mtu, null)
+        ospf_authentication_key_chain         = try(int.ospf.authentication_key_chain, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospf.authentication_key_chain, null)
+        ospf_authentication_message_digest    = try(int.ospf.authentication_message_digest, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospf.authentication_message_digest, null)
+        ospf_authentication_null              = try(int.ospf.authentication_null, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospf.authentication_null, null)
         ospf_cost                             = try(int.ospf.cost, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospf.cost, null)
         ospf_dead_interval                    = try(int.ospf.dead_interval, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospf.dead_interval, null)
         ospf_hello_interval                   = try(int.ospf.hello_interval, local.defaults.iosxe.devices.configuration.interfaces.vlans.ospf.hello_interval, null)
@@ -1510,6 +1528,9 @@ resource "iosxe_interface_ospf" "vlan_ospf" {
   device                           = each.value.device
   type                             = "Vlan"
   name                             = each.value.id
+  authentication_key_chain         = each.value.ospf_authentication_key_chain
+  authentication_message_digest    = each.value.ospf_authentication_message_digest
+  authentication_null              = each.value.ospf_authentication_null
   cost                             = each.value.ospf_cost
   dead_interval                    = each.value.ospf_dead_interval
   hello_interval                   = each.value.ospf_hello_interval
@@ -1751,7 +1772,10 @@ locals {
         mpls                                  = try(int.mpls.ip, int.mpls.mtu, local.defaults.iosxe.devices.configuration.interfaces.port_channels.mpls.ip, local.defaults.iosxe.devices.configuration.interfaces.port_channels.mpls.mtu, null) != null ? true : false
         mpls_ip                               = try(int.mpls.ip, local.defaults.iosxe.devices.configuration.interfaces.port_channels.mpls.ip, null)
         mpls_mtu                              = try(int.mpls.mtu, local.defaults.iosxe.devices.configuration.interfaces.port_channels.mpls.mtu, null)
-        ospf                                  = try(int.ospf.cost, int.ospf.dead_interval, int.ospf.hello_interval, int.ospf.mtu_ignore, int.ospf.network_type, int.ospf.priority, int.ospf.ttl_security_hops, int.ospf.process_ids, int.ospf.message_digest_keys, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ospf.cost, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ospf.dead_interval, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ospf.hello_interval, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ospf.mtu_ignore, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ospf.network_type, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ospf.priority, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ospf.ttl_security_hops, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ospf.process_ids, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ospf.message_digest_keys, null) != null ? true : false
+        ospf                                  = try(int.ospf, null) != null ? true : false
+        ospf_authentication_key_chain         = try(int.ospf.authentication_key_chain, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ospf.authentication_key_chain, null)
+        ospf_authentication_message_digest    = try(int.ospf.authentication_message_digest, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ospf.authentication_message_digest, null)
+        ospf_authentication_null              = try(int.ospf.authentication_null, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ospf.authentication_null, null)
         ospf_cost                             = try(int.ospf.cost, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ospf.cost, null)
         ospf_dead_interval                    = try(int.ospf.dead_interval, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ospf.dead_interval, null)
         ospf_hello_interval                   = try(int.ospf.hello_interval, local.defaults.iosxe.devices.configuration.interfaces.port_channels.ospf.hello_interval, null)
@@ -1964,6 +1988,9 @@ resource "iosxe_interface_ospf" "port_channel_ospf" {
   device                           = each.value.device
   type                             = "Port-channel"
   name                             = each.value.name
+  authentication_key_chain         = each.value.ospf_authentication_key_chain
+  authentication_message_digest    = each.value.ospf_authentication_message_digest
+  authentication_null              = each.value.ospf_authentication_null
   cost                             = each.value.ospf_cost
   dead_interval                    = each.value.ospf_dead_interval
   hello_interval                   = each.value.ospf_hello_interval
@@ -2137,6 +2164,9 @@ locals {
           trust_device                          = try(sub.auto_qos.trust_device, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.auto_qos.trust_device, null)
           mpls_ip                               = try(sub.mpls.ip, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.mpls.ip, null)
           mpls_mtu                              = try(sub.mpls.mtu, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.mpls.mtu, null)
+          ospf_authentication_key_chain         = try(sub.ospf.authentication_key_chain, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ospf.authentication_key_chain, null)
+          ospf_authentication_message_digest    = try(sub.ospf.authentication_message_digest, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ospf.authentication_message_digest, null)
+          ospf_authentication_null              = try(sub.ospf.authentication_null, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ospf.authentication_null, null)
           ospf_cost                             = try(sub.ospf.cost, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ospf.cost, null)
           ospf_dead_interval                    = try(sub.ospf.dead_interval, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ospf.dead_interval, null)
           ospf_hello_interval                   = try(sub.ospf.hello_interval, local.defaults.iosxe.devices.configuration.interfaces.port_channels.subinterfaces.ospf.hello_interval, null)
@@ -2286,6 +2316,9 @@ resource "iosxe_interface_ospf" "port_channel_subinterface_ospf" {
   device                           = each.value.device
   type                             = "Port-channel-subinterface/Port-channel"
   name                             = each.value.name
+  authentication_key_chain         = each.value.ospf_authentication_key_chain
+  authentication_message_digest    = each.value.ospf_authentication_message_digest
+  authentication_null              = each.value.ospf_authentication_null
   cost                             = each.value.ospf_cost
   dead_interval                    = each.value.ospf_dead_interval
   hello_interval                   = each.value.ospf_hello_interval
@@ -2799,6 +2832,9 @@ locals {
         load_interval                         = try(int.load_interval, local.defaults.iosxe.devices.configuration.interfaces.tunnels.load_interval, null)
         snmp_trap_link_status                 = try(int.snmp_trap_link_status, local.defaults.iosxe.devices.configuration.interfaces.tunnels.snmp_trap_link_status, null)
         logging_event_link_status_enable      = try(int.logging_event_link_status_enable, local.defaults.iosxe.devices.configuration.interfaces.tunnels.logging_event_link_status_enable, null)
+        ospf_authentication_key_chain         = try(int.ospf.authentication_key_chain, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ospf.authentication_key_chain, null)
+        ospf_authentication_message_digest    = try(int.ospf.authentication_message_digest, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ospf.authentication_message_digest, null)
+        ospf_authentication_null              = try(int.ospf.authentication_null, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ospf.authentication_null, null)
         ospf_cost                             = try(int.ospf.cost, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ospf.cost, null)
         ospf_dead_interval                    = try(int.ospf.dead_interval, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ospf.dead_interval, null)
         ospf_hello_interval                   = try(int.ospf.hello_interval, local.defaults.iosxe.devices.configuration.interfaces.tunnels.ospf.hello_interval, null)
@@ -2918,7 +2954,8 @@ resource "iosxe_interface_tunnel" "tunnel" {
     iosxe_access_list_standard.access_list_standard,
     iosxe_access_list_extended.access_list_extended,
     iosxe_crypto_ipsec_profile.crypto_ipsec_profile,
-    iosxe_policy_map.policy_map
+    iosxe_policy_map.policy_map,
+    iosxe_flow_monitor.flow_monitor
   ]
 }
 
@@ -2928,6 +2965,9 @@ resource "iosxe_interface_ospf" "tunnel_ospf" {
   device                           = each.value.device
   type                             = "Tunnel"
   name                             = each.value.name
+  authentication_key_chain         = each.value.ospf_authentication_key_chain
+  authentication_message_digest    = each.value.ospf_authentication_message_digest
+  authentication_null              = each.value.ospf_authentication_null
   cost                             = each.value.ospf_cost
   dead_interval                    = each.value.ospf_dead_interval
   hello_interval                   = each.value.ospf_hello_interval
