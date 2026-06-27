@@ -2598,6 +2598,7 @@ resource "iosxe_interface_ethernet" "ethernet_subinterface" {
   depends_on = [
     iosxe_interface_ethernet.ethernet,
     iosxe_vrf.vrf,
+    iosxe_zone_security.zone_security,
     iosxe_access_list_standard.access_list_standard,
     iosxe_access_list_extended.access_list_extended,
     iosxe_flow_monitor.flow_monitor,
