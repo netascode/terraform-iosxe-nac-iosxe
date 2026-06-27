@@ -142,8 +142,10 @@ module "iosxe" {
 | [iosxe_interface_bdi.bdi](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/interface_bdi) | resource |
 | [iosxe_interface_ethernet.ethernet](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/interface_ethernet) | resource |
 | [iosxe_interface_ethernet.ethernet_sub](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/interface_ethernet) | resource |
+| [iosxe_interface_ethernet.ethernet_subinterface](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/interface_ethernet) | resource |
 | [iosxe_interface_ethernet.ethernet_unmanaged](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/interface_ethernet) | resource |
 | [iosxe_interface_isis.ethernet_isis](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/interface_isis) | resource |
+| [iosxe_interface_isis.ethernet_subinterface_isis](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/interface_isis) | resource |
 | [iosxe_interface_isis.loopback_isis](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/interface_isis) | resource |
 | [iosxe_interface_isis.port_channel_isis](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/interface_isis) | resource |
 | [iosxe_interface_isis.port_channel_subinterface_isis](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/interface_isis) | resource |
@@ -151,6 +153,7 @@ module "iosxe" {
 | [iosxe_interface_loopback.loopback](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/interface_loopback) | resource |
 | [iosxe_interface_mpls.ethernet_mpls](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/interface_mpls) | resource |
 | [iosxe_interface_mpls.ethernet_mpls_unmanaged](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/interface_mpls) | resource |
+| [iosxe_interface_mpls.ethernet_subinterface_mpls](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/interface_mpls) | resource |
 | [iosxe_interface_mpls.loopback_mpls](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/interface_mpls) | resource |
 | [iosxe_interface_mpls.port_channel_mpls](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/interface_mpls) | resource |
 | [iosxe_interface_mpls.port_channel_subinterface_mpls](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/interface_mpls) | resource |
@@ -158,6 +161,7 @@ module "iosxe" {
 | [iosxe_interface_nve.nve](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/interface_nve) | resource |
 | [iosxe_interface_ospf.ethernet_ospf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/interface_ospf) | resource |
 | [iosxe_interface_ospf.ethernet_ospf_unmanaged](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/interface_ospf) | resource |
+| [iosxe_interface_ospf.ethernet_subinterface_ospf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/interface_ospf) | resource |
 | [iosxe_interface_ospf.loopback_ospf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/interface_ospf) | resource |
 | [iosxe_interface_ospf.port_channel_ospf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/interface_ospf) | resource |
 | [iosxe_interface_ospf.port_channel_subinterface_ospf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/interface_ospf) | resource |
@@ -165,6 +169,7 @@ module "iosxe" {
 | [iosxe_interface_ospf.vlan_ospf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/interface_ospf) | resource |
 | [iosxe_interface_ospfv3.ethernet_ospfv3](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/interface_ospfv3) | resource |
 | [iosxe_interface_ospfv3.ethernet_ospfv3_unmanaged](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/interface_ospfv3) | resource |
+| [iosxe_interface_ospfv3.ethernet_subinterface_ospfv3](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/interface_ospfv3) | resource |
 | [iosxe_interface_ospfv3.loopback_ospfv3](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/interface_ospfv3) | resource |
 | [iosxe_interface_ospfv3.port_channel_ospfv3](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/interface_ospfv3) | resource |
 | [iosxe_interface_ospfv3.port_channel_subinterface_ospfv3](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/interface_ospfv3) | resource |
@@ -172,6 +177,7 @@ module "iosxe" {
 | [iosxe_interface_ospfv3.vlan_ospfv3](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/interface_ospfv3) | resource |
 | [iosxe_interface_pim.ethernet_pim](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/interface_pim) | resource |
 | [iosxe_interface_pim.ethernet_pim_unmanaged](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/interface_pim) | resource |
+| [iosxe_interface_pim.ethernet_subinterface_pim](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/interface_pim) | resource |
 | [iosxe_interface_pim.loopback_pim](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/interface_pim) | resource |
 | [iosxe_interface_pim.port_channel_pim](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/interface_pim) | resource |
 | [iosxe_interface_pim.port_channel_subinterface_pim](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/interface_pim) | resource |
@@ -233,6 +239,7 @@ module "iosxe" {
 | [iosxe_udld.udld](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/udld) | resource |
 | [iosxe_username.username](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/username) | resource |
 | [iosxe_vlan.vlan](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/vlan) | resource |
+| [iosxe_vlan.vlan_private_association](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/vlan) | resource |
 | [iosxe_vlan_access_map.vlan_access_map](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/vlan_access_map) | resource |
 | [iosxe_vlan_configuration.vlan_configuration](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/vlan_configuration) | resource |
 | [iosxe_vlan_filter.vlan_filter](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/vlan_filter) | resource |

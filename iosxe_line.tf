@@ -57,6 +57,9 @@ resource "iosxe_line" "line" {
     exec_timeout_seconds  = try(a.exec_timeout_seconds, local.defaults.iosxe.configuration.line.auxes.exec_timeout_seconds, null)
     monitor               = try(a.monitor, local.defaults.iosxe.configuration.line.auxes.monitor, null)
     stopbits              = try(a.stopbits, local.defaults.iosxe.configuration.line.auxes.stopbits, null)
+    password              = try(a.password, local.defaults.iosxe.configuration.line.auxes.password, null)
+    password_level        = try(a.password_level, local.defaults.iosxe.configuration.line.auxes.password_level, null)
+    password_type         = try(a.password_type, local.defaults.iosxe.configuration.line.auxes.password_type, null)
     escape_character      = try(a.escape_character, local.defaults.iosxe.configuration.line.auxes.escape_character, null)
     logging_synchronous   = try(a.logging_synchronous, local.defaults.iosxe.configuration.line.auxes.logging_synchronous, null)
     transport_output_none = contains(try(a.transport_output, local.defaults.iosxe.configuration.line.auxes.transport_output, []), "none") ? true : null
