@@ -220,6 +220,7 @@ module "iosxe" {
 | [iosxe_pim_ipv6.pim_ipv6](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/pim_ipv6) | resource |
 | [iosxe_platform.platform](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/platform) | resource |
 | [iosxe_policy_map.policy_map](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/policy_map) | resource |
+| [iosxe_policy_map.policy_map_nested](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/policy_map) | resource |
 | [iosxe_policy_map_event.policy_map_event](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/policy_map_event) | resource |
 | [iosxe_prefix_list.prefix_list](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/prefix_list) | resource |
 | [iosxe_radius.radius](https://registry.terraform.io/providers/CiscoDevNet/iosxe/0.18.0/docs/resources/radius) | resource |
