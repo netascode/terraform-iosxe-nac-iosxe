@@ -127,6 +127,12 @@ locals {
         type        = try(policy_map.type, local.defaults.iosxe.configuration.policy.policy_maps.type, null)
         subscriber  = try(policy_map.subscriber, local.defaults.iosxe.configuration.policy.policy_maps.subscriber, null)
         description = try(policy_map.description, local.defaults.iosxe.configuration.policy.policy_maps.description, null)
+        has_service_policy = try(length(flatten([
+          for class in policy_map.classes : [
+            for action in class.actions : action.service_policy
+            if try(action.service_policy, null) != null
+          ]
+        ])) > 0, false)
         classes = try(length(policy_map.classes) == 0, true) ? null : [for class in policy_map.classes : {
           name                 = try(class.name, local.defaults.iosxe.configuration.policy.policy_maps.classes.name, null)
           class_type           = try(class.type, local.defaults.iosxe.configuration.policy.policy_maps.classes.type, null)
@@ -175,7 +181,7 @@ locals {
 }
 
 resource "iosxe_policy_map" "policy_map" {
-  for_each = { for e in local.policy_maps : e.key => e }
+  for_each = { for e in local.policy_maps : e.key => e if !e.has_service_policy }
   device   = each.value.device
 
   name        = each.value.name
@@ -188,6 +194,24 @@ resource "iosxe_policy_map" "policy_map" {
     iosxe_class_map.class_map,
     iosxe_class_map.class_map_nested,
     iosxe_parameter_map.parameter_map
+  ]
+}
+
+resource "iosxe_policy_map" "policy_map_nested" {
+  for_each = { for e in local.policy_maps : e.key => e if e.has_service_policy }
+  device   = each.value.device
+
+  name        = each.value.name
+  type        = each.value.type
+  subscriber  = each.value.subscriber
+  description = each.value.description
+  classes     = each.value.classes
+
+  depends_on = [
+    iosxe_class_map.class_map,
+    iosxe_class_map.class_map_nested,
+    iosxe_parameter_map.parameter_map,
+    iosxe_policy_map.policy_map
   ]
 }
 
@@ -262,6 +286,7 @@ resource "iosxe_policy_map_event" "policy_map_event" {
   class_numbers = each.value.class_numbers
 
   depends_on = [
-    iosxe_policy_map.policy_map
+    iosxe_policy_map.policy_map,
+    iosxe_policy_map.policy_map_nested
   ]
 }
