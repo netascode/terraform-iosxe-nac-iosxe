@@ -9,7 +9,7 @@ locals {
         entries = try(length(route_map.entries) == 0, true) ? null : [for e in route_map.entries : {
           seq                              = try(e.seq, local.defaults.iosxe.configuration.route_maps.entries.seq, null)
           operation                        = try(e.operation, local.defaults.iosxe.configuration.route_maps.entries.operation, null)
-          description                      = try(e.description, local.defaults.iosxe.configuration.route_maps.entries.description, null)
+          descriptions                     = try(e.description, local.defaults.iosxe.configuration.route_maps.entries.description, null) != null ? [{ description = try(e.description, local.defaults.iosxe.configuration.route_maps.entries.description) }] : null
           continue                         = try(e.continue, local.defaults.iosxe.configuration.route_maps.entries.continue, null)
           continue_sequence_number         = try(e.continue_sequence_number, local.defaults.iosxe.configuration.route_maps.entries.continue_sequence_number, null)
           match_as_paths                   = try(e.match.as_paths, local.defaults.iosxe.configuration.route_maps.entries.match.as_paths, null)
