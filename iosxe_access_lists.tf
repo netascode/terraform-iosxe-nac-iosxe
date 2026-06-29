@@ -113,6 +113,8 @@ resource "iosxe_access_list_extended" "access_list_extended" {
 
   name    = each.value.name
   entries = each.value.entries
+
+  depends_on = [iosxe_object_group.object_group]
 }
 
 locals {

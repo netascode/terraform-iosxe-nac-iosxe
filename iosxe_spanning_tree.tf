@@ -20,10 +20,18 @@ resource "iosxe_spanning_tree" "spanning_tree" {
     )
   }]
 
-  vlans = try(length(local.device_config[each.value.name].spanning_tree.vlans) == 0, true) ? null : [for v in try(local.device_config[each.value.name].spanning_tree.vlans, []) : {
-    id       = try(tostring(v.id), null)
-    priority = try(v.priority, null)
-  }]
+  vlans = try(length(local.device_config[each.value.name].spanning_tree.vlans) == 0, true) ? null : flatten([
+    for v in try(local.device_config[each.value.name].spanning_tree.vlans, []) : [
+      for id in(
+        try(v.vlans, null) != null
+        ? provider::utils::normalize_vlans(v.vlans, "list")
+        : [try(v.id, null)]
+        ) : {
+        id       = tostring(id)
+        priority = try(v.priority, null)
+      }
+    ]
+  ])
 
   disabled_vlans = try(local.device_config[each.value.name].spanning_tree.disabled.vlans, null) == null ? null : [
     for id in provider::utils::normalize_vlans(

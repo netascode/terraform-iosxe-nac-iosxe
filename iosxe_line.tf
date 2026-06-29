@@ -57,6 +57,9 @@ resource "iosxe_line" "line" {
     exec_timeout_seconds  = try(a.exec_timeout_seconds, null)
     monitor               = try(a.monitor, null)
     stopbits              = try(a.stopbits, null)
+    password              = try(a.password, null)
+    password_level        = try(a.password_level, null)
+    password_type         = try(a.password_type, null)
     escape_character      = try(a.escape_character, null)
     logging_synchronous   = try(a.logging_synchronous, null)
     transport_output_none = contains(try(a.transport_output, []), "none") ? true : null
