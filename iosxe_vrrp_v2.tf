@@ -48,10 +48,10 @@ locals {
       [
         for int in try(local.device_config[device.name].interfaces.port_channels, []) : [
           for vrrp in try(int.vrrp_v2, []) : {
-            key                       = format("%s/Port-channel%s/vrrp_v2/%s", device.name, int.id, vrrp.group_id)
+            key                       = format("%s/Port-channel%s/vrrp_v2/%s", device.name, trimprefix(tostring(int.id), "$string "), vrrp.group_id)
             device                    = device.name
             type                      = "Port-channel"
-            name                      = tostring(int.id)
+            name                      = trimprefix(tostring(int.id), "$string ")
             managed                   = true
             group_id                  = vrrp.group_id
             ip_primary_address        = try(vrrp.ip_primary_address, null)
