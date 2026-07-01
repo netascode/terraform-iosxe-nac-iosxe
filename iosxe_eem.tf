@@ -17,6 +17,7 @@ locals {
         history_size_events            = try(local.device_config[device.name].eem.history_size_events, null)
         history_size_traps             = try(local.device_config[device.name].eem.history_size_traps, null)
         directory_user_policy          = try(local.device_config[device.name].eem.directory_user_policy, null)
+        detector_rpc_max_sessions      = try(local.device_config[device.name].eem.detector_rpc_max_sessions, null)
         detector_routing_bootup_delay  = try(local.device_config[device.name].eem.detector_routing_bootup_delay, null)
 
         # Scheduler thread class
@@ -120,6 +121,7 @@ resource "iosxe_eem" "eem" {
   directory_user_policy                 = each.value.directory_user_policy
   scheduler_applet_thread_class_default = each.value.scheduler_applet_thread_class_default
   scheduler_applet_thread_class_number  = each.value.scheduler_applet_thread_class_number
+  detector_rpc_max_sessions             = each.value.detector_rpc_max_sessions
   detector_routing_bootup_delay         = each.value.detector_routing_bootup_delay
   applets                               = each.value.applets
 }
