@@ -66,6 +66,30 @@ locals {
             shutdown                  = try(vrrp.shutdown, null)
           }
         ]
+      ],
+      [
+        for int in try(local.device_config[device.name].interfaces.port_channels, []) : [
+          for sub in try(int.subinterfaces, []) : [
+            for vrrp in try(sub.vrrp_v2, []) : {
+              key                       = format("%s/Port-channel%s/vrrp_v2/%s", device.name, trimprefix(sub.id, "$string "), vrrp.group_id)
+              device                    = device.name
+              type                      = "Port-channel-subinterface/Port-channel"
+              name                      = trimprefix(sub.id, "$string ")
+              managed                   = true
+              group_id                  = vrrp.group_id
+              ip_primary_address        = try(vrrp.ip_primary_address, null)
+              ip_secondary_addresses    = try(length(vrrp.ip_secondary_addresses) == 0, true) ? null : [for addr in vrrp.ip_secondary_addresses : { address = addr }]
+              priority                  = try(vrrp.priority, null)
+              preempt                   = try(vrrp.preempt, null)
+              preempt_delay_minimum     = try(vrrp.preempt_delay_minimum, null)
+              timers_advertise_interval = try(vrrp.timers_advertise_interval, null)
+              authentication_text       = try(vrrp.authentication_text, null)
+              description               = try(vrrp.description, null)
+              tracks                    = try(length(vrrp.tracks) == 0, true) ? null : [for t in vrrp.tracks : { object_id = t.object_id, decrement = try(t.decrement, null) }]
+              shutdown                  = try(vrrp.shutdown, null)
+            }
+          ]
+        ]
       ]
     )
   ])
@@ -93,7 +117,8 @@ resource "iosxe_interface_vrrp_v2" "vrrp_v2" {
     iosxe_interface_ethernet.ethernet,
     iosxe_interface_ethernet.ethernet_sub,
     iosxe_interface_vlan.vlan,
-    iosxe_interface_port_channel.port_channel
+    iosxe_interface_port_channel.port_channel,
+    iosxe_interface_port_channel_subinterface.port_channel_subinterface
   ]
 }
 
