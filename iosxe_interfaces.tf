@@ -291,14 +291,14 @@ locals {
         ip_nat_outside       = try(int.ipv4.nat_outside, null)
         zone_member_security = try(int.zone_member_security, null)
         carrier_delay_msec   = try(int.carrier_delay_msec, null)
-        hold_queues = (contains(keys(int), "hold_queue_in") || contains(keys(int), "hold_queue_out")) ? flatten([
-          (contains(keys(int), "hold_queue_in")) ? [{
+        hold_queues = (try(int.hold_queue_in, null) != null || try(int.hold_queue_out, null) != null) ? flatten([
+          try(int.hold_queue_in, null) != null ? [{
             direction    = "in"
-            queue_length = try(int.hold_queue_in, null)
+            queue_length = int.hold_queue_in
           }] : [],
-          (contains(keys(int), "hold_queue_out")) ? [{
+          try(int.hold_queue_out, null) != null ? [{
             direction    = "out"
-            queue_length = try(int.hold_queue_out, null)
+            queue_length = int.hold_queue_out
           }] : []
         ]) : null
         service_instances = try(length(int.service_instances) == 0, true) ? null : [for si in int.service_instances : {
