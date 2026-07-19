@@ -10,6 +10,9 @@ locals {
         bfd_all_interfaces                            = try(ospf.bfd_all_interfaces, null)
         default_information_originate                 = try(ospf.default_information_originate, null)
         default_information_originate_always          = try(ospf.default_information_originate_always, null)
+        default_information_originate_metric          = try(ospf.default_information_originate_metric, null)
+        default_information_originate_metric_type     = try(ospf.default_information_originate_metric_type, null)
+        default_information_originate_route_map       = try(ospf.default_information_originate_route_map, null)
         default_metric                                = try(ospf.default_metric, null)
         distance                                      = try(ospf.distance, null)
         domain_tag                                    = try(ospf.domain_tag, null)
@@ -29,11 +32,36 @@ locals {
         nsf_ietf_restart_interval                     = try(ospf.nsf_ietf_restart_interval, null)
         priority                                      = try(ospf.priority, null)
         redistribute_connected_subnets                = try(ospf.redistribute.connected, null)
+        redistribute_connected_metric                 = try(ospf.redistribute.connected_metric, null)
+        redistribute_connected_metric_type            = try(tostring(ospf.redistribute.connected_metric_type), null)
+        redistribute_connected_route_map              = try(ospf.redistribute.connected_route_map, null)
+        redistribute_connected_tag                    = try(ospf.redistribute.connected_tag, null)
         redistribute_static_subnets                   = try(ospf.redistribute.static, null)
-        router_id                                     = try(ospf.router_id, null)
-        shutdown                                      = try(ospf.shutdown, null)
-        passive_interface_default                     = try(ospf.passive_interface_default, null)
-        auto_cost_reference_bandwidth                 = try(ospf.auto_cost_reference_bandwidth, null)
+        redistribute_static_metric                    = try(ospf.redistribute.static_metric, null)
+        redistribute_static_metric_type               = try(tostring(ospf.redistribute.static_metric_type), null)
+        redistribute_static_route_map                 = try(ospf.redistribute.static_route_map, null)
+        redistribute_static_tag                       = try(ospf.redistribute.static_tag, null)
+        redistribute_ospf = try(length(ospf.redistribute.ospf) == 0, true) ? null : [for r in ospf.redistribute.ospf : {
+          process_id            = try(r.process_id, null)
+          match_internal        = try(r.match_internal, null)
+          match_external_1      = try(r.match_external_1 == true ? 1 : null, null)
+          match_external_2      = try(r.match_external_2 == true ? 2 : null, null)
+          match_nssa_external_1 = try(r.match_nssa_external_1 == true ? 1 : null, null)
+          match_nssa_external_2 = try(r.match_nssa_external_2 == true ? 2 : null, null)
+          metric                = try(r.metric, null)
+          metric_type           = try(tostring(r.metric_type), null)
+          subnets               = try(r.subnets, null)
+          route_map             = try(r.route_map, null)
+          tag                   = try(r.tag, null)
+          nssa_only             = try(r.nssa_only, null)
+          vrf                   = try(r.vrf, null)
+        }]
+        distribute_list_in_access_lists  = try(ospf.distribute_list_in, null) != null ? [{ in = "in", access_list = ospf.distribute_list_in }] : null
+        distribute_list_out_access_lists = try(ospf.distribute_list_out, null) != null ? [{ out = "out", access_list = ospf.distribute_list_out }] : null
+        router_id                        = try(ospf.router_id, null)
+        shutdown                         = try(ospf.shutdown, null)
+        passive_interface_default        = try(ospf.passive_interface_default, null)
+        auto_cost_reference_bandwidth    = try(ospf.auto_cost_reference_bandwidth, null)
         passive_interface = try(length(ospf.passive_interfaces) == 0, true) ? null : [for pi in ospf.passive_interfaces :
           format("%s%s", try(pi.interface_type, null), try(pi.interface_id, null))
         if try(pi.interface_type, null) != null && try(pi.interface_id, null) != null]
@@ -94,6 +122,9 @@ locals {
         bfd_all_interfaces                             = try(ospf.bfd_all_interfaces, null)
         default_information_originate                  = try(ospf.default_information_originate, null)
         default_information_originate_always           = try(ospf.default_information_originate_always, null)
+        default_information_originate_metric           = try(ospf.default_information_originate_metric, null)
+        default_information_originate_metric_type      = try(ospf.default_information_originate_metric_type, null)
+        default_information_originate_route_map        = try(ospf.default_information_originate_route_map, null)
         default_metric                                 = try(ospf.default_metric, null)
         distance                                       = try(ospf.distance, null)
         domain_tag                                     = try(ospf.domain_tag, null)
@@ -114,11 +145,36 @@ locals {
         nsf_ietf_restart_interval                      = try(ospf.nsf_ietf_restart_interval, null)
         priority                                       = try(ospf.priority, null)
         redistribute_connected_subnets                 = try(ospf.redistribute.connected, null)
+        redistribute_connected_metric                  = try(ospf.redistribute.connected_metric, null)
+        redistribute_connected_metric_type             = try(tostring(ospf.redistribute.connected_metric_type), null)
+        redistribute_connected_route_map               = try(ospf.redistribute.connected_route_map, null)
+        redistribute_connected_tag                     = try(ospf.redistribute.connected_tag, null)
         redistribute_static_subnets                    = try(ospf.redistribute.static, null)
-        router_id                                      = try(ospf.router_id, null)
-        shutdown                                       = try(ospf.shutdown, null)
-        passive_interface_default                      = try(ospf.passive_interface_default, null)
-        auto_cost_reference_bandwidth                  = try(ospf.auto_cost_reference_bandwidth, null)
+        redistribute_static_metric                     = try(ospf.redistribute.static_metric, null)
+        redistribute_static_metric_type                = try(tostring(ospf.redistribute.static_metric_type), null)
+        redistribute_static_route_map                  = try(ospf.redistribute.static_route_map, null)
+        redistribute_static_tag                        = try(ospf.redistribute.static_tag, null)
+        redistribute_ospf = try(length(ospf.redistribute.ospf) == 0, true) ? null : [for r in ospf.redistribute.ospf : {
+          process_id            = try(r.process_id, null)
+          match_internal        = try(r.match_internal, null)
+          match_external_1      = try(r.match_external_1 == true ? 1 : null, null)
+          match_external_2      = try(r.match_external_2 == true ? 2 : null, null)
+          match_nssa_external_1 = try(r.match_nssa_external_1 == true ? 1 : null, null)
+          match_nssa_external_2 = try(r.match_nssa_external_2 == true ? 2 : null, null)
+          metric                = try(r.metric, null)
+          metric_type           = try(tostring(r.metric_type), null)
+          subnets               = try(r.subnets, null)
+          route_map             = try(r.route_map, null)
+          tag                   = try(r.tag, null)
+          nssa_only             = try(r.nssa_only, null)
+          vrf                   = try(r.vrf, null)
+        }]
+        distribute_list_in_access_lists  = try(ospf.distribute_list_in, null) != null ? [{ in = "in", access_list = ospf.distribute_list_in }] : null
+        distribute_list_out_access_lists = try(ospf.distribute_list_out, null) != null ? [{ out = "out", access_list = ospf.distribute_list_out }] : null
+        router_id                        = try(ospf.router_id, null)
+        shutdown                         = try(ospf.shutdown, null)
+        passive_interface_default        = try(ospf.passive_interface_default, null)
+        auto_cost_reference_bandwidth    = try(ospf.auto_cost_reference_bandwidth, null)
         passive_interface = try(length(ospf.passive_interfaces) == 0, true) ? null : [for pi in ospf.passive_interfaces :
           format("%s%s", try(pi.interface_type, null), try(pi.interface_id, null))
         if try(pi.interface_type, null) != null && try(pi.interface_id, null) != null]
@@ -197,10 +253,24 @@ resource "iosxe_ospf" "ospf" {
   nsf_ietf                                                 = each.value.nsf_ietf
   nsf_ietf_restart_interval                                = each.value.nsf_ietf_restart_interval
   redistribute_connected_subnets                           = each.value.redistribute_connected_subnets
+  redistribute_connected_metric                            = each.value.redistribute_connected_metric
+  redistribute_connected_metric_type                       = each.value.redistribute_connected_metric_type
+  redistribute_connected_route_map                         = each.value.redistribute_connected_route_map
+  redistribute_connected_tag                               = each.value.redistribute_connected_tag
   redistribute_static_subnets                              = each.value.redistribute_static_subnets
+  redistribute_static_metric                               = each.value.redistribute_static_metric
+  redistribute_static_metric_type                          = each.value.redistribute_static_metric_type
+  redistribute_static_route_map                            = each.value.redistribute_static_route_map
+  redistribute_static_tag                                  = each.value.redistribute_static_tag
+  redistribute_ospf                                        = each.value.redistribute_ospf
+  distribute_list_in_access_lists                          = each.value.distribute_list_in_access_lists
+  distribute_list_out_access_lists                         = each.value.distribute_list_out_access_lists
   bfd_all_interfaces                                       = each.value.bfd_all_interfaces
   default_information_originate                            = each.value.default_information_originate
   default_information_originate_always                     = each.value.default_information_originate_always
+  default_information_originate_metric                     = each.value.default_information_originate_metric
+  default_information_originate_metric_type                = each.value.default_information_originate_metric_type
+  default_information_originate_route_map                  = each.value.default_information_originate_route_map
   passive_interface_default                                = each.value.passive_interface_default
   auto_cost_reference_bandwidth                            = each.value.auto_cost_reference_bandwidth
   passive_interface                                        = each.value.passive_interface
@@ -253,10 +323,24 @@ resource "iosxe_ospf_vrf" "ospf_vrf" {
   nsf_ietf                                                 = each.value.nsf_ietf
   nsf_ietf_restart_interval                                = each.value.nsf_ietf_restart_interval
   redistribute_connected_subnets                           = each.value.redistribute_connected_subnets
+  redistribute_connected_metric                            = each.value.redistribute_connected_metric
+  redistribute_connected_metric_type                       = each.value.redistribute_connected_metric_type
+  redistribute_connected_route_map                         = each.value.redistribute_connected_route_map
+  redistribute_connected_tag                               = each.value.redistribute_connected_tag
   redistribute_static_subnets                              = each.value.redistribute_static_subnets
+  redistribute_static_metric                               = each.value.redistribute_static_metric
+  redistribute_static_metric_type                          = each.value.redistribute_static_metric_type
+  redistribute_static_route_map                            = each.value.redistribute_static_route_map
+  redistribute_static_tag                                  = each.value.redistribute_static_tag
+  redistribute_ospf                                        = each.value.redistribute_ospf
+  distribute_list_in_access_lists                          = each.value.distribute_list_in_access_lists
+  distribute_list_out_access_lists                         = each.value.distribute_list_out_access_lists
   bfd_all_interfaces                                       = each.value.bfd_all_interfaces
   default_information_originate                            = each.value.default_information_originate
   default_information_originate_always                     = each.value.default_information_originate_always
+  default_information_originate_metric                     = each.value.default_information_originate_metric
+  default_information_originate_metric_type                = each.value.default_information_originate_metric_type
+  default_information_originate_route_map                  = each.value.default_information_originate_route_map
   passive_interface_default                                = each.value.passive_interface_default
   auto_cost_reference_bandwidth                            = each.value.auto_cost_reference_bandwidth
   passive_interface                                        = each.value.passive_interface
