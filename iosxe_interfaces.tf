@@ -1689,6 +1689,11 @@ locals {
         spanning_tree_guard              = try(int.spanning_tree.guard, null)
         spanning_tree_link_type          = try(int.spanning_tree.link_type, null)
         spanning_tree_portfast_trunk     = try(int.spanning_tree.portfast_trunk, null)
+        spanning_tree_portfast           = try(int.spanning_tree.portfast, null)
+        spanning_tree_portfast_disable   = try(int.spanning_tree.portfast_disable, null)
+        spanning_tree_portfast_edge      = try(int.spanning_tree.portfast_edge, null)
+        bpduguard_enable                 = try(int.spanning_tree.bpduguard, null)
+        bpduguard_disable                = try(int.spanning_tree.bpduguard_disable, null)
         arp_timeout                      = try(int.arp_timeout, null)
         load_interval                    = try(int.load_interval, null)
         snmp_trap_link_status            = try(int.snmp_trap_link_status, null)
@@ -1895,6 +1900,12 @@ resource "iosxe_interface_port_channel" "port_channel" {
   bfd_echo                         = each.value.bfd_echo
   spanning_tree_guard              = each.value.spanning_tree_guard
   spanning_tree_link_type          = each.value.spanning_tree_link_type
+  spanning_tree_portfast           = each.value.spanning_tree_portfast
+  spanning_tree_portfast_disable   = each.value.spanning_tree_portfast_disable
+  spanning_tree_portfast_trunk     = each.value.spanning_tree_portfast_trunk
+  spanning_tree_portfast_edge      = each.value.spanning_tree_portfast_edge
+  bpduguard_enable                 = each.value.bpduguard_enable
+  bpduguard_disable                = each.value.bpduguard_disable
   arp_timeout                      = each.value.arp_timeout
   load_interval                    = each.value.load_interval
   snmp_trap_link_status            = each.value.snmp_trap_link_status
