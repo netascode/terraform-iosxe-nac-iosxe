@@ -32,7 +32,7 @@ locals {
       }]
       service = try(length(local.device_config[device.name].object_groups_service) == 0, true) ? null : [for og in local.device_config[device.name].object_groups_service : {
         name        = og.name
-        description = try(og.description, local.defaults.iosxe.configuration.object_groups_service.description, null)
+        description = try(og.description, null)
         group_objects = try(length(og.group_objects) == 0, true) ? null : [for g in og.group_objects : {
           group_name = g
         }]
