@@ -2847,20 +2847,34 @@ locals {
           name      = try(fm.name, null)
           direction = try(fm.direction, null)
         }]
-        bfd_enable                            = try(int.bfd.enable, null)
-        bfd_template                          = try(int.bfd.template, null)
-        bfd_local_address                     = try(int.bfd.local_address, null)
-        bfd_interval                          = try(int.bfd.interval, null)
-        bfd_interval_min_rx                   = try(int.bfd.interval_min_rx, null)
-        bfd_interval_multiplier               = try(int.bfd.interval_multiplier, null)
-        bfd_echo                              = try(int.bfd.echo, null)
-        tunnel_destination_ipv4               = try(int.tunnel_destination_ipv4, null)
-        tunnel_source                         = try(int.tunnel_source, null)
-        tunnel_vrf                            = try(int.tunnel_vrf, null)
-        tunnel_mode_ipsec_ipv4                = try(int.tunnel_mode_ipsec_ipv4, null)
-        tunnel_protection_ipsec_profile       = try(int.tunnel_protection_ipsec_profile, null)
-        tunnel_bandwidth_transmit             = try(int.tunnel_bandwidth_transmit, null)
-        tunnel_bandwidth_receive              = try(int.tunnel_bandwidth_receive, null)
+        bfd_enable                      = try(int.bfd.enable, null)
+        bfd_template                    = try(int.bfd.template, null)
+        bfd_local_address               = try(int.bfd.local_address, null)
+        bfd_interval                    = try(int.bfd.interval, null)
+        bfd_interval_min_rx             = try(int.bfd.interval_min_rx, null)
+        bfd_interval_multiplier         = try(int.bfd.interval_multiplier, null)
+        bfd_echo                        = try(int.bfd.echo, null)
+        tunnel_destination_ipv4         = try(int.tunnel_destination_ipv4, null)
+        tunnel_source                   = try(int.tunnel_source, null)
+        tunnel_vrf                      = try(int.tunnel_vrf, null)
+        tunnel_mode_ipsec_ipv4          = try(int.tunnel_mode_ipsec_ipv4, null)
+        tunnel_mode_gre_multipoint      = try(int.tunnel_mode_gre_multipoint, null)
+        tunnel_protection_ipsec_profile = try(int.tunnel_protection_ipsec_profile, null)
+        tunnel_key                      = try(int.tunnel_key, null)
+        tunnel_bandwidth_transmit       = try(int.tunnel_bandwidth_transmit, null)
+        tunnel_bandwidth_receive        = try(int.tunnel_bandwidth_receive, null)
+        ip_nhrp_authentication          = try(int.ip_nhrp_authentication, null)
+        ip_nhrp_network_id              = try(int.ip_nhrp_network_id, null)
+        ip_nhrp_nhs = try(length(int.ip_nhrp_nhs) == 0, true) ? null : [for nhs in int.ip_nhrp_nhs : {
+          ipv4 = try(nhs.ipv4, null)
+        }]
+        ip_nhrp_maps = try(length(int.ip_nhrp_maps) == 0, true) ? null : [for m in int.ip_nhrp_maps : {
+          dest_ipv4 = try(m.dest_ipv4, null)
+          nbma_ipv4 = try(m.nbma_ipv4, null)
+        }]
+        ip_nhrp_redirect                      = try(int.ip_nhrp_redirect, null)
+        ip_nhrp_shortcut                      = try(int.ip_nhrp_shortcut, null)
+        mpls_nhrp                             = try(int.mpls_nhrp, null)
         service_policy_input                  = try(int.service_policy_input, null)
         service_policy_output                 = try(int.service_policy_output, null)
         arp_timeout                           = try(int.arp_timeout, null)
@@ -2972,9 +2986,18 @@ resource "iosxe_interface_tunnel" "tunnel" {
   tunnel_source                    = each.value.tunnel_source
   tunnel_vrf                       = each.value.tunnel_vrf
   tunnel_mode_ipsec_ipv4           = each.value.tunnel_mode_ipsec_ipv4
+  tunnel_mode_gre_multipoint       = each.value.tunnel_mode_gre_multipoint
   tunnel_protection_ipsec_profile  = each.value.tunnel_protection_ipsec_profile
+  tunnel_key                       = each.value.tunnel_key
   tunnel_bandwidth_transmit        = each.value.tunnel_bandwidth_transmit
   tunnel_bandwidth_receive         = each.value.tunnel_bandwidth_receive
+  ip_nhrp_authentication           = each.value.ip_nhrp_authentication
+  ip_nhrp_network_id               = each.value.ip_nhrp_network_id
+  ip_nhrp_nhs                      = each.value.ip_nhrp_nhs
+  ip_nhrp_maps                     = each.value.ip_nhrp_maps
+  ip_nhrp_redirect                 = each.value.ip_nhrp_redirect
+  ip_nhrp_shortcut                 = each.value.ip_nhrp_shortcut
+  mpls_nhrp                        = each.value.mpls_nhrp
   bandwidth                        = each.value.bandwidth
   service_policy_input             = each.value.service_policy_input
   service_policy_output            = each.value.service_policy_output
