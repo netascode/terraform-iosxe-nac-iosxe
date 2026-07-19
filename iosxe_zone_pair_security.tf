@@ -4,11 +4,11 @@ locals {
       for zone_pair in try(local.device_config[device.name].zone_pair_security, []) : {
         key                         = format("%s/%s", device.name, try(zone_pair.name, null))
         device                      = device.name
-        name                        = try(zone_pair.name, local.defaults.iosxe.configuration.zone_pair_security.name, null)
-        source                      = try(zone_pair.source, local.defaults.iosxe.configuration.zone_pair_security.source, null)
-        destination                 = try(zone_pair.destination, local.defaults.iosxe.configuration.zone_pair_security.destination, null)
-        description                 = try(zone_pair.description, local.defaults.iosxe.configuration.zone_pair_security.description, null)
-        service_policy_type_inspect = try(zone_pair.service_policy_type_inspect, local.defaults.iosxe.configuration.zone_pair_security.service_policy_type_inspect, null)
+        name                        = try(zone_pair.name, null)
+        source                      = try(zone_pair.source, null)
+        destination                 = try(zone_pair.destination, null)
+        description                 = try(zone_pair.description, null)
+        service_policy_type_inspect = try(zone_pair.service_policy_type_inspect, null)
       }
     ]
   ])

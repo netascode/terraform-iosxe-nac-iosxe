@@ -4,28 +4,28 @@ locals {
     for device in local.devices : [
       for static_route in try(local.device_config[device.name].routing.static_routes, []) : {
         device_name = device.name
-        prefix      = try(static_route.prefix, local.defaults.iosxe.configuration.routing.static_routes.prefix, null)
-        mask        = try(static_route.mask, local.defaults.iosxe.configuration.routing.static_routes.mask, null)
+        prefix      = try(static_route.prefix, null)
+        mask        = try(static_route.mask, null)
         next_hops = try(length(static_route.next_hops) == 0, true) ? null : [for hop in static_route.next_hops : {
-          next_hop  = try(hop.ip, local.defaults.iosxe.configuration.routing.static_routes.next_hops.ip, "${hop.interface_type}${trimprefix(hop.interface_id, "$string ")}", "${local.defaults.iosxe.configuration.routing.static_routes.next_hops.interface_type}${local.defaults.iosxe.configuration.routing.static_routes.next_hops.interface_id}", null)
-          distance  = try(hop.distance, local.defaults.iosxe.configuration.routing.static_routes.next_hops.distance, null)
-          global    = try(hop.global, local.defaults.iosxe.configuration.routing.static_routes.next_hops.global, null)
-          name      = try(hop.name, local.defaults.iosxe.configuration.routing.static_routes.next_hops.name, null)
-          permanent = try(hop.permanent, local.defaults.iosxe.configuration.routing.static_routes.next_hops.permanent, null)
-          tag       = try(hop.tag, local.defaults.iosxe.configuration.routing.static_routes.next_hops.tag, null)
-        } if try(hop.track_id, local.defaults.iosxe.configuration.routing.static_routes.next_hops.track_id, null) == null]
+          next_hop  = try(hop.ip, "${hop.interface_type}${trimprefix(hop.interface_id, "$string ")}", null)
+          distance  = try(hop.distance, null)
+          global    = try(hop.global, null)
+          name      = try(hop.name, null)
+          permanent = try(hop.permanent, null)
+          tag       = try(hop.tag, null)
+        } if try(hop.track_id, null) == null]
         next_hops_with_track = try(length(static_route.next_hops) == 0, true) ? null : [for hop in static_route.next_hops : {
-          next_hop      = try(hop.ip, local.defaults.iosxe.configuration.routing.static_routes.next_hops.ip, "${hop.interface_type}${trimprefix(hop.interface_id, "$string ")}", "${local.defaults.iosxe.configuration.routing.static_routes.next_hops.interface_type}${local.defaults.iosxe.configuration.routing.static_routes.next_hops.interface_id}", null)
-          distance      = try(hop.distance, local.defaults.iosxe.configuration.routing.static_routes.next_hops_with_track.distance, null)
-          name          = try(hop.name, local.defaults.iosxe.configuration.routing.static_routes.next_hops_with_track.name, null)
-          permanent     = try(hop.permanent, local.defaults.iosxe.configuration.routing.static_routes.next_hops_with_track.permanent, null)
-          tag           = try(hop.tag, local.defaults.iosxe.configuration.routing.static_routes.next_hops_with_track.tag, null)
-          track_id_name = try(hop.track_id, local.defaults.iosxe.configuration.routing.static_routes.next_hops_with_track.track_id, null)
-        } if try(hop.track_id, local.defaults.iosxe.configuration.routing.static_routes.next_hops.track_id, null) != null]
+          next_hop      = try(hop.ip, "${hop.interface_type}${trimprefix(hop.interface_id, "$string ")}", null)
+          distance      = try(hop.distance, null)
+          name          = try(hop.name, null)
+          permanent     = try(hop.permanent, null)
+          tag           = try(hop.tag, null)
+          track_id_name = try(hop.track_id, null)
+        } if try(hop.track_id, null) != null]
         key = format("%s/%s/%s", device.name,
-          try(static_route.prefix, local.defaults.iosxe.configuration.routing.static_routes.prefix, null),
-        try(static_route.mask, local.defaults.iosxe.configuration.routing.static_routes.mask, null))
-      } if try(static_route.vrf, local.defaults.iosxe.configuration.routing.static_routes.vrf, null) == null # Only non-VRF routes
+          try(static_route.prefix, null),
+        try(static_route.mask, null))
+      } if try(static_route.vrf, null) == null # Only non-VRF routes
     ]
   ])
 
@@ -35,29 +35,29 @@ locals {
       for vrf_name, vrf_routes in {
         for static_route in try(local.device_config[device.name].routing.static_routes, []) :
         try(static_route.vrf, "") => static_route...
-        if try(static_route.vrf, local.defaults.iosxe.configuration.routing.static_routes.vrf, null) != null
+        if try(static_route.vrf, null) != null
         } : {
         device_name = device.name
         vrf         = vrf_name
         routes = try(length(vrf_routes) == 0, true) ? null : [for static_route in vrf_routes : {
-          prefix = try(static_route.prefix, local.defaults.iosxe.configuration.routing.static_routes.prefix, null)
-          mask   = try(static_route.mask, local.defaults.iosxe.configuration.routing.static_routes.mask, null)
+          prefix = try(static_route.prefix, null)
+          mask   = try(static_route.mask, null)
           next_hops = try(length(static_route.next_hops) == 0, true) ? null : [for hop in static_route.next_hops : {
-            next_hop  = try(hop.ip, local.defaults.iosxe.configuration.routing.static_routes.next_hops.ip, "${hop.interface_type}${trimprefix(hop.interface_id, "$string ")}", "${local.defaults.iosxe.configuration.routing.static_routes.next_hops.interface_type}${local.defaults.iosxe.configuration.routing.static_routes.next_hops.interface_id}", null)
-            distance  = try(hop.distance, local.defaults.iosxe.configuration.routing.static_routes.next_hops.distance, null)
-            global    = try(hop.global, local.defaults.iosxe.configuration.routing.static_routes.next_hops.global, null)
-            name      = try(hop.name, local.defaults.iosxe.configuration.routing.static_routes.next_hops.name, null)
-            permanent = try(hop.permanent, local.defaults.iosxe.configuration.routing.static_routes.next_hops.permanent, null)
-            tag       = try(hop.tag, local.defaults.iosxe.configuration.routing.static_routes.next_hops.tag, null)
-          } if try(hop.track_id, local.defaults.iosxe.configuration.routing.static_routes.next_hops.track_id, null) == null]
+            next_hop  = try(hop.ip, "${hop.interface_type}${trimprefix(hop.interface_id, "$string ")}", null)
+            distance  = try(hop.distance, null)
+            global    = try(hop.global, null)
+            name      = try(hop.name, null)
+            permanent = try(hop.permanent, null)
+            tag       = try(hop.tag, null)
+          } if try(hop.track_id, null) == null]
           next_hops_with_track = try(length(static_route.next_hops) == 0, true) ? null : [for hop in static_route.next_hops : {
-            next_hop      = try(hop.ip, local.defaults.iosxe.configuration.routing.static_routes.next_hops.ip, "${hop.interface_type}${trimprefix(hop.interface_id, "$string ")}", "${local.defaults.iosxe.configuration.routing.static_routes.next_hops.interface_type}${local.defaults.iosxe.configuration.routing.static_routes.next_hops.interface_id}", null)
-            distance      = try(hop.distance, local.defaults.iosxe.configuration.routing.static_routes.next_hops_with_track.distance, null)
-            name          = try(hop.name, local.defaults.iosxe.configuration.routing.static_routes.next_hops_with_track.name, null)
-            permanent     = try(hop.permanent, local.defaults.iosxe.configuration.routing.static_routes.next_hops_with_track.permanent, null)
-            tag           = try(hop.tag, local.defaults.iosxe.configuration.routing.static_routes.next_hops_with_track.tag, null)
-            track_id_name = try(hop.track_id, local.defaults.iosxe.configuration.routing.static_routes.next_hops_with_track.track_id, null)
-          } if try(hop.track_id, local.defaults.iosxe.configuration.routing.static_routes.next_hops.track_id, null) != null]
+            next_hop      = try(hop.ip, "${hop.interface_type}${trimprefix(hop.interface_id, "$string ")}", null)
+            distance      = try(hop.distance, null)
+            name          = try(hop.name, null)
+            permanent     = try(hop.permanent, null)
+            tag           = try(hop.tag, null)
+            track_id_name = try(hop.track_id, null)
+          } if try(hop.track_id, null) != null]
         }]
         key = format("%s/%s", device.name, vrf_name)
       }
