@@ -63,12 +63,15 @@ locals {
           name      = try(fm.name, null)
           direction = try(fm.direction, null)
         }]
-        ip_nbar_protocol_discovery = try(int.nbar_protocol_discovery, null)
-        ip_redirects               = try(int.ipv4.redirects, null)
-        ip_unreachables            = try(int.ipv4.unreachables, null)
-        unnumbered                 = try("${try(int.ipv4.unnumbered_interface_type, null)}${try(int.ipv4.unnumbered_interface_id, null)}", null)
-        source_template            = try(int.source_template, [])
-        ipv6_enable                = try(int.ipv6.enable, null)
+        ip_nbar_protocol_discovery               = try(int.nbar_protocol_discovery, null)
+        ip_redirects                             = try(int.ipv4.redirects, null)
+        ip_unreachables                          = try(int.ipv4.unreachables, null)
+        unnumbered                               = try("${try(int.ipv4.unnumbered_interface_type, null)}${try(int.ipv4.unnumbered_interface_id, null)}", null)
+        source_template                          = try(int.source_template, [])
+        ipv6_enable                              = try(int.ipv6.enable, null)
+        ip_verify_unicast_source_reachable_via   = try(int.ipv4.verify_unicast_source_reachable_via, null)
+        ip_verify_unicast_source_allow_self_ping = try(int.ipv4.verify_unicast_source_allow_self_ping, null)
+        ip_verify_unicast_source_allow_default   = try(int.ipv4.verify_unicast_source_allow_default, null)
         ipv6_addresses = try(length(int.ipv6.addresses) == 0, true) ? null : [for addr in int.ipv6.addresses : {
           prefix = try(addr.prefix, null)
           eui_64 = try(addr.eui_64, null)
@@ -130,6 +133,7 @@ locals {
         switchport                               = try(int.switchport.enable, null)
         switchport_mode                          = try(int.switchport.mode, null)
         switchport_access_vlan                   = try(int.switchport.access_vlan, null)
+        switchport_voice_vlan                    = try(tostring(int.switchport.voice_vlan), null)
         switchport_mode_access                   = try(int.switchport.mode, null) == "access" ? true : null
         switchport_mode_trunk                    = try(int.switchport.mode, null) == "trunk" ? true : null
         switchport_mode_dot1q_tunnel             = try(int.switchport.mode, null) == "dot1q-tunnel" ? true : null
@@ -341,6 +345,9 @@ resource "iosxe_interface_ethernet" "ethernet" {
   ip_nbar_protocol_discovery                 = each.value.ip_nbar_protocol_discovery
   ip_redirects                               = each.value.ip_redirects
   ip_unreachables                            = each.value.ip_unreachables
+  ip_verify_unicast_source_reachable_via     = each.value.ip_verify_unicast_source_reachable_via
+  ip_verify_unicast_source_allow_self_ping   = each.value.ip_verify_unicast_source_allow_self_ping
+  ip_verify_unicast_source_allow_default     = each.value.ip_verify_unicast_source_allow_default
   ip_igmp_version                            = each.value.ip_igmp_version
   unnumbered                                 = each.value.unnumbered
   ipv6_address_autoconfig_default            = each.value.ipv6_address_autoconfig_default
@@ -475,6 +482,9 @@ resource "iosxe_interface_ethernet" "ethernet_sub" {
   ip_nbar_protocol_discovery                 = each.value.ip_nbar_protocol_discovery
   ip_redirects                               = each.value.ip_redirects
   ip_unreachables                            = each.value.ip_unreachables
+  ip_verify_unicast_source_reachable_via     = each.value.ip_verify_unicast_source_reachable_via
+  ip_verify_unicast_source_allow_self_ping   = each.value.ip_verify_unicast_source_allow_self_ping
+  ip_verify_unicast_source_allow_default     = each.value.ip_verify_unicast_source_allow_default
   ip_igmp_version                            = each.value.ip_igmp_version
   unnumbered                                 = each.value.unnumbered
   ipv6_address_autoconfig_default            = each.value.ipv6_address_autoconfig_default
@@ -610,6 +620,9 @@ resource "iosxe_interface_ethernet" "ethernet_unmanaged" {
   ip_nbar_protocol_discovery                 = each.value.ip_nbar_protocol_discovery
   ip_redirects                               = each.value.ip_redirects
   ip_unreachables                            = each.value.ip_unreachables
+  ip_verify_unicast_source_reachable_via     = each.value.ip_verify_unicast_source_reachable_via
+  ip_verify_unicast_source_allow_self_ping   = each.value.ip_verify_unicast_source_allow_self_ping
+  ip_verify_unicast_source_allow_default     = each.value.ip_verify_unicast_source_allow_default
   ip_igmp_version                            = each.value.ip_igmp_version
   unnumbered                                 = each.value.unnumbered
   ipv6_address_autoconfig_default            = each.value.ipv6_address_autoconfig_default
@@ -731,6 +744,7 @@ resource "iosxe_interface_switchport" "ethernet_switchport" {
   mode_private_vlan_promiscuous = each.value.switchport_mode_private_vlan_promiscuous
   nonegotiate                   = each.value.switchport_nonegotiate
   access_vlan                   = each.value.switchport_access_vlan
+  voice_vlan                    = each.value.switchport_voice_vlan
   # NEW v2 trunk allowed VLANs
   trunk_allowed_vlans        = each.value.switchport_trunk_allowed_vlans
   trunk_allowed_vlans_none   = each.value.switchport_trunk_allowed_vlans_none
@@ -766,6 +780,7 @@ resource "iosxe_interface_switchport" "ethernet_switchport_unmanaged" {
   mode_private_vlan_promiscuous = each.value.switchport_mode_private_vlan_promiscuous
   nonegotiate                   = each.value.switchport_nonegotiate
   access_vlan                   = each.value.switchport_access_vlan
+  voice_vlan                    = each.value.switchport_voice_vlan
   # NEW v2 trunk allowed VLANs
   trunk_allowed_vlans        = each.value.switchport_trunk_allowed_vlans
   trunk_allowed_vlans_none   = each.value.switchport_trunk_allowed_vlans_none
@@ -1032,28 +1047,31 @@ locals {
   interfaces_loopbacks = flatten([
     for device in local.devices : [
       for int in try(local.device_config[device.name].interfaces.loopbacks, []) : {
-        key                        = format("%s/Loopback%s", device.name, int.id)
-        device                     = device.name
-        id                         = int.id
-        description                = try(int.description, null)
-        shutdown                   = try(int.shutdown, null)
-        ip_mtu                     = try(int.ip_mtu, null)
-        vrf_forwarding             = try(int.vrf_forwarding, null)
-        ipv4_address               = try(int.ipv4.address, null)
-        ipv4_address_mask          = try(int.ipv4.address_mask, null)
-        ipv4_address_dhcp          = try(int.ipv4.address_dhcp, null)
-        ip_proxy_arp               = try(int.ipv4.proxy_arp, null)
-        ip_access_group_in         = try(int.ipv4.access_group_in, null)
-        ip_access_group_in_enable  = try(int.ipv4.access_group_in, null) != null ? true : null
-        ip_access_group_out        = try(int.ipv4.access_group_out, null)
-        ip_access_group_out_enable = try(int.ipv4.access_group_out, null) != null ? true : null
-        ip_redirects               = try(int.ipv4.redirects, null)
-        ip_unreachables            = try(int.ipv4.unreachables, null)
-        ip_nat_inside              = try(int.ipv4.nat_inside, null)
-        ip_nat_outside             = try(int.ipv4.nat_outside, null)
-        zone_member_security       = try(int.zone_member_security, null)
-        source_template            = try(int.source_template, [])
-        ipv6_enable                = try(int.ipv6.enable, null)
+        key                                      = format("%s/Loopback%s", device.name, int.id)
+        device                                   = device.name
+        id                                       = int.id
+        description                              = try(int.description, null)
+        shutdown                                 = try(int.shutdown, null)
+        ip_mtu                                   = try(int.ip_mtu, null)
+        vrf_forwarding                           = try(int.vrf_forwarding, null)
+        ipv4_address                             = try(int.ipv4.address, null)
+        ipv4_address_mask                        = try(int.ipv4.address_mask, null)
+        ipv4_address_dhcp                        = try(int.ipv4.address_dhcp, null)
+        ip_proxy_arp                             = try(int.ipv4.proxy_arp, null)
+        ip_access_group_in                       = try(int.ipv4.access_group_in, null)
+        ip_access_group_in_enable                = try(int.ipv4.access_group_in, null) != null ? true : null
+        ip_access_group_out                      = try(int.ipv4.access_group_out, null)
+        ip_access_group_out_enable               = try(int.ipv4.access_group_out, null) != null ? true : null
+        ip_redirects                             = try(int.ipv4.redirects, null)
+        ip_unreachables                          = try(int.ipv4.unreachables, null)
+        ip_nat_inside                            = try(int.ipv4.nat_inside, null)
+        ip_nat_outside                           = try(int.ipv4.nat_outside, null)
+        zone_member_security                     = try(int.zone_member_security, null)
+        source_template                          = try(int.source_template, [])
+        ipv6_enable                              = try(int.ipv6.enable, null)
+        ip_verify_unicast_source_reachable_via   = try(int.ipv4.verify_unicast_source_reachable_via, null)
+        ip_verify_unicast_source_allow_self_ping = try(int.ipv4.verify_unicast_source_allow_self_ping, null)
+        ip_verify_unicast_source_allow_default   = try(int.ipv4.verify_unicast_source_allow_default, null)
         ipv6_addresses = try(length(int.ipv6.addresses) == 0, true) ? null : [for addr in int.ipv6.addresses : {
           prefix = try(addr.prefix, null)
           eui_64 = try(addr.eui_64, null)
@@ -1143,34 +1161,37 @@ resource "iosxe_interface_loopback" "loopback" {
   for_each = { for v in local.interfaces_loopbacks : v.key => v }
   device   = each.value.device
 
-  name                            = each.value.id
-  description                     = each.value.description
-  shutdown                        = each.value.shutdown
-  ip_mtu                          = each.value.ip_mtu
-  vrf_forwarding                  = each.value.vrf_forwarding
-  ipv4_address                    = each.value.ipv4_address
-  ipv4_address_mask               = each.value.ipv4_address_mask
-  ipv4_address_dhcp               = each.value.ipv4_address_dhcp
-  ip_proxy_arp                    = each.value.ip_proxy_arp
-  ip_access_group_in              = each.value.ip_access_group_in
-  ip_access_group_in_enable       = each.value.ip_access_group_in_enable
-  ip_access_group_out             = each.value.ip_access_group_out
-  ip_access_group_out_enable      = each.value.ip_access_group_out_enable
-  ip_redirects                    = each.value.ip_redirects
-  ip_unreachables                 = each.value.ip_unreachables
-  ip_nat_inside                   = each.value.ip_nat_inside
-  ip_nat_outside                  = each.value.ip_nat_outside
-  zone_member_security            = each.value.zone_member_security
-  ip_igmp_version                 = each.value.ip_igmp_version
-  ipv6_enable                     = each.value.ipv6_enable
-  ipv6_addresses                  = each.value.ipv6_addresses
-  ipv6_link_local_addresses       = each.value.ipv6_link_local_addresses
-  ipv6_address_autoconfig_default = each.value.ipv6_address_autoconfig_default
-  ipv6_address_dhcp               = each.value.ipv6_address_dhcp
-  ipv6_mtu                        = each.value.ipv6_mtu
-  ipv6_nd_ra_suppress_all         = each.value.ipv6_nd_ra_suppress_all
-  arp_timeout                     = each.value.arp_timeout
-  ip_router_isis                  = each.value.isis_area_tag
+  name                                     = each.value.id
+  description                              = each.value.description
+  shutdown                                 = each.value.shutdown
+  ip_mtu                                   = each.value.ip_mtu
+  vrf_forwarding                           = each.value.vrf_forwarding
+  ipv4_address                             = each.value.ipv4_address
+  ipv4_address_mask                        = each.value.ipv4_address_mask
+  ipv4_address_dhcp                        = each.value.ipv4_address_dhcp
+  ip_proxy_arp                             = each.value.ip_proxy_arp
+  ip_access_group_in                       = each.value.ip_access_group_in
+  ip_access_group_in_enable                = each.value.ip_access_group_in_enable
+  ip_access_group_out                      = each.value.ip_access_group_out
+  ip_access_group_out_enable               = each.value.ip_access_group_out_enable
+  ip_redirects                             = each.value.ip_redirects
+  ip_unreachables                          = each.value.ip_unreachables
+  ip_verify_unicast_source_reachable_via   = each.value.ip_verify_unicast_source_reachable_via
+  ip_verify_unicast_source_allow_self_ping = each.value.ip_verify_unicast_source_allow_self_ping
+  ip_verify_unicast_source_allow_default   = each.value.ip_verify_unicast_source_allow_default
+  ip_nat_inside                            = each.value.ip_nat_inside
+  ip_nat_outside                           = each.value.ip_nat_outside
+  zone_member_security                     = each.value.zone_member_security
+  ip_igmp_version                          = each.value.ip_igmp_version
+  ipv6_enable                              = each.value.ipv6_enable
+  ipv6_addresses                           = each.value.ipv6_addresses
+  ipv6_link_local_addresses                = each.value.ipv6_link_local_addresses
+  ipv6_address_autoconfig_default          = each.value.ipv6_address_autoconfig_default
+  ipv6_address_dhcp                        = each.value.ipv6_address_dhcp
+  ipv6_mtu                                 = each.value.ipv6_mtu
+  ipv6_nd_ra_suppress_all                  = each.value.ipv6_nd_ra_suppress_all
+  arp_timeout                              = each.value.arp_timeout
+  ip_router_isis                           = each.value.isis_area_tag
 
   depends_on = [
     iosxe_vrf.vrf,
@@ -1345,17 +1366,20 @@ locals {
           global  = try(ha.global, null)
           vrf     = try(ha.vrf, null)
         }]
-        ip_access_group_in         = try(int.ipv4.access_group_in, null)
-        ip_access_group_in_enable  = try(int.ipv4.access_group_in, null) != null ? true : null
-        ip_access_group_out        = try(int.ipv4.access_group_out, null)
-        ip_access_group_out_enable = try(int.ipv4.access_group_out, null) != null ? true : null
-        ip_redirects               = try(int.ipv4.redirects, null)
-        ip_unreachables            = try(int.ipv4.unreachables, null)
-        ip_nat_inside              = try(int.ipv4.nat_inside, null)
-        ip_nat_outside             = try(int.ipv4.nat_outside, null)
-        zone_member_security       = try(int.zone_member_security, null)
-        unnumbered                 = try("${try(int.ipv4.unnumbered_interface_type, null)}${try(int.ipv4.unnumbered_interface_id, null)}", null)
-        ipv6_enable                = try(int.ipv6.enable, null)
+        ip_access_group_in                       = try(int.ipv4.access_group_in, null)
+        ip_access_group_in_enable                = try(int.ipv4.access_group_in, null) != null ? true : null
+        ip_access_group_out                      = try(int.ipv4.access_group_out, null)
+        ip_access_group_out_enable               = try(int.ipv4.access_group_out, null) != null ? true : null
+        ip_redirects                             = try(int.ipv4.redirects, null)
+        ip_unreachables                          = try(int.ipv4.unreachables, null)
+        ip_nat_inside                            = try(int.ipv4.nat_inside, null)
+        ip_nat_outside                           = try(int.ipv4.nat_outside, null)
+        zone_member_security                     = try(int.zone_member_security, null)
+        unnumbered                               = try("${try(int.ipv4.unnumbered_interface_type, null)}${try(int.ipv4.unnumbered_interface_id, null)}", null)
+        ipv6_enable                              = try(int.ipv6.enable, null)
+        ip_verify_unicast_source_reachable_via   = try(int.ipv4.verify_unicast_source_reachable_via, null)
+        ip_verify_unicast_source_allow_self_ping = try(int.ipv4.verify_unicast_source_allow_self_ping, null)
+        ip_verify_unicast_source_allow_default   = try(int.ipv4.verify_unicast_source_allow_default, null)
         ipv6_addresses = try(length(int.ipv6.addresses) == 0, true) ? null : [for addr in int.ipv6.addresses : {
           prefix = try(addr.prefix, null)
           eui_64 = try(addr.eui_64, null)
@@ -1450,48 +1474,51 @@ resource "iosxe_interface_vlan" "vlan" {
   for_each = { for v in local.interfaces_vlans : v.key => v }
   device   = each.value.device
 
-  name                                    = each.value.id
-  description                             = each.value.description
-  shutdown                                = each.value.shutdown
-  ip_mtu                                  = each.value.ip_mtu
-  autostate                               = each.value.autostate
-  vrf_forwarding                          = each.value.vrf_forwarding
-  ipv4_address                            = each.value.ipv4_address
-  ipv4_address_mask                       = each.value.ipv4_address_mask
-  ipv4_address_dhcp                       = each.value.ipv4_address_dhcp
-  ip_proxy_arp                            = each.value.ip_proxy_arp
-  ip_local_proxy_arp                      = each.value.ip_local_proxy_arp
-  mac_address                             = each.value.mac_address
-  ip_dhcp_relay_source_interface          = each.value.ip_dhcp_relay_source_interface
-  ip_dhcp_relay_information_option_vpn_id = each.value.ip_dhcp_relay_information_option_vpn_id
-  helper_addresses                        = each.value.helper_addresses
-  ip_access_group_in                      = each.value.ip_access_group_in
-  ip_access_group_in_enable               = each.value.ip_access_group_in_enable
-  ip_access_group_out                     = each.value.ip_access_group_out
-  ip_access_group_out_enable              = each.value.ip_access_group_out_enable
-  ip_redirects                            = each.value.ip_redirects
-  ip_unreachables                         = each.value.ip_unreachables
-  ip_nat_inside                           = each.value.ip_nat_inside
-  ip_nat_outside                          = each.value.ip_nat_outside
-  zone_member_security                    = each.value.zone_member_security
-  ip_igmp_version                         = each.value.ip_igmp_version
-  unnumbered                              = each.value.unnumbered
-  ipv6_address_autoconfig_default         = each.value.ipv6_address_autoconfig_default
-  ipv6_address_dhcp                       = each.value.ipv6_address_dhcp
-  ipv6_addresses                          = each.value.ipv6_addresses
-  ipv6_enable                             = each.value.ipv6_enable
-  ipv6_link_local_addresses               = each.value.ipv6_link_local_addresses
-  ipv6_mtu                                = each.value.ipv6_mtu
-  ipv6_nd_ra_suppress_all                 = each.value.ipv6_nd_ra_suppress_all
-  bfd_enable                              = each.value.bfd_enable
-  bfd_template                            = each.value.bfd_template
-  bfd_local_address                       = each.value.bfd_local_address
-  bfd_interval                            = each.value.bfd_interval
-  bfd_interval_min_rx                     = each.value.bfd_interval_min_rx
-  bfd_interval_multiplier                 = each.value.bfd_interval_multiplier
-  bfd_echo                                = each.value.bfd_echo
-  load_interval                           = each.value.load_interval
-  ip_router_isis                          = each.value.isis_area_tag
+  name                                     = each.value.id
+  description                              = each.value.description
+  shutdown                                 = each.value.shutdown
+  ip_mtu                                   = each.value.ip_mtu
+  autostate                                = each.value.autostate
+  vrf_forwarding                           = each.value.vrf_forwarding
+  ipv4_address                             = each.value.ipv4_address
+  ipv4_address_mask                        = each.value.ipv4_address_mask
+  ipv4_address_dhcp                        = each.value.ipv4_address_dhcp
+  ip_proxy_arp                             = each.value.ip_proxy_arp
+  ip_local_proxy_arp                       = each.value.ip_local_proxy_arp
+  mac_address                              = each.value.mac_address
+  ip_dhcp_relay_source_interface           = each.value.ip_dhcp_relay_source_interface
+  ip_dhcp_relay_information_option_vpn_id  = each.value.ip_dhcp_relay_information_option_vpn_id
+  helper_addresses                         = each.value.helper_addresses
+  ip_access_group_in                       = each.value.ip_access_group_in
+  ip_access_group_in_enable                = each.value.ip_access_group_in_enable
+  ip_access_group_out                      = each.value.ip_access_group_out
+  ip_access_group_out_enable               = each.value.ip_access_group_out_enable
+  ip_redirects                             = each.value.ip_redirects
+  ip_unreachables                          = each.value.ip_unreachables
+  ip_verify_unicast_source_reachable_via   = each.value.ip_verify_unicast_source_reachable_via
+  ip_verify_unicast_source_allow_self_ping = each.value.ip_verify_unicast_source_allow_self_ping
+  ip_verify_unicast_source_allow_default   = each.value.ip_verify_unicast_source_allow_default
+  ip_nat_inside                            = each.value.ip_nat_inside
+  ip_nat_outside                           = each.value.ip_nat_outside
+  zone_member_security                     = each.value.zone_member_security
+  ip_igmp_version                          = each.value.ip_igmp_version
+  unnumbered                               = each.value.unnumbered
+  ipv6_address_autoconfig_default          = each.value.ipv6_address_autoconfig_default
+  ipv6_address_dhcp                        = each.value.ipv6_address_dhcp
+  ipv6_addresses                           = each.value.ipv6_addresses
+  ipv6_enable                              = each.value.ipv6_enable
+  ipv6_link_local_addresses                = each.value.ipv6_link_local_addresses
+  ipv6_mtu                                 = each.value.ipv6_mtu
+  ipv6_nd_ra_suppress_all                  = each.value.ipv6_nd_ra_suppress_all
+  bfd_enable                               = each.value.bfd_enable
+  bfd_template                             = each.value.bfd_template
+  bfd_local_address                        = each.value.bfd_local_address
+  bfd_interval                             = each.value.bfd_interval
+  bfd_interval_min_rx                      = each.value.bfd_interval_min_rx
+  bfd_interval_multiplier                  = each.value.bfd_interval_multiplier
+  bfd_echo                                 = each.value.bfd_echo
+  load_interval                            = each.value.load_interval
+  ip_router_isis                           = each.value.isis_area_tag
 
   depends_on = [
     iosxe_vrf.vrf,
@@ -1649,14 +1676,17 @@ locals {
           name      = try(fm.name, null)
           direction = try(fm.direction, null)
         }]
-        ip_redirects                 = try(int.ipv4.redirects, null)
-        ip_unreachables              = try(int.ipv4.unreachables, null)
-        ip_nat_inside                = try(int.ipv4.nat_inside, null)
-        ip_nat_outside               = try(int.ipv4.nat_outside, null)
-        zone_member_security         = try(int.zone_member_security, null)
-        ip_arp_inspection_trust      = try(int.ipv4.arp_inspection_trust, null)
-        ip_arp_inspection_limit_rate = try(int.ipv4.arp_inspection_limit_rate, null)
-        ip_dhcp_snooping_trust       = try(int.ipv4.dhcp_snooping_trust, null)
+        ip_redirects                             = try(int.ipv4.redirects, null)
+        ip_unreachables                          = try(int.ipv4.unreachables, null)
+        ip_nat_inside                            = try(int.ipv4.nat_inside, null)
+        ip_nat_outside                           = try(int.ipv4.nat_outside, null)
+        zone_member_security                     = try(int.zone_member_security, null)
+        ip_arp_inspection_trust                  = try(int.ipv4.arp_inspection_trust, null)
+        ip_arp_inspection_limit_rate             = try(int.ipv4.arp_inspection_limit_rate, null)
+        ip_dhcp_snooping_trust                   = try(int.ipv4.dhcp_snooping_trust, null)
+        ip_verify_unicast_source_reachable_via   = try(int.ipv4.verify_unicast_source_reachable_via, null)
+        ip_verify_unicast_source_allow_self_ping = try(int.ipv4.verify_unicast_source_allow_self_ping, null)
+        ip_verify_unicast_source_allow_default   = try(int.ipv4.verify_unicast_source_allow_default, null)
         helper_addresses = try(length(int.ipv4.helper_addresses) == 0, true) ? null : [for addr in int.ipv4.helper_addresses : {
           address = try(addr.address, null)
           global  = try(addr.global, false)
@@ -1689,6 +1719,11 @@ locals {
         spanning_tree_guard              = try(int.spanning_tree.guard, null)
         spanning_tree_link_type          = try(int.spanning_tree.link_type, null)
         spanning_tree_portfast_trunk     = try(int.spanning_tree.portfast_trunk, null)
+        spanning_tree_portfast           = try(int.spanning_tree.portfast, null)
+        spanning_tree_portfast_disable   = try(int.spanning_tree.portfast_disable, null)
+        spanning_tree_portfast_edge      = try(int.spanning_tree.portfast_edge, null)
+        bpduguard_enable                 = try(int.spanning_tree.bpduguard, null)
+        bpduguard_disable                = try(int.spanning_tree.bpduguard_disable, null)
         arp_timeout                      = try(int.arp_timeout, null)
         load_interval                    = try(int.load_interval, null)
         snmp_trap_link_status            = try(int.snmp_trap_link_status, null)
@@ -1700,6 +1735,7 @@ locals {
         switchport                               = try(int.switchport.enable, null)
         switchport_mode                          = try(int.switchport.mode, null)
         switchport_access_vlan                   = try(int.switchport.access_vlan, null)
+        switchport_voice_vlan                    = try(tostring(int.switchport.voice_vlan), null)
         switchport_mode_access                   = try(int.switchport.mode, null) == "access" ? true : null
         switchport_mode_trunk                    = try(int.switchport.mode, null) == "trunk" ? true : null
         switchport_mode_dot1q_tunnel             = try(int.switchport.mode, null) == "dot1q-tunnel" ? true : null
@@ -1852,70 +1888,79 @@ locals {
 resource "iosxe_interface_port_channel" "port_channel" {
   for_each = { for v in local.interfaces_port_channels : v.key => v }
 
-  device                           = each.value.device
-  name                             = each.value.name
-  description                      = each.value.description
-  shutdown                         = each.value.shutdown
-  mtu                              = each.value.mtu
-  vrf_forwarding                   = each.value.vrf_forwarding
-  ipv4_address                     = each.value.ipv4_address
-  ipv4_address_mask                = each.value.ipv4_address_mask
-  ipv4_address_dhcp                = each.value.ipv4_address_dhcp
-  ip_proxy_arp                     = each.value.ip_proxy_arp
-  ip_dhcp_relay_source_interface   = each.value.ip_dhcp_relay_source_interface
-  ip_access_group_in_enable        = each.value.ip_access_group_in_enable
-  ip_access_group_in               = each.value.ip_access_group_in
-  ip_access_group_out_enable       = each.value.ip_access_group_out_enable
-  ip_access_group_out              = each.value.ip_access_group_out
-  ip_flow_monitors                 = each.value.ip_flow_monitors
-  ip_redirects                     = each.value.ip_redirects
-  ip_unreachables                  = each.value.ip_unreachables
-  ip_nat_inside                    = each.value.ip_nat_inside
-  ip_nat_outside                   = each.value.ip_nat_outside
-  zone_member_security             = each.value.zone_member_security
-  ip_igmp_version                  = each.value.ip_igmp_version
-  ip_arp_inspection_trust          = each.value.ip_arp_inspection_trust
-  ip_arp_inspection_limit_rate     = each.value.ip_arp_inspection_limit_rate
-  ip_dhcp_snooping_trust           = each.value.ip_dhcp_snooping_trust
-  helper_addresses                 = each.value.helper_addresses
-  ipv6_enable                      = each.value.ipv6_enable
-  ipv6_mtu                         = each.value.ipv6_mtu
-  ipv6_nd_ra_suppress_all          = each.value.ipv6_nd_ra_suppress_all
-  ipv6_address_dhcp                = each.value.ipv6_address_dhcp
-  ipv6_addresses                   = each.value.ipv6_addresses
-  ipv6_link_local_addresses        = each.value.ipv6_link_local_addresses
-  ipv6_address_autoconfig_default  = each.value.ipv6_address_autoconfig_default
-  ipv6_flow_monitors               = each.value.ipv6_flow_monitors
-  bfd_template                     = each.value.bfd_template
-  bfd_enable                       = each.value.bfd_enable
-  bfd_local_address                = each.value.bfd_local_address
-  bfd_interval                     = each.value.bfd_interval
-  bfd_interval_min_rx              = each.value.bfd_interval_min_rx
-  bfd_interval_multiplier          = each.value.bfd_interval_multiplier
-  bfd_echo                         = each.value.bfd_echo
-  spanning_tree_guard              = each.value.spanning_tree_guard
-  spanning_tree_link_type          = each.value.spanning_tree_link_type
-  arp_timeout                      = each.value.arp_timeout
-  load_interval                    = each.value.load_interval
-  snmp_trap_link_status            = each.value.snmp_trap_link_status
-  logging_event_link_status_enable = each.value.logging_event_link_status_enable
-  switchport                       = each.value.switchport
-  auto_qos_classify                = each.value.auto_qos_classify
-  auto_qos_classify_police         = each.value.auto_qos_classify_police
-  auto_qos_trust                   = each.value.auto_qos_trust
-  auto_qos_trust_cos               = each.value.auto_qos_trust_cos
-  auto_qos_trust_dscp              = each.value.auto_qos_trust_dscp
-  auto_qos_video_cts               = each.value.auto_qos_video_cts
-  auto_qos_video_ip_camera         = each.value.auto_qos_video_ip_camera
-  auto_qos_video_media_player      = each.value.auto_qos_video_media_player
-  auto_qos_voip_cisco_phone        = each.value.auto_qos_voip_cisco_phone
-  auto_qos_voip_cisco_softphone    = each.value.auto_qos_voip_cisco_softphone
-  auto_qos_voip_trust              = each.value.auto_qos_voip_trust
-  trust_device                     = each.value.trust_device
-  negotiation_auto                 = each.value.negotiation_auto
-  evpn_ethernet_segments           = each.value.evpn_ethernet_segments
-  evpn_ethernet_segments_legacy    = each.value.evpn_ethernet_segments_legacy
-  ip_router_isis                   = each.value.isis_area_tag
+  device                                   = each.value.device
+  name                                     = each.value.name
+  description                              = each.value.description
+  shutdown                                 = each.value.shutdown
+  mtu                                      = each.value.mtu
+  vrf_forwarding                           = each.value.vrf_forwarding
+  ipv4_address                             = each.value.ipv4_address
+  ipv4_address_mask                        = each.value.ipv4_address_mask
+  ipv4_address_dhcp                        = each.value.ipv4_address_dhcp
+  ip_proxy_arp                             = each.value.ip_proxy_arp
+  ip_dhcp_relay_source_interface           = each.value.ip_dhcp_relay_source_interface
+  ip_access_group_in_enable                = each.value.ip_access_group_in_enable
+  ip_access_group_in                       = each.value.ip_access_group_in
+  ip_access_group_out_enable               = each.value.ip_access_group_out_enable
+  ip_access_group_out                      = each.value.ip_access_group_out
+  ip_flow_monitors                         = each.value.ip_flow_monitors
+  ip_redirects                             = each.value.ip_redirects
+  ip_unreachables                          = each.value.ip_unreachables
+  ip_nat_inside                            = each.value.ip_nat_inside
+  ip_nat_outside                           = each.value.ip_nat_outside
+  zone_member_security                     = each.value.zone_member_security
+  ip_igmp_version                          = each.value.ip_igmp_version
+  ip_arp_inspection_trust                  = each.value.ip_arp_inspection_trust
+  ip_arp_inspection_limit_rate             = each.value.ip_arp_inspection_limit_rate
+  ip_dhcp_snooping_trust                   = each.value.ip_dhcp_snooping_trust
+  helper_addresses                         = each.value.helper_addresses
+  ipv6_enable                              = each.value.ipv6_enable
+  ipv6_mtu                                 = each.value.ipv6_mtu
+  ipv6_nd_ra_suppress_all                  = each.value.ipv6_nd_ra_suppress_all
+  ipv6_address_dhcp                        = each.value.ipv6_address_dhcp
+  ipv6_addresses                           = each.value.ipv6_addresses
+  ipv6_link_local_addresses                = each.value.ipv6_link_local_addresses
+  ipv6_address_autoconfig_default          = each.value.ipv6_address_autoconfig_default
+  ipv6_flow_monitors                       = each.value.ipv6_flow_monitors
+  bfd_template                             = each.value.bfd_template
+  bfd_enable                               = each.value.bfd_enable
+  bfd_local_address                        = each.value.bfd_local_address
+  bfd_interval                             = each.value.bfd_interval
+  bfd_interval_min_rx                      = each.value.bfd_interval_min_rx
+  bfd_interval_multiplier                  = each.value.bfd_interval_multiplier
+  bfd_echo                                 = each.value.bfd_echo
+  spanning_tree_guard                      = each.value.spanning_tree_guard
+  spanning_tree_link_type                  = each.value.spanning_tree_link_type
+  spanning_tree_portfast                   = each.value.spanning_tree_portfast
+  spanning_tree_portfast_disable           = each.value.spanning_tree_portfast_disable
+  spanning_tree_portfast_trunk             = each.value.spanning_tree_portfast_trunk
+  spanning_tree_portfast_edge              = each.value.spanning_tree_portfast_edge
+  bpduguard_enable                         = each.value.bpduguard_enable
+  bpduguard_disable                        = each.value.bpduguard_disable
+  arp_timeout                              = each.value.arp_timeout
+  load_interval                            = each.value.load_interval
+  snmp_trap_link_status                    = each.value.snmp_trap_link_status
+  logging_event_link_status_enable         = each.value.logging_event_link_status_enable
+  switchport                               = each.value.switchport
+  auto_qos_classify                        = each.value.auto_qos_classify
+  auto_qos_classify_police                 = each.value.auto_qos_classify_police
+  auto_qos_trust                           = each.value.auto_qos_trust
+  auto_qos_trust_cos                       = each.value.auto_qos_trust_cos
+  auto_qos_trust_dscp                      = each.value.auto_qos_trust_dscp
+  auto_qos_video_cts                       = each.value.auto_qos_video_cts
+  auto_qos_video_ip_camera                 = each.value.auto_qos_video_ip_camera
+  auto_qos_video_media_player              = each.value.auto_qos_video_media_player
+  auto_qos_voip_cisco_phone                = each.value.auto_qos_voip_cisco_phone
+  auto_qos_voip_cisco_softphone            = each.value.auto_qos_voip_cisco_softphone
+  auto_qos_voip_trust                      = each.value.auto_qos_voip_trust
+  trust_device                             = each.value.trust_device
+  negotiation_auto                         = each.value.negotiation_auto
+  evpn_ethernet_segments                   = each.value.evpn_ethernet_segments
+  evpn_ethernet_segments_legacy            = each.value.evpn_ethernet_segments_legacy
+  ip_router_isis                           = each.value.isis_area_tag
+  ip_verify_unicast_source_reachable_via   = each.value.ip_verify_unicast_source_reachable_via
+  ip_verify_unicast_source_allow_self_ping = each.value.ip_verify_unicast_source_allow_self_ping
+  ip_verify_unicast_source_allow_default   = each.value.ip_verify_unicast_source_allow_default
 
   depends_on = [
     iosxe_zone_security.zone_security,
@@ -1939,6 +1984,7 @@ resource "iosxe_interface_switchport" "port_channel_switchport" {
   mode_private_vlan_promiscuous = each.value.switchport_mode_private_vlan_promiscuous
   nonegotiate                   = each.value.switchport_nonegotiate
   access_vlan                   = each.value.switchport_access_vlan
+  voice_vlan                    = each.value.switchport_voice_vlan
   # NEW v2 trunk allowed VLANs
   trunk_allowed_vlans        = each.value.switchport_trunk_allowed_vlans
   trunk_allowed_vlans_none   = each.value.switchport_trunk_allowed_vlans_none
