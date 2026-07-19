@@ -40,7 +40,7 @@ module "iosxe" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.9.0 |
-| <a name="requirement_iosxe"></a> [iosxe](#requirement\_iosxe) | ~> 0.18.0 |
+| <a name="requirement_iosxe"></a> [iosxe](#requirement\_iosxe) | >= 1.0.0 |
 | <a name="requirement_local"></a> [local](#requirement\_local) | >= 2.5.0, < 3.0.0 |
 | <a name="requirement_utils"></a> [utils](#requirement\_utils) | >= 2.0.2, < 3.0.0 |
 ## Inputs
@@ -51,9 +51,11 @@ module "iosxe" {
 | <a name="input_managed_device_groups"></a> [managed\_device\_groups](#input\_managed\_device\_groups) | List of device group names to be managed. By default all device groups will be managed. | `list(string)` | `[]` | no |
 | <a name="input_managed_devices"></a> [managed\_devices](#input\_managed\_devices) | List of device names to be managed. By default all devices will be managed. | `list(string)` | `[]` | no |
 | <a name="input_model"></a> [model](#input\_model) | As an alternative to YAML files, a native Terraform data structure can be provided as well. | `map(any)` | `{}` | no |
+| <a name="input_password"></a> [password](#input\_password) | Password for the IOS-XE devices. Can also be set using the IOSXE\_PASSWORD environment variable. | `string` | `null` | no |
 | <a name="input_save_config"></a> [save\_config](#input\_save\_config) | Write changes to startup-config on all devices. | `bool` | `false` | no |
 | <a name="input_template_directories"></a> [template\_directories](#input\_template\_directories) | List of paths to directories containing template files. | `list(string)` | `[]` | no |
 | <a name="input_template_files"></a> [template\_files](#input\_template\_files) | List of paths to template files. | `list(string)` | `[]` | no |
+| <a name="input_username"></a> [username](#input\_username) | Username for the IOS-XE devices. Can also be set using the IOSXE\_USERNAME environment variable. | `string` | `null` | no |
 | <a name="input_write_model_file"></a> [write\_model\_file](#input\_write\_model\_file) | Write the full model including all resolved templates to a single YAML file. Value is a path pointing to the file to be created. | `string` | `""` | no |
 | <a name="input_yaml_directories"></a> [yaml\_directories](#input\_yaml\_directories) | List of paths to YAML directories. | `list(string)` | `[]` | no |
 | <a name="input_yaml_files"></a> [yaml\_files](#input\_yaml\_files) | List of paths to YAML files. | `list(string)` | `[]` | no |
@@ -125,16 +127,15 @@ No outputs.
 | [iosxe_cts.cts](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/cts) | resource |
 | [iosxe_device_sensor.device_sensor](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/device_sensor) | resource |
 | [iosxe_device_tracking.device_tracking](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/device_tracking) | resource |
-| [iosxe_device_tracking_policy.device_tracking_policy](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/device_tracking_policy) | resource |
 | [iosxe_dhcp.dhcp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/dhcp) | resource |
-| [iosxe_dhcp_pool.dhcp_pool](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/dhcp_pool) | resource |
 | [iosxe_dot1x.dot1x](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/dot1x) | resource |
 | [iosxe_eem.eem](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/eem) | resource |
+| [iosxe_eigrp.eigrp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/eigrp) | resource |
+| [iosxe_eigrp_vrf.eigrp_vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/eigrp_vrf) | resource |
 | [iosxe_errdisable.errdisable](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/errdisable) | resource |
 | [iosxe_evpn.evpn](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/evpn) | resource |
 | [iosxe_evpn_ethernet_segment.evpn_ethernet_segment](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/evpn_ethernet_segment) | resource |
 | [iosxe_evpn_instance.evpn_instance](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/evpn_instance) | resource |
-| [iosxe_evpn_profile.evpn_profile](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/evpn_profile) | resource |
 | [iosxe_flow_exporter.flow_exporter](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/flow_exporter) | resource |
 | [iosxe_flow_monitor.flow_monitor](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/flow_monitor) | resource |
 | [iosxe_flow_record.flow_record](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/flow_record) | resource |
@@ -190,12 +191,14 @@ No outputs.
 | [iosxe_interface_pim_ipv6.vlan_pim_ipv6](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_pim_ipv6) | resource |
 | [iosxe_interface_port_channel.port_channel](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_port_channel) | resource |
 | [iosxe_interface_port_channel_subinterface.port_channel_subinterface](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_port_channel_subinterface) | resource |
+| [iosxe_interface_stackwise_virtual.stackwise_virtual_interface](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_stackwise_virtual) | resource |
 | [iosxe_interface_switchport.ethernet_switchport](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_switchport) | resource |
 | [iosxe_interface_switchport.ethernet_switchport_unmanaged](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_switchport) | resource |
 | [iosxe_interface_switchport.port_channel_switchport](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_switchport) | resource |
 | [iosxe_interface_tunnel.tunnel](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_tunnel) | resource |
 | [iosxe_interface_vlan.vlan](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_vlan) | resource |
-| [iosxe_ipv6_dhcp_pool.ipv6_dhcp_pool](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/ipv6_dhcp_pool) | resource |
+| [iosxe_interface_vrrp_v2.vrrp_v2](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_vrrp_v2) | resource |
+| [iosxe_interface_vrrp_v2.vrrp_v2_unmanaged](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_vrrp_v2) | resource |
 | [iosxe_ipv6_local_pool.ipv6_local_pool](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/ipv6_local_pool) | resource |
 | [iosxe_ipv6_prefix_list.ipv6_prefix_list](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/ipv6_prefix_list) | resource |
 | [iosxe_isis.isis](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/isis) | resource |
@@ -222,6 +225,7 @@ No outputs.
 | [iosxe_policy_map.policy_map_nested](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/policy_map) | resource |
 | [iosxe_policy_map_event.policy_map_event](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/policy_map_event) | resource |
 | [iosxe_prefix_list.prefix_list](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/prefix_list) | resource |
+| [iosxe_qos.qos](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/qos) | resource |
 | [iosxe_radius.radius](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/radius) | resource |
 | [iosxe_radius_server.radius_server](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/radius_server) | resource |
 | [iosxe_route_map.route_map](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/route_map) | resource |
@@ -230,8 +234,10 @@ No outputs.
 | [iosxe_sla.sla](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/sla) | resource |
 | [iosxe_snmp_server.snmp_server](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/snmp_server) | resource |
 | [iosxe_spanning_tree.spanning_tree](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/spanning_tree) | resource |
+| [iosxe_stackwise_virtual.stackwise_virtual](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/stackwise_virtual) | resource |
 | [iosxe_static_route.static_route](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/static_route) | resource |
 | [iosxe_static_routes_vrf.static_routes_vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/static_routes_vrf) | resource |
+| [iosxe_switch.switch](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/switch) | resource |
 | [iosxe_system.system](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/system) | resource |
 | [iosxe_tacacs.tacacs](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/tacacs) | resource |
 | [iosxe_tacacs_server.tacacs_server](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/tacacs_server) | resource |
