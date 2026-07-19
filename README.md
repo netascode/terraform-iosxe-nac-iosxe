@@ -230,6 +230,7 @@ No outputs.
 | [iosxe_stackwise_virtual.stackwise_virtual](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/stackwise_virtual) | resource |
 | [iosxe_static_route.static_route](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/static_route) | resource |
 | [iosxe_static_routes_vrf.static_routes_vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/static_routes_vrf) | resource |
+| [iosxe_switch.switch](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/switch) | resource |
 | [iosxe_system.system](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/system) | resource |
 | [iosxe_tacacs.tacacs](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/tacacs) | resource |
 | [iosxe_tacacs_server.tacacs_server](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/tacacs_server) | resource |
