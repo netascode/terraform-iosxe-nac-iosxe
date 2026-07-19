@@ -6,18 +6,18 @@ locals {
         device = device.name
 
         prefixes = try(length(prefix_list.seqs) == 0, true) ? null : [for e in prefix_list.seqs : {
-          name   = try(prefix_list.name, local.defaults.iosxe.configuration.ipv6_prefix_lists.name, null)
-          seq    = try(e.seq, local.defaults.iosxe.configuration.ipv6_prefix_lists.seqs.seq, null)
-          action = try(e.action, local.defaults.iosxe.configuration.ipv6_prefix_lists.seqs.action, null)
-          ip     = try(e.prefix, local.defaults.iosxe.configuration.ipv6_prefix_lists.seqs.prefix, null)
-          ge     = try(e.greater_equal, local.defaults.iosxe.configuration.ipv6_prefix_lists.seqs.greater_equal, null)
-          le     = try(e.less_equal, local.defaults.iosxe.configuration.ipv6_prefix_lists.seqs.less_equal, null)
+          name   = try(prefix_list.name, null)
+          seq    = try(e.seq, null)
+          action = try(e.action, null)
+          ip     = try(e.prefix, null)
+          ge     = try(e.greater_equal, null)
+          le     = try(e.less_equal, null)
         }]
 
         prefix_list_description = try(prefix_list.description != null ?
           [{
-            name        = try(prefix_list.name, local.defaults.iosxe.configuration.ipv6_prefix_lists.name, null)
-            description = try(prefix_list.description, local.defaults.iosxe.configuration.ipv6_prefix_lists.description, null)
+            name        = try(prefix_list.name, null)
+            description = try(prefix_list.description, null)
           }] : null, null
         )
       }
