@@ -6,12 +6,12 @@ locals {
         device = device.name
 
         name                                             = profile.name
-        set_transform_set                                = try(profile.set_transform_set, local.defaults.iosxe.configuration.crypto.ipsec_profiles.set_transform_set, null)
-        set_ikev2_profile                                = try(profile.set_ikev2_profile, local.defaults.iosxe.configuration.crypto.ipsec_profiles.set_ikev2_profile, null)
-        set_isakmp_profile                               = try(profile.set_isakmp_profile, local.defaults.iosxe.configuration.crypto.ipsec_profiles.set_isakmp_profile, null)
-        set_pfs_group                                    = try(profile.set_pfs_group, local.defaults.iosxe.configuration.crypto.ipsec_profiles.set_pfs_group, null)
-        set_security_association_lifetime_seconds        = try(profile.set_security_association_lifetime_seconds, local.defaults.iosxe.configuration.crypto.ipsec_profiles.set_security_association_lifetime_seconds, null)
-        set_security_association_lifetime_seconds_legacy = try(profile.set_security_association_lifetime_seconds_legacy, local.defaults.iosxe.configuration.crypto.ipsec_profiles.set_security_association_lifetime_seconds_legacy, null)
+        set_transform_set                                = try(profile.set_transform_set, null)
+        set_ikev2_profile                                = try(profile.set_ikev2_profile, null)
+        set_isakmp_profile                               = try(profile.set_isakmp_profile, null)
+        set_pfs_group                                    = try(profile.set_pfs_group, null)
+        set_security_association_lifetime_seconds        = try(profile.set_security_association_lifetime_seconds, null)
+        set_security_association_lifetime_seconds_legacy = try(profile.set_security_association_lifetime_seconds_legacy, null)
       }
     ]
   ])
@@ -43,9 +43,9 @@ locals {
         device = device.name
 
         name        = transform_set.name
-        esp         = try(transform_set.esp, local.defaults.iosxe.configuration.crypto.ipsec_transform_sets.esp, null)
-        esp_hmac    = try(transform_set.esp_hmac, local.defaults.iosxe.configuration.crypto.ipsec_transform_sets.esp_hmac, null)
-        mode_tunnel = try(transform_set.mode_tunnel, local.defaults.iosxe.configuration.crypto.ipsec_transform_sets.mode_tunnel, null)
+        esp         = try(transform_set.esp, null)
+        esp_hmac    = try(transform_set.esp_hmac, null)
+        mode_tunnel = try(transform_set.mode_tunnel, null)
       }
     ]
   ])
@@ -62,14 +62,14 @@ resource "iosxe_crypto_ipsec_transform_set" "crypto_ipsec_transform_set" {
 }
 
 resource "iosxe_crypto_ikev2" "crypto_ikev2" {
-  for_each = { for device in local.devices : device.name => device if try(local.device_config[device.name].crypto.ikev2, null) != null || try(local.defaults.iosxe.configuration.crypto.ikev2, null) != null }
+  for_each = { for device in local.devices : device.name => device if try(local.device_config[device.name].crypto.ikev2, null) != null }
   device   = each.value.name
 
-  dpd                = try(local.device_config[each.value.name].crypto.ikev2.dpd_interval, local.defaults.iosxe.configuration.crypto.ikev2.dpd_interval, null)
-  dpd_query          = try(local.device_config[each.value.name].crypto.ikev2.dpd_query, local.defaults.iosxe.configuration.crypto.ikev2.dpd_query, null)
-  dpd_retry_interval = try(local.device_config[each.value.name].crypto.ikev2.dpd_retry, local.defaults.iosxe.configuration.crypto.ikev2.dpd_retry, null)
-  nat_keepalive      = try(local.device_config[each.value.name].crypto.ikev2.nat_keepalive, local.defaults.iosxe.configuration.crypto.ikev2.nat_keepalive, null)
-  http_url_cert      = try(local.device_config[each.value.name].crypto.ikev2.http_url_certificate_lookup, local.defaults.iosxe.configuration.crypto.ikev2.http_url_certificate_lookup, null)
+  dpd                = try(local.device_config[each.value.name].crypto.ikev2.dpd_interval, null)
+  dpd_query          = try(local.device_config[each.value.name].crypto.ikev2.dpd_query, null)
+  dpd_retry_interval = try(local.device_config[each.value.name].crypto.ikev2.dpd_retry, null)
+  nat_keepalive      = try(local.device_config[each.value.name].crypto.ikev2.nat_keepalive, null)
+  http_url_cert      = try(local.device_config[each.value.name].crypto.ikev2.http_url_certificate_lookup, null)
 }
 
 locals {
@@ -80,32 +80,32 @@ locals {
         device = device.name
 
         name                                          = profile.name
-        authentication_local_pre_share                = try(profile.authentication_local_pre_share, local.defaults.iosxe.configuration.crypto.ikev2.profiles.authentication_local_pre_share, null)
-        authentication_remote_pre_share               = try(profile.authentication_remote_pre_share, local.defaults.iosxe.configuration.crypto.ikev2.profiles.authentication_remote_pre_share, null)
-        config_exchange_request                       = try(profile.config_exchange_request, local.defaults.iosxe.configuration.crypto.ikev2.profiles.config_exchange_request, null)
-        description                                   = try(profile.description, local.defaults.iosxe.configuration.crypto.ikev2.profiles.description, null)
-        dpd_interval                                  = try(profile.dpd_interval, local.defaults.iosxe.configuration.crypto.ikev2.profiles.dpd_interval, null)
-        dpd_query                                     = try(profile.dpd_query, local.defaults.iosxe.configuration.crypto.ikev2.profiles.dpd_query, null)
-        dpd_retry                                     = try(profile.dpd_retry, local.defaults.iosxe.configuration.crypto.ikev2.profiles.dpd_retry, null)
-        identity_local_address                        = try(profile.identity_local_address, local.defaults.iosxe.configuration.crypto.ikev2.profiles.identity_local_address, null)
-        identity_local_key_id                         = try(profile.identity_local_key_id, local.defaults.iosxe.configuration.crypto.ikev2.profiles.identity_local_key_id, null)
-        lifetime                                      = try(profile.lifetime, local.defaults.iosxe.configuration.crypto.ikev2.profiles.lifetime, null)
-        match_address_local_interface_loopback_legacy = try(profile.match_address_local_interface_loopback_legacy, local.defaults.iosxe.configuration.crypto.ikev2.profiles.match_address_local_interface_loopback_legacy, null)
+        authentication_local_pre_share                = try(profile.authentication_local_pre_share, null)
+        authentication_remote_pre_share               = try(profile.authentication_remote_pre_share, null)
+        config_exchange_request                       = try(profile.config_exchange_request, null)
+        description                                   = try(profile.description, null)
+        dpd_interval                                  = try(profile.dpd_interval, null)
+        dpd_query                                     = try(profile.dpd_query, null)
+        dpd_retry                                     = try(profile.dpd_retry, null)
+        identity_local_address                        = try(profile.identity_local_address, null)
+        identity_local_key_id                         = try(profile.identity_local_key_id, null)
+        lifetime                                      = try(profile.lifetime, null)
+        match_address_local_interface_loopback_legacy = try(profile.match_address_local_interface_loopback_legacy, null)
         match_address_local_interface_loopback = try(length(profile.match_address_local_interface_loopback) == 0, true) ? null : [for e in profile.match_address_local_interface_loopback : {
           loopback_number = e.loopback_number
         }]
-        ivrf                   = try(profile.ivrf, local.defaults.iosxe.configuration.crypto.ikev2.profiles.ivrf, null)
-        keyring_local          = try(profile.keyring_local, local.defaults.iosxe.configuration.crypto.ikev2.profiles.keyring_local, null)
-        match_address_local_ip = try(profile.match_address_local_ip, local.defaults.iosxe.configuration.crypto.ikev2.profiles.match_address_local_ip, null)
-        match_fvrf             = try(profile.match_fvrf, local.defaults.iosxe.configuration.crypto.ikev2.profiles.match_fvrf, null)
-        match_fvrf_any         = try(profile.match_fvrf_any, local.defaults.iosxe.configuration.crypto.ikev2.profiles.match_fvrf_any, null)
+        ivrf                   = try(profile.ivrf, null)
+        keyring_local          = try(profile.keyring_local, null)
+        match_address_local_ip = try(profile.match_address_local_ip, null)
+        match_fvrf             = try(profile.match_fvrf, null)
+        match_fvrf_any         = try(profile.match_fvrf_any, null)
         match_identity_remote_ipv4_addresses = try(length(profile.match_identity_remote_ipv4_addresses) == 0, true) ? null : [for e in profile.match_identity_remote_ipv4_addresses : {
           address = e.address
-          mask    = try(e.mask, local.defaults.iosxe.configuration.crypto.ikev2.profiles.match_identity_remote_ipv4_addresses.mask, null)
+          mask    = try(e.mask, null)
         }]
-        match_identity_remote_ipv6_prefixes = try(profile.match_identity_remote_ipv6_prefixes, local.defaults.iosxe.configuration.crypto.ikev2.profiles.match_identity_remote_ipv6_prefixes, null)
-        match_identity_remote_keys          = try(profile.match_identity_remote_keys, local.defaults.iosxe.configuration.crypto.ikev2.profiles.match_identity_remote_keys, null)
-        match_inbound_only                  = try(profile.match_inbound_only, local.defaults.iosxe.configuration.crypto.ikev2.profiles.match_inbound_only, null)
+        match_identity_remote_ipv6_prefixes = try(profile.match_identity_remote_ipv6_prefixes, null)
+        match_identity_remote_keys          = try(profile.match_identity_remote_keys, null)
+        match_inbound_only                  = try(profile.match_inbound_only, null)
       }
     ]
   ])
@@ -154,23 +154,23 @@ locals {
         name = keyring.name
         peers = try(length(keyring.peers) == 0, true) ? null : [for e in keyring.peers : {
           name                             = e.name
-          description                      = try(e.description, local.defaults.iosxe.configuration.crypto.ikev2.keyrings.peers.description, null)
-          hostname                         = try(e.hostname, local.defaults.iosxe.configuration.crypto.ikev2.keyrings.peers.hostname, null)
-          identity_address                 = try(e.identity_address, local.defaults.iosxe.configuration.crypto.ikev2.keyrings.peers.identity_address, null)
-          identity_email_domain            = try(e.identity_email_domain, local.defaults.iosxe.configuration.crypto.ikev2.keyrings.peers.identity_email_domain, null)
-          identity_email_name              = try(e.identity_email_name, local.defaults.iosxe.configuration.crypto.ikev2.keyrings.peers.identity_email_name, null)
-          identity_fqdn_domain             = try(e.identity_fqdn_domain, local.defaults.iosxe.configuration.crypto.ikev2.keyrings.peers.identity_fqdn_domain, null)
-          identity_fqdn_name               = try(e.identity_fqdn_name, local.defaults.iosxe.configuration.crypto.ikev2.keyrings.peers.identity_fqdn_name, null)
-          identity_key_id                  = try(e.identity_key_id, local.defaults.iosxe.configuration.crypto.ikev2.keyrings.peers.identity_key_id, null)
-          ipv4_address                     = try(e.ipv4_address, local.defaults.iosxe.configuration.crypto.ikev2.keyrings.peers.ipv4_address, null)
-          ipv4_mask                        = try(e.ipv4_mask, local.defaults.iosxe.configuration.crypto.ikev2.keyrings.peers.ipv4_mask, null)
-          ipv6_prefix                      = try(e.ipv6_prefix, local.defaults.iosxe.configuration.crypto.ikev2.keyrings.peers.ipv6_prefix, null)
-          pre_shared_key                   = try(e.pre_shared_key, local.defaults.iosxe.configuration.crypto.ikev2.keyrings.peers.pre_shared_key, null)
-          pre_shared_key_encryption        = try(e.pre_shared_key_encryption, local.defaults.iosxe.configuration.crypto.ikev2.keyrings.peers.pre_shared_key_encryption, null)
-          pre_shared_key_local             = try(e.pre_shared_key_local, local.defaults.iosxe.configuration.crypto.ikev2.keyrings.peers.pre_shared_key_local, null)
-          pre_shared_key_local_encryption  = try(e.pre_shared_key_local_encryption, local.defaults.iosxe.configuration.crypto.ikev2.keyrings.peers.pre_shared_key_local_encryption, null)
-          pre_shared_key_remote            = try(e.pre_shared_key_remote, local.defaults.iosxe.configuration.crypto.ikev2.keyrings.peers.pre_shared_key_remote, null)
-          pre_shared_key_remote_encryption = try(e.pre_shared_key_remote_encryption, local.defaults.iosxe.configuration.crypto.ikev2.keyrings.peers.pre_shared_key_remote_encryption, null)
+          description                      = try(e.description, null)
+          hostname                         = try(e.hostname, null)
+          identity_address                 = try(e.identity_address, null)
+          identity_email_domain            = try(e.identity_email_domain, null)
+          identity_email_name              = try(e.identity_email_name, null)
+          identity_fqdn_domain             = try(e.identity_fqdn_domain, null)
+          identity_fqdn_name               = try(e.identity_fqdn_name, null)
+          identity_key_id                  = try(e.identity_key_id, null)
+          ipv4_address                     = try(e.ipv4_address, null)
+          ipv4_mask                        = try(e.ipv4_mask, null)
+          ipv6_prefix                      = try(e.ipv6_prefix, null)
+          pre_shared_key                   = try(e.pre_shared_key, null)
+          pre_shared_key_encryption        = try(e.pre_shared_key_encryption, null)
+          pre_shared_key_local             = try(e.pre_shared_key_local, null)
+          pre_shared_key_local_encryption  = try(e.pre_shared_key_local_encryption, null)
+          pre_shared_key_remote            = try(e.pre_shared_key_remote, null)
+          pre_shared_key_remote_encryption = try(e.pre_shared_key_remote_encryption, null)
         }]
       }
     ]
@@ -195,10 +195,10 @@ locals {
         proposals = try(length(policy.proposals) == 0, true) ? null : [for e in policy.proposals : {
           proposals = e
         }]
-        match_address_local_ip = try(policy.match_address_local_ip, local.defaults.iosxe.configuration.crypto.ikev2.policies.match_address_local_ip, null)
-        match_fvrf             = try(policy.match_fvrf, local.defaults.iosxe.configuration.crypto.ikev2.policies.match_fvrf, null)
-        match_fvrf_any         = try(policy.match_fvrf_any, local.defaults.iosxe.configuration.crypto.ikev2.policies.match_fvrf_any, null)
-        match_inbound_only     = try(policy.match_inbound_only, local.defaults.iosxe.configuration.crypto.ikev2.policies.match_inbound_only, null)
+        match_address_local_ip = try(policy.match_address_local_ip, null)
+        match_fvrf             = try(policy.match_fvrf, null)
+        match_fvrf_any         = try(policy.match_fvrf_any, null)
+        match_inbound_only     = try(policy.match_inbound_only, null)
       }
     ]
   ])
@@ -229,31 +229,31 @@ locals {
         device = device.name
 
         name                   = proposal.name
-        encryption_aes_cbc_128 = try(contains(proposal.encryption, "aes_cbc_128"), contains(local.defaults.iosxe.configuration.crypto.ikev2.proposals.encryption, "aes_cbc_128"), null)
-        encryption_aes_cbc_192 = try(contains(proposal.encryption, "aes_cbc_192"), contains(local.defaults.iosxe.configuration.crypto.ikev2.proposals.encryption, "aes_cbc_192"), null)
-        encryption_aes_cbc_256 = try(contains(proposal.encryption, "aes_cbc_256"), contains(local.defaults.iosxe.configuration.crypto.ikev2.proposals.encryption, "aes_cbc_256"), null)
-        encryption_aes_gcm_128 = try(contains(proposal.encryption, "aes_gcm_128"), contains(local.defaults.iosxe.configuration.crypto.ikev2.proposals.encryption, "aes_gcm_128"), null)
-        encryption_aes_gcm_256 = try(contains(proposal.encryption, "aes_gcm_256"), contains(local.defaults.iosxe.configuration.crypto.ikev2.proposals.encryption, "aes_gcm_256"), null)
-        encryption_en_3des     = try(contains(proposal.encryption, "en_3des"), contains(local.defaults.iosxe.configuration.crypto.ikev2.proposals.encryption, "en_3des"), null)
-        group_fifteen          = try(contains(proposal.group, "15"), contains(local.defaults.iosxe.configuration.crypto.ikev2.proposals.group, "15"), null)
-        group_fourteen         = try(contains(proposal.group, "14"), contains(local.defaults.iosxe.configuration.crypto.ikev2.proposals.group, "14"), null)
-        group_nineteen         = try(contains(proposal.group, "19"), contains(local.defaults.iosxe.configuration.crypto.ikev2.proposals.group, "19"), null)
-        group_one              = try(contains(proposal.group, "1"), contains(local.defaults.iosxe.configuration.crypto.ikev2.proposals.group, "1"), null)
-        group_sixteen          = try(contains(proposal.group, "16"), contains(local.defaults.iosxe.configuration.crypto.ikev2.proposals.group, "16"), null)
-        group_twenty           = try(contains(proposal.group, "20"), contains(local.defaults.iosxe.configuration.crypto.ikev2.proposals.group, "20"), null)
-        group_twenty_four      = try(contains(proposal.group, "24"), contains(local.defaults.iosxe.configuration.crypto.ikev2.proposals.group, "24"), null)
-        group_twenty_one       = try(contains(proposal.group, "21"), contains(local.defaults.iosxe.configuration.crypto.ikev2.proposals.group, "21"), null)
-        group_two              = try(contains(proposal.group, "2"), contains(local.defaults.iosxe.configuration.crypto.ikev2.proposals.group, "2"), null)
-        integrity_md5          = try(contains(proposal.integrity, "md5"), contains(local.defaults.iosxe.configuration.crypto.ikev2.proposals.integrity, "md5"), null)
-        integrity_sha1         = try(contains(proposal.integrity, "sha1"), contains(local.defaults.iosxe.configuration.crypto.ikev2.proposals.integrity, "sha1"), null)
-        integrity_sha256       = try(contains(proposal.integrity, "sha256"), contains(local.defaults.iosxe.configuration.crypto.ikev2.proposals.integrity, "sha256"), null)
-        integrity_sha384       = try(contains(proposal.integrity, "sha384"), contains(local.defaults.iosxe.configuration.crypto.ikev2.proposals.integrity, "sha384"), null)
-        integrity_sha512       = try(contains(proposal.integrity, "sha512"), contains(local.defaults.iosxe.configuration.crypto.ikev2.proposals.integrity, "sha512"), null)
-        prf_md5                = try(contains(proposal.prf, "md5"), contains(local.defaults.iosxe.configuration.crypto.ikev2.proposals.prf, "md5"), null)
-        prf_sha1               = try(contains(proposal.prf, "sha1"), contains(local.defaults.iosxe.configuration.crypto.ikev2.proposals.prf, "sha1"), null)
-        prf_sha256             = try(contains(proposal.prf, "sha256"), contains(local.defaults.iosxe.configuration.crypto.ikev2.proposals.prf, "sha256"), null)
-        prf_sha384             = try(contains(proposal.prf, "sha384"), contains(local.defaults.iosxe.configuration.crypto.ikev2.proposals.prf, "sha384"), null)
-        prf_sha512             = try(contains(proposal.prf, "sha512"), contains(local.defaults.iosxe.configuration.crypto.ikev2.proposals.prf, "sha512"), null)
+        encryption_aes_cbc_128 = try(contains(proposal.encryption, "aes_cbc_128"), null)
+        encryption_aes_cbc_192 = try(contains(proposal.encryption, "aes_cbc_192"), null)
+        encryption_aes_cbc_256 = try(contains(proposal.encryption, "aes_cbc_256"), null)
+        encryption_aes_gcm_128 = try(contains(proposal.encryption, "aes_gcm_128"), null)
+        encryption_aes_gcm_256 = try(contains(proposal.encryption, "aes_gcm_256"), null)
+        encryption_en_3des     = try(contains(proposal.encryption, "en_3des"), null)
+        group_fifteen          = try(contains(proposal.group, "15"), null)
+        group_fourteen         = try(contains(proposal.group, "14"), null)
+        group_nineteen         = try(contains(proposal.group, "19"), null)
+        group_one              = try(contains(proposal.group, "1"), null)
+        group_sixteen          = try(contains(proposal.group, "16"), null)
+        group_twenty           = try(contains(proposal.group, "20"), null)
+        group_twenty_four      = try(contains(proposal.group, "24"), null)
+        group_twenty_one       = try(contains(proposal.group, "21"), null)
+        group_two              = try(contains(proposal.group, "2"), null)
+        integrity_md5          = try(contains(proposal.integrity, "md5"), null)
+        integrity_sha1         = try(contains(proposal.integrity, "sha1"), null)
+        integrity_sha256       = try(contains(proposal.integrity, "sha256"), null)
+        integrity_sha384       = try(contains(proposal.integrity, "sha384"), null)
+        integrity_sha512       = try(contains(proposal.integrity, "sha512"), null)
+        prf_md5                = try(contains(proposal.prf, "md5"), null)
+        prf_sha1               = try(contains(proposal.prf, "sha1"), null)
+        prf_sha256             = try(contains(proposal.prf, "sha256"), null)
+        prf_sha384             = try(contains(proposal.prf, "sha384"), null)
+        prf_sha512             = try(contains(proposal.prf, "sha512"), null)
       }
     ]
   ])
@@ -297,22 +297,22 @@ resource "iosxe_crypto_pki" "crypto_pki" {
 
   trustpoints = try(length(local.device_config[each.value.name].crypto.pki.trustpoints) == 0, true) ? null : [for tp in local.device_config[each.value.name].crypto.pki.trustpoints : {
     id                    = tp.id
-    enrollment_mode_ra    = try(tp.enrollment_mode_ra, local.defaults.iosxe.configuration.crypto.pki.trustpoints.enrollment_mode_ra, null)
-    enrollment_pkcs12     = try(tp.enrollment_pkcs12, local.defaults.iosxe.configuration.crypto.pki.trustpoints.enrollment_pkcs12, null)
-    enrollment_selfsigned = try(tp.enrollment_selfsigned, local.defaults.iosxe.configuration.crypto.pki.trustpoints.enrollment_selfsigned, null)
-    enrollment_terminal   = try(tp.enrollment_terminal, local.defaults.iosxe.configuration.crypto.pki.trustpoints.enrollment_terminal, null)
-    hash                  = try(tp.hash, local.defaults.iosxe.configuration.crypto.pki.trustpoints.hash, null)
-    revocation_check      = try(tp.revocation_check, local.defaults.iosxe.configuration.crypto.pki.trustpoints.revocation_check, null)
-    rsakeypair            = try(tp.rsakeypair, local.defaults.iosxe.configuration.crypto.pki.trustpoints.rsakeypair, null)
-    source_interface      = try(tp.source_interface, local.defaults.iosxe.configuration.crypto.pki.trustpoints.source_interface, null)
-    subject_name          = try(tp.subject_name, local.defaults.iosxe.configuration.crypto.pki.trustpoints.subject_name, null)
-    usage                 = try(tp.usage, local.defaults.iosxe.configuration.crypto.pki.trustpoints.usage, null)
+    enrollment_mode_ra    = try(tp.enrollment_mode_ra, null)
+    enrollment_pkcs12     = try(tp.enrollment_pkcs12, null)
+    enrollment_selfsigned = try(tp.enrollment_selfsigned, null)
+    enrollment_terminal   = try(tp.enrollment_terminal, null)
+    hash                  = try(tp.hash, null)
+    revocation_check      = try(tp.revocation_check, null)
+    rsakeypair            = try(tp.rsakeypair, null)
+    source_interface      = try(tp.source_interface, null)
+    subject_name          = try(tp.subject_name, null)
+    usage                 = try(tp.usage, null)
   }]
 }
 
 resource "iosxe_crypto" "crypto_engine" {
-  for_each = { for device in local.devices : device.name => device if try(local.device_config[device.name].crypto.engine, null) != null || try(local.defaults.iosxe.configuration.crypto.engine, null) != null }
+  for_each = { for device in local.devices : device.name => device if try(local.device_config[device.name].crypto.engine, null) != null }
   device   = each.value.name
 
-  engine_compliance_shield_disable = try(local.device_config[each.value.name].crypto.engine.compliance_shield_disable, local.defaults.iosxe.configuration.crypto.engine.compliance_shield_disable, null)
+  engine_compliance_shield_disable = try(local.device_config[each.value.name].crypto.engine.compliance_shield_disable, null)
 }

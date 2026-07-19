@@ -6,11 +6,11 @@ locals {
         device                    = device.name
         area_tag                  = try(process.area_tag, null)
         nets                      = try(process.nets, null)
-        metric_style_wide         = try(process.metric_style_wide, local.defaults.iosxe.configuration.routing.isis_processes.metric_style_wide, null)
-        metric_style_narrow       = try(process.metric_style_narrow, local.defaults.iosxe.configuration.routing.isis_processes.metric_style_narrow, null)
-        metric_style_transition   = try(process.metric_style_transition, local.defaults.iosxe.configuration.routing.isis_processes.metric_style_transition, null)
-        log_adjacency_changes     = try(process.log_adjacency_changes, local.defaults.iosxe.configuration.routing.isis_processes.log_adjacency_changes, null)
-        log_adjacency_changes_all = try(process.log_adjacency_changes_all, local.defaults.iosxe.configuration.routing.isis_processes.log_adjacency_changes_all, null)
+        metric_style_wide         = try(process.metric_style_wide, null)
+        metric_style_narrow       = try(process.metric_style_narrow, null)
+        metric_style_transition   = try(process.metric_style_transition, null)
+        log_adjacency_changes     = try(process.log_adjacency_changes, null)
+        log_adjacency_changes_all = try(process.log_adjacency_changes_all, null)
       }
     ]
   ])
