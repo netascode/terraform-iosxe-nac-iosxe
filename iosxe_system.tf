@@ -30,8 +30,9 @@ resource "iosxe_system" "system" {
   igmp_snooping_querier_timer_expiry      = try(local.device_config[each.value.name].system.igmp_snooping_querier_timer_expiry, null)
 
   # New global configurations
-  ip_default_gateway = try(local.device_config[each.value.name].system.ip_default_gateway, null)
-  device_classifier  = try(local.device_config[each.value.name].system.device_classifier, null)
+  ip_default_gateway           = try(local.device_config[each.value.name].system.ip_default_gateway, null)
+  device_classifier            = try(local.device_config[each.value.name].system.device_classifier, null)
+  mac_address_table_aging_time = try(local.device_config[each.value.name].system.mac_address_table_aging_time, null)
 
   # Archive configuration
   archive_log_config_logging_enable  = try(local.device_config[each.value.name].system.archive.log_config_logging_enable, null)
