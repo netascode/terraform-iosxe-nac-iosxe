@@ -5,13 +5,13 @@ locals {
         key                 = format("%s/%s", device.name, vrf.name)
         device              = device.name
         name                = vrf.name
-        description         = try(vrf.description, local.defaults.iosxe.configuration.vrfs.description, null)
-        rd                  = try(vrf.route_distinguisher, local.defaults.iosxe.configuration.vrfs.route_distinguisher, null)
-        rd_auto             = try(vrf.rd_auto, local.defaults.iosxe.configuration.vrfs.rd_auto, null)
-        address_family_ipv4 = try(vrf.address_family_ipv4.enable, local.defaults.iosxe.configuration.vrfs.address_family_ipv4.enable, try(vrf.address_family_ipv4, null) != null ? true : null)
-        address_family_ipv6 = try(vrf.address_family_ipv6.enable, local.defaults.iosxe.configuration.vrfs.address_family_ipv6.enable, try(vrf.address_family_ipv6, null) != null ? true : null)
+        description         = try(vrf.description, null)
+        rd                  = try(vrf.route_distinguisher, null)
+        rd_auto             = try(vrf.rd_auto, null)
+        address_family_ipv4 = try(vrf.address_family_ipv4.enable, try(vrf.address_family_ipv4, null) != null ? true : null)
+        address_family_ipv6 = try(vrf.address_family_ipv6.enable, try(vrf.address_family_ipv6, null) != null ? true : null)
 
-        vpn_id = try(vrf.vpn_id, local.defaults.iosxe.configuration.vrfs.vpn_id, null)
+        vpn_id = try(vrf.vpn_id, null)
 
         vnids = try(length(vrf.vnid) == 0, true) ? null : [
           for v in vrf.vnid : {
@@ -58,8 +58,8 @@ locals {
           }
         ]
 
-        ipv4_import_map = try(vrf.address_family_ipv4.import_map, local.defaults.iosxe.configuration.vrfs.address_family_ipv4.import_map, null)
-        ipv4_export_map = try(vrf.address_family_ipv4.export_map, local.defaults.iosxe.configuration.vrfs.address_family_ipv4.export_map, null)
+        ipv4_import_map = try(vrf.address_family_ipv4.import_map, null)
+        ipv4_export_map = try(vrf.address_family_ipv4.export_map, null)
 
         ipv6_route_target_import = try(length(vrf.address_family_ipv6.import_route_targets) == 0, true) ? null : [
           for rt in vrf.address_family_ipv6.import_route_targets : {
@@ -85,104 +85,40 @@ locals {
           }
         ]
 
-        ipv6_import_map = try(vrf.address_family_ipv6.import_map, local.defaults.iosxe.configuration.vrfs.address_family_ipv6.import_map, null)
-        ipv6_export_map = try(vrf.address_family_ipv6.export_map, local.defaults.iosxe.configuration.vrfs.address_family_ipv6.export_map, null)
+        ipv6_import_map = try(vrf.address_family_ipv6.import_map, null)
+        ipv6_export_map = try(vrf.address_family_ipv6.export_map, null)
 
-        ipv4_evpn_mcast_mdt_default_address = try(
-          vrf.address_family_ipv4.evpn_mcast.mdt_default_address,
-          local.defaults.iosxe.configuration.vrfs.address_family_ipv4.evpn_mcast.mdt_default_address,
-          null
-        )
+        ipv4_evpn_mcast_mdt_default_address = try(vrf.address_family_ipv4.evpn_mcast.mdt_default_address, null)
 
-        ipv4_evpn_mcast_anycast = try(
-          vrf.address_family_ipv4.evpn_mcast.anycast,
-          local.defaults.iosxe.configuration.vrfs.address_family_ipv4.evpn_mcast.anycast,
-          null
-        )
+        ipv4_evpn_mcast_anycast = try(vrf.address_family_ipv4.evpn_mcast.anycast, null)
 
-        ipv4_evpn_mcast_data_address = try(
-          vrf.address_family_ipv4.evpn_mcast.data_address,
-          local.defaults.iosxe.configuration.vrfs.address_family_ipv4.evpn_mcast.data_address,
-          null
-        )
+        ipv4_evpn_mcast_data_address = try(vrf.address_family_ipv4.evpn_mcast.data_address, null)
 
-        ipv4_evpn_mcast_data_mask_bits = try(
-          vrf.address_family_ipv4.evpn_mcast.data_mask_bits,
-          local.defaults.iosxe.configuration.vrfs.address_family_ipv4.evpn_mcast.data_mask_bits,
-          null
-        )
+        ipv4_evpn_mcast_data_mask_bits = try(vrf.address_family_ipv4.evpn_mcast.data_mask_bits, null)
 
-        ipv6_evpn_mcast_mdt_default_address = try(
-          vrf.address_family_ipv6.evpn_mcast.mdt_default_address,
-          local.defaults.iosxe.configuration.vrfs.address_family_ipv6.evpn_mcast.mdt_default_address,
-          null
-        )
+        ipv6_evpn_mcast_mdt_default_address = try(vrf.address_family_ipv6.evpn_mcast.mdt_default_address, null)
 
-        ipv6_evpn_mcast_anycast = try(
-          vrf.address_family_ipv6.evpn_mcast.anycast,
-          local.defaults.iosxe.configuration.vrfs.address_family_ipv6.evpn_mcast.anycast,
-          null
-        )
+        ipv6_evpn_mcast_anycast = try(vrf.address_family_ipv6.evpn_mcast.anycast, null)
 
-        ipv6_evpn_mcast_data_address = try(
-          vrf.address_family_ipv6.evpn_mcast.data_address,
-          local.defaults.iosxe.configuration.vrfs.address_family_ipv6.evpn_mcast.data_address,
-          null
-        )
+        ipv6_evpn_mcast_data_address = try(vrf.address_family_ipv6.evpn_mcast.data_address, null)
 
-        ipv6_evpn_mcast_data_mask_bits = try(
-          vrf.address_family_ipv6.evpn_mcast.data_mask_bits,
-          local.defaults.iosxe.configuration.vrfs.address_family_ipv6.evpn_mcast.data_mask_bits,
-          null
-        )
+        ipv6_evpn_mcast_data_mask_bits = try(vrf.address_family_ipv6.evpn_mcast.data_mask_bits, null)
 
-        ipv4_mdt_default_address = try(
-          vrf.address_family_ipv4.mdt.default_address,
-          local.defaults.iosxe.configuration.vrfs.address_family_ipv4.mdt.default_address,
-          null
-        )
+        ipv4_mdt_default_address = try(vrf.address_family_ipv4.mdt.default_address, null)
 
-        ipv4_mdt_auto_discovery_vxlan = try(
-          vrf.address_family_ipv4.mdt.auto_discovery_vxlan,
-          local.defaults.iosxe.configuration.vrfs.address_family_ipv4.mdt.auto_discovery_vxlan,
-          null
-        )
+        ipv4_mdt_auto_discovery_vxlan = try(vrf.address_family_ipv4.mdt.auto_discovery_vxlan, null)
 
-        ipv4_mdt_auto_discovery_vxlan_inter_as = try(
-          vrf.address_family_ipv4.mdt.auto_discovery_vxlan_inter_as,
-          local.defaults.iosxe.configuration.vrfs.address_family_ipv4.mdt.auto_discovery_vxlan_inter_as,
-          null
-        )
+        ipv4_mdt_auto_discovery_vxlan_inter_as = try(vrf.address_family_ipv4.mdt.auto_discovery_vxlan_inter_as, null)
 
-        ipv4_mdt_auto_discovery_interworking_vxlan_pim = try(
-          vrf.address_family_ipv4.mdt.auto_discovery_interworking_vxlan_pim,
-          local.defaults.iosxe.configuration.vrfs.address_family_ipv4.mdt.auto_discovery_interworking_vxlan_pim,
-          null
-        )
+        ipv4_mdt_auto_discovery_interworking_vxlan_pim = try(vrf.address_family_ipv4.mdt.auto_discovery_interworking_vxlan_pim, null)
 
-        ipv4_mdt_auto_discovery_interworking_vxlan_pim_inter_as = try(
-          vrf.address_family_ipv4.mdt.auto_discovery_interworking_vxlan_pim_inter_as,
-          local.defaults.iosxe.configuration.vrfs.address_family_ipv4.mdt.auto_discovery_interworking_vxlan_pim_inter_as,
-          null
-        )
+        ipv4_mdt_auto_discovery_interworking_vxlan_pim_inter_as = try(vrf.address_family_ipv4.mdt.auto_discovery_interworking_vxlan_pim_inter_as, null)
 
-        ipv4_mdt_overlay_use_bgp = try(
-          vrf.address_family_ipv4.mdt.overlay_use_bgp,
-          local.defaults.iosxe.configuration.vrfs.address_family_ipv4.mdt.overlay_use_bgp,
-          null
-        )
+        ipv4_mdt_overlay_use_bgp = try(vrf.address_family_ipv4.mdt.overlay_use_bgp, null)
 
-        ipv4_mdt_overlay_use_bgp_spt_only = try(
-          vrf.address_family_ipv4.mdt.overlay_use_bgp_spt_only,
-          local.defaults.iosxe.configuration.vrfs.address_family_ipv4.mdt.overlay_use_bgp_spt_only,
-          null
-        )
+        ipv4_mdt_overlay_use_bgp_spt_only = try(vrf.address_family_ipv4.mdt.overlay_use_bgp_spt_only, null)
 
-        ipv4_mdt_data_threshold = try(
-          vrf.address_family_ipv4.mdt.data_threshold,
-          local.defaults.iosxe.configuration.vrfs.address_family_ipv4.mdt.data_threshold,
-          null
-        )
+        ipv4_mdt_data_threshold = try(vrf.address_family_ipv4.mdt.data_threshold, null)
 
         ipv4_mdt_data_multicast = try(length(vrf.address_family_ipv4.mdt.data_multicast) == 0, true) ? null : [
           for dm in vrf.address_family_ipv4.mdt.data_multicast : {
