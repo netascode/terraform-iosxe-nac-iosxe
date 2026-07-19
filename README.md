@@ -128,6 +128,8 @@ No outputs.
 | [iosxe_dhcp.dhcp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/dhcp) | resource |
 | [iosxe_dot1x.dot1x](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/dot1x) | resource |
 | [iosxe_eem.eem](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/eem) | resource |
+| [iosxe_eigrp.eigrp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/eigrp) | resource |
+| [iosxe_eigrp_vrf.eigrp_vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/eigrp_vrf) | resource |
 | [iosxe_errdisable.errdisable](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/errdisable) | resource |
 | [iosxe_evpn.evpn](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/evpn) | resource |
 | [iosxe_evpn_ethernet_segment.evpn_ethernet_segment](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/evpn_ethernet_segment) | resource |
