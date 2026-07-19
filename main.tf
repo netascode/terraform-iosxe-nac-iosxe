@@ -39,8 +39,6 @@ locals {
 }
 
 provider "iosxe" {
-  username    = var.username
-  password    = var.password
   devices     = local.rendered.provider_devices
   auto_commit = var.device_transaction ? false : null
 }
