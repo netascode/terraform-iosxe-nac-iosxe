@@ -219,6 +219,7 @@ No outputs.
 | [iosxe_policy_map.policy_map_nested](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/policy_map) | resource |
 | [iosxe_policy_map_event.policy_map_event](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/policy_map_event) | resource |
 | [iosxe_prefix_list.prefix_list](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/prefix_list) | resource |
+| [iosxe_qos.qos](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/qos) | resource |
 | [iosxe_radius.radius](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/radius) | resource |
 | [iosxe_radius_server.radius_server](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/radius_server) | resource |
 | [iosxe_route_map.route_map](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/route_map) | resource |
