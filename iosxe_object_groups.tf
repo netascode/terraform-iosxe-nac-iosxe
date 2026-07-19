@@ -4,7 +4,7 @@ locals {
       device = device.name
       fqdn = try(length(local.device_config[device.name].object_groups_fqdn) == 0, true) ? null : [for og in local.device_config[device.name].object_groups_fqdn : {
         name        = og.name
-        description = try(og.description, local.defaults.iosxe.configuration.object_groups_fqdn.description, null)
+        description = try(og.description, null)
         group_objects = try(length(og.group_objects) == 0, true) ? null : [for g in og.group_objects : {
           group_name = g
         }]
@@ -14,7 +14,7 @@ locals {
       }]
       network = try(length(local.device_config[device.name].object_groups_network) == 0, true) ? null : [for og in local.device_config[device.name].object_groups_network : {
         name        = og.name
-        description = try(og.description, local.defaults.iosxe.configuration.object_groups_network.description, null)
+        description = try(og.description, null)
         hosts = try(length(og.hosts) == 0, true) ? null : [for h in og.hosts : {
           ipv4_host = h
         }]
