@@ -187,6 +187,7 @@ No outputs.
 | [iosxe_interface_pim_ipv6.vlan_pim_ipv6](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_pim_ipv6) | resource |
 | [iosxe_interface_port_channel.port_channel](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_port_channel) | resource |
 | [iosxe_interface_port_channel_subinterface.port_channel_subinterface](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_port_channel_subinterface) | resource |
+| [iosxe_interface_stackwise_virtual.stackwise_virtual_interface](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_stackwise_virtual) | resource |
 | [iosxe_interface_switchport.ethernet_switchport](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_switchport) | resource |
 | [iosxe_interface_switchport.ethernet_switchport_unmanaged](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_switchport) | resource |
 | [iosxe_interface_switchport.port_channel_switchport](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_switchport) | resource |
@@ -226,6 +227,7 @@ No outputs.
 | [iosxe_sla.sla](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/sla) | resource |
 | [iosxe_snmp_server.snmp_server](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/snmp_server) | resource |
 | [iosxe_spanning_tree.spanning_tree](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/spanning_tree) | resource |
+| [iosxe_stackwise_virtual.stackwise_virtual](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/stackwise_virtual) | resource |
 | [iosxe_static_route.static_route](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/static_route) | resource |
 | [iosxe_static_routes_vrf.static_routes_vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/static_routes_vrf) | resource |
 | [iosxe_system.system](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/system) | resource |
