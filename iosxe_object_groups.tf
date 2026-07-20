@@ -36,9 +36,7 @@ locals {
         group_objects = try(length(og.group_objects) == 0, true) ? null : [for g in og.group_objects : {
           group_name = g
         }]
-        protocol_numbers = try(length(og.protocol_numbers) == 0, true) ? null : [for n in og.protocol_numbers : {
-          number = n
-        }]
+        protocol_numbers          = try(length(og.protocol_numbers) == 0, true) ? null : og.protocol_numbers
         ahp                       = try(og.ahp, null)
         eigrp                     = try(og.eigrp, null)
         esp                       = try(og.esp, null)
