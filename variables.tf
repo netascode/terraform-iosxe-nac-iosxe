@@ -1,16 +1,3 @@
-variable "username" {
-  description = "Username for the IOS-XE devices. Can also be set using the IOSXE_USERNAME environment variable."
-  type        = string
-  default     = null
-}
-
-variable "password" {
-  description = "Password for the IOS-XE devices. Can also be set using the IOSXE_PASSWORD environment variable."
-  type        = string
-  default     = null
-  sensitive   = true
-}
-
 variable "yaml_directories" {
   description = "List of paths to YAML directories."
   type        = list(string)
