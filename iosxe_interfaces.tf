@@ -1941,6 +1941,8 @@ resource "iosxe_interface_port_channel" "port_channel" {
   load_interval                            = each.value.load_interval
   snmp_trap_link_status                    = each.value.snmp_trap_link_status
   logging_event_link_status_enable         = each.value.logging_event_link_status_enable
+  device_tracking                          = each.value.device_tracking
+  device_tracking_attached_policies        = each.value.device_tracking_attached_policies
   switchport                               = each.value.switchport
   auto_qos_classify                        = each.value.auto_qos_classify
   auto_qos_classify_police                 = each.value.auto_qos_classify_police
