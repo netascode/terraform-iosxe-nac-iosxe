@@ -31,6 +31,9 @@ locals {
         ebgp_multihop_max_hop            = try(template.ebgp_multihop_max_hop, null)
         update_source_interface_loopback = try(template.update_source_interface_type, null) == "Loopback" ? try(template.update_source_interface_id, null) : null
         inherit_peer_session             = try(template.inherit_peer_session, null)
+        ao_keychain                      = try(template.ao_keychain, null)
+        ao_include_tcp_options           = try(template.ao_include_tcp_options, null)
+        ao_accept_mismatch_connections   = try(template.ao_accept_mismatch_connections, null)
       }
     ]
   ])
@@ -49,6 +52,9 @@ resource "iosxe_bgp_peer_session_template" "bgp_peer_session_template" {
   ebgp_multihop_max_hop            = each.value.ebgp_multihop_max_hop
   update_source_interface_loopback = each.value.update_source_interface_loopback
   inherit_peer_session             = each.value.inherit_peer_session
+  ao_keychain                      = each.value.ao_keychain
+  ao_include_tcp_options           = each.value.ao_include_tcp_options
+  ao_accept_mismatch_connections   = each.value.ao_accept_mismatch_connections
 
   depends_on = [
     iosxe_bgp.bgp,
@@ -93,6 +99,9 @@ locals {
         ebgp_multihop                             = try(neighbor.ebgp_multihop, null)
         ebgp_multihop_max_hop                     = try(neighbor.ebgp_multihop_max_hop, null)
         inherit_peer_session                      = try(neighbor.inherit_peer_session, null)
+        ao_keychain                               = try(neighbor.ao_keychain, null)
+        ao_include_tcp_options                    = try(neighbor.ao_include_tcp_options, null)
+        ao_accept_mismatch_connections            = try(neighbor.ao_accept_mismatch_connections, null)
       }
     ]
   ])
@@ -133,6 +142,9 @@ resource "iosxe_bgp_neighbor" "bgp_neighbor" {
   ebgp_multihop                             = each.value.ebgp_multihop
   ebgp_multihop_max_hop                     = each.value.ebgp_multihop_max_hop
   inherit_peer_session                      = each.value.inherit_peer_session
+  ao_keychain                               = each.value.ao_keychain
+  ao_include_tcp_options                    = each.value.ao_include_tcp_options
+  ao_accept_mismatch_connections            = each.value.ao_accept_mismatch_connections
 
   depends_on = [
     iosxe_bgp.bgp,

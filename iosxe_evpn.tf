@@ -15,6 +15,13 @@ resource "iosxe_evpn" "evpn" {
   route_target_auto_vni     = try(local.device_config[each.value.name].evpn.route_target_auto_vni, null)
   anycast_gateway_mac_auto  = try(local.device_config[each.value.name].evpn.anycast_gateway_mac_auto, null)
   multicast_advertise       = try(local.device_config[each.value.name].evpn.multicast_advertise, null)
+  profiles = try(length(local.device_config[each.value.name].evpn_profile.profiles) == 0, true) ? null : [
+    for profile in local.device_config[each.value.name].evpn_profile.profiles : {
+      name       = try(profile.name, null)
+      evi_base   = try(profile.evi_base, null)
+      l2vni_base = try(profile.l2vni_base, null)
+    }
+  ]
 
   depends_on = [
     iosxe_interface_loopback.loopback

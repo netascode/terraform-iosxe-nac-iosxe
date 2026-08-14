@@ -242,6 +242,7 @@ resource "iosxe_aaa_authorization" "aaa_authorization" {
   device   = each.value.name
 
   config_commands = try(local.device_config[each.value.name].aaa.authorization.config_commands, null)
+  console         = try(local.device_config[each.value.name].aaa.authorization.console, null)
 
   config_lists = try(length(local.device_config[each.value.name].aaa.authorization.config_lists) == 0, true) ? null : [for e in local.device_config[each.value.name].aaa.authorization.config_lists : {
     name          = try(e.name, null)

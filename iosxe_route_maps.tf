@@ -9,7 +9,7 @@ locals {
         entries = try(length(route_map.entries) == 0, true) ? null : [for e in route_map.entries : {
           seq                              = try(e.seq, null)
           operation                        = try(e.operation, null)
-          description                      = try(e.description, null)
+          descriptions                     = try(e.description, null) != null ? [{ description = try(e.description, null) }] : null
           continue                         = try(e.continue, null)
           continue_sequence_number         = try(e.continue_sequence_number, null)
           match_as_paths                   = try(e.match.as_paths, null)

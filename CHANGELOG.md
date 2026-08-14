@@ -1,3 +1,93 @@
+## 1.0.0
+
+- BREAKING CHANGE: Consolidate the `license.accept_agreement`, `license.accept_end`, and `license.accept_user` provider mappings into a single `license.accept_eula` attribute
+- BREAKING CHANGE: Remove obsolete `license.feature_name`, `license.feature_port_bulk`, `license.feature_port_onegig`, `license.feature_port_b_6xonegig`, and `license.feature_port_tengig` attribute mappings
+- BREAKING CHANGE: Rename AAA policy-map event actions `authenticate_using_aaa_authc_list`/`authenticate_using_aaa_authz_list` to `..._legacy`, and add support for `authenticate_using_authc_list`, `authenticate_using_authz_list`, and `authenticate_using_aaa_config`
+- Add IS-IS module support for ethernet, VLAN, port-channel, and port-channel subinterfaces
+- Add module support for additional policy-map features
+- Add support for disabled VLANs in spanning-tree configuration
+- Add spanning-tree VLAN range support, expanding `vlans.ranges` into individual per-VLAN provider entries
+- Add port-channel and tunnel interface support to `interface_groups`
+- Add PIM support for tunnel interfaces
+- Add BGP BMP server support
+- Add IPv4 and IPv6 flow monitor support for tunnel interfaces
+- Add device-tracking (global and policy) module support
+- Add flow monitor support for port-channel interfaces and subinterfaces
+- Add IP SFTP username/password resource support
+- Add `bfd`, `dead_interval`, `hello_interval`, `mtu_ignore`, and `priority` mappings to tunnel OSPFv3 interfaces
+- Add FQDN object-group module support and extended ACL FQDN-group references
+- Add range expansion support for ethernet and port-channel interfaces
+- Add SHA-2 authentication mapping for SNMPv3 users
+- Add `match_result_type_success` to the class-map resource
+- Add `address_dhcp` mapping for all interface types
+- Add zone-based firewall module support (class-map type inspect, policy-map type inspect, parameter-maps, zone security, and zone-pair security)
+- Add `additional_equal_ports` support to access-list source entries
+- Add IPv6 prefix-list module support and fix BGP IPv6 neighbor route-maps
+- Add `mtu`/`ip_mtu` to port-channel, loopback, VLAN, port-channel subinterface, and BDI resources
+- Add `evpn_ethernet_segments_legacy` to port-channel interfaces
+- Add `relay_bootp_ignore` to the DHCP module
+- Add route-map and metric support to BGP redistribute connected/static
+- Add lifetime and interface attributes to the crypto module
+- Add `key_chain` module support
+- Add `iosxe_dhcp_pool` module support
+- Add `iosxe_ipv6_local_pool` and IPv6 DHCP pool module support
+- Add OSPF `non_passive_interfaces` module support
+- Add `bandwidth`, tunnel bandwidth, and service-policy attributes to tunnel interfaces
+- Add `match_access_group_index` support for numbered ACLs in class-maps
+- Add `service_policy` pass-through for policy-map actions
+- Add OSPF authentication attributes to interface resources
+- Add password attributes to `line_aux` entries
+- Add ethernet subinterface locals and resources
+- Add `interface_group_policy` for merge/replace control
+- Wire spanning-tree portfast and BPDU-guard attributes for port-channel interfaces
+- Add switchport voice VLAN support to the interface module
+- Add OSPF redistribute options, distribute-list, and default-information-originate support
+- Add StackWise Virtual module support
+- Add the AAA authorization console attribute
+- Add power redundancy and automatic line-card recovery support to the system module
+- Add `mac_address_table_aging_time` to the system module
+- Add switch provisioning module support
+- Add QoS module support (`queue-softmax-multiplier`)
+- Add service object-group module support
+- Add BGP TCP-AO support to BGP neighbors and peer-session templates
+- Add uRPF attributes to interface resources
+- Add NHRP and GRE multipoint tunnel support
+- Add EIGRP named-mode module resources
+- Add `iosxe_interface_vrrp_v2` module support
+- Add username/password passthrough to the provider block
+- Fix `trunk_allowed_vlans` handling in templates
+- Work around SNMP host idempotency drift caused by the write-only `community_or_user` attribute
+- Add missing CTS dependency ordering
+- Fix MPLS YAML data lookup paths to match schema attribute names
+- Fix HCL construction of OSPF areas for port-channel interfaces
+- Add `depends_on` for the IPsec profile in the tunnel interface resource
+- Fix `aaa_authentication.enable_defaults_legacy` failing on IOS-XE 17.12.x
+- Fix the `eui_64` attribute to match the schema and provider resource definition
+- Normalize `accounting.connections` to never set a default leaf
+- Fix AAA dot1x methods index mapping and attribute handling
+- Add missing `iosxe_vrf.vrf` dependency to `iosxe_snmp_server`
+- Remove a duplicate broadcast attribute from `accounting.commands`
+- Translate `port_security_aging_type` between the schema enum and the provider's boolean attribute
+- Fix VLAN key generation to use `filter.name` instead of `filter.word`
+- Add a system dependency to PIM interface resources
+- Remove interface dependencies from the system resource's `depends_on`
+- Fix missing dot1x and AAA dependencies in the ethernet interface resource
+- Gate `icmp_msg_code` on a numeric `icmp_message_type` to fix idempotency drift
+- Add missing `iosxe_vrf.vrf` dependency to `iosxe_aaa`
+- Remove the standalone `auto_qos_voip` mapping
+- Suppress the logging console mapping when `console_severity` is set
+- Remove unsupported `wait_start` attributes from AAA accounting
+- Add `depends_on` between ethernet sub-interfaces and their parent interfaces
+- Add a port-channel dependency to the ethernet resource's `depends_on`
+- Split nested class-maps into a separate resource for dependency ordering
+- Add `depends_on` for `zone_security` and `policy_map` in zone-pair security
+- Add `iosxe_flow_monitor` to the tunnel interface's `depends_on`
+- Add `depends_on` for the object-group referenced by extended access-list entries
+- Split `private_vlan_association` into a separate resource for dependency ordering
+- Order hierarchical service-policy references in policy-maps
+- Use a `descriptions` list instead of the obsolete `description` leaf in route-maps
+- Replace `keys(int)` with `try()` for dynamic type compatibility in interface resources
+
 ## 0.1.0
 
 - Initial release
