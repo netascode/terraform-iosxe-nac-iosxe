@@ -70,11 +70,6 @@ resource "iosxe_line" "line" {
     iosxe_access_list_extended.access_list_extended
   ]
 
-  # Protocol choices from Cisco-IOS-XE-line.yang (YangModels/yang 17151),
-  # full YANG enum, not narrowed per switch model -- see PR/issue for why.
-  # transport_output strips all/none into booleans via contains(); raw list
-  # here still allows them. transport_input has no such stripping, so
-  # all/none aren't valid there -- use transport_input_all/_none instead.
   lifecycle {
     precondition {
       condition = alltrue(flatten([
@@ -111,7 +106,6 @@ resource "iosxe_line" "line" {
       error_message = "Invalid transport_preferred_protocol value in line.vtys for device ${each.value.name}. Valid choices (Cisco-IOS-XE-line.yang, 17.15.1): acercon, lat, mop, nasi, none, pad, rlogin, ssh, telnet, udptn."
     }
 
-    # all/none exclusive of other protocols (YANG choice constraint, see PR/issue)
     precondition {
       condition = alltrue([
         for c in try(local.device_config[each.value.name].line.consoles, []) :
@@ -128,7 +122,6 @@ resource "iosxe_line" "line" {
       error_message = "transport_output in line.vtys for device ${each.value.name} combines \"all\" or \"none\" with other protocols (or with each other). Per the YANG transport/output choice these are mutually exclusive -- specify either \"all\" alone, \"none\" alone, or a list of concrete protocol names."
     }
 
-    # transport_input_all/_none are separate booleans, not derived from the list
     precondition {
       condition = alltrue([
         for v in try(local.device_config[each.value.name].line.vtys, []) :
