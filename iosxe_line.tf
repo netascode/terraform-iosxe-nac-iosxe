@@ -19,7 +19,7 @@ resource "iosxe_line" "line" {
     logging_synchronous   = try(c.logging_synchronous, null)
     transport_output_all  = contains(try(c.transport_output, []), "all") ? true : null
     transport_output_none = contains(try(c.transport_output, []), "none") ? true : null
-    transport_output      = length(setsubtract(try(c.transport_output, []), ["all", "none"])) > 0 ? setsubtract(try(c.transport_output, []), ["all", "none"])[0] : null
+    transport_output      = length(setsubtract(try(c.transport_output, []), ["all", "none"])) > 0 ? tolist(setsubtract(try(c.transport_output, []), ["all", "none"])) : null
   }]
 
   vty = try(length(local.device_config[each.value.name].line.vtys) == 0, true) ? null : [for v in local.device_config[each.value.name].line.vtys : {
@@ -48,7 +48,7 @@ resource "iosxe_line" "line" {
     logging_synchronous          = try(v.logging_synchronous, null)
     transport_output_all         = contains(try(v.transport_output, []), "all") ? true : null
     transport_output_none        = contains(try(v.transport_output, []), "none") ? true : null
-    transport_output             = length(setsubtract(try(v.transport_output, []), ["all", "none"])) > 0 ? setsubtract(try(v.transport_output, []), ["all", "none"])[0] : null
+    transport_output             = length(setsubtract(try(v.transport_output, []), ["all", "none"])) > 0 ? tolist(setsubtract(try(v.transport_output, []), ["all", "none"])) : null
   }]
 
   aux = try(length(local.device_config[each.value.name].line.auxes) == 0, true) ? null : [for a in local.device_config[each.value.name].line.auxes : {
@@ -69,4 +69,80 @@ resource "iosxe_line" "line" {
     iosxe_access_list_standard.access_list_standard,
     iosxe_access_list_extended.access_list_extended
   ]
+
+  # Protocol choices from Cisco-IOS-XE-line.yang (YangModels/yang 17151),
+  # full YANG enum, not narrowed per switch model -- see PR/issue for why.
+  # transport_output strips all/none into booleans via contains(); raw list
+  # here still allows them. transport_input has no such stripping, so
+  # all/none aren't valid there -- use transport_input_all/_none instead.
+  lifecycle {
+    precondition {
+      condition = alltrue(flatten([
+        for c in try(local.device_config[each.value.name].line.consoles, []) : [
+          for p in try(c.transport_output, []) : contains(["acercon", "all", "lapb-ta", "lat", "mop", "nasi", "none", "pad", "rlogin", "ssh", "telnet", "udptn", "v120"], p)
+        ]
+      ]))
+      error_message = "Invalid transport_output value in line.consoles for device ${each.value.name}. Valid choices (Cisco-IOS-XE-line.yang, 17.15.1): acercon, all, lapb-ta, lat, mop, nasi, none, pad, rlogin, ssh, telnet, udptn, v120."
+    }
+
+    precondition {
+      condition = alltrue(flatten([
+        for v in try(local.device_config[each.value.name].line.vtys, []) : [
+          for p in try(v.transport_output, []) : contains(["acercon", "all", "lapb-ta", "lat", "mop", "nasi", "none", "pad", "rlogin", "ssh", "telnet", "udptn", "v120"], p)
+        ]
+      ]))
+      error_message = "Invalid transport_output value in line.vtys for device ${each.value.name}. Valid choices (Cisco-IOS-XE-line.yang, 17.15.1): acercon, all, lapb-ta, lat, mop, nasi, none, pad, rlogin, ssh, telnet, udptn, v120."
+    }
+
+    precondition {
+      condition = alltrue(flatten([
+        for v in try(local.device_config[each.value.name].line.vtys, []) : [
+          for p in try(v.transport_input, []) : contains(["acercon", "lapb-ta", "lat", "mop", "nasi", "pad", "rlogin", "ssh", "telnet", "udptn", "v120"], p)
+        ]
+      ]))
+      error_message = "Invalid transport_input value in line.vtys for device ${each.value.name}. Valid choices (Cisco-IOS-XE-line.yang, 17.15.1): acercon, lapb-ta, lat, mop, nasi, pad, rlogin, ssh, telnet, udptn, v120. Use transport_input_all / transport_input_none for the all/none keywords -- this module passes transport_input straight through to the provider, unlike transport_output, so 'all'/'none' here would be rejected by the device."
+    }
+
+    precondition {
+      condition = alltrue([
+        for v in try(local.device_config[each.value.name].line.vtys, []) :
+        try(v.transport_preferred_protocol, null) == null || contains(["acercon", "lat", "mop", "nasi", "none", "pad", "rlogin", "ssh", "telnet", "udptn"], v.transport_preferred_protocol)
+      ])
+      error_message = "Invalid transport_preferred_protocol value in line.vtys for device ${each.value.name}. Valid choices (Cisco-IOS-XE-line.yang, 17.15.1): acercon, lat, mop, nasi, none, pad, rlogin, ssh, telnet, udptn."
+    }
+
+    # all/none exclusive of other protocols (YANG choice constraint, see PR/issue)
+    precondition {
+      condition = alltrue([
+        for c in try(local.device_config[each.value.name].line.consoles, []) :
+        !(contains(try(c.transport_output, []), "all") || contains(try(c.transport_output, []), "none")) || length(try(c.transport_output, [])) == 1
+      ])
+      error_message = "transport_output in line.consoles for device ${each.value.name} combines \"all\" or \"none\" with other protocols (or with each other). Per the YANG transport/output choice these are mutually exclusive -- specify either \"all\" alone, \"none\" alone, or a list of concrete protocol names."
+    }
+
+    precondition {
+      condition = alltrue([
+        for v in try(local.device_config[each.value.name].line.vtys, []) :
+        !(contains(try(v.transport_output, []), "all") || contains(try(v.transport_output, []), "none")) || length(try(v.transport_output, [])) == 1
+      ])
+      error_message = "transport_output in line.vtys for device ${each.value.name} combines \"all\" or \"none\" with other protocols (or with each other). Per the YANG transport/output choice these are mutually exclusive -- specify either \"all\" alone, \"none\" alone, or a list of concrete protocol names."
+    }
+
+    # transport_input_all/_none are separate booleans, not derived from the list
+    precondition {
+      condition = alltrue([
+        for v in try(local.device_config[each.value.name].line.vtys, []) :
+        !(try(v.transport_input_all, false) == true && try(v.transport_input_none, false) == true)
+      ])
+      error_message = "transport_input_all and transport_input_none cannot both be true on the same vty line for device ${each.value.name}."
+    }
+
+    precondition {
+      condition = alltrue([
+        for v in try(local.device_config[each.value.name].line.vtys, []) :
+        !((try(v.transport_input_all, false) == true || try(v.transport_input_none, false) == true) && length(try(v.transport_input, [])) > 0)
+      ])
+      error_message = "transport_input_all/transport_input_none cannot be combined with a non-empty transport_input protocol list on the same vty line for device ${each.value.name}. Per the YANG transport/input choice these are mutually exclusive."
+    }
+  }
 }
