@@ -1,3 +1,7 @@
+## Unreleased
+
+- Fix `bridge_domain` member_interfaces `service_instances` attribute name (was incorrectly `service_instance` singular, causing the provider to silently drop the service-instance binding)
+
 ## 1.0.0
 
 - BREAKING CHANGE: Consolidate the `license.accept_agreement`, `license.accept_end`, and `license.accept_user` provider mappings into a single `license.accept_eula` attribute
