@@ -19,7 +19,7 @@ resource "iosxe_line" "line" {
     logging_synchronous   = try(c.logging_synchronous, null)
     transport_output_all  = contains(try(c.transport_output, []), "all") ? true : null
     transport_output_none = contains(try(c.transport_output, []), "none") ? true : null
-    transport_output      = length(setsubtract(try(c.transport_output, []), ["all", "none"])) > 0 ? setsubtract(try(c.transport_output, []), ["all", "none"])[0] : null
+    transport_output      = length(setsubtract(try(c.transport_output, []), ["all", "none"])) > 0 ? tolist(setsubtract(try(c.transport_output, []), ["all", "none"])) : null
   }]
 
   vty = try(length(local.device_config[each.value.name].line.vtys) == 0, true) ? null : [for v in local.device_config[each.value.name].line.vtys : {
@@ -48,7 +48,7 @@ resource "iosxe_line" "line" {
     logging_synchronous          = try(v.logging_synchronous, null)
     transport_output_all         = contains(try(v.transport_output, []), "all") ? true : null
     transport_output_none        = contains(try(v.transport_output, []), "none") ? true : null
-    transport_output             = length(setsubtract(try(v.transport_output, []), ["all", "none"])) > 0 ? setsubtract(try(v.transport_output, []), ["all", "none"])[0] : null
+    transport_output             = length(setsubtract(try(v.transport_output, []), ["all", "none"])) > 0 ? tolist(setsubtract(try(v.transport_output, []), ["all", "none"])) : null
   }]
 
   aux = try(length(local.device_config[each.value.name].line.auxes) == 0, true) ? null : [for a in local.device_config[each.value.name].line.auxes : {
@@ -69,4 +69,38 @@ resource "iosxe_line" "line" {
     iosxe_access_list_standard.access_list_standard,
     iosxe_access_list_extended.access_list_extended
   ]
+
+  lifecycle {
+    precondition {
+      condition = alltrue([
+        for c in try(local.device_config[each.value.name].line.consoles, []) :
+        !(contains(try(c.transport_output, []), "all") || contains(try(c.transport_output, []), "none")) || length(try(c.transport_output, [])) == 1
+      ])
+      error_message = "transport_output in line.consoles for device ${each.value.name} combines \"all\" or \"none\" with other protocols (or with each other). Per the YANG transport/output choice these are mutually exclusive -- specify either \"all\" alone, \"none\" alone, or a list of concrete protocol names."
+    }
+
+    precondition {
+      condition = alltrue([
+        for v in try(local.device_config[each.value.name].line.vtys, []) :
+        !(contains(try(v.transport_output, []), "all") || contains(try(v.transport_output, []), "none")) || length(try(v.transport_output, [])) == 1
+      ])
+      error_message = "transport_output in line.vtys for device ${each.value.name} combines \"all\" or \"none\" with other protocols (or with each other). Per the YANG transport/output choice these are mutually exclusive -- specify either \"all\" alone, \"none\" alone, or a list of concrete protocol names."
+    }
+
+    precondition {
+      condition = alltrue([
+        for v in try(local.device_config[each.value.name].line.vtys, []) :
+        !(try(v.transport_input_all, false) == true && try(v.transport_input_none, false) == true)
+      ])
+      error_message = "transport_input_all and transport_input_none cannot both be true on the same vty line for device ${each.value.name}."
+    }
+
+    precondition {
+      condition = alltrue([
+        for v in try(local.device_config[each.value.name].line.vtys, []) :
+        !((try(v.transport_input_all, false) == true || try(v.transport_input_none, false) == true) && length(try(v.transport_input, [])) > 0)
+      ])
+      error_message = "transport_input_all/transport_input_none cannot be combined with a non-empty transport_input protocol list on the same vty line for device ${each.value.name}. Per the YANG transport/input choice these are mutually exclusive."
+    }
+  }
 }
