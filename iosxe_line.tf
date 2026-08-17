@@ -72,41 +72,6 @@ resource "iosxe_line" "line" {
 
   lifecycle {
     precondition {
-      condition = alltrue(flatten([
-        for c in try(local.device_config[each.value.name].line.consoles, []) : [
-          for p in try(c.transport_output, []) : contains(["acercon", "all", "lapb-ta", "lat", "mop", "nasi", "none", "pad", "rlogin", "ssh", "telnet", "udptn", "v120"], p)
-        ]
-      ]))
-      error_message = "Invalid transport_output value in line.consoles for device ${each.value.name}. Valid choices (Cisco-IOS-XE-line.yang, 17.15.1): acercon, all, lapb-ta, lat, mop, nasi, none, pad, rlogin, ssh, telnet, udptn, v120."
-    }
-
-    precondition {
-      condition = alltrue(flatten([
-        for v in try(local.device_config[each.value.name].line.vtys, []) : [
-          for p in try(v.transport_output, []) : contains(["acercon", "all", "lapb-ta", "lat", "mop", "nasi", "none", "pad", "rlogin", "ssh", "telnet", "udptn", "v120"], p)
-        ]
-      ]))
-      error_message = "Invalid transport_output value in line.vtys for device ${each.value.name}. Valid choices (Cisco-IOS-XE-line.yang, 17.15.1): acercon, all, lapb-ta, lat, mop, nasi, none, pad, rlogin, ssh, telnet, udptn, v120."
-    }
-
-    precondition {
-      condition = alltrue(flatten([
-        for v in try(local.device_config[each.value.name].line.vtys, []) : [
-          for p in try(v.transport_input, []) : contains(["acercon", "lapb-ta", "lat", "mop", "nasi", "pad", "rlogin", "ssh", "telnet", "udptn", "v120"], p)
-        ]
-      ]))
-      error_message = "Invalid transport_input value in line.vtys for device ${each.value.name}. Valid choices (Cisco-IOS-XE-line.yang, 17.15.1): acercon, lapb-ta, lat, mop, nasi, pad, rlogin, ssh, telnet, udptn, v120. Use transport_input_all / transport_input_none for the all/none keywords -- this module passes transport_input straight through to the provider, unlike transport_output, so 'all'/'none' here would be rejected by the device."
-    }
-
-    precondition {
-      condition = alltrue([
-        for v in try(local.device_config[each.value.name].line.vtys, []) :
-        try(v.transport_preferred_protocol, null) == null || contains(["acercon", "lat", "mop", "nasi", "none", "pad", "rlogin", "ssh", "telnet", "udptn"], v.transport_preferred_protocol)
-      ])
-      error_message = "Invalid transport_preferred_protocol value in line.vtys for device ${each.value.name}. Valid choices (Cisco-IOS-XE-line.yang, 17.15.1): acercon, lat, mop, nasi, none, pad, rlogin, ssh, telnet, udptn."
-    }
-
-    precondition {
       condition = alltrue([
         for c in try(local.device_config[each.value.name].line.consoles, []) :
         !(contains(try(c.transport_output, []), "all") || contains(try(c.transport_output, []), "none")) || length(try(c.transport_output, [])) == 1
