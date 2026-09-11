@@ -11,6 +11,8 @@ locals {
         router_id         = try(eigrp.router_id, null)
         auto_summary      = try(eigrp.auto_summary, null)
         shutdown          = try(eigrp.shutdown, null)
+        stub_connected    = try(eigrp.stub_connected, null)
+        stub_summary      = try(eigrp.stub_summary, null)
 
         networks = try(length(eigrp.networks) == 0, true) ? null : [for network in eigrp.networks : {
           ip       = try(network.ip, null)
@@ -31,6 +33,8 @@ locals {
         router_id         = try(eigrp.router_id, null)
         auto_summary      = try(eigrp.auto_summary, null)
         shutdown          = try(eigrp.shutdown, null)
+        stub_connected    = try(eigrp.stub_connected, null)
+        stub_summary      = try(eigrp.stub_summary, null)
 
         networks = try(length(eigrp.networks) == 0, true) ? null : [for network in eigrp.networks : {
           ip       = try(network.ip, null)
@@ -51,6 +55,8 @@ resource "iosxe_eigrp" "eigrp" {
   router_id         = each.value.router_id
   auto_summary      = each.value.auto_summary
   shutdown          = each.value.shutdown
+  stub_connected    = each.value.stub_connected
+  stub_summary      = each.value.stub_summary
   networks          = each.value.networks
 }
 
@@ -65,5 +71,7 @@ resource "iosxe_eigrp_vrf" "eigrp_vrf" {
   router_id         = each.value.router_id
   auto_summary      = each.value.auto_summary
   shutdown          = each.value.shutdown
+  stub_connected    = each.value.stub_connected
+  stub_summary      = each.value.stub_summary
   networks          = each.value.networks
 }
