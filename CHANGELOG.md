@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Add `ip_ssh_server_algorithm_authentication`, `ip_ssh_server_algorithm_encryption`, `ip_ssh_server_algorithm_mac`, and `ip_ssh_server_algorithm_kex` module mappings for SSH server algorithm selection
 - Fix `bridge_domain` member_interfaces `service_instances` attribute name (was incorrectly `service_instance` singular, causing the provider to silently drop the service-instance binding)
 
 ## 1.0.0
