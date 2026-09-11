@@ -80,8 +80,12 @@ locals {
         device = device.name
 
         name                                          = profile.name
+        authentication_local_ecdsa_sig                = try(profile.authentication_local_ecdsa_sig, null)
         authentication_local_pre_share                = try(profile.authentication_local_pre_share, null)
+        authentication_local_rsa_sig                  = try(profile.authentication_local_rsa_sig, null)
+        authentication_remote_ecdsa_sig               = try(profile.authentication_remote_ecdsa_sig, null)
         authentication_remote_pre_share               = try(profile.authentication_remote_pre_share, null)
+        authentication_remote_rsa_sig                 = try(profile.authentication_remote_rsa_sig, null)
         config_exchange_request                       = try(profile.config_exchange_request, null)
         description                                   = try(profile.description, null)
         dpd_interval                                  = try(profile.dpd_interval, null)
@@ -94,6 +98,7 @@ locals {
         match_address_local_interface_loopback = try(length(profile.match_address_local_interface_loopback) == 0, true) ? null : [for e in profile.match_address_local_interface_loopback : {
           loopback_number = e.loopback_number
         }]
+        match_certificate_maps = try(profile.match_certificate_maps, null)
         ivrf                   = try(profile.ivrf, null)
         keyring_local          = try(profile.keyring_local, null)
         match_address_local_ip = try(profile.match_address_local_ip, null)
@@ -106,6 +111,10 @@ locals {
         match_identity_remote_ipv6_prefixes = try(profile.match_identity_remote_ipv6_prefixes, null)
         match_identity_remote_keys          = try(profile.match_identity_remote_keys, null)
         match_inbound_only                  = try(profile.match_inbound_only, null)
+        pki_trustpoints = try(length(profile.pki_trustpoints) == 0, true) ? null : [for e in profile.pki_trustpoints : {
+          name = e.name
+          uses = try(e.uses, null)
+        }]
       }
     ]
   ])
@@ -116,8 +125,12 @@ resource "iosxe_crypto_ikev2_profile" "crypto_ikev2_profile" {
   device   = each.value.device
 
   name                                          = each.value.name
+  authentication_local_ecdsa_sig                = each.value.authentication_local_ecdsa_sig
   authentication_local_pre_share                = each.value.authentication_local_pre_share
+  authentication_local_rsa_sig                  = each.value.authentication_local_rsa_sig
+  authentication_remote_ecdsa_sig               = each.value.authentication_remote_ecdsa_sig
   authentication_remote_pre_share               = each.value.authentication_remote_pre_share
+  authentication_remote_rsa_sig                 = each.value.authentication_remote_rsa_sig
   config_exchange_request                       = each.value.config_exchange_request
   description                                   = each.value.description
   dpd_interval                                  = each.value.dpd_interval
@@ -128,6 +141,7 @@ resource "iosxe_crypto_ikev2_profile" "crypto_ikev2_profile" {
   lifetime                                      = each.value.lifetime
   match_address_local_interface_loopback_legacy = each.value.match_address_local_interface_loopback_legacy
   match_address_local_interface_loopback        = each.value.match_address_local_interface_loopback
+  match_certificate_maps                        = each.value.match_certificate_maps
   ivrf                                          = each.value.ivrf
   keyring_local                                 = each.value.keyring_local
   match_address_local_ip                        = each.value.match_address_local_ip
@@ -137,10 +151,12 @@ resource "iosxe_crypto_ikev2_profile" "crypto_ikev2_profile" {
   match_identity_remote_ipv6_prefixes           = each.value.match_identity_remote_ipv6_prefixes
   match_identity_remote_keys                    = each.value.match_identity_remote_keys
   match_inbound_only                            = each.value.match_inbound_only
+  pki_trustpoints                               = each.value.pki_trustpoints
 
   depends_on = [
     iosxe_vrf.vrf,
-    iosxe_crypto_ikev2_keyring.crypto_ikev2_keyring
+    iosxe_crypto_ikev2_keyring.crypto_ikev2_keyring,
+    iosxe_crypto_pki.crypto_pki
   ]
 }
 

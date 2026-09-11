@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Add PKI certificate authentication support to `crypto.ikev2.profiles`: `authentication_local_rsa_sig`, `authentication_remote_rsa_sig`, `authentication_local_ecdsa_sig`, `authentication_remote_ecdsa_sig`, `pki_trustpoints` (list with `name` and `uses`), and `match_certificate_maps`
 - Fix `bridge_domain` member_interfaces `service_instances` attribute name (was incorrectly `service_instance` singular, causing the provider to silently drop the service-instance binding)
 
 ## 1.0.0
