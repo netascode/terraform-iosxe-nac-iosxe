@@ -316,3 +316,158 @@ resource "iosxe_crypto" "crypto_engine" {
 
   engine_compliance_shield_disable = try(local.device_config[each.value.name].crypto.engine.compliance_shield_disable, null)
 }
+
+locals {
+  gdoi_groups = flatten([
+    for device in local.devices : [
+      for group in try(local.device_config[device.name].crypto.gdoi_groups, []) : {
+        key    = format("%s/%s", device.name, group.name)
+        device = device.name
+
+        name                                           = group.name
+        identity_number                                = try(group.identity_number, null)
+        server_local                                   = try(group.server_local, null)
+        server_local_address_ipv4                      = try(group.server_local_address_ipv4, null)
+        server_local_gdoi                              = try(group.server_local_gdoi, null)
+        server_local_gikev2                            = try(group.server_local_gikev2, null)
+        server_local_pfs                               = try(group.server_local_pfs, null)
+        server_local_authorization_address_ipv4        = try(group.server_local_authorization_address_ipv4, null)
+        server_local_authorization_identity            = try(group.server_local_authorization_identity, null)
+        server_local_registration_interface            = try(group.server_local_registration_interface, null)
+        server_local_rekey_acknowledgement             = try(group.server_local_rekey_acknowledgement, null)
+        server_local_rekey_address_ipv4                = try(group.server_local_rekey_address_ipv4, null)
+        server_local_rekey_authentication_mypubkey_rsa = try(group.server_local_rekey_authentication_mypubkey_rsa, null)
+        server_local_rekey_lifetime_seconds            = try(group.server_local_rekey_lifetime_seconds, null)
+        server_local_rekey_retransmit_seconds          = try(group.server_local_rekey_retransmit_seconds, null)
+        server_local_rekey_retransmit_number           = try(group.server_local_rekey_retransmit_number, null)
+        server_local_rekey_retransmit_periodic         = try(group.server_local_rekey_retransmit_periodic, null)
+        server_local_rekey_sig_hash_algorithm          = try(group.server_local_rekey_sig_hash_algorithm, null)
+        server_local_rekey_transport_unicast           = try(group.server_local_rekey_transport_unicast, null)
+        server_local_redundancy                        = try(group.server_local_redundancy, null)
+        server_local_redundancy_local_priority         = try(group.server_local_redundancy_local_priority, null)
+        server_local_redundancy_peer_address_ipv4      = try(group.server_local_redundancy_peer_address_ipv4, null)
+        server_local_redundancy_protocol_pdu           = try(group.server_local_redundancy_protocol_pdu, null)
+        server_local_redundancy_protocol_version       = try(group.server_local_redundancy_protocol_version, null)
+        server_local_sa_receive_only                   = try(group.server_local_sa_receive_only, null)
+        server_local_sa_ipsec = try(length(group.server_local_sa_ipsec) == 0, true) ? null : [for e in group.server_local_sa_ipsec : {
+          sequence                   = e.sequence
+          match_address_ipv4         = try(e.match_address_ipv4, null)
+          profile                    = try(e.profile, null)
+          replay_counter             = try(e.replay_counter, null)
+          replay_counter_window_size = try(e.replay_counter_window_size, null)
+          replay_time                = try(e.replay_time, null)
+          replay_time_window_size    = try(e.replay_time_window_size, null)
+          tag_cts_sgt                = try(e.tag_cts_sgt, null)
+        }]
+        server_address_ipv4 = try(group.server_address_ipv4, null)
+
+        client_bypass_policy             = try(group.client_bypass_policy, null)
+        client_pfs                       = try(group.client_pfs, null)
+        client_fail_close_revert         = try(group.client_fail_close_revert, null)
+        client_protocol_gdoi             = try(group.client_protocol_gdoi, null)
+        client_protocol_gikev2           = try(group.client_protocol_gikev2, null)
+        client_recovery_check_interval   = try(group.client_recovery_check_interval, null)
+        client_registration_interface    = try(group.client_registration_interface, null)
+        client_rekey_encryption_3des_cbc = try(group.client_rekey_encryption_3des_cbc, null)
+        client_rekey_encryption_aes_128  = try(group.client_rekey_encryption_aes_128, null)
+        client_rekey_encryption_aes_192  = try(group.client_rekey_encryption_aes_192, null)
+        client_rekey_encryption_aes_256  = try(group.client_rekey_encryption_aes_256, null)
+        client_rekey_encryption_des_cbc  = try(group.client_rekey_encryption_des_cbc, null)
+        client_rekey_hash_sha            = try(group.client_rekey_hash_sha, null)
+        client_rekey_hash_sha256         = try(group.client_rekey_hash_sha256, null)
+        client_rekey_hash_sha384         = try(group.client_rekey_hash_sha384, null)
+        client_rekey_hash_sha512         = try(group.client_rekey_hash_sha512, null)
+        client_status_active_sa_track    = try(group.client_status_active_sa_track, null)
+        client_transform_sets            = try(group.client_transform_sets, null)
+        client_transport_encrypt_key     = try(group.client_transport_encrypt_key, null)
+      }
+    ]
+  ])
+}
+
+resource "iosxe_crypto_gdoi" "crypto_gdoi" {
+  for_each = { for e in local.gdoi_groups : e.key => e }
+  device   = each.value.device
+
+  name                                           = each.value.name
+  identity_number                                = each.value.identity_number
+  server_local                                   = each.value.server_local
+  server_local_address_ipv4                      = each.value.server_local_address_ipv4
+  server_local_gdoi                              = each.value.server_local_gdoi
+  server_local_gikev2                            = each.value.server_local_gikev2
+  server_local_pfs                               = each.value.server_local_pfs
+  server_local_authorization_address_ipv4        = each.value.server_local_authorization_address_ipv4
+  server_local_authorization_identity            = each.value.server_local_authorization_identity
+  server_local_registration_interface            = each.value.server_local_registration_interface
+  server_local_rekey_acknowledgement             = each.value.server_local_rekey_acknowledgement
+  server_local_rekey_address_ipv4                = each.value.server_local_rekey_address_ipv4
+  server_local_rekey_authentication_mypubkey_rsa = each.value.server_local_rekey_authentication_mypubkey_rsa
+  server_local_rekey_lifetime_seconds            = each.value.server_local_rekey_lifetime_seconds
+  server_local_rekey_retransmit_seconds          = each.value.server_local_rekey_retransmit_seconds
+  server_local_rekey_retransmit_number           = each.value.server_local_rekey_retransmit_number
+  server_local_rekey_retransmit_periodic         = each.value.server_local_rekey_retransmit_periodic
+  server_local_rekey_sig_hash_algorithm          = each.value.server_local_rekey_sig_hash_algorithm
+  server_local_rekey_transport_unicast           = each.value.server_local_rekey_transport_unicast
+  server_local_redundancy                        = each.value.server_local_redundancy
+  server_local_redundancy_local_priority         = each.value.server_local_redundancy_local_priority
+  server_local_redundancy_peer_address_ipv4      = each.value.server_local_redundancy_peer_address_ipv4
+  server_local_redundancy_protocol_pdu           = each.value.server_local_redundancy_protocol_pdu
+  server_local_redundancy_protocol_version       = each.value.server_local_redundancy_protocol_version
+  server_local_sa_receive_only                   = each.value.server_local_sa_receive_only
+  server_local_sa_ipsec                          = each.value.server_local_sa_ipsec
+  server_address_ipv4                            = each.value.server_address_ipv4
+  client_bypass_policy                           = each.value.client_bypass_policy
+  client_pfs                                     = each.value.client_pfs
+  client_fail_close_revert                       = each.value.client_fail_close_revert
+  client_protocol_gdoi                           = each.value.client_protocol_gdoi
+  client_protocol_gikev2                         = each.value.client_protocol_gikev2
+  client_recovery_check_interval                 = each.value.client_recovery_check_interval
+  client_registration_interface                  = each.value.client_registration_interface
+  client_rekey_encryption_3des_cbc               = each.value.client_rekey_encryption_3des_cbc
+  client_rekey_encryption_aes_128                = each.value.client_rekey_encryption_aes_128
+  client_rekey_encryption_aes_192                = each.value.client_rekey_encryption_aes_192
+  client_rekey_encryption_aes_256                = each.value.client_rekey_encryption_aes_256
+  client_rekey_encryption_des_cbc                = each.value.client_rekey_encryption_des_cbc
+  client_rekey_hash_sha                          = each.value.client_rekey_hash_sha
+  client_rekey_hash_sha256                       = each.value.client_rekey_hash_sha256
+  client_rekey_hash_sha384                       = each.value.client_rekey_hash_sha384
+  client_rekey_hash_sha512                       = each.value.client_rekey_hash_sha512
+  client_status_active_sa_track                  = each.value.client_status_active_sa_track
+  client_transform_sets                          = each.value.client_transform_sets
+  client_transport_encrypt_key                   = each.value.client_transport_encrypt_key
+
+  depends_on = [
+    iosxe_crypto_ikev2_profile.crypto_ikev2_profile,
+    iosxe_crypto_ipsec_profile.crypto_ipsec_profile
+  ]
+}
+
+locals {
+  crypto_map_gdoi = flatten([
+    for device in local.devices : [
+      for map in try(local.device_config[device.name].crypto.map_gdoi, []) : {
+        key    = format("%s/%s/%s", device.name, map.name, map.sequence_number)
+        device = device.name
+
+        name            = map.name
+        sequence_number = map.sequence_number
+        gdoi            = try(map.gdoi, null)
+        set_group       = try(map.set_group, null)
+      }
+    ]
+  ])
+}
+
+resource "iosxe_crypto_map_gdoi" "crypto_map_gdoi" {
+  for_each = { for e in local.crypto_map_gdoi : e.key => e }
+  device   = each.value.device
+
+  name            = each.value.name
+  sequence_number = each.value.sequence_number
+  gdoi            = each.value.gdoi
+  set_group       = each.value.set_group
+
+  depends_on = [
+    iosxe_crypto_gdoi.crypto_gdoi
+  ]
+}
