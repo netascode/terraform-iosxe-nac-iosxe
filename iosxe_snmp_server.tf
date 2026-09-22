@@ -12,6 +12,8 @@ resource "iosxe_snmp_server" "snmp_server" {
   enable_traps_bfd                                   = try(local.device_config[each.value.name].snmp_server.traps.bfd, null)
   enable_traps_bgp                                   = try(local.device_config[each.value.name].snmp_server.traps.bgp, null)
   enable_traps_bgp_cbgp2                             = try(local.device_config[each.value.name].snmp_server.traps.bgp_cbgp2, null)
+  enable_traps_bgp_cbgp2_state_changes               = try(local.device_config[each.value.name].snmp_server.traps.bgp_cbgp2_state_changes, null)
+  enable_traps_bgp_cbgp2_threshold_prefix            = try(local.device_config[each.value.name].snmp_server.traps.bgp_cbgp2_threshold_prefix, null)
   enable_traps_cbgp2                                 = try(local.device_config[each.value.name].snmp_server.traps.cbgp2, null)
   enable_traps_bridge_newroot                        = try(local.device_config[each.value.name].snmp_server.traps.bridge_newroot, null)
   enable_traps_bridge_topologychange                 = try(local.device_config[each.value.name].snmp_server.traps.bridge_topologychange, null)
@@ -87,6 +89,8 @@ resource "iosxe_snmp_server" "snmp_server" {
   enable_traps_ospf_shamlink_neighbor                = try(local.device_config[each.value.name].snmp_server.traps.ospf_shamlink_neighbor, null)
   enable_traps_ospfv3_config_errors                  = try(local.device_config[each.value.name].snmp_server.traps.ospfv3_config_errors, null)
   enable_traps_ospfv3_config_state_change            = try(local.device_config[each.value.name].snmp_server.traps.ospfv3_config_state_change, null)
+  enable_traps_ospfv3_errors                         = try(local.device_config[each.value.name].snmp_server.traps.ospfv3_errors, null)
+  enable_traps_ospfv3_state_change                   = try(local.device_config[each.value.name].snmp_server.traps.ospfv3_state_change, null)
   enable_traps_pim_invalid_pim_message               = try(local.device_config[each.value.name].snmp_server.traps.pim_invalid_pim_message, null)
   enable_traps_pim_neighbor_change                   = try(local.device_config[each.value.name].snmp_server.traps.pim_neighbor_change, null)
   enable_traps_pim_rp_mapping_change                 = try(local.device_config[each.value.name].snmp_server.traps.pim_rp_mapping_change, null)
@@ -201,6 +205,14 @@ resource "iosxe_snmp_server" "snmp_server" {
   source_interface_traps_ten_gigabit_ethernet        = try(local.device_config[each.value.name].snmp_server.source_interface_traps_type, null) == "TenGigabitEthernet" ? try(trimprefix(local.device_config[each.value.name].snmp_server.source_interface_traps_id, "$string "), null) : null
   source_interface_traps_vlan                        = try(local.device_config[each.value.name].snmp_server.source_interface_traps_type, null) == "Vlan" ? try(local.device_config[each.value.name].snmp_server.source_interface_traps_id, null) : null
   system_shutdown                                    = try(local.device_config[each.value.name].snmp_server.system_shutdown, null)
+  trap_source_forty_gigabit_ethernet                 = try(local.device_config[each.value.name].snmp_server.trap_source_type, null) == "FortyGigabitEthernet" ? try(trimprefix(local.device_config[each.value.name].snmp_server.trap_source_id, "$string "), null) : null
+  trap_source_gigabit_ethernet                       = try(local.device_config[each.value.name].snmp_server.trap_source_type, null) == "GigabitEthernet" ? try(trimprefix(local.device_config[each.value.name].snmp_server.trap_source_id, "$string "), null) : null
+  trap_source_hundred_gig_e                          = try(local.device_config[each.value.name].snmp_server.trap_source_type, null) == "HundredGigE" ? try(trimprefix(local.device_config[each.value.name].snmp_server.trap_source_id, "$string "), null) : null
+  trap_source_loopback                               = try(local.device_config[each.value.name].snmp_server.trap_source_type, null) == "Loopback" ? try(local.device_config[each.value.name].snmp_server.trap_source_id, null) : null
+  trap_source_port_channel                           = try(local.device_config[each.value.name].snmp_server.trap_source_type, null) == "PortChannel" ? try(trimprefix(local.device_config[each.value.name].snmp_server.trap_source_id, "$string "), null) : null
+  trap_source_port_channel_subinterface              = try(local.device_config[each.value.name].snmp_server.trap_source_type, null) == "PortChannelSubinterface" ? try(trimprefix(local.device_config[each.value.name].snmp_server.trap_source_id, "$string "), null) : null
+  trap_source_ten_gigabit_ethernet                   = try(local.device_config[each.value.name].snmp_server.trap_source_type, null) == "TenGigabitEthernet" ? try(trimprefix(local.device_config[each.value.name].snmp_server.trap_source_id, "$string "), null) : null
+  trap_source_vlan                                   = try(local.device_config[each.value.name].snmp_server.trap_source_type, null) == "Vlan" ? try(local.device_config[each.value.name].snmp_server.trap_source_id, null) : null
   contexts = try(length(local.device_config[each.value.name].snmp_server.contexts) == 0, true) ? null : [for context in local.device_config[each.value.name].snmp_server.contexts : {
     name = context
   }]
