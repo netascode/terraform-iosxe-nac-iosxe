@@ -2849,24 +2849,25 @@ locals {
           name      = try(fm.name, null)
           direction = try(fm.direction, null)
         }]
-        bfd_enable                      = try(int.bfd.enable, null)
-        bfd_template                    = try(int.bfd.template, null)
-        bfd_local_address               = try(int.bfd.local_address, null)
-        bfd_interval                    = try(int.bfd.interval, null)
-        bfd_interval_min_rx             = try(int.bfd.interval_min_rx, null)
-        bfd_interval_multiplier         = try(int.bfd.interval_multiplier, null)
-        bfd_echo                        = try(int.bfd.echo, null)
-        tunnel_destination_ipv4         = try(int.tunnel_destination_ipv4, null)
-        tunnel_source                   = try(int.tunnel_source, null)
-        tunnel_vrf                      = try(int.tunnel_vrf, null)
-        tunnel_mode_ipsec_ipv4          = try(int.tunnel_mode_ipsec_ipv4, null)
-        tunnel_mode_gre_multipoint      = try(int.tunnel_mode_gre_multipoint, null)
-        tunnel_protection_ipsec_profile = try(int.tunnel_protection_ipsec_profile, null)
-        tunnel_key                      = try(int.tunnel_key, null)
-        tunnel_bandwidth_transmit       = try(int.tunnel_bandwidth_transmit, null)
-        tunnel_bandwidth_receive        = try(int.tunnel_bandwidth_receive, null)
-        ip_nhrp_authentication          = try(int.ip_nhrp_authentication, null)
-        ip_nhrp_network_id              = try(int.ip_nhrp_network_id, null)
+        bfd_enable                             = try(int.bfd.enable, null)
+        bfd_template                           = try(int.bfd.template, null)
+        bfd_local_address                      = try(int.bfd.local_address, null)
+        bfd_interval                           = try(int.bfd.interval, null)
+        bfd_interval_min_rx                    = try(int.bfd.interval_min_rx, null)
+        bfd_interval_multiplier                = try(int.bfd.interval_multiplier, null)
+        bfd_echo                               = try(int.bfd.echo, null)
+        tunnel_destination_ipv4                = try(int.tunnel_destination_ipv4, null)
+        tunnel_source                          = try(int.tunnel_source, null)
+        tunnel_vrf                             = try(int.tunnel_vrf, null)
+        tunnel_mode_ipsec_ipv4                 = try(int.tunnel_mode_ipsec_ipv4, null)
+        tunnel_mode_gre_multipoint             = try(int.tunnel_mode_gre_multipoint, null)
+        tunnel_protection_ipsec_profile        = try(int.tunnel_protection_ipsec_profile, null)
+        tunnel_protection_ipsec_profile_legacy = try(int.tunnel_protection_ipsec_profile_legacy, null)
+        tunnel_key                             = try(int.tunnel_key, null)
+        tunnel_bandwidth_transmit              = try(int.tunnel_bandwidth_transmit, null)
+        tunnel_bandwidth_receive               = try(int.tunnel_bandwidth_receive, null)
+        ip_nhrp_authentication                 = try(int.ip_nhrp_authentication, null)
+        ip_nhrp_network_id                     = try(int.ip_nhrp_network_id, null)
         ip_nhrp_nhs = try(length(int.ip_nhrp_nhs) == 0, true) ? null : [for nhs in int.ip_nhrp_nhs : {
           ipv4 = try(nhs.ipv4, null)
         }]
@@ -2939,6 +2940,7 @@ locals {
         ipv6_pim_bsr_border                     = try(int.ipv6.pim.bsr_border, null)
         ipv6_pim_dr_priority                    = try(int.ipv6.pim.dr_priority, null)
         ip_igmp_version                         = try(int.igmp.version, null)
+        ip_router_isis                          = try(int.ip_router_isis, null)
       }
     ]
   ])
@@ -2948,67 +2950,69 @@ resource "iosxe_interface_tunnel" "tunnel" {
   for_each = { for v in local.interfaces_tunnels : v.key => v }
   device   = each.value.device
 
-  name                             = each.value.name
-  description                      = each.value.description
-  shutdown                         = each.value.shutdown
-  vrf_forwarding                   = each.value.vrf_forwarding
-  ipv4_address                     = each.value.ipv4_address
-  ipv4_address_mask                = each.value.ipv4_address_mask
-  ipv4_address_dhcp                = each.value.ipv4_address_dhcp
-  ip_proxy_arp                     = each.value.ip_proxy_arp
-  ip_dhcp_relay_source_interface   = each.value.ip_dhcp_relay_source_interface
-  helper_addresses                 = each.value.helper_addresses
-  ip_access_group_in               = each.value.ip_access_group_in
-  ip_access_group_in_enable        = each.value.ip_access_group_in_enable
-  ip_access_group_out              = each.value.ip_access_group_out
-  ip_access_group_out_enable       = each.value.ip_access_group_out_enable
-  ip_flow_monitors                 = each.value.ip_flow_monitors
-  ip_redirects                     = each.value.ip_redirects
-  ip_unreachables                  = each.value.ip_unreachables
-  ip_nat_inside                    = each.value.ip_nat_inside
-  ip_nat_outside                   = each.value.ip_nat_outside
-  zone_member_security             = each.value.zone_member_security
-  unnumbered                       = each.value.unnumbered
-  ipv6_enable                      = each.value.ipv6_enable
-  ipv6_addresses                   = each.value.ipv6_addresses
-  ipv6_link_local_addresses        = each.value.ipv6_link_local_addresses
-  ipv6_address_autoconfig_default  = each.value.ipv6_address_autoconfig_default
-  ipv6_address_dhcp                = each.value.ipv6_address_dhcp
-  ipv6_mtu                         = each.value.ipv6_mtu
-  ipv6_nd_ra_suppress_all          = each.value.ipv6_nd_ra_suppress_all
-  ipv6_flow_monitors               = each.value.ipv6_flow_monitors
-  bfd_enable                       = each.value.bfd_enable
-  bfd_template                     = each.value.bfd_template
-  bfd_local_address                = each.value.bfd_local_address
-  bfd_interval                     = each.value.bfd_interval
-  bfd_interval_min_rx              = each.value.bfd_interval_min_rx
-  bfd_interval_multiplier          = each.value.bfd_interval_multiplier
-  bfd_echo                         = each.value.bfd_echo
-  tunnel_destination_ipv4          = each.value.tunnel_destination_ipv4
-  tunnel_source                    = each.value.tunnel_source
-  tunnel_vrf                       = each.value.tunnel_vrf
-  tunnel_mode_ipsec_ipv4           = each.value.tunnel_mode_ipsec_ipv4
-  tunnel_mode_gre_multipoint       = each.value.tunnel_mode_gre_multipoint
-  tunnel_protection_ipsec_profile  = each.value.tunnel_protection_ipsec_profile
-  tunnel_key                       = each.value.tunnel_key
-  tunnel_bandwidth_transmit        = each.value.tunnel_bandwidth_transmit
-  tunnel_bandwidth_receive         = each.value.tunnel_bandwidth_receive
-  ip_nhrp_authentication           = each.value.ip_nhrp_authentication
-  ip_nhrp_network_id               = each.value.ip_nhrp_network_id
-  ip_nhrp_nhs                      = each.value.ip_nhrp_nhs
-  ip_nhrp_maps                     = each.value.ip_nhrp_maps
-  ip_nhrp_redirect                 = each.value.ip_nhrp_redirect
-  ip_nhrp_shortcut                 = each.value.ip_nhrp_shortcut
-  mpls_nhrp                        = each.value.mpls_nhrp
-  bandwidth                        = each.value.bandwidth
-  service_policy_input             = each.value.service_policy_input
-  service_policy_output            = each.value.service_policy_output
-  arp_timeout                      = each.value.arp_timeout
-  ip_mtu                           = each.value.ip_mtu
-  load_interval                    = each.value.load_interval
-  snmp_trap_link_status            = each.value.snmp_trap_link_status
-  logging_event_link_status_enable = each.value.logging_event_link_status_enable
-  ip_igmp_version                  = each.value.ip_igmp_version
+  name                                   = each.value.name
+  description                            = each.value.description
+  shutdown                               = each.value.shutdown
+  vrf_forwarding                         = each.value.vrf_forwarding
+  ipv4_address                           = each.value.ipv4_address
+  ipv4_address_mask                      = each.value.ipv4_address_mask
+  ipv4_address_dhcp                      = each.value.ipv4_address_dhcp
+  ip_proxy_arp                           = each.value.ip_proxy_arp
+  ip_dhcp_relay_source_interface         = each.value.ip_dhcp_relay_source_interface
+  helper_addresses                       = each.value.helper_addresses
+  ip_access_group_in                     = each.value.ip_access_group_in
+  ip_access_group_in_enable              = each.value.ip_access_group_in_enable
+  ip_access_group_out                    = each.value.ip_access_group_out
+  ip_access_group_out_enable             = each.value.ip_access_group_out_enable
+  ip_flow_monitors                       = each.value.ip_flow_monitors
+  ip_redirects                           = each.value.ip_redirects
+  ip_unreachables                        = each.value.ip_unreachables
+  ip_nat_inside                          = each.value.ip_nat_inside
+  ip_nat_outside                         = each.value.ip_nat_outside
+  zone_member_security                   = each.value.zone_member_security
+  unnumbered                             = each.value.unnumbered
+  ipv6_enable                            = each.value.ipv6_enable
+  ipv6_addresses                         = each.value.ipv6_addresses
+  ipv6_link_local_addresses              = each.value.ipv6_link_local_addresses
+  ipv6_address_autoconfig_default        = each.value.ipv6_address_autoconfig_default
+  ipv6_address_dhcp                      = each.value.ipv6_address_dhcp
+  ipv6_mtu                               = each.value.ipv6_mtu
+  ipv6_nd_ra_suppress_all                = each.value.ipv6_nd_ra_suppress_all
+  ipv6_flow_monitors                     = each.value.ipv6_flow_monitors
+  bfd_enable                             = each.value.bfd_enable
+  bfd_template                           = each.value.bfd_template
+  bfd_local_address                      = each.value.bfd_local_address
+  bfd_interval                           = each.value.bfd_interval
+  bfd_interval_min_rx                    = each.value.bfd_interval_min_rx
+  bfd_interval_multiplier                = each.value.bfd_interval_multiplier
+  bfd_echo                               = each.value.bfd_echo
+  tunnel_destination_ipv4                = each.value.tunnel_destination_ipv4
+  tunnel_source                          = each.value.tunnel_source
+  tunnel_vrf                             = each.value.tunnel_vrf
+  tunnel_mode_ipsec_ipv4                 = each.value.tunnel_mode_ipsec_ipv4
+  tunnel_mode_gre_multipoint             = each.value.tunnel_mode_gre_multipoint
+  tunnel_protection_ipsec_profile        = each.value.tunnel_protection_ipsec_profile
+  tunnel_protection_ipsec_profile_legacy = each.value.tunnel_protection_ipsec_profile_legacy
+  tunnel_key                             = each.value.tunnel_key
+  tunnel_bandwidth_transmit              = each.value.tunnel_bandwidth_transmit
+  tunnel_bandwidth_receive               = each.value.tunnel_bandwidth_receive
+  ip_nhrp_authentication                 = each.value.ip_nhrp_authentication
+  ip_nhrp_network_id                     = each.value.ip_nhrp_network_id
+  ip_nhrp_nhs                            = each.value.ip_nhrp_nhs
+  ip_nhrp_maps                           = each.value.ip_nhrp_maps
+  ip_nhrp_redirect                       = each.value.ip_nhrp_redirect
+  ip_nhrp_shortcut                       = each.value.ip_nhrp_shortcut
+  mpls_nhrp                              = each.value.mpls_nhrp
+  bandwidth                              = each.value.bandwidth
+  service_policy_input                   = each.value.service_policy_input
+  service_policy_output                  = each.value.service_policy_output
+  arp_timeout                            = each.value.arp_timeout
+  ip_mtu                                 = each.value.ip_mtu
+  load_interval                          = each.value.load_interval
+  snmp_trap_link_status                  = each.value.snmp_trap_link_status
+  logging_event_link_status_enable       = each.value.logging_event_link_status_enable
+  ip_igmp_version                        = each.value.ip_igmp_version
+  ip_router_isis                         = each.value.ip_router_isis
 
   depends_on = [
     iosxe_vrf.vrf,
@@ -3017,7 +3021,8 @@ resource "iosxe_interface_tunnel" "tunnel" {
     iosxe_access_list_extended.access_list_extended,
     iosxe_crypto_ipsec_profile.crypto_ipsec_profile,
     iosxe_policy_map.policy_map,
-    iosxe_flow_monitor.flow_monitor
+    iosxe_flow_monitor.flow_monitor,
+    iosxe_isis.isis
   ]
 }
 
