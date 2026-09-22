@@ -153,6 +153,7 @@ resource "iosxe_cli" "cli_0" {
     iosxe_lldp.lldp,
     iosxe_logging.logging,
     iosxe_mdt_subscription.mdt_subscription,
+    iosxe_monitor_session.monitor_session,
     iosxe_msdp.msdp,
     iosxe_nat.nat,
     iosxe_ntp.ntp,
