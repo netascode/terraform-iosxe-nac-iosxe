@@ -43,6 +43,7 @@ locals {
         vlan_based_replication_type_mp2mp    = try(instance.vlan_based.replication_type == "mp2mp", null)
         vlan_based_encapsulation             = try(instance.vlan_based.encapsulation, null)
         vlan_based_auto_route_target         = try(instance.vlan_based.auto_route_target, null)
+        vlan_based_auto_route_target_legacy  = try(instance.vlan_based.auto_route_target_legacy, null)
         vlan_based_rd                        = try(instance.vlan_based.rd, null)
         vlan_based_ip_local_learning_disable = try(instance.vlan_based.ip_local_learning_disable, null)
         vlan_based_ip_local_learning_enable  = try(instance.vlan_based.ip_local_learning_enable, null)
@@ -55,6 +56,10 @@ locals {
         vlan_based_route_target_exports = try(length(instance.vlan_based.route_target_exports) == 0, true) ? null : [for rt in instance.vlan_based.route_target_exports : {
           route_target = try(rt, null)
         }]
+        vlan_based_route_target_legacy        = try(instance.vlan_based.route_target_legacy, null)
+        vlan_based_route_target_both_legacy   = try(instance.vlan_based.route_target_both_legacy, null)
+        vlan_based_route_target_import_legacy = try(instance.vlan_based.route_target_import_legacy, null)
+        vlan_based_route_target_export_legacy = try(instance.vlan_based.route_target_export_legacy, null)
     }]
   ])
 }
@@ -63,21 +68,26 @@ resource "iosxe_evpn_instance" "evpn_instance" {
   for_each = { for e in local.evpn_instances : e.key => e }
   device   = each.value.device
 
-  evpn_instance_num                    = each.value.evpn_instance_num
-  vlan_based_replication_type_ingress  = each.value.vlan_based_replication_type_ingress
-  vlan_based_replication_type_static   = each.value.vlan_based_replication_type_static
-  vlan_based_replication_type_p2mp     = each.value.vlan_based_replication_type_p2mp
-  vlan_based_replication_type_mp2mp    = each.value.vlan_based_replication_type_mp2mp
-  vlan_based_encapsulation             = each.value.vlan_based_encapsulation
-  vlan_based_auto_route_target         = each.value.vlan_based_auto_route_target
-  vlan_based_rd                        = each.value.vlan_based_rd
-  vlan_based_ip_local_learning_disable = each.value.vlan_based_ip_local_learning_disable
-  vlan_based_ip_local_learning_enable  = each.value.vlan_based_ip_local_learning_enable
-  vlan_based_default_gateway_advertise = each.value.vlan_based_default_gateway_advertise
-  vlan_based_re_originate_route_type5  = each.value.vlan_based_re_originate_route_type5
-  vlan_based_route_target_imports      = each.value.vlan_based_route_target_imports
-  vlan_based_route_target_exports      = each.value.vlan_based_route_target_exports
-  vlan_based_multicast_advertise       = each.value.vlan_based_multicast_advertise
+  evpn_instance_num                     = each.value.evpn_instance_num
+  vlan_based_replication_type_ingress   = each.value.vlan_based_replication_type_ingress
+  vlan_based_replication_type_static    = each.value.vlan_based_replication_type_static
+  vlan_based_replication_type_p2mp      = each.value.vlan_based_replication_type_p2mp
+  vlan_based_replication_type_mp2mp     = each.value.vlan_based_replication_type_mp2mp
+  vlan_based_encapsulation              = each.value.vlan_based_encapsulation
+  vlan_based_auto_route_target          = each.value.vlan_based_auto_route_target
+  vlan_based_auto_route_target_legacy   = each.value.vlan_based_auto_route_target_legacy
+  vlan_based_rd                         = each.value.vlan_based_rd
+  vlan_based_ip_local_learning_disable  = each.value.vlan_based_ip_local_learning_disable
+  vlan_based_ip_local_learning_enable   = each.value.vlan_based_ip_local_learning_enable
+  vlan_based_default_gateway_advertise  = each.value.vlan_based_default_gateway_advertise
+  vlan_based_re_originate_route_type5   = each.value.vlan_based_re_originate_route_type5
+  vlan_based_route_target_imports       = each.value.vlan_based_route_target_imports
+  vlan_based_route_target_exports       = each.value.vlan_based_route_target_exports
+  vlan_based_route_target_legacy        = each.value.vlan_based_route_target_legacy
+  vlan_based_route_target_both_legacy   = each.value.vlan_based_route_target_both_legacy
+  vlan_based_route_target_import_legacy = each.value.vlan_based_route_target_import_legacy
+  vlan_based_route_target_export_legacy = each.value.vlan_based_route_target_export_legacy
+  vlan_based_multicast_advertise        = each.value.vlan_based_multicast_advertise
 }
 
 
