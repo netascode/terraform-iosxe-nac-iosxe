@@ -82,3 +82,108 @@ resource "iosxe_wireless_wlan_profile" "wireless_wlan_profile" {
   load_balance                          = each.value.load_balance
   wmm                                   = each.value.wmm
 }
+
+locals {
+  wireless_pp_anchor_map = { 1 = "export-anchor-primary", 2 = "export-anchor-secondary", 3 = "export-anchor-tertiary" }
+
+  wireless_policy_profiles = flatten([
+    for device in local.devices : [
+      for pp in try(local.device_config[device.name].wireless.policy_profiles, []) : {
+        key                   = format("%s/%s", device.name, pp.name)
+        device                = device.name
+        policy_profile_name   = pp.name
+        description           = try(pp.description, null)
+        status                = try(pp.shutdown, null) == null ? null : !pp.shutdown
+        vlan                  = try(tostring(pp.vlan), null)
+        accounting_list       = try(pp.accounting_list, null)
+        aaa_override          = try(pp.aaa_override, null)
+        nac                   = try(pp.nac, null)
+        nac_type              = try(pp.nac, false) ? "nac-support-radius" : null
+        session_timeout       = try(pp.session_timeout, null)
+        idle_timeout          = try(pp.idle_timeout, null)
+        exclusionlist_timeout = try(pp.exclusionlist_timeout, null)
+        ipv4_acl              = try(pp.ipv4_acl, null)
+        ipv6_acl              = try(pp.ipv6_acl, null)
+        service_policy_input  = try(pp.service_policy_input, null)
+        service_policy_output = try(pp.service_policy_output, null)
+        static_ip_mobility    = try(pp.static_ip_mobility, null)
+        dhcp_tlv_caching      = try(pp.dhcp_tlv_caching, null)
+        http_tlv_caching      = try(pp.http_tlv_caching, null)
+        ipv4_flow_monitors_input = try(length(pp.ipv4_flow_monitors_input) == 0, true) ? null : [
+          for m in pp.ipv4_flow_monitors_input : { name = m }
+        ]
+        ipv4_flow_monitors_output = try(length(pp.ipv4_flow_monitors_output) == 0, true) ? null : [
+          for m in pp.ipv4_flow_monitors_output : { name = m }
+        ]
+        mobility_anchors = try(length(pp.mobility_anchors) == 0, true) ? null : [
+          for a in pp.mobility_anchors : {
+            ip       = a.ip
+            priority = try(local.wireless_pp_anchor_map[a.priority], null)
+          }
+        ]
+      }
+    ]
+  ])
+
+  wireless_policy_tags = flatten([
+    for device in local.devices : [
+      for tag in try(local.device_config[device.name].wireless.policy_tags, []) : {
+        key         = format("%s/%s", device.name, tag.name)
+        device      = device.name
+        tag_name    = tag.name
+        description = try(tag.description, null)
+        wlan_policies = try(length(tag.wlan_policies) == 0, true) ? null : [
+          for m in tag.wlan_policies : {
+            wlan_profile_name   = m.wlan_profile
+            policy_profile_name = m.policy_profile
+          }
+        ]
+      }
+    ]
+  ])
+}
+
+resource "iosxe_wireless_policy_profile" "wireless_policy_profile" {
+  for_each = { for e in local.wireless_policy_profiles : e.key => e }
+
+  device                    = each.value.device
+  policy_profile_name       = each.value.policy_profile_name
+  description               = each.value.description
+  status                    = each.value.status
+  vlan                      = each.value.vlan
+  accounting_list           = each.value.accounting_list
+  aaa_override              = each.value.aaa_override
+  nac                       = each.value.nac
+  nac_type                  = each.value.nac_type
+  session_timeout           = each.value.session_timeout
+  idle_timeout              = each.value.idle_timeout
+  exclusionlist_timeout     = each.value.exclusionlist_timeout
+  ipv4_acl                  = each.value.ipv4_acl
+  ipv6_acl                  = each.value.ipv6_acl
+  ipv4_flow_monitors_input  = each.value.ipv4_flow_monitors_input
+  ipv4_flow_monitors_output = each.value.ipv4_flow_monitors_output
+  mobility_anchors          = each.value.mobility_anchors
+  service_policy_input      = each.value.service_policy_input
+  service_policy_output     = each.value.service_policy_output
+  static_ip_mobility        = each.value.static_ip_mobility
+  dhcp_tlv_caching          = each.value.dhcp_tlv_caching
+  http_tlv_caching          = each.value.http_tlv_caching
+
+  depends_on = [
+    iosxe_wireless_wlan_profile.wireless_wlan_profile,
+  ]
+}
+
+resource "iosxe_wireless_policy_tag" "wireless_policy_tag" {
+  for_each = { for e in local.wireless_policy_tags : e.key => e }
+
+  device        = each.value.device
+  tag_name      = each.value.tag_name
+  description   = each.value.description
+  wlan_policies = each.value.wlan_policies
+
+  depends_on = [
+    iosxe_wireless_policy_profile.wireless_policy_profile,
+    iosxe_wireless_wlan_profile.wireless_wlan_profile,
+  ]
+}
