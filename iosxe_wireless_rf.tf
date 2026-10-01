@@ -57,6 +57,20 @@ locals {
       }
     ]
   ])
+
+  wireless_rf_tags = flatten([
+    for device in local.devices : [
+      for tag in try(local.device_config[device.name].wireless.rf_tags, []) : {
+        key             = format("%s/%s", device.name, tag.name)
+        device          = device.name
+        name            = tag.name
+        description     = try(tag.description, null)
+        rf_policy_24ghz = try(tag.rf_policy_24ghz, null)
+        rf_policy_5ghz  = try(tag.rf_policy_5ghz, null)
+        rf_policy_6ghz  = try(tag.rf_policy_6ghz, null)
+      }
+    ]
+  ])
 }
 
 resource "iosxe_wireless_rf_profile" "wireless_rf_profile" {
@@ -97,4 +111,19 @@ resource "iosxe_wireless_rf_profile" "wireless_rf_profile" {
   trap_threshold_clients         = each.value.trap_threshold_clients
   trap_threshold_interference    = each.value.trap_threshold_interference
   trap_threshold_noise           = each.value.trap_threshold_noise
+}
+
+resource "iosxe_wireless_rf_tag" "wireless_rf_tag" {
+  for_each = { for e in local.wireless_rf_tags : e.key => e }
+
+  device          = each.value.device
+  name            = each.value.name
+  description     = each.value.description
+  rf_policy_24ghz = each.value.rf_policy_24ghz
+  rf_policy_5ghz  = each.value.rf_policy_5ghz
+  rf_policy_6ghz  = each.value.rf_policy_6ghz
+
+  depends_on = [
+    iosxe_wireless_rf_profile.wireless_rf_profile,
+  ]
 }
