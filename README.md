@@ -38,7 +38,7 @@ module "iosxe" {
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.9.0 |
 | <a name="requirement_iosxe"></a> [iosxe](#requirement\_iosxe) | >= 1.0.0 |
 | <a name="requirement_local"></a> [local](#requirement\_local) | >= 2.5.0, < 3.0.0 |
@@ -46,7 +46,7 @@ module "iosxe" {
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_device_transaction"></a> [device\_transaction](#input\_device\_transaction) | Enable device transaction mode. This will group all changes into a single transaction. | `bool` | `false` | no |
 | <a name="input_managed_device_groups"></a> [managed\_device\_groups](#input\_managed\_device\_groups) | List of device group names to be managed. By default all device groups will be managed. | `list(string)` | `[]` | no |
 | <a name="input_managed_devices"></a> [managed\_devices](#input\_managed\_devices) | List of device names to be managed. By default all devices will be managed. | `list(string)` | `[]` | no |
@@ -63,7 +63,7 @@ No outputs.
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [iosxe_aaa.aaa](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/aaa) | resource |
 | [iosxe_aaa_accounting.aaa_accounting](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/aaa_accounting) | resource |
 | [iosxe_aaa_authentication.aaa_authentication](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/aaa_authentication) | resource |
@@ -250,6 +250,7 @@ No outputs.
 | [iosxe_vlan_group.vlan_group](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/vlan_group) | resource |
 | [iosxe_vrf.vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/vrf) | resource |
 | [iosxe_vtp.vtp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/vtp) | resource |
+| [iosxe_wireless_mesh_profile.wireless_mesh_profile](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/wireless_mesh_profile) | resource |
 | [iosxe_zone_pair_security.zone_pair_security](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/zone_pair_security) | resource |
 | [iosxe_zone_security.zone_security](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/zone_security) | resource |
 | [local_sensitive_file.model](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/sensitive_file) | resource |
