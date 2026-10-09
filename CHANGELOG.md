@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Fix EIGRP resources missing a dependency on `iosxe_system`, which caused EIGRP to fail with `%Must enable IP routing first` when `system.ip_routing` was enabled in the same apply
 - Fix `bridge_domain` member_interfaces `service_instances` attribute name (was incorrectly `service_instance` singular, causing the provider to silently drop the service-instance binding)
 
 ## 1.0.0
