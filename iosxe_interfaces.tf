@@ -2869,9 +2869,8 @@ locals {
         ip_nhrp_network_id              = try(int.ip_nhrp_network_id, null)
         ip_nhrp_nhs = try(length(int.ip_nhrp_nhs) == 0, true) ? null : [for nhs in int.ip_nhrp_nhs : {
           ipv4 = try(nhs.ipv4, null)
-          nbma_ipv4s = try(length(nhs.nbma_ipv4s) == 0, true) ? null : [for n in nhs.nbma_ipv4s : {
-            ipv4 = n
-          }]
+          # IOS-XE applies one NBMA per NHS, so the data model holds a single address; the provider models the YANG list.
+          nbma_ipv4s = try(nhs.nbma_ipv4, null) == null ? null : [{ ipv4 = nhs.nbma_ipv4 }]
         }]
         ip_nhrp_maps = try(length(int.ip_nhrp_maps) == 0, true) ? null : [for m in int.ip_nhrp_maps : {
           dest_ipv4 = try(m.dest_ipv4, null)
