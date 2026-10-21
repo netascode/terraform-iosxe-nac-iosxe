@@ -1,6 +1,6 @@
 ## Unreleased
 
-- Add VRRPv3 IPv4, IPv6, FHRP, and object tracking module support for ethernet, VLAN, port-channel, and port-channel subinterface resources
+- Add VRRPv3 (`vrrp_groups`, one group with optional `ipv4` and `ipv6` address families) and FHRP module support for ethernet, VLAN, port-channel, and port-channel subinterface resources, using the `iosxe_interface_vrrp` and `iosxe_fhrp` resources
 - Fix `bridge_domain` member_interfaces `service_instances` attribute name (was incorrectly `service_instance` singular, causing the provider to silently drop the service-instance binding)
 
 ## 1.0.0

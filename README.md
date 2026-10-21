@@ -38,7 +38,7 @@ module "iosxe" {
 ## Requirements
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.9.0 |
 | <a name="requirement_iosxe"></a> [iosxe](#requirement\_iosxe) | >= 1.0.0 |
 | <a name="requirement_local"></a> [local](#requirement\_local) | >= 2.5.0, < 3.0.0 |
@@ -46,7 +46,7 @@ module "iosxe" {
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-| ---- | ----------- | ---- | ------- | :------: |
+|------|-------------|------|---------|:--------:|
 | <a name="input_device_transaction"></a> [device\_transaction](#input\_device\_transaction) | Enable device transaction mode. This will group all changes into a single transaction. | `bool` | `false` | no |
 | <a name="input_managed_device_groups"></a> [managed\_device\_groups](#input\_managed\_device\_groups) | List of device group names to be managed. By default all device groups will be managed. | `list(string)` | `[]` | no |
 | <a name="input_managed_devices"></a> [managed\_devices](#input\_managed\_devices) | List of device names to be managed. By default all devices will be managed. | `list(string)` | `[]` | no |
@@ -63,7 +63,7 @@ No outputs.
 ## Resources
 
 | Name | Type |
-| ---- | ---- |
+|------|------|
 | [iosxe_aaa.aaa](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/aaa) | resource |
 | [iosxe_aaa_accounting.aaa_accounting](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/aaa_accounting) | resource |
 | [iosxe_aaa_authentication.aaa_authentication](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/aaa_authentication) | resource |
@@ -196,6 +196,8 @@ No outputs.
 | [iosxe_interface_switchport.port_channel_switchport](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_switchport) | resource |
 | [iosxe_interface_tunnel.tunnel](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_tunnel) | resource |
 | [iosxe_interface_vlan.vlan](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_vlan) | resource |
+| [iosxe_interface_vrrp.vrrp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_vrrp) | resource |
+| [iosxe_interface_vrrp.vrrp_unmanaged](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_vrrp) | resource |
 | [iosxe_interface_vrrp_v2.vrrp_v2](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_vrrp_v2) | resource |
 | [iosxe_interface_vrrp_v2.vrrp_v2_unmanaged](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_vrrp_v2) | resource |
 | [iosxe_ipv6_local_pool.ipv6_local_pool](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/ipv6_local_pool) | resource |
@@ -250,10 +252,6 @@ No outputs.
 | [iosxe_vlan_filter.vlan_filter](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/vlan_filter) | resource |
 | [iosxe_vlan_group.vlan_group](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/vlan_group) | resource |
 | [iosxe_vrf.vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/vrf) | resource |
-| [iosxe_vrrp.vrrp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/vrrp) | resource |
-| [iosxe_vrrp.vrrp_unmanaged](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/vrrp) | resource |
-| [iosxe_vrrp_ipv6.vrrp_ipv6](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/vrrp_ipv6) | resource |
-| [iosxe_vrrp_ipv6.vrrp_ipv6_unmanaged](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/vrrp_ipv6) | resource |
 | [iosxe_vtp.vtp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/vtp) | resource |
 | [iosxe_zone_pair_security.zone_pair_security](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/zone_pair_security) | resource |
 | [iosxe_zone_security.zone_security](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/zone_security) | resource |
