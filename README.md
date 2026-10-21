@@ -134,6 +134,7 @@ No outputs.
 | [iosxe_evpn.evpn](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/evpn) | resource |
 | [iosxe_evpn_ethernet_segment.evpn_ethernet_segment](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/evpn_ethernet_segment) | resource |
 | [iosxe_evpn_instance.evpn_instance](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/evpn_instance) | resource |
+| [iosxe_fhrp.fhrp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/fhrp) | resource |
 | [iosxe_flow_exporter.flow_exporter](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/flow_exporter) | resource |
 | [iosxe_flow_monitor.flow_monitor](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/flow_monitor) | resource |
 | [iosxe_flow_record.flow_record](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/flow_record) | resource |
@@ -195,6 +196,8 @@ No outputs.
 | [iosxe_interface_switchport.port_channel_switchport](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_switchport) | resource |
 | [iosxe_interface_tunnel.tunnel](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_tunnel) | resource |
 | [iosxe_interface_vlan.vlan](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_vlan) | resource |
+| [iosxe_interface_vrrp.vrrp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_vrrp) | resource |
+| [iosxe_interface_vrrp.vrrp_unmanaged](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_vrrp) | resource |
 | [iosxe_interface_vrrp_v2.vrrp_v2](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_vrrp_v2) | resource |
 | [iosxe_interface_vrrp_v2.vrrp_v2_unmanaged](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_vrrp_v2) | resource |
 | [iosxe_ipv6_local_pool.ipv6_local_pool](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/ipv6_local_pool) | resource |
