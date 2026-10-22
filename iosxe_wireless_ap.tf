@@ -194,3 +194,111 @@ resource "iosxe_wireless_site_tag" "wireless_site_tag" {
 
   depends_on = [iosxe_wireless_ap_join_profile.wireless_ap_join_profile]
 }
+
+locals {
+  # CLI tag source token -> YANG enum. Only priorities 2 and 3 are configurable on the device.
+  wireless_tag_source_map = {
+    filter = "tag-source-filter"
+    ap     = "tag-source-ap-pnp"
+  }
+
+  # The device does not return a tag that is explicitly set to its built-in default name, so a
+  # default name is sent as null (the device default applies) to avoid a perpetual diff.
+  wireless_default_tags = {
+    policy = "default-policy-tag"
+    site   = "default-site-tag"
+    rf     = "default-rf-tag"
+  }
+
+  # Static AP tags use the bulk iosxe_wireless_ap_tags resource: one NETCONF read and one write per
+  # device, however many APs there are, instead of one resource per AP. The items map is keyed by
+  # the MAC in YANG form (lowercase, colon separated), normalized from the CLI dotted, colon or
+  # hyphen form. Only the MACs in the data model are managed; entries configured outside IOS-XE as
+  # Code are left untouched.
+  wireless_ap_tags = {
+    for device in local.devices : device.name => {
+      for t in try(local.device_config[device.name].wireless.ap_tags, []) :
+      join(":", regexall("[0-9a-f]{2}", lower(replace(t.mac, "/[^0-9A-Fa-f]/", "")))) => {
+        policy_tag = try(t.policy_tag, local.wireless_default_tags.policy) == local.wireless_default_tags.policy ? null : t.policy_tag
+        site_tag   = try(t.site_tag, local.wireless_default_tags.site) == local.wireless_default_tags.site ? null : t.site_tag
+        rf_tag     = try(t.rf_tag, local.wireless_default_tags.rf) == local.wireless_default_tags.rf ? null : t.rf_tag
+      }
+    } if length(try(local.device_config[device.name].wireless.ap_tags, [])) > 0
+  }
+
+  wireless_ap_filters = flatten([
+    for device in local.devices : [
+      for f in try(local.device_config[device.name].wireless.ap_filters, []) : {
+        key           = format("%s/%s", device.name, f.name)
+        device        = device.name
+        name          = f.name
+        ap_name_regex = try(f.ap_name_regex, null)
+        tag_policy    = try(f.tag_policy, null)
+        tag_site      = try(f.tag_site, null)
+        tag_rf        = try(f.tag_rf, null)
+      }
+    ]
+  ])
+
+  # Each filter's priority is moved into the device-wide AP filter priority table.
+  wireless_ap_filter_priorities = {
+    for device in local.devices : device.name => [
+      for f in try(local.device_config[device.name].wireless.ap_filters, []) : {
+        priority    = f.priority
+        filter_name = f.name
+      } if try(f.priority, null) != null
+    ] if length([for f in try(local.device_config[device.name].wireless.ap_filters, []) : f if try(f.priority, null) != null]) > 0
+  }
+
+  wireless_tag_source_priorities = {
+    for device in local.devices : device.name => [
+      for p in try(local.device_config[device.name].wireless.tag_source_priorities, []) : {
+        priority = p.priority
+        source   = local.wireless_tag_source_map[p.source]
+      }
+    ] if length(try(local.device_config[device.name].wireless.tag_source_priorities, [])) > 0
+  }
+}
+
+resource "iosxe_wireless_ap_tags" "wireless_ap_tags" {
+  for_each = local.wireless_ap_tags
+
+  device = each.key
+  items  = each.value
+
+  depends_on = [iosxe_wireless_site_tag.wireless_site_tag]
+}
+
+resource "iosxe_wireless_ap_filter" "wireless_ap_filter" {
+  for_each = { for e in local.wireless_ap_filters : e.key => e }
+
+  device        = each.value.device
+  name          = each.value.name
+  ap_name_regex = each.value.ap_name_regex
+  tag_policy    = each.value.tag_policy
+  tag_site      = each.value.tag_site
+  tag_rf        = each.value.tag_rf
+  filter_type   = "ap-filter-type-tag" # only tag filters are modeled
+
+  depends_on = [iosxe_wireless_site_tag.wireless_site_tag]
+}
+
+# Created after and destroyed before the filters: the device rejects a priority that references a
+# filter without a regular expression, and the deletion of a filter that a priority references.
+resource "iosxe_wireless_ap_filter_priority" "wireless_ap_filter_priority" {
+  for_each = local.wireless_ap_filter_priorities
+
+  device     = each.key
+  priorities = each.value
+
+  depends_on = [iosxe_wireless_ap_filter.wireless_ap_filter]
+}
+
+# Destroying this resource restores the factory order (2 = filter, 3 = ap); the fixed priorities
+# 0 (static), 1 (location) and 4 (default) are never touched.
+resource "iosxe_wireless_ap_tag_source_priority" "wireless_ap_tag_source_priority" {
+  for_each = local.wireless_tag_source_priorities
+
+  device     = each.key
+  priorities = each.value
+}
