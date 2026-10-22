@@ -1,5 +1,6 @@
 ## Unreleased
 
+- BREAKING CHANGE: Rename the parameter-map type inspect data model key from `policy.parameter_maps` to `policy.parameter_maps_inspect` to match the nac-iosxe schema (the previous key was never accepted by the schema)
 - Fix `bridge_domain` member_interfaces `service_instances` attribute name (was incorrectly `service_instance` singular, causing the provider to silently drop the service-instance binding)
 
 ## 1.0.0
