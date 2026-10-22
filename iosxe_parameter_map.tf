@@ -1,7 +1,7 @@
 locals {
   parameter_maps = flatten([
     for device in local.devices : [
-      for pm in try(local.device_config[device.name].policy.parameter_maps, []) : {
+      for pm in try(local.device_config[device.name].policy.parameter_maps_inspect, []) : {
         key                                = format("%s/%s", device.name, pm.name)
         device                             = device.name
         name                               = try(pm.name, null)
