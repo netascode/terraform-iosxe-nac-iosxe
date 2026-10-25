@@ -127,6 +127,7 @@ No outputs.
 | [iosxe_device_tracking.device_tracking](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/device_tracking) | resource |
 | [iosxe_dhcp.dhcp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/dhcp) | resource |
 | [iosxe_dot1x.dot1x](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/dot1x) | resource |
+| [iosxe_eap_profile.eap_profile](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/eap_profile) | resource |
 | [iosxe_eem.eem](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/eem) | resource |
 | [iosxe_eigrp.eigrp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/eigrp) | resource |
 | [iosxe_eigrp_vrf.eigrp_vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/eigrp_vrf) | resource |
@@ -216,6 +217,7 @@ No outputs.
 | [iosxe_ospf.ospf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/ospf) | resource |
 | [iosxe_ospf_vrf.ospf_vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/ospf_vrf) | resource |
 | [iosxe_parameter_map.parameter_map](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/parameter_map) | resource |
+| [iosxe_parameter_map_webauth_global.parameter_map_webauth_global](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/parameter_map_webauth_global) | resource |
 | [iosxe_pim.pim](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/pim) | resource |
 | [iosxe_pim_ipv6.pim_ipv6](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/pim_ipv6) | resource |
 | [iosxe_platform.platform](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/platform) | resource |

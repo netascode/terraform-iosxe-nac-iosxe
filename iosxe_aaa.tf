@@ -484,3 +484,42 @@ resource "iosxe_username" "username" {
   secret_encryption   = each.value.secret_encryption
   secret              = each.value.secret
 }
+locals {
+  # The data model token "fast" maps to method_fast (YANG method/fast-config);
+  # every other token maps to method_<token>.
+  eap_profiles = flatten([
+    for device in local.devices : [
+      for eap_profile in try(local.device_config[device.name].aaa.eap_profiles, []) : {
+        key            = format("%s/%s", device.name, eap_profile.name)
+        device         = device.name
+        name           = eap_profile.name
+        description    = try(eap_profile.description, null)
+        pki_trustpoint = try(eap_profile.pki_trustpoint, null)
+        methods        = try(eap_profile.methods, null)
+      }
+    ]
+  ])
+}
+
+resource "iosxe_eap_profile" "eap_profile" {
+  for_each = { for e in local.eap_profiles : e.key => e }
+  device   = each.value.device
+
+  name           = each.value.name
+  description    = each.value.description
+  pki_trustpoint = each.value.pki_trustpoint
+  # Explicit-set rule: when methods is present, every method is set to true or
+  # false so that methods removed from the list are removed from the device.
+  # When methods is absent, the methods are not managed (null).
+  method_fast     = each.value.methods == null ? null : contains(each.value.methods, "fast")
+  method_gtc      = each.value.methods == null ? null : contains(each.value.methods, "gtc")
+  method_leap     = each.value.methods == null ? null : contains(each.value.methods, "leap")
+  method_md5      = each.value.methods == null ? null : contains(each.value.methods, "md5")
+  method_mschapv2 = each.value.methods == null ? null : contains(each.value.methods, "mschapv2")
+  method_peap     = each.value.methods == null ? null : contains(each.value.methods, "peap")
+  method_tls      = each.value.methods == null ? null : contains(each.value.methods, "tls")
+
+  depends_on = [
+    iosxe_crypto_pki.crypto_pki,
+  ]
+}
