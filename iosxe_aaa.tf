@@ -1,5 +1,27 @@
+locals {
+  # Data model keys under `aaa` that iosxe_aaa itself configures. Other keys
+  # (usernames, tacacs, radius, accounting, authentication, authorization, ...)
+  # are managed by their own resources. iosxe_aaa is only created when at least
+  # one of these keys is set, because destroying iosxe_aaa removes the whole
+  # native/aaa container, including configuration it never managed.
+  aaa_attributes_managed_by_iosxe_aaa = [
+    "new_model",
+    "session_id",
+    "local_authentication_type",
+    "local_authorization",
+    "local_authentication_max_fail_attempts",
+    "radius_dynamic_author",
+    "radius_dynamic_author_clients",
+    "radius_groups",
+    "tacacs_groups",
+  ]
+}
+
 resource "iosxe_aaa" "aaa" {
-  for_each                               = { for device in local.devices : device.name => device if try(local.device_config[device.name].aaa, null) != null }
+  for_each = {
+    for device in local.devices : device.name => device
+    if anytrue([for attr in local.aaa_attributes_managed_by_iosxe_aaa : try(local.device_config[device.name].aaa[attr], null) != null])
+  }
   device                                 = each.value.name
   new_model                              = try(local.device_config[each.value.name].aaa.new_model, null)
   session_id                             = try(local.device_config[each.value.name].aaa.session_id, null)
