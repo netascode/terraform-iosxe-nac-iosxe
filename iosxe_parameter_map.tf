@@ -137,9 +137,19 @@ resource "iosxe_parameter_map" "parameter_map" {
 # `service_templates`. The module does not try to prevent this.
 
 resource "iosxe_parameter_map_webauth_global" "parameter_map_webauth_global" {
-  for_each = { for device in local.devices : device.name => device if try(length(local.device_config[device.name].policy.parameter_map_webauth_global), 0) > 0 }
-  device   = each.value.name
+  # Created only when at least one attribute has a non-null value. Counting
+  # keys alone would let a block such as `{virtual_ip_ipv4: null}` create the
+  # resource, and any write triggers the irreversible IBNS 2.0 conversion.
+  for_each = {
+    for device in local.devices : device.name => device
+    if try(local.device_config[device.name].policy.parameter_map_webauth_global.virtual_ip_ipv4, null) != null || try(local.device_config[device.name].policy.parameter_map_webauth_global.virtual_ip_ipv6, null) != null
+  }
+  device = each.value.name
 
   virtual_ip_ipv4 = try(local.device_config[each.value.name].policy.parameter_map_webauth_global.virtual_ip_ipv4, null)
   virtual_ip_ipv6 = try(local.device_config[each.value.name].policy.parameter_map_webauth_global.virtual_ip_ipv6, null)
+
+  # Convert to IBNS 2.0 only after iosxe_system (authentication/access-session
+  # mac-move and related settings) has been applied.
+  depends_on = [iosxe_system.system]
 }

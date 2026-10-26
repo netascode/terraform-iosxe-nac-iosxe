@@ -484,9 +484,8 @@ resource "iosxe_username" "username" {
   secret_encryption   = each.value.secret_encryption
   secret              = each.value.secret
 }
+
 locals {
-  # The data model token "fast" maps to method_fast (YANG method/fast-config);
-  # every other token maps to method_<token>.
   eap_profiles = flatten([
     for device in local.devices : [
       for eap_profile in try(local.device_config[device.name].aaa.eap_profiles, []) : {
@@ -511,6 +510,8 @@ resource "iosxe_eap_profile" "eap_profile" {
   # Explicit-set rule: when methods is present, every method is set to true or
   # false so that methods removed from the list are removed from the device.
   # When methods is absent, the methods are not managed (null).
+  # The data model token "fast" maps to method_fast (YANG method/fast-config);
+  # every other token maps to method_<token>.
   method_fast     = each.value.methods == null ? null : contains(each.value.methods, "fast")
   method_gtc      = each.value.methods == null ? null : contains(each.value.methods, "gtc")
   method_leap     = each.value.methods == null ? null : contains(each.value.methods, "leap")
