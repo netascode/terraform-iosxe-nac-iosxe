@@ -97,4 +97,60 @@ resource "iosxe_wireless_rf_profile" "wireless_rf_profile" {
   trap_threshold_clients         = each.value.trap_threshold_clients
   trap_threshold_interference    = each.value.trap_threshold_interference
   trap_threshold_noise           = each.value.trap_threshold_noise
+
+  # A 6 GHz RF profile can reference a Multi-BSSID profile, so the Multi-BSSID
+  # profiles are created first and destroyed last.
+  depends_on = [iosxe_wireless_multi_bssid_profile.wireless_multi_bssid_profile]
+}
+
+locals {
+  # dot11ax / dot11be are lists of enabled CLI keywords (explicit-set rule):
+  # - list present: every boolean in its set is written, true when its keyword is
+  #   listed and false otherwise (OFDMA/MU-MIMO default to true on the device, so
+  #   leaving them out turns them off);
+  # - list absent: contains() fails inside try(), so every boolean in that set is
+  #   null and the device default applies.
+  wireless_multi_bssid_profiles = flatten([
+    for device in local.devices : [
+      for mb in try(local.device_config[device.name].wireless.multi_bssid_profiles, []) : {
+        key                     = format("%s/%s", device.name, mb.name)
+        device                  = device.name
+        name                    = mb.name
+        description             = try(mb.description, null)
+        dot11ax_downlink_ofdma  = try(contains(mb.dot11ax, "downlink-ofdma"), null)
+        dot11ax_uplink_ofdma    = try(contains(mb.dot11ax, "uplink-ofdma"), null)
+        dot11ax_downlink_mumimo = try(contains(mb.dot11ax, "downlink-mumimo"), null)
+        dot11ax_uplink_mumimo   = try(contains(mb.dot11ax, "uplink-mumimo"), null)
+        dot11ax_target_waketime = try(contains(mb.dot11ax, "target-waketime"), null)
+        dot11ax_twt_broadcast   = try(contains(mb.dot11ax, "twt-broadcast"), null)
+        dot11be_downlink_ofdma  = try(contains(mb.dot11be, "downlink-ofdma"), null)
+        dot11be_uplink_ofdma    = try(contains(mb.dot11be, "uplink-ofdma"), null)
+        dot11be_downlink_mumimo = try(contains(mb.dot11be, "downlink-mumimo"), null)
+        dot11be_uplink_mumimo   = try(contains(mb.dot11be, "uplink-mumimo"), null)
+        dot11be_ofdma_multi_ru  = try(contains(mb.dot11be, "ofdma-multi-ru"), null)
+      }
+    ]
+  ])
+}
+
+# The built-in default-multi-bssid-profile may be listed to edit it. The provider
+# treats it as a built-in object: a destroy removes only the managed attributes and
+# never deletes the profile, so no module-side guard is needed.
+resource "iosxe_wireless_multi_bssid_profile" "wireless_multi_bssid_profile" {
+  for_each = { for e in local.wireless_multi_bssid_profiles : e.key => e }
+
+  device                  = each.value.device
+  name                    = each.value.name
+  description             = each.value.description
+  dot11ax_downlink_ofdma  = each.value.dot11ax_downlink_ofdma
+  dot11ax_uplink_ofdma    = each.value.dot11ax_uplink_ofdma
+  dot11ax_downlink_mumimo = each.value.dot11ax_downlink_mumimo
+  dot11ax_uplink_mumimo   = each.value.dot11ax_uplink_mumimo
+  dot11ax_target_waketime = each.value.dot11ax_target_waketime
+  dot11ax_twt_broadcast   = each.value.dot11ax_twt_broadcast
+  dot11be_downlink_ofdma  = each.value.dot11be_downlink_ofdma
+  dot11be_uplink_ofdma    = each.value.dot11be_uplink_ofdma
+  dot11be_downlink_mumimo = each.value.dot11be_downlink_mumimo
+  dot11be_uplink_mumimo   = each.value.dot11be_uplink_mumimo
+  dot11be_ofdma_multi_ru  = each.value.dot11be_ofdma_multi_ru
 }
