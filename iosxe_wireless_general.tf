@@ -27,7 +27,10 @@ locals {
           ip          = try(m.ip, null)
           # Over NETCONF an omitted nat-ip is stored as 0.0.0.0, while the CLI
           # stores the member's ip. Send ip so both paths give the same result.
-          public_ip            = try(m.public_ip, m.ip, null)
+          # An explicit 0.0.0.0 / :: means "no public IP": the controller
+          # stores that when nat-ip is omitted and does not return it in
+          # get-config, so it is sent as null to keep plans clean.
+          public_ip            = contains(["0.0.0.0", "::"], try(m.public_ip, "")) ? null : try(m.public_ip, m.ip, null)
           group                = try(m.group, null)
           ssc_hash             = try(m.ssc_hash, null)
           data_link_encryption = try(m.data_link_encryption, null)
