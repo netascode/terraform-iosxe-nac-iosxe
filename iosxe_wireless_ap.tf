@@ -177,6 +177,9 @@ locals {
         ap_join_profile = try(tag.ap_join_profile, null)
         local_site      = try(tag.local_site, null)
         flex_profile    = try(tag.flex_profile, null)
+        # The device omits load at its YANG default (0) even when set explicitly,
+        # so 0 is sent as null (removes the leaf) to keep plans idempotent.
+        load = try(tag.load, 0) == 0 ? null : tag.load
       }
     ]
   ])
@@ -191,6 +194,7 @@ resource "iosxe_wireless_site_tag" "wireless_site_tag" {
   ap_join_profile = each.value.ap_join_profile
   local_site      = each.value.local_site
   flex_profile    = each.value.flex_profile
+  load            = each.value.load
 
   depends_on = [iosxe_wireless_ap_join_profile.wireless_ap_join_profile]
 }
