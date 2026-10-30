@@ -2869,11 +2869,15 @@ locals {
         ip_nhrp_network_id              = try(int.ip_nhrp_network_id, null)
         ip_nhrp_nhs = try(length(int.ip_nhrp_nhs) == 0, true) ? null : [for nhs in int.ip_nhrp_nhs : {
           ipv4 = try(nhs.ipv4, null)
+          # IOS-XE applies one NBMA per NHS, so the data model holds a single address; the provider models the YANG list.
+          nbma_ipv4s = try(nhs.nbma_ipv4, null) == null ? null : [{ ipv4 = nhs.nbma_ipv4 }]
         }]
         ip_nhrp_maps = try(length(int.ip_nhrp_maps) == 0, true) ? null : [for m in int.ip_nhrp_maps : {
           dest_ipv4 = try(m.dest_ipv4, null)
           nbma_ipv4 = try(m.nbma_ipv4, null)
         }]
+        ip_nhrp_map_multicast_dynamic         = try(int.ip_nhrp_map_multicast_dynamic, null)
+        ip_nhrp_map_multicast_nbma_ipv4       = try(int.ip_nhrp_map_multicast_nbma_ipv4, null)
         ip_nhrp_redirect                      = try(int.ip_nhrp_redirect, null)
         ip_nhrp_shortcut                      = try(int.ip_nhrp_shortcut, null)
         mpls_nhrp                             = try(int.mpls_nhrp, null)
@@ -2997,6 +3001,8 @@ resource "iosxe_interface_tunnel" "tunnel" {
   ip_nhrp_network_id               = each.value.ip_nhrp_network_id
   ip_nhrp_nhs                      = each.value.ip_nhrp_nhs
   ip_nhrp_maps                     = each.value.ip_nhrp_maps
+  ip_nhrp_map_multicast_dynamic    = each.value.ip_nhrp_map_multicast_dynamic
+  ip_nhrp_map_multicast_nbma_ipv4  = each.value.ip_nhrp_map_multicast_nbma_ipv4
   ip_nhrp_redirect                 = each.value.ip_nhrp_redirect
   ip_nhrp_shortcut                 = each.value.ip_nhrp_shortcut
   mpls_nhrp                        = each.value.mpls_nhrp
