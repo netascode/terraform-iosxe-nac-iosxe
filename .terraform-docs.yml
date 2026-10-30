@@ -27,6 +27,12 @@ content: |-
   {{ include "./examples/system/main.tf" }}
   ```
 
+  ## Notes
+
+  ### Web authentication and IBNS 2.0
+
+  Configuring `policy.parameter_map_webauth_global` (or any other web authentication parameter map) converts the device to IBNS 2.0 (new-style) session management. IOS-XE rewrites `authentication mac-move` as `access-session mac-move`, removes the `ip admission` defaults and creates default `service-template`s. The conversion happens over NETCONF as well as the CLI, cannot be reversed from the CLI, and is not undone by `terraform destroy`. After the first apply, values read from the device may drift against the `system` attributes `authentication_mac_move_*` and `access_session_mac_move_deny`, and against `service_templates`. The module does not try to prevent this.
+
   {{ .Requirements }}
   {{ .Inputs }}
   {{ .Outputs }}
