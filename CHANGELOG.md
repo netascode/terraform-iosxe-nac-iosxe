@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Require `CiscoDevNet/iosxe` provider `>= 1.2.0`, the first release with the NHRP NHS-NBMA and multicast map attributes used by the tunnel interface mappings. Run `terraform init -upgrade` to pick it up
 - Add `nbma_ipv4` to tunnel `ip_nhrp_nhs` entries (wrapped into the provider's `nbma_ipv4s` list) and add `ip_nhrp_map_multicast_dynamic` and `ip_nhrp_map_multicast_nbma_ipv4` tunnel interface mappings
 - Add EVPN profile `re_originate_route_type5` mapping for L2VPN EVPN profile route-type 5 re-origination
 - Fix static route resources missing a dependency on ethernet subinterfaces defined under `interfaces.ethernets[].subinterfaces`
