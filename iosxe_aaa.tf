@@ -20,7 +20,7 @@ locals {
 resource "iosxe_aaa" "aaa" {
   for_each = {
     for device in local.devices : device.name => device
-    if anytrue([for attr in local.aaa_attributes_managed_by_iosxe_aaa : try(local.device_config[device.name].aaa[attr], null) != null])
+    if anytrue([for attr in local.aaa_attributes_managed_by_iosxe_aaa : try(local.device_config[device.name].aaa[attr], null) != null && !try(length(local.device_config[device.name].aaa[attr]) == 0, false)])
   }
   device                                 = each.value.name
   new_model                              = try(local.device_config[each.value.name].aaa.new_model, null)
