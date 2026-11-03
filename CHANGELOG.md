@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Add `wireless.policy_profiles` (`wireless profile policy`) and `wireless.policy_tags` (`wireless tag policy`) using the `iosxe_wireless_policy_profile` and `iosxe_wireless_policy_tag` resources
 - Add `wireless.wlan_profiles` (C9800 `wlan <name> <id> <ssid>`) using the `iosxe_wireless_wlan_profile` resource
 - Add interface IPv6 DHCP mappings (`ipv6.dhcp_servers`, `dhcp_client_pd`, `dhcp_client_pd_rapid_commit`, `dhcp_relay_destinations`, `dhcp_relay_trust`, `dhcp_relay_option_vpn`) to ethernet (including subinterfaces), loopback, VLAN, port-channel and tunnel interfaces
 - Add HSRP (`standby`) on ethernet, VLAN, port-channel, port-channel subinterface and BDI interfaces using the `iosxe_interface_hsrp` resource: `hsrp_version`, `hsrp_bfd`, `hsrp_delay_*`, `hsrp_mac_refresh`, `hsrp_use_bia*`, `hsrp_redirect_*` and the `hsrp` group list
