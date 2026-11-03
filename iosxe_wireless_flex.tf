@@ -2,11 +2,13 @@ locals {
   wireless_flex_profiles = flatten([
     for device in local.devices : [
       for fp in try(local.device_config[device.name].wireless.flex_profiles, []) : {
-        key                 = format("%s/%s", device.name, fp.name)
-        device              = device.name
-        name                = fp.name
-        description         = try(fp.description, null)
-        native_vlan_id      = try(fp.native_vlan_id, null)
+        key         = format("%s/%s", device.name, fp.name)
+        device      = device.name
+        name        = fp.name
+        description = try(fp.description, null)
+        # native-vlan-id defaults to 1 (Cisco-IOS-XE-wireless-flex-cfg) and the
+        # controller omits a default leaf from get-config, so send nothing for 1.
+        native_vlan_id      = try(fp.native_vlan_id, null) == 1 ? null : try(fp.native_vlan_id, null)
         arp_caching         = try(fp.arp_caching, null)
         fallback_radio_shut = try(fp.fallback_radio_shut, null)
         predownload         = try(fp.predownload, null)
