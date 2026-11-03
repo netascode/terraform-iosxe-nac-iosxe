@@ -192,3 +192,38 @@ resource "iosxe_wireless_ap_join_profile" "wireless_ap_join_profile" {
   tcp_adjust_mss_size                                   = each.value.tcp_adjust_mss_size
   ble_scan                                              = each.value.ble_scan
 }
+
+locals {
+  # A site tag uses default-ap-profile and default-flex-profile by default
+  # (Cisco-IOS-XE-wireless-site-cfg, 17.15.1 and 17.18.1). The controller omits
+  # a default leaf from get-config, so naming a built-in profile is sent as null.
+  wireless_site_tags = flatten([
+    for device in local.devices : [
+      for tag in try(local.device_config[device.name].wireless.site_tags, []) : {
+        key             = format("%s/%s", device.name, tag.name)
+        device          = device.name
+        site_tag_name   = tag.name
+        description     = try(tag.description, null)
+        ap_join_profile = try(tag.ap_join_profile, null) == "default-ap-profile" ? null : try(tag.ap_join_profile, null)
+        local_site      = try(tag.local_site, null)
+        flex_profile    = try(tag.flex_profile, null) == "default-flex-profile" ? null : try(tag.flex_profile, null)
+      }
+    ]
+  ])
+}
+
+resource "iosxe_wireless_site_tag" "wireless_site_tag" {
+  for_each = { for e in local.wireless_site_tags : e.key => e }
+
+  device          = each.value.device
+  site_tag_name   = each.value.site_tag_name
+  description     = each.value.description
+  ap_join_profile = each.value.ap_join_profile
+  local_site      = each.value.local_site
+  flex_profile    = each.value.flex_profile
+
+  depends_on = [
+    iosxe_wireless_ap_join_profile.wireless_ap_join_profile,
+    iosxe_wireless_flex_profile.wireless_flex_profile,
+  ]
+}

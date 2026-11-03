@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Add `wireless.site_tags` (`wireless tag site`) using the `iosxe_wireless_site_tag` resource
 - Add `wireless.ap_join_profiles` (`ap profile <name>`) using the `iosxe_wireless_ap_join_profile` resource
 - Add `wireless.rf_tags` (`wireless tag rf`) using the `iosxe_wireless_rf_tag` resource
 - Add `wireless.flex_profiles` (`wireless profile flex`) using the `iosxe_wireless_flex_profile` resource
