@@ -258,6 +258,7 @@ No outputs.
 | [iosxe_vlan_group.vlan_group](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/vlan_group) | resource |
 | [iosxe_vrf.vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/vrf) | resource |
 | [iosxe_vtp.vtp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/vtp) | resource |
+| [iosxe_wireless_ap_join_profile.wireless_ap_join_profile](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/wireless_ap_join_profile) | resource |
 | [iosxe_wireless_flex_profile.wireless_flex_profile](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/wireless_flex_profile) | resource |
 | [iosxe_wireless_policy_profile.wireless_policy_profile](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/wireless_policy_profile) | resource |
 | [iosxe_wireless_policy_tag.wireless_policy_tag](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/wireless_policy_tag) | resource |
