@@ -93,6 +93,29 @@ locals {
       }
     ]
   ])
+
+  # An RF tag uses the built-in RF profiles by default (Cisco-IOS-XE-wireless-rf-cfg,
+  # 17.15.1 and 17.18.1). The controller omits a default leaf from get-config, so
+  # naming a built-in profile is sent as null to avoid a diff on every plan.
+  wireless_rf_tag_yang_defaults = {
+    rf_policy_24ghz = "default_rf_24gh"
+    rf_policy_5ghz  = "default_rf_5gh"
+    rf_policy_6ghz  = "default-rf-profile-6ghz"
+  }
+
+  wireless_rf_tags = flatten([
+    for device in local.devices : [
+      for tag in try(local.device_config[device.name].wireless.rf_tags, []) : {
+        key             = format("%s/%s", device.name, tag.name)
+        device          = device.name
+        name            = tag.name
+        description     = try(tag.description, null)
+        rf_policy_24ghz = try(tag.rf_policy_24ghz, null) == local.wireless_rf_tag_yang_defaults.rf_policy_24ghz ? null : try(tag.rf_policy_24ghz, null)
+        rf_policy_5ghz  = try(tag.rf_policy_5ghz, null) == local.wireless_rf_tag_yang_defaults.rf_policy_5ghz ? null : try(tag.rf_policy_5ghz, null)
+        rf_policy_6ghz  = try(tag.rf_policy_6ghz, null) == local.wireless_rf_tag_yang_defaults.rf_policy_6ghz ? null : try(tag.rf_policy_6ghz, null)
+      }
+    ]
+  ])
 }
 
 resource "iosxe_wireless_rf_profile" "wireless_rf_profile" {
@@ -133,4 +156,19 @@ resource "iosxe_wireless_rf_profile" "wireless_rf_profile" {
   trap_threshold_clients         = each.value.trap_threshold_clients
   trap_threshold_interference    = each.value.trap_threshold_interference
   trap_threshold_noise           = each.value.trap_threshold_noise
+}
+
+resource "iosxe_wireless_rf_tag" "wireless_rf_tag" {
+  for_each = { for e in local.wireless_rf_tags : e.key => e }
+
+  device          = each.value.device
+  name            = each.value.name
+  description     = each.value.description
+  rf_policy_24ghz = each.value.rf_policy_24ghz
+  rf_policy_5ghz  = each.value.rf_policy_5ghz
+  rf_policy_6ghz  = each.value.rf_policy_6ghz
+
+  depends_on = [
+    iosxe_wireless_rf_profile.wireless_rf_profile,
+  ]
 }
