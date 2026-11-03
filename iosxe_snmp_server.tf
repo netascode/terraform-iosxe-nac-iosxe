@@ -313,6 +313,7 @@ resource "iosxe_snmp_server" "snmp_server" {
     iosxe_interface_port_channel_subinterface.port_channel_subinterface,
     iosxe_access_list_standard.access_list_standard,
     iosxe_access_list_extended.access_list_extended,
+    iosxe_access_list_ipv6.access_list_ipv6,
     iosxe_vrf.vrf
   ]
 }
