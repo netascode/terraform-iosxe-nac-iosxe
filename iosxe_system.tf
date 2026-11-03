@@ -251,6 +251,9 @@ resource "iosxe_system" "system" {
       number              = try(track_obj.number, null)
       ip_sla_number       = try(track_obj.ip_sla_number, null)
       ip_sla_reachability = try(track_obj.ip_sla_reachability, null)
+      interface_name      = try(track_obj.interface_name, null)
+      interface_protocol  = try(track_obj.interface_protocol, null)
+      interface_routing   = try(track_obj.interface_routing, null)
     }
   ]
 
