@@ -1,6 +1,8 @@
 ## Unreleased
 
 - Add BGP `asnotation_dot` mapping (`bgp asnotation dot`) and pass `routing.bgp.as_number` to the provider as a string so asdot values such as `64111.56369` are accepted
+- Add `interface_name`, `interface_protocol` and `interface_routing` mappings to `system.track_objects` for interface object tracking (`track <n> interface <name> line-protocol | ip routing | ipv6 routing`)
+- Add EIGRP `stub_connected` and `stub_summary` mappings to `iosxe_eigrp` and `iosxe_eigrp_vrf` for `eigrp stub connected` and `eigrp stub summary`
 - Require `CiscoDevNet/iosxe` provider `>= 1.2.0`, the first release with the NHRP NHS-NBMA and multicast map attributes used by the tunnel interface mappings. Run `terraform init -upgrade` to pick it up
 - Add `nbma_ipv4` to tunnel `ip_nhrp_nhs` entries (wrapped into the provider's `nbma_ipv4s` list) and add `ip_nhrp_map_multicast_dynamic` and `ip_nhrp_map_multicast_nbma_ipv4` tunnel interface mappings
 - Add EVPN profile `re_originate_route_type5` mapping for L2VPN EVPN profile route-type 5 re-origination
