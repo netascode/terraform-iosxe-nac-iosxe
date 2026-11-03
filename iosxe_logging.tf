@@ -30,7 +30,16 @@ resource "iosxe_logging" "logging" {
   persistent_url      = try(local.device_config[each.value.name].logging.persistent_url, null)
   persistent_size     = try(local.device_config[each.value.name].logging.persistent_size, null)
   persistent_filesize = try(local.device_config[each.value.name].logging.persistent_filesize, null)
-  rate_limit_all      = try(local.device_config[each.value.name].logging.rate_limit_all, null)
+  # `logging rate-limit { all <n> | console <n> | console all <n> } [except <sev>]` is
+  # one CLI choice, but the YANG models the three forms as sibling containers.
+  # rate_limit.type selects the form so only one pair is ever sent. The deprecated
+  # rate_limit_all is still honored when rate_limit is not set.
+  rate_limit_all                         = try(local.device_config[each.value.name].logging.rate_limit, null) == null ? try(local.device_config[each.value.name].logging.rate_limit_all, null) : try(local.device_config[each.value.name].logging.rate_limit.type, null) == "all" ? try(local.device_config[each.value.name].logging.rate_limit.rate, null) : null
+  rate_limit_all_except_severity         = try(local.device_config[each.value.name].logging.rate_limit.type, null) == "all" ? try(local.device_config[each.value.name].logging.rate_limit.except_severity, null) : null
+  rate_limit_console                     = try(local.device_config[each.value.name].logging.rate_limit.type, null) == "console" ? try(local.device_config[each.value.name].logging.rate_limit.rate, null) : null
+  rate_limit_console_except_severity     = try(local.device_config[each.value.name].logging.rate_limit.type, null) == "console" ? try(local.device_config[each.value.name].logging.rate_limit.except_severity, null) : null
+  rate_limit_console_all                 = try(local.device_config[each.value.name].logging.rate_limit.type, null) == "console-all" ? try(local.device_config[each.value.name].logging.rate_limit.rate, null) : null
+  rate_limit_console_all_except_severity = try(local.device_config[each.value.name].logging.rate_limit.type, null) == "console-all" ? try(local.device_config[each.value.name].logging.rate_limit.except_severity, null) : null
 
   source_interfaces_vrf = try(length(local.device_config[each.value.name].logging.source_interfaces_vrf) == 0, true) ? null : [for s in local.device_config[each.value.name].logging.source_interfaces_vrf : {
     vrf            = try(s.vrf, null)

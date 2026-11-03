@@ -40,7 +40,7 @@ module "iosxe" {
 | Name | Version |
 | ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.9.0 |
-| <a name="requirement_iosxe"></a> [iosxe](#requirement\_iosxe) | >= 1.0.0 |
+| <a name="requirement_iosxe"></a> [iosxe](#requirement\_iosxe) | >= 1.2.0 |
 | <a name="requirement_local"></a> [local](#requirement\_local) | >= 2.5.0, < 3.0.0 |
 | <a name="requirement_utils"></a> [utils](#requirement\_utils) | >= 2.0.2, < 3.0.0 |
 ## Inputs
@@ -202,6 +202,7 @@ No outputs.
 | [iosxe_isis.isis](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/isis) | resource |
 | [iosxe_key_chain.key_chain](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/key_chain) | resource |
 | [iosxe_l2_vfi.l2_vfi](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/l2_vfi) | resource |
+| [iosxe_large_community_list_expanded.large_community_list_expanded](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/large_community_list_expanded) | resource |
 | [iosxe_license.license](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/license) | resource |
 | [iosxe_line.line](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/line) | resource |
 | [iosxe_lldp.lldp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/lldp) | resource |
