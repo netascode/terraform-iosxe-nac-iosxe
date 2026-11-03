@@ -58,6 +58,18 @@ resource "iosxe_eigrp" "eigrp" {
   stub_connected    = each.value.stub_connected
   stub_summary      = each.value.stub_summary
   networks          = each.value.networks
+
+  depends_on = [
+    iosxe_system.system,
+    iosxe_interface_ethernet.ethernet,
+    iosxe_interface_ethernet.ethernet_sub,
+    iosxe_interface_ethernet.ethernet_subinterface,
+    iosxe_interface_loopback.loopback,
+    iosxe_interface_vlan.vlan,
+    iosxe_interface_port_channel.port_channel,
+    iosxe_interface_port_channel_subinterface.port_channel_subinterface,
+    iosxe_interface_tunnel.tunnel,
+  ]
 }
 
 resource "iosxe_eigrp_vrf" "eigrp_vrf" {
@@ -74,4 +86,17 @@ resource "iosxe_eigrp_vrf" "eigrp_vrf" {
   stub_connected    = each.value.stub_connected
   stub_summary      = each.value.stub_summary
   networks          = each.value.networks
+
+  depends_on = [
+    iosxe_vrf.vrf,
+    iosxe_system.system,
+    iosxe_interface_ethernet.ethernet,
+    iosxe_interface_ethernet.ethernet_sub,
+    iosxe_interface_ethernet.ethernet_subinterface,
+    iosxe_interface_loopback.loopback,
+    iosxe_interface_vlan.vlan,
+    iosxe_interface_port_channel.port_channel,
+    iosxe_interface_port_channel_subinterface.port_channel_subinterface,
+    iosxe_interface_tunnel.tunnel,
+  ]
 }
