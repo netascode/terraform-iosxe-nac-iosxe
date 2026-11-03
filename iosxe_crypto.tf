@@ -467,7 +467,7 @@ locals {
 
         name            = map.name
         sequence_number = map.sequence_number
-        gdoi            = try(map.gdoi, null)
+        gdoi            = try(map.gdoi, true)
         set_group       = try(map.set_group, null)
       }
     ]
