@@ -12,30 +12,34 @@ resource "iosxe_logging" "logging" {
   # (console=true), which overrides the severity back to "debugging". Suppress
   # console when console_severity is set, since the severity implicitly enables
   # console logging via the common-case path. (nac-iosxe#1265)
-  console                                = try(local.device_config[each.value.name].logging.console_severity, null) != null ? null : try(local.device_config[each.value.name].logging.console, null)
-  console_severity                       = try(local.device_config[each.value.name].logging.console_severity, null)
-  facility                               = try(local.device_config[each.value.name].logging.facility, null)
-  history_size                           = try(local.device_config[each.value.name].logging.history_size, null)
-  history_severity                       = try(local.device_config[each.value.name].logging.history_severity, null)
-  trap                                   = try(local.device_config[each.value.name].logging.trap, null)
-  trap_severity                          = try(local.device_config[each.value.name].logging.trap_severity, null)
-  origin_id_type                         = try(local.device_config[each.value.name].logging.origin_id_type, null)
-  origin_id_name                         = try(local.device_config[each.value.name].logging.origin_id_name, null)
-  file_name                              = try(local.device_config[each.value.name].logging.file_name, null)
-  file_max_size                          = try(local.device_config[each.value.name].logging.file_max_size, null)
-  file_min_size                          = try(local.device_config[each.value.name].logging.file_min_size, null)
-  file_severity                          = try(local.device_config[each.value.name].logging.file_severity, null)
-  source_interface                       = try("${try(local.device_config[each.value.name].logging.source_interface_type, null)}${try(trimprefix(local.device_config[each.value.name].logging.source_interface_id, "$string "), null)}", null)
-  logging_count                          = try(local.device_config[each.value.name].logging.count, null)
-  persistent_url                         = try(local.device_config[each.value.name].logging.persistent_url, null)
-  persistent_size                        = try(local.device_config[each.value.name].logging.persistent_size, null)
-  persistent_filesize                    = try(local.device_config[each.value.name].logging.persistent_filesize, null)
-  rate_limit_all                         = try(local.device_config[each.value.name].logging.rate_limit_all, null)
-  rate_limit_all_except_severity         = try(local.device_config[each.value.name].logging.rate_limit_all_except_severity, null)
-  rate_limit_console                     = try(local.device_config[each.value.name].logging.rate_limit_console, null)
-  rate_limit_console_except_severity     = try(local.device_config[each.value.name].logging.rate_limit_console_except_severity, null)
-  rate_limit_console_all                 = try(local.device_config[each.value.name].logging.rate_limit_console_all, null)
-  rate_limit_console_all_except_severity = try(local.device_config[each.value.name].logging.rate_limit_console_all_except_severity, null)
+  console             = try(local.device_config[each.value.name].logging.console_severity, null) != null ? null : try(local.device_config[each.value.name].logging.console, null)
+  console_severity    = try(local.device_config[each.value.name].logging.console_severity, null)
+  facility            = try(local.device_config[each.value.name].logging.facility, null)
+  history_size        = try(local.device_config[each.value.name].logging.history_size, null)
+  history_severity    = try(local.device_config[each.value.name].logging.history_severity, null)
+  trap                = try(local.device_config[each.value.name].logging.trap, null)
+  trap_severity       = try(local.device_config[each.value.name].logging.trap_severity, null)
+  origin_id_type      = try(local.device_config[each.value.name].logging.origin_id_type, null)
+  origin_id_name      = try(local.device_config[each.value.name].logging.origin_id_name, null)
+  file_name           = try(local.device_config[each.value.name].logging.file_name, null)
+  file_max_size       = try(local.device_config[each.value.name].logging.file_max_size, null)
+  file_min_size       = try(local.device_config[each.value.name].logging.file_min_size, null)
+  file_severity       = try(local.device_config[each.value.name].logging.file_severity, null)
+  source_interface    = try("${try(local.device_config[each.value.name].logging.source_interface_type, null)}${try(trimprefix(local.device_config[each.value.name].logging.source_interface_id, "$string "), null)}", null)
+  logging_count       = try(local.device_config[each.value.name].logging.count, null)
+  persistent_url      = try(local.device_config[each.value.name].logging.persistent_url, null)
+  persistent_size     = try(local.device_config[each.value.name].logging.persistent_size, null)
+  persistent_filesize = try(local.device_config[each.value.name].logging.persistent_filesize, null)
+  # `logging rate-limit { all <n> | console <n> | console all <n> } [except <sev>]` is
+  # one CLI choice, but the YANG models the three forms as sibling containers.
+  # rate_limit.type selects the form so only one pair is ever sent. The deprecated
+  # rate_limit_all is still honored when rate_limit is not set.
+  rate_limit_all                         = try(local.device_config[each.value.name].logging.rate_limit, null) == null ? try(local.device_config[each.value.name].logging.rate_limit_all, null) : try(local.device_config[each.value.name].logging.rate_limit.type, null) == "all" ? try(local.device_config[each.value.name].logging.rate_limit.rate, null) : null
+  rate_limit_all_except_severity         = try(local.device_config[each.value.name].logging.rate_limit.type, null) == "all" ? try(local.device_config[each.value.name].logging.rate_limit.except_severity, null) : null
+  rate_limit_console                     = try(local.device_config[each.value.name].logging.rate_limit.type, null) == "console" ? try(local.device_config[each.value.name].logging.rate_limit.rate, null) : null
+  rate_limit_console_except_severity     = try(local.device_config[each.value.name].logging.rate_limit.type, null) == "console" ? try(local.device_config[each.value.name].logging.rate_limit.except_severity, null) : null
+  rate_limit_console_all                 = try(local.device_config[each.value.name].logging.rate_limit.type, null) == "console-all" ? try(local.device_config[each.value.name].logging.rate_limit.rate, null) : null
+  rate_limit_console_all_except_severity = try(local.device_config[each.value.name].logging.rate_limit.type, null) == "console-all" ? try(local.device_config[each.value.name].logging.rate_limit.except_severity, null) : null
 
   source_interfaces_vrf = try(length(local.device_config[each.value.name].logging.source_interfaces_vrf) == 0, true) ? null : [for s in local.device_config[each.value.name].logging.source_interfaces_vrf : {
     vrf            = try(s.vrf, null)
