@@ -2577,10 +2577,24 @@ locals {
             address    = addr
             link_local = true
           }]
-          ipv6_address_autoconfig_default = try(sub.ipv6.address_autoconfig_default, null)
-          ipv6_address_dhcp               = try(sub.ipv6.address_dhcp, null)
-          ipv6_mtu                        = try(sub.ipv6.mtu, null)
-          ipv6_nd_ra_suppress_all         = try(sub.ipv6.nd_ra_suppress_all, null)
+          ipv6_address_autoconfig_default  = try(sub.ipv6.address_autoconfig_default, null)
+          ipv6_address_dhcp                = try(sub.ipv6.address_dhcp, null)
+          ipv6_mtu                         = try(sub.ipv6.mtu, null)
+          ipv6_nd_ra_suppress_all          = try(sub.ipv6.nd_ra_suppress_all, null)
+          ipv6_dhcp_client_pd              = try(sub.ipv6.dhcp_client_pd, null)
+          ipv6_dhcp_client_pd_rapid_commit = try(sub.ipv6.dhcp_client_pd_rapid_commit, null)
+          ipv6_dhcp_relay_trust            = try(sub.ipv6.dhcp_relay_trust, null)
+          ipv6_dhcp_relay_option_vpn       = try(sub.ipv6.dhcp_relay_option_vpn, null)
+          ipv6_dhcp_servers = try(length(sub.ipv6.dhcp_servers) == 0, true) ? null : [for srv in sub.ipv6.dhcp_servers : {
+            pool_name    = try(srv.pool_name, null)
+            allow_hint   = try(srv.allow_hint, null)
+            rapid_commit = try(srv.rapid_commit, null)
+            preference   = try(srv.preference, null)
+          }]
+          ipv6_dhcp_relay_destinations = try(length(sub.ipv6.dhcp_relay_destinations) == 0, true) ? null : [for rd in sub.ipv6.dhcp_relay_destinations : {
+            address   = try(rd.address, null)
+            interface = try(rd.interface, null)
+          }]
           ipv6_flow_monitors = try(length(sub.ipv6.flow_monitors) == 0, true) ? null : [for fm in sub.ipv6.flow_monitors : {
             name      = try(fm.name, null)
             direction = try(fm.direction, null)
