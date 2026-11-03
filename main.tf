@@ -109,6 +109,8 @@ resource "iosxe_cli" "cli_0" {
     iosxe_crypto_ikev2_keyring.crypto_ikev2_keyring,
     iosxe_crypto_ikev2_policy.crypto_ikev2_policy,
     iosxe_crypto_ikev2_proposal.crypto_ikev2_proposal,
+    iosxe_crypto_gdoi.crypto_gdoi,
+    iosxe_crypto_map_gdoi.crypto_map_gdoi,
     iosxe_crypto_pki.crypto_pki,
     iosxe_cts.cts,
     iosxe_device_sensor.device_sensor,
