@@ -166,6 +166,7 @@ resource "iosxe_cli" "cli_0" {
     iosxe_ospfv3.ospfv3,
     iosxe_ospfv3_address_family_ipv4_vrf.ospfv3_af_ipv4_vrf,
     iosxe_ospfv3_address_family_ipv6_vrf.ospfv3_af_ipv6_vrf,
+    iosxe_parameter_map.parameter_map,
     iosxe_pim.pim,
     iosxe_policy_map.policy_map,
     iosxe_policy_map_event.policy_map_event,
