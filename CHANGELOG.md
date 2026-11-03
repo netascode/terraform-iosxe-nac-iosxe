@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Add `rate_limit_all_except_severity`, `rate_limit_console`, `rate_limit_console_except_severity`, `rate_limit_console_all` and `rate_limit_console_all_except_severity` mappings to `iosxe_logging` (`logging rate-limit all|console|console all <n> except <severity>`)
 - Add BGP IPv6 unicast address family `aggregate_addresses`, `admin_distances`, `distance_bgp_external`/`_internal`/`_local` and `maximum_paths_ebgp`/`_ibgp` mappings
 - Add BGP `asnotation_dot` mapping (`bgp asnotation dot`) and pass `routing.bgp.as_number` to the provider as a string so asdot values such as `64111.56369` are accepted
 - Add `interface_name`, `interface_protocol` and `interface_routing` mappings to `system.track_objects` for interface object tracking (`track <n> interface <name> line-protocol | ip routing | ipv6 routing`)
