@@ -3070,7 +3070,7 @@ locals {
         ipv6_pim_bsr_border                     = try(int.ipv6.pim.bsr_border, null)
         ipv6_pim_dr_priority                    = try(int.ipv6.pim.dr_priority, null)
         ip_igmp_version                         = try(int.igmp.version, null)
-        ip_router_isis                          = try(int.ip_router_isis, null)
+        isis_area_tag                           = try(int.isis.area_tag, null)
       }
     ]
   ])
@@ -3150,7 +3150,7 @@ resource "iosxe_interface_tunnel" "tunnel" {
   snmp_trap_link_status                  = each.value.snmp_trap_link_status
   logging_event_link_status_enable       = each.value.logging_event_link_status_enable
   ip_igmp_version                        = each.value.ip_igmp_version
-  ip_router_isis                         = each.value.ip_router_isis
+  ip_router_isis                         = each.value.isis_area_tag
 
   depends_on = [
     iosxe_vrf.vrf,
