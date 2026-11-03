@@ -218,6 +218,9 @@ No outputs.
 | [iosxe_object_group.object_group](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/object_group) | resource |
 | [iosxe_ospf.ospf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/ospf) | resource |
 | [iosxe_ospf_vrf.ospf_vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/ospf_vrf) | resource |
+| [iosxe_ospfv3.ospfv3](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/ospfv3) | resource |
+| [iosxe_ospfv3_address_family_ipv4_vrf.ospfv3_af_ipv4_vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/ospfv3_address_family_ipv4_vrf) | resource |
+| [iosxe_ospfv3_address_family_ipv6_vrf.ospfv3_af_ipv6_vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/ospfv3_address_family_ipv6_vrf) | resource |
 | [iosxe_parameter_map.parameter_map](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/parameter_map) | resource |
 | [iosxe_pim.pim](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/pim) | resource |
 | [iosxe_pim_ipv6.pim_ipv6](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/pim_ipv6) | resource |

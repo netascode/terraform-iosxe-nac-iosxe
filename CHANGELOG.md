@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Add `routing.ospfv3_processes` with `address_family_ipv4_vrfs` and `address_family_ipv6_vrfs` using the `iosxe_ospfv3`, `iosxe_ospfv3_address_family_ipv4_vrf` and `iosxe_ospfv3_address_family_ipv6_vrf` resources
 - Add `access_lists.ipv6` (`ipv6 access-list <name>`) using the `iosxe_access_list_ipv6` resource. Route maps, SNMP and PIM IPv6, which reference IPv6 ACLs by name, now depend on it
 - Add `monitor_sessions` (`monitor session <id> source|destination interface ...`) using the `iosxe_monitor_session` resource
 - Add EVPN instance `vlan_based.auto_route_target_legacy`, `route_target_legacy`, `route_target_both_legacy`, `route_target_import_legacy` and `route_target_export_legacy` mappings for the IOS-XE 17.12 single-value route-target YANG paths (obsolete in 17.15 and later)
