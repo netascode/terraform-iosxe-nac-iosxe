@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Add `logging.rate_limit` (`type`: `all` | `console` | `console-all`, `rate`, `except_severity`) for `logging rate-limit ... [except <severity>]`. `logging.rate_limit_all` is deprecated in favor of `rate_limit` with `type: all`, and still works when `rate_limit` is not set
 - Add BGP IPv6 unicast address family `aggregate_addresses`, `admin_distances`, `distance_bgp_external`/`_internal`/`_local` and `maximum_paths_ebgp`/`_ibgp` mappings
 - Add BGP `asnotation_dot` mapping (`bgp asnotation dot`) and pass `routing.bgp.as_number` to the provider as a string so asdot values such as `64111.56369` are accepted
 - Add `interface_name`, `interface_protocol` and `interface_routing` mappings to `system.track_objects` for interface object tracking (`track <n> interface <name> line-protocol | ip routing | ipv6 routing`)
