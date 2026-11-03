@@ -198,6 +198,7 @@ resource "iosxe_cli" "cli_0" {
     iosxe_wireless_rf_profile.wireless_rf_profile,
     iosxe_wireless_rf_tag.wireless_rf_tag,
     iosxe_wireless_site_tag.wireless_site_tag,
+    iosxe_wireless_system.wireless_system,
     iosxe_wireless_wlan_profile.wireless_wlan_profile
   ]
 }
