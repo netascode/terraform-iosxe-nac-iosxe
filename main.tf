@@ -148,6 +148,7 @@ resource "iosxe_cli" "cli_0" {
     iosxe_interface_ospf.port_channel_subinterface_ospf,
     iosxe_interface_ospfv3.port_channel_subinterface_ospfv3,
     iosxe_interface_pim.port_channel_subinterface_pim,
+    iosxe_interface_hsrp.hsrp,
     iosxe_interface_nve.nve,
     iosxe_license.license,
     iosxe_line.line,

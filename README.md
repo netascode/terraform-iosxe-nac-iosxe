@@ -143,6 +143,8 @@ No outputs.
 | [iosxe_interface_ethernet.ethernet_sub](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_ethernet) | resource |
 | [iosxe_interface_ethernet.ethernet_subinterface](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_ethernet) | resource |
 | [iosxe_interface_ethernet.ethernet_unmanaged](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_ethernet) | resource |
+| [iosxe_interface_hsrp.hsrp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_hsrp) | resource |
+| [iosxe_interface_hsrp.hsrp_unmanaged](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_hsrp) | resource |
 | [iosxe_interface_isis.ethernet_isis](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_isis) | resource |
 | [iosxe_interface_isis.ethernet_subinterface_isis](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_isis) | resource |
 | [iosxe_interface_isis.loopback_isis](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_isis) | resource |

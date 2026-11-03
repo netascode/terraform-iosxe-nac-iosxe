@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Add HSRP (`standby`) on ethernet, VLAN, port-channel, port-channel subinterface and BDI interfaces using the `iosxe_interface_hsrp` resource: `hsrp_version`, `hsrp_bfd`, `hsrp_delay_*`, `hsrp_mac_refresh`, `hsrp_use_bia*`, `hsrp_redirect_*` and the `hsrp` group list
 - Add `routing.ospfv3_processes` with `address_family_ipv4_vrfs` and `address_family_ipv6_vrfs` using the `iosxe_ospfv3`, `iosxe_ospfv3_address_family_ipv4_vrf` and `iosxe_ospfv3_address_family_ipv6_vrf` resources
 - Add `access_lists.ipv6` (`ipv6 access-list <name>`) using the `iosxe_access_list_ipv6` resource. Route maps, SNMP and PIM IPv6, which reference IPv6 ACLs by name, now depend on it
 - Add `monitor_sessions` (`monitor session <id> source|destination interface ...`) using the `iosxe_monitor_session` resource
