@@ -208,6 +208,7 @@ No outputs.
 | [iosxe_lldp.lldp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/lldp) | resource |
 | [iosxe_logging.logging](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/logging) | resource |
 | [iosxe_mdt_subscription.mdt_subscription](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/mdt_subscription) | resource |
+| [iosxe_monitor_session.monitor_session](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/monitor_session) | resource |
 | [iosxe_mpls.mpls](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/mpls) | resource |
 | [iosxe_msdp.msdp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/msdp) | resource |
 | [iosxe_multicast.multicast](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/multicast) | resource |
