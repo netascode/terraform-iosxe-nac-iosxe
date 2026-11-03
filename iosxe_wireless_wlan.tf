@@ -93,12 +93,14 @@ locals {
   wireless_policy_profiles = flatten([
     for device in local.devices : [
       for pp in try(local.device_config[device.name].wireless.policy_profiles, []) : {
-        key                   = format("%s/%s", device.name, pp.name)
-        device                = device.name
-        policy_profile_name   = pp.name
-        description           = try(pp.description, null)
-        status                = try(pp.shutdown, null) == null ? null : !pp.shutdown
-        vlan                  = try(tostring(pp.vlan), null)
+        key                 = format("%s/%s", device.name, pp.name)
+        device              = device.name
+        policy_profile_name = pp.name
+        description         = try(pp.description, null)
+        status              = try(pp.shutdown, null) == null ? null : !pp.shutdown
+        # interface-name defaults to "1" (Cisco-IOS-XE-wireless-wlan-cfg); the device
+        # omits a default leaf from get-config, so send nothing for VLAN 1.
+        vlan                  = try(tostring(pp.vlan), null) == "1" ? null : try(tostring(pp.vlan), null)
         accounting_list       = try(pp.accounting_list, null)
         aaa_override          = try(pp.aaa_override, null)
         nac                   = try(pp.nac, null)
