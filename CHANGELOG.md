@@ -1,6 +1,7 @@
 ## Unreleased
 
 - Add EVPN instance `vlan_based.auto_route_target_legacy`, `route_target_legacy`, `route_target_both_legacy`, `route_target_import_legacy` and `route_target_export_legacy` mappings for the IOS-XE 17.12 single-value route-target YANG paths (obsolete in 17.15 and later)
+- Add `large_community_lists.expanded` (`ip large-community-list expanded <name> permit|deny <regex>`) using the `iosxe_large_community_list_expanded` resource
 - Add `snmp_server.trap_source_type`/`trap_source_id` (`snmp-server trap-source`), `traps.bgp_cbgp2_state_changes`, `traps.bgp_cbgp2_threshold_prefix`, `traps.ospfv3_errors` and `traps.ospfv3_state_change` mappings
 - Fix `snmp_server.source_interface_informs_type` and `source_interface_traps_type` value `HundredGigabitEthernet` being ignored: the module compared against `HundredGigE`, which the schema does not accept
 - Add `logging.rate_limit` (`type`: `all` | `console` | `console-all`, `rate`, `except_severity`) for `logging rate-limit ... [except <severity>]`. `logging.rate_limit_all` is deprecated in favor of `rate_limit` with `type: all`, and still works when `rate_limit` is not set
