@@ -191,6 +191,8 @@ resource "iosxe_wireless_ap_join_profile" "wireless_ap_join_profile" {
   tcp_adjust_mss_enable                                 = each.value.tcp_adjust_mss_enable
   tcp_adjust_mss_size                                   = each.value.tcp_adjust_mss_size
   ble_scan                                              = each.value.ble_scan
+
+  depends_on = [iosxe_wireless_mesh_profile.wireless_mesh_profile]
 }
 
 locals {

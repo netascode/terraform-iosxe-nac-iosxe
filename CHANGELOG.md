@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Add `wireless.mesh_profiles` (`wireless profile mesh`) using the `iosxe_wireless_mesh_profile` resource; AP join profiles now depend on mesh profiles
 - Add `wireless.site_tags` (`wireless tag site`) using the `iosxe_wireless_site_tag` resource
 - Add `wireless.ap_join_profiles` (`ap profile <name>`) using the `iosxe_wireless_ap_join_profile` resource
 - Add `wireless.rf_tags` (`wireless tag rf`) using the `iosxe_wireless_rf_tag` resource

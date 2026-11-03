@@ -192,6 +192,7 @@ resource "iosxe_cli" "cli_0" {
     iosxe_vtp.vtp,
     iosxe_wireless_ap_join_profile.wireless_ap_join_profile,
     iosxe_wireless_flex_profile.wireless_flex_profile,
+    iosxe_wireless_mesh_profile.wireless_mesh_profile,
     iosxe_wireless_policy_profile.wireless_policy_profile,
     iosxe_wireless_policy_tag.wireless_policy_tag,
     iosxe_wireless_rf_profile.wireless_rf_profile,
