@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Add PKI certificate authentication support to `crypto.ikev2.profiles`: `authentication_local_rsa_sig`, `authentication_remote_rsa_sig`, `authentication_local_ecdsa_sig`, `authentication_remote_ecdsa_sig`, `pki_trustpoints` (list with `name` and `uses`), and `match_certificate_maps`
 - Add EIGRP `af_interfaces` (`af-interface <name>` with `passive-interface` and `split-horizon`) to `iosxe_eigrp` and `iosxe_eigrp_vrf`
 - Add `wireless.management_interface_type`/`management_interface_id` (C9800 `wireless management interface <name>`) using the `iosxe_wireless_system` resource
 - Add `wireless.mesh_profiles` (`wireless profile mesh`) using the `iosxe_wireless_mesh_profile` resource; AP join profiles now depend on mesh profiles
