@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Fix tunnel `ip_nhrp_maps` failing to plan with provider 1.2.0 (`attribute "nbma_ipv4s" is required`): each entry's `nbma_ipv4` is now wrapped into the provider's `nbma_ipv4s` list. The data model is unchanged
 - BREAKING CHANGE: Rename the parameter-map type inspect data model key from `policy.parameter_maps` to `policy.parameter_maps_inspect` to match the nac-iosxe schema (the previous key was never accepted by the schema)
 - Add `tunnel_protection_ipsec_profile_legacy` and IS-IS (`isis.area_tag`, `ip router isis <tag>`) to `interfaces.tunnels`
 - Add `iosxe_crypto_gdoi` resource mapping for GET VPN GDOI group configuration (`crypto gdoi group`), including key server (server local address, rekey, SA IPsec, redundancy, PFS, G-IKEv2) and group member (client protocol gdoi/gikev2, bypass-policy, PFS, fail-close revert, recovery-check interval, registration interface, rekey encryption/hash ciphers, transform-sets, transport-encrypt-key, status active-sa track)
