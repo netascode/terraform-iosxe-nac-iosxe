@@ -40,7 +40,7 @@ module "iosxe" {
 | Name | Version |
 | ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.9.0 |
-| <a name="requirement_iosxe"></a> [iosxe](#requirement\_iosxe) | >= 1.0.0 |
+| <a name="requirement_iosxe"></a> [iosxe](#requirement\_iosxe) | >= 1.2.0 |
 | <a name="requirement_local"></a> [local](#requirement\_local) | >= 2.5.0, < 3.0.0 |
 | <a name="requirement_utils"></a> [utils](#requirement\_utils) | >= 2.0.2, < 3.0.0 |
 ## Inputs
@@ -203,11 +203,13 @@ No outputs.
 | [iosxe_isis.isis](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/isis) | resource |
 | [iosxe_key_chain.key_chain](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/key_chain) | resource |
 | [iosxe_l2_vfi.l2_vfi](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/l2_vfi) | resource |
+| [iosxe_large_community_list_expanded.large_community_list_expanded](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/large_community_list_expanded) | resource |
 | [iosxe_license.license](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/license) | resource |
 | [iosxe_line.line](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/line) | resource |
 | [iosxe_lldp.lldp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/lldp) | resource |
 | [iosxe_logging.logging](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/logging) | resource |
 | [iosxe_mdt_subscription.mdt_subscription](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/mdt_subscription) | resource |
+| [iosxe_monitor_session.monitor_session](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/monitor_session) | resource |
 | [iosxe_mpls.mpls](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/mpls) | resource |
 | [iosxe_msdp.msdp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/msdp) | resource |
 | [iosxe_multicast.multicast](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/multicast) | resource |
