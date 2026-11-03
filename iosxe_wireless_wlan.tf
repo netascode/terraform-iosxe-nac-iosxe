@@ -1,8 +1,12 @@
 locals {
-  wireless_wlan_ft_map  = { enabled = "dot11r-enabled", adaptive = "dot11r-adaptive-enabled", disabled = "dot11r-disabled" }
+  # ft-mode defaults to dot11r-adaptive-enabled and psk-key-type to key-ascii
+  # (Cisco-IOS-XE-wireless-wlan-cfg). The device omits a default leaf from
+  # get-config, so sending it would show a diff on every plan; send nothing
+  # instead and let the device apply its default.
+  wireless_wlan_ft_map  = { enabled = "dot11r-enabled", adaptive = null, disabled = "dot11r-disabled" }
   wireless_wlan_p2p_map = { drop = "p2p-blocking-action-drop", "forward-upstream" = "p2p-blocking-action-fwdup" }
   wireless_wlan_wmm_map = { allowed = "apf-vap-wme-allowed", require = "apf-vap-wme-required", disabled = "apf-vap-wme-disabled" }
-  wireless_wlan_psk_map = { ascii = "key-ascii", hex = "key-hex" }
+  wireless_wlan_psk_map = { ascii = null, hex = "key-hex" }
 
   wireless_wlan_profiles = flatten([
     for device in local.devices : [
