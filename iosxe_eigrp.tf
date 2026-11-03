@@ -11,10 +11,18 @@ locals {
         router_id         = try(eigrp.router_id, null)
         auto_summary      = try(eigrp.auto_summary, null)
         shutdown          = try(eigrp.shutdown, null)
+        stub_connected    = try(eigrp.stub_connected, null)
+        stub_summary      = try(eigrp.stub_summary, null)
 
         networks = try(length(eigrp.networks) == 0, true) ? null : [for network in eigrp.networks : {
           ip       = try(network.ip, null)
           wildcard = try(network.wildcard, null)
+        }]
+
+        af_interfaces = try(length(eigrp.af_interfaces) == 0, true) ? null : [for af_intf in eigrp.af_interfaces : {
+          interface         = try(af_intf.interface, null)
+          passive_interface = try(af_intf.passive_interface, null)
+          split_horizon     = try(af_intf.split_horizon, null)
         }]
       } if try(eigrp.vrf, null) != null && try(eigrp.vrf, "") != ""
     ]
@@ -31,10 +39,18 @@ locals {
         router_id         = try(eigrp.router_id, null)
         auto_summary      = try(eigrp.auto_summary, null)
         shutdown          = try(eigrp.shutdown, null)
+        stub_connected    = try(eigrp.stub_connected, null)
+        stub_summary      = try(eigrp.stub_summary, null)
 
         networks = try(length(eigrp.networks) == 0, true) ? null : [for network in eigrp.networks : {
           ip       = try(network.ip, null)
           wildcard = try(network.wildcard, null)
+        }]
+
+        af_interfaces = try(length(eigrp.af_interfaces) == 0, true) ? null : [for af_intf in eigrp.af_interfaces : {
+          interface         = try(af_intf.interface, null)
+          passive_interface = try(af_intf.passive_interface, null)
+          split_horizon     = try(af_intf.split_horizon, null)
         }]
       } if try(eigrp.vrf, null) == null || try(eigrp.vrf, "") == ""
     ]
@@ -51,7 +67,22 @@ resource "iosxe_eigrp" "eigrp" {
   router_id         = each.value.router_id
   auto_summary      = each.value.auto_summary
   shutdown          = each.value.shutdown
+  stub_connected    = each.value.stub_connected
+  stub_summary      = each.value.stub_summary
   networks          = each.value.networks
+  af_interfaces     = each.value.af_interfaces
+
+  depends_on = [
+    iosxe_system.system,
+    iosxe_interface_ethernet.ethernet,
+    iosxe_interface_ethernet.ethernet_sub,
+    iosxe_interface_ethernet.ethernet_subinterface,
+    iosxe_interface_loopback.loopback,
+    iosxe_interface_vlan.vlan,
+    iosxe_interface_port_channel.port_channel,
+    iosxe_interface_port_channel_subinterface.port_channel_subinterface,
+    iosxe_interface_tunnel.tunnel,
+  ]
 }
 
 resource "iosxe_eigrp_vrf" "eigrp_vrf" {
@@ -65,5 +96,21 @@ resource "iosxe_eigrp_vrf" "eigrp_vrf" {
   router_id         = each.value.router_id
   auto_summary      = each.value.auto_summary
   shutdown          = each.value.shutdown
+  stub_connected    = each.value.stub_connected
+  stub_summary      = each.value.stub_summary
   networks          = each.value.networks
+  af_interfaces     = each.value.af_interfaces
+
+  depends_on = [
+    iosxe_vrf.vrf,
+    iosxe_system.system,
+    iosxe_interface_ethernet.ethernet,
+    iosxe_interface_ethernet.ethernet_sub,
+    iosxe_interface_ethernet.ethernet_subinterface,
+    iosxe_interface_loopback.loopback,
+    iosxe_interface_vlan.vlan,
+    iosxe_interface_port_channel.port_channel,
+    iosxe_interface_port_channel_subinterface.port_channel_subinterface,
+    iosxe_interface_tunnel.tunnel,
+  ]
 }
