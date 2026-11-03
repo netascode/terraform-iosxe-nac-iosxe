@@ -4,6 +4,7 @@ locals {
   # are managed by their own resources. iosxe_aaa is only created when at least
   # one of these keys is set, because destroying iosxe_aaa removes the whole
   # native/aaa container, including configuration it never managed.
+  # Add a key here whenever the iosxe_aaa resource below starts mapping it.
   aaa_attributes_managed_by_iosxe_aaa = [
     "new_model",
     "session_id",
