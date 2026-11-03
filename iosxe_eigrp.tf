@@ -18,6 +18,12 @@ locals {
           ip       = try(network.ip, null)
           wildcard = try(network.wildcard, null)
         }]
+
+        af_interfaces = try(length(eigrp.af_interfaces) == 0, true) ? null : [for af_intf in eigrp.af_interfaces : {
+          interface         = try(af_intf.interface, null)
+          passive_interface = try(af_intf.passive_interface, null)
+          split_horizon     = try(af_intf.split_horizon, null)
+        }]
       } if try(eigrp.vrf, null) != null && try(eigrp.vrf, "") != ""
     ]
   ])
@@ -40,6 +46,12 @@ locals {
           ip       = try(network.ip, null)
           wildcard = try(network.wildcard, null)
         }]
+
+        af_interfaces = try(length(eigrp.af_interfaces) == 0, true) ? null : [for af_intf in eigrp.af_interfaces : {
+          interface         = try(af_intf.interface, null)
+          passive_interface = try(af_intf.passive_interface, null)
+          split_horizon     = try(af_intf.split_horizon, null)
+        }]
       } if try(eigrp.vrf, null) == null || try(eigrp.vrf, "") == ""
     ]
   ])
@@ -58,6 +70,7 @@ resource "iosxe_eigrp" "eigrp" {
   stub_connected    = each.value.stub_connected
   stub_summary      = each.value.stub_summary
   networks          = each.value.networks
+  af_interfaces     = each.value.af_interfaces
 
   depends_on = [
     iosxe_system.system,
@@ -86,6 +99,7 @@ resource "iosxe_eigrp_vrf" "eigrp_vrf" {
   stub_connected    = each.value.stub_connected
   stub_summary      = each.value.stub_summary
   networks          = each.value.networks
+  af_interfaces     = each.value.af_interfaces
 
   depends_on = [
     iosxe_vrf.vrf,
