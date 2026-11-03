@@ -189,7 +189,8 @@ resource "iosxe_cli" "cli_0" {
     iosxe_vlan_filter.vlan_filter,
     iosxe_vlan_group.vlan_group,
     iosxe_vrf.vrf,
-    iosxe_vtp.vtp
+    iosxe_vtp.vtp,
+    iosxe_wireless_wlan_profile.wireless_wlan_profile
   ]
 }
 
