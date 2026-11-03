@@ -3,9 +3,9 @@ locals {
     for device in local.devices : concat(
       [
         for int in try(local.device_config[device.name].interfaces.ethernets, []) : {
-          key                           = format("%s/%s%s", device.name, try(int.type, "GigabitEthernet"), trimprefix(int.id, "$string "))
+          key                           = format("%s/%s%s", device.name, try(int.type, null), trimprefix(int.id, "$string "))
           device                        = device.name
-          type                          = try(int.type, "GigabitEthernet")
+          type                          = try(int.type, null)
           name                          = trimprefix(int.id, "$string ")
           managed                       = try(int.managed, true)
           version                       = try(int.hsrp_version, null)
