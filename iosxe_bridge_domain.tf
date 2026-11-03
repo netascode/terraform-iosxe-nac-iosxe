@@ -8,7 +8,7 @@ locals {
         member_vni = try(bd.member_vni, null)
         member_interfaces = try(length(bd.member_interfaces) == 0, true) ? null : [for mi in bd.member_interfaces : {
           interface = try(mi.name, null)
-          service_instance = [{
+          service_instances = [{
             instance_id = try(mi.service_instance, null)
           }]
         }]

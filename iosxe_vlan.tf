@@ -86,7 +86,7 @@ resource "iosxe_vlan_configuration" "vlan_configuration" {
 
   depends_on = [
     iosxe_evpn_instance.evpn_instance,
-    iosxe_evpn_profile.evpn_profile
+    iosxe_evpn.evpn
   ]
 }
 

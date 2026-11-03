@@ -30,8 +30,9 @@ resource "iosxe_system" "system" {
   igmp_snooping_querier_timer_expiry      = try(local.device_config[each.value.name].system.igmp_snooping_querier_timer_expiry, null)
 
   # New global configurations
-  ip_default_gateway = try(local.device_config[each.value.name].system.ip_default_gateway, null)
-  device_classifier  = try(local.device_config[each.value.name].system.device_classifier, null)
+  ip_default_gateway           = try(local.device_config[each.value.name].system.ip_default_gateway, null)
+  device_classifier            = try(local.device_config[each.value.name].system.device_classifier, null)
+  mac_address_table_aging_time = try(local.device_config[each.value.name].system.mac_address_table_aging_time, null)
 
   # Archive configuration
   archive_log_config_logging_enable  = try(local.device_config[each.value.name].system.archive.log_config_logging_enable, null)
@@ -63,6 +64,10 @@ resource "iosxe_system" "system" {
   redundancy                          = try(local.device_config[each.value.name].system.redundancy, null)
   redundancy_mode                     = try(local.device_config[each.value.name].system.redundancy_mode, null)
   transceiver_type_all_monitoring     = try(local.device_config[each.value.name].system.transceiver_type_all_monitoring, null)
+  # Power management (chassis platforms only)
+  power_redundancy_mode_combined = try(local.device_config[each.value.name].system.power_redundancy_mode_combined, null)
+  power_supply_autolc_shutdown   = try(local.device_config[each.value.name].system.power_supply_autolc_shutdown, null)
+  power_supply_autolc_priority   = try(local.device_config[each.value.name].system.power_supply_autolc_priority, null)
 
   # Interface-based source interface mappings
   ip_domain_lookup_source_interface_five_gigabit_ethernet        = try(local.device_config[each.value.name].system.ip_domain_lookup_source_interface_type, null) == "FiveGigabitEthernet" ? try(trimprefix(local.device_config[each.value.name].system.ip_domain_lookup_source_interface_id, "$string "), null) : null
