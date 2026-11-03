@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Add `wireless.rf_profiles` (`ap dot11 <band> rf-profile`) using the `iosxe_wireless_rf_profile` resource
 - Add `wireless.policy_profiles` (`wireless profile policy`) and `wireless.policy_tags` (`wireless tag policy`) using the `iosxe_wireless_policy_profile` and `iosxe_wireless_policy_tag` resources
 - Add `wireless.wlan_profiles` (C9800 `wlan <name> <id> <ssid>`) using the `iosxe_wireless_wlan_profile` resource
 - Add interface IPv6 DHCP mappings (`ipv6.dhcp_servers`, `dhcp_client_pd`, `dhcp_client_pd_rapid_commit`, `dhcp_relay_destinations`, `dhcp_relay_trust`, `dhcp_relay_option_vpn`) to ethernet (including subinterfaces), loopback, VLAN, port-channel and tunnel interfaces
