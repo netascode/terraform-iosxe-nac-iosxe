@@ -69,6 +69,7 @@ No outputs.
 | [iosxe_aaa_authentication.aaa_authentication](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/aaa_authentication) | resource |
 | [iosxe_aaa_authorization.aaa_authorization](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/aaa_authorization) | resource |
 | [iosxe_access_list_extended.access_list_extended](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/access_list_extended) | resource |
+| [iosxe_access_list_ipv6.access_list_ipv6](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/access_list_ipv6) | resource |
 | [iosxe_access_list_role_based.access_list_role_based](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/access_list_role_based) | resource |
 | [iosxe_access_list_standard.access_list_standard](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/access_list_standard) | resource |
 | [iosxe_arp.arp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/arp) | resource |
