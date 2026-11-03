@@ -266,6 +266,7 @@ No outputs.
 | [iosxe_wireless_rf_profile.wireless_rf_profile](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/wireless_rf_profile) | resource |
 | [iosxe_wireless_rf_tag.wireless_rf_tag](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/wireless_rf_tag) | resource |
 | [iosxe_wireless_site_tag.wireless_site_tag](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/wireless_site_tag) | resource |
+| [iosxe_wireless_system.wireless_system](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/wireless_system) | resource |
 | [iosxe_wireless_wlan_profile.wireless_wlan_profile](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/wireless_wlan_profile) | resource |
 | [iosxe_zone_pair_security.zone_pair_security](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/zone_pair_security) | resource |
 | [iosxe_zone_security.zone_security](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/zone_security) | resource |

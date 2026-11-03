@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Add `wireless.management_interface_type`/`management_interface_id` (C9800 `wireless management interface <name>`) using the `iosxe_wireless_system` resource
 - Add `wireless.mesh_profiles` (`wireless profile mesh`) using the `iosxe_wireless_mesh_profile` resource; AP join profiles now depend on mesh profiles
 - Add `wireless.site_tags` (`wireless tag site`) using the `iosxe_wireless_site_tag` resource
 - Add `wireless.ap_join_profiles` (`ap profile <name>`) using the `iosxe_wireless_ap_join_profile` resource
