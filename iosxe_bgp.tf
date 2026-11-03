@@ -2,7 +2,8 @@ resource "iosxe_bgp" "bgp" {
   for_each = { for device in local.devices : device.name => device if try(local.device_config[device.name].routing.bgp, null) != null }
   device   = each.value.name
 
-  asn                  = try(local.device_config[each.value.name].routing.bgp.as_number, null)
+  asn                  = try(tostring(local.device_config[each.value.name].routing.bgp.as_number), null)
+  asnotation_dot       = try(local.device_config[each.value.name].routing.bgp.asnotation_dot, null)
   default_ipv4_unicast = try(local.device_config[each.value.name].routing.bgp.default_ipv4_unicast, null)
   log_neighbor_changes = try(local.device_config[each.value.name].routing.bgp.log_neighbor_changes, null)
   router_id_loopback   = try(local.device_config[each.value.name].routing.bgp.router_id_interface_type, null) == "Loopback" ? try(local.device_config[each.value.name].routing.bgp.router_id_interface_id, null) : null
@@ -251,8 +252,23 @@ resource "iosxe_bgp_address_family_ipv6" "bgp_address_family_ipv6" {
     route_map = try(net.route_map, null)
     backdoor  = try(net.backdoor, null)
   }]
+  ipv6_unicast_aggregate_addresses = try(length(local.device_config[each.value.name].routing.bgp.address_family.ipv6_unicast.aggregate_addresses) == 0, true) ? null : [for agg in local.device_config[each.value.name].routing.bgp.address_family.ipv6_unicast.aggregate_addresses : {
+    ipv6_address = try(agg.address, null)
+  }]
+  ipv6_unicast_admin_distances = try(length(local.device_config[each.value.name].routing.bgp.address_family.ipv6_unicast.admin_distances) == 0, true) ? null : [for ad in local.device_config[each.value.name].routing.bgp.address_family.ipv6_unicast.admin_distances : {
+    distance            = try(ad.distance, null)
+    source_ipv6_address = try(ad.source_ipv6_address, null)
+    prefix_list_name    = try(ad.prefix_list_name, null)
+  }]
+  ipv6_unicast_distance_bgp_external = try(local.device_config[each.value.name].routing.bgp.address_family.ipv6_unicast.distance_bgp_external, null)
+  ipv6_unicast_distance_bgp_internal = try(local.device_config[each.value.name].routing.bgp.address_family.ipv6_unicast.distance_bgp_internal, null)
+  ipv6_unicast_distance_bgp_local    = try(local.device_config[each.value.name].routing.bgp.address_family.ipv6_unicast.distance_bgp_local, null)
+  ipv6_unicast_maximum_paths_ebgp    = try(local.device_config[each.value.name].routing.bgp.address_family.ipv6_unicast.maximum_paths_ebgp, null)
+  ipv6_unicast_maximum_paths_ibgp    = try(local.device_config[each.value.name].routing.bgp.address_family.ipv6_unicast.maximum_paths_ibgp, null)
 
-
+  depends_on = [
+    iosxe_ipv6_prefix_list.ipv6_prefix_list
+  ]
 }
 
 resource "iosxe_bgp_address_family_l2vpn" "bgp_address_family_l2vpn" {
