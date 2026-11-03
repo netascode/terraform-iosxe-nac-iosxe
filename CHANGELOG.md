@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Add `monitor_sessions` (`monitor session <id> source|destination interface ...`) using the `iosxe_monitor_session` resource
 - Add `large_community_lists.expanded` (`ip large-community-list expanded <name> permit|deny <regex>`) using the `iosxe_large_community_list_expanded` resource
 - Add `snmp_server.trap_source_type`/`trap_source_id` (`snmp-server trap-source`), `traps.bgp_cbgp2_state_changes`, `traps.bgp_cbgp2_threshold_prefix`, `traps.ospfv3_errors` and `traps.ospfv3_state_change` mappings
 - Fix `snmp_server.source_interface_informs_type` and `source_interface_traps_type` value `HundredGigabitEthernet` being ignored: the module compared against `HundredGigE`, which the schema does not accept
