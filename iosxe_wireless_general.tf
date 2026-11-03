@@ -1,5 +1,5 @@
 resource "iosxe_wireless_system" "wireless_system" {
-  for_each = { for device in local.devices : device.name => device if try(local.device_config[device.name].wireless.management_interface_type, null) != null }
+  for_each = { for device in local.devices : device.name => device if try(local.device_config[device.name].wireless.management_interface_type, null) != null && try(local.device_config[device.name].wireless.management_interface_id, null) != null }
   device   = each.value.name
 
   interface_name = format("%s%s",
