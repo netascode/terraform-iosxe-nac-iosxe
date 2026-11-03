@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Add `wireless.flex_profiles` (`wireless profile flex`) using the `iosxe_wireless_flex_profile` resource
 - Add `wireless.rf_profiles` (`ap dot11 <band> rf-profile`) using the `iosxe_wireless_rf_profile` resource
 - Add `wireless.policy_profiles` (`wireless profile policy`) and `wireless.policy_tags` (`wireless tag policy`) using the `iosxe_wireless_policy_profile` and `iosxe_wireless_policy_tag` resources
 - Add `wireless.wlan_profiles` (C9800 `wlan <name> <id> <ssid>`) using the `iosxe_wireless_wlan_profile` resource
