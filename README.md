@@ -35,6 +35,12 @@ module "iosxe" {
 }
 ```
 
+## Notes
+
+### Web authentication and IBNS 2.0
+
+Configuring `policy.parameter_map_webauth_global` (or any other web authentication parameter map) converts the device to IBNS 2.0 (new-style) session management. IOS-XE rewrites `authentication mac-move` as `access-session mac-move`, removes the `ip admission` defaults and creates default `service-template`s. The conversion happens over NETCONF as well as the CLI, cannot be reversed from the CLI, and is not undone by `terraform destroy`. After the first apply, values read from the device may drift against the `system` attributes `authentication_mac_move_*` and `access_session_mac_move_deny`, and against `service_templates`. The module does not try to prevent this.
+
 ## Requirements
 
 | Name | Version |
@@ -130,6 +136,7 @@ No outputs.
 | [iosxe_device_tracking.device_tracking](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/device_tracking) | resource |
 | [iosxe_dhcp.dhcp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/dhcp) | resource |
 | [iosxe_dot1x.dot1x](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/dot1x) | resource |
+| [iosxe_eap_profile.eap_profile](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/eap_profile) | resource |
 | [iosxe_eem.eem](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/eem) | resource |
 | [iosxe_eigrp.eigrp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/eigrp) | resource |
 | [iosxe_eigrp_vrf.eigrp_vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/eigrp_vrf) | resource |
@@ -226,6 +233,7 @@ No outputs.
 | [iosxe_ospfv3_address_family_ipv4_vrf.ospfv3_af_ipv4_vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/ospfv3_address_family_ipv4_vrf) | resource |
 | [iosxe_ospfv3_address_family_ipv6_vrf.ospfv3_af_ipv6_vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/ospfv3_address_family_ipv6_vrf) | resource |
 | [iosxe_parameter_map.parameter_map](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/parameter_map) | resource |
+| [iosxe_parameter_map_webauth_global.parameter_map_webauth_global](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/parameter_map_webauth_global) | resource |
 | [iosxe_pim.pim](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/pim) | resource |
 | [iosxe_pim_ipv6.pim_ipv6](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/pim_ipv6) | resource |
 | [iosxe_platform.platform](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/platform) | resource |

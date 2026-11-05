@@ -123,3 +123,33 @@ resource "iosxe_parameter_map" "parameter_map" {
   udp_idle_time_ageout               = each.value.udp_idle_time_ageout
   zone_mismatch_drop                 = each.value.zone_mismatch_drop
 }
+
+##### WEB AUTHENTICATION #####
+# WARNING (IBNS 2.0): configuring any web authentication parameter map,
+# including the global map below, converts the device to IBNS 2.0 (new-style)
+# session management. IOS-XE rewrites `authentication mac-move` as
+# `access-session mac-move`, removes the `ip admission` defaults and creates
+# default `service-template`s. The conversion happens over NETCONF as well as
+# the CLI and cannot be reversed from the CLI; destroying these resources does
+# not undo it. After the first apply, values read from the device may drift
+# against `system` attributes managed in iosxe_system.tf
+# (authentication_mac_move_*, access_session_mac_move_deny) and against
+# `service_templates`. The module does not try to prevent this.
+
+resource "iosxe_parameter_map_webauth_global" "parameter_map_webauth_global" {
+  # Created only when at least one attribute has a non-null value. Counting
+  # keys alone would let a block such as `{virtual_ip_ipv4: null}` create the
+  # resource, and any write triggers the irreversible IBNS 2.0 conversion.
+  for_each = {
+    for device in local.devices : device.name => device
+    if try(local.device_config[device.name].policy.parameter_map_webauth_global.virtual_ip_ipv4, null) != null || try(local.device_config[device.name].policy.parameter_map_webauth_global.virtual_ip_ipv6, null) != null
+  }
+  device = each.value.name
+
+  virtual_ip_ipv4 = try(local.device_config[each.value.name].policy.parameter_map_webauth_global.virtual_ip_ipv4, null)
+  virtual_ip_ipv6 = try(local.device_config[each.value.name].policy.parameter_map_webauth_global.virtual_ip_ipv6, null)
+
+  # Convert to IBNS 2.0 only after iosxe_system (authentication/access-session
+  # mac-move and related settings) has been applied.
+  depends_on = [iosxe_system.system]
+}
