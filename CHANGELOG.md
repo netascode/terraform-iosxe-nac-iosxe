@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Add `stage` attribute to CLI templates (`iosxe.templates[].stage`, `iosxe.devices[].cli_templates[].stage`) to apply CLI templates before (`pre`) or after (`post`, default) the modeled configuration
 - Fix tunnel `ip_nhrp_maps` failing to plan with provider 1.2.0 (`attribute "nbma_ipv4s" is required`): each entry's `nbma_ipv4` is now wrapped into the provider's `nbma_ipv4s` list. The data model is unchanged
 - BREAKING CHANGE: Rename the parameter-map type inspect data model key from `policy.parameter_maps` to `policy.parameter_maps_inspect` to match the nac-iosxe schema (the previous key was never accepted by the schema)
 - Add `tunnel_protection_ipsec_profile_legacy` and IS-IS (`isis.area_tag`, `ip router isis <tag>`) to `interfaces.tunnels`

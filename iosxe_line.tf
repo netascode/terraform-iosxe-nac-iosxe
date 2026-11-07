@@ -66,6 +66,7 @@ resource "iosxe_line" "line" {
   }]
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_access_list_standard.access_list_standard,
     iosxe_access_list_extended.access_list_extended
   ]

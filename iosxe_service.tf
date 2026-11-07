@@ -27,4 +27,8 @@ resource "iosxe_service" "service" {
   compress_config                         = try(local.device_config[each.value.name].service.compress_config, null)
   sequence_numbers                        = try(local.device_config[each.value.name].service.sequence_numbers, null)
   call_home                               = try(local.device_config[each.value.name].service.call_home, null)
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }

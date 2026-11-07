@@ -25,6 +25,7 @@ resource "iosxe_evpn" "evpn" {
   ]
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_loopback.loopback
   ]
 }
@@ -89,6 +90,10 @@ resource "iosxe_evpn_instance" "evpn_instance" {
   vlan_based_route_target_import_legacy = each.value.vlan_based_route_target_import_legacy
   vlan_based_route_target_export_legacy = each.value.vlan_based_route_target_export_legacy
   vlan_based_multicast_advertise        = each.value.vlan_based_multicast_advertise
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }
 
 
@@ -145,6 +150,7 @@ resource "iosxe_evpn_ethernet_segment" "evpn_ethernet_segment" {
   identifier_types         = each.value.identifier_types
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_evpn.evpn
   ]
 }

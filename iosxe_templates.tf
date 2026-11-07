@@ -200,6 +200,7 @@ resource "iosxe_template" "template" {
   cts_role_based_enforcement                               = each.value.cts_role_based_enforcement
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_vlan.vlan,
     iosxe_policy_map.policy_map,
     iosxe_access_list_standard.access_list_standard,

@@ -65,4 +65,8 @@ resource "iosxe_key_chain" "key_chain" {
   macsec = each.value.macsec
   tcp    = each.value.tcp
   keys   = each.value.keys
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }

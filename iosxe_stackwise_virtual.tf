@@ -20,6 +20,10 @@ resource "iosxe_stackwise_virtual" "stackwise_virtual" {
   domain                                         = try(local.device_config[each.value.name].stackwise_virtual.domain, null)
   dual_active_detection_pagp                     = try(local.device_config[each.value.name].stackwise_virtual.dual_active_detection_pagp, null)
   dual_active_detection_pagp_trust_channel_group = try(local.device_config[each.value.name].stackwise_virtual.dual_active_detection_pagp_trust_channel_group, null)
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }
 
 resource "iosxe_interface_stackwise_virtual" "stackwise_virtual_interface" {
@@ -32,6 +36,7 @@ resource "iosxe_interface_stackwise_virtual" "stackwise_virtual_interface" {
   dual_active_detection = each.value.dual_active_detection
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_stackwise_virtual.stackwise_virtual
   ]
 }

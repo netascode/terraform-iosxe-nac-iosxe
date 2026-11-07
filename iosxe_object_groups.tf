@@ -293,4 +293,8 @@ resource "iosxe_object_group" "object_group" {
   fqdn    = each.value.fqdn
   network = each.value.network
   service = each.value.service
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }

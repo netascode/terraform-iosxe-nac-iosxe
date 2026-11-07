@@ -32,6 +32,7 @@ resource "iosxe_monitor_session" "monitor_session" {
   destination_interface = each.value.destination_interface
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_ethernet.ethernet,
     iosxe_interface_ethernet.ethernet_sub,
     iosxe_interface_loopback.loopback,

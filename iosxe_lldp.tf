@@ -13,4 +13,8 @@ resource "iosxe_lldp" "lldp" {
     switch_id = try(e.switch_id, null)
     name      = try(e.name, null)
   }]
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }

@@ -12,6 +12,7 @@ resource "iosxe_multicast" "multicast" {
   }]
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_vrf.vrf
   ]
 }

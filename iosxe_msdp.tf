@@ -29,6 +29,7 @@ resource "iosxe_msdp" "msdp" {
   }]
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_loopback.loopback
   ]
 }

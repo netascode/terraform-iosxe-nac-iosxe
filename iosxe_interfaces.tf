@@ -22,6 +22,9 @@ resource "iosxe_interface_bdi" "bdi" {
   mac_address = each.value.mac_address
   ip_mtu      = each.value.ip_mtu
 
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }
 
 ##### ETHERNETS #####
@@ -458,6 +461,7 @@ resource "iosxe_interface_ethernet" "ethernet" {
   ip_router_isis                             = each.value.isis_area_tag
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_vrf.vrf,
     iosxe_zone_security.zone_security,
     iosxe_access_list_standard.access_list_standard,
@@ -601,6 +605,7 @@ resource "iosxe_interface_ethernet" "ethernet_sub" {
   ip_router_isis                             = each.value.isis_area_tag
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_vrf.vrf,
     iosxe_zone_security.zone_security,
     iosxe_access_list_standard.access_list_standard,
@@ -744,6 +749,7 @@ resource "iosxe_interface_ethernet" "ethernet_unmanaged" {
   service_instances                          = each.value.service_instances
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_vrf.vrf,
     iosxe_zone_security.zone_security,
     iosxe_access_list_standard.access_list_standard,
@@ -792,6 +798,7 @@ resource "iosxe_interface_switchport" "ethernet_switchport" {
   host                            = each.value.switchport_host
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_vrf.vrf,
     iosxe_dot1x.dot1x,
     iosxe_aaa_authentication.aaa_authentication
@@ -828,6 +835,7 @@ resource "iosxe_interface_switchport" "ethernet_switchport_unmanaged" {
   host                            = each.value.switchport_host
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_vrf.vrf,
     iosxe_dot1x.dot1x,
     iosxe_aaa_authentication.aaa_authentication
@@ -848,6 +856,7 @@ resource "iosxe_interface_mpls" "ethernet_mpls" {
   mtu    = each.value.mpls_mtu
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_ethernet.ethernet,
     iosxe_interface_ethernet.ethernet_sub
   ]
@@ -863,6 +872,7 @@ resource "iosxe_interface_mpls" "ethernet_mpls_unmanaged" {
   mtu    = each.value.mpls_mtu
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_ethernet.ethernet_unmanaged
   ]
 
@@ -895,6 +905,7 @@ resource "iosxe_interface_ospf" "ethernet_ospf" {
   ttl_security_hops                = each.value.ospf_ttl_security_hops
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_ethernet.ethernet,
     iosxe_interface_ethernet.ethernet_sub,
     iosxe_ospf.ospf,
@@ -926,6 +937,7 @@ resource "iosxe_interface_ospf" "ethernet_ospf_unmanaged" {
   ttl_security_hops                = each.value.ospf_ttl_security_hops
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_ethernet.ethernet_unmanaged,
     iosxe_ospf.ospf,
     iosxe_ospf_vrf.ospf_vrf
@@ -954,6 +966,7 @@ resource "iosxe_interface_ospfv3" "ethernet_ospfv3" {
   priority                         = each.value.ospfv3_priority
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_ethernet.ethernet,
     iosxe_interface_ethernet.ethernet_sub,
     iosxe_ospf.ospf,
@@ -979,6 +992,7 @@ resource "iosxe_interface_ospfv3" "ethernet_ospfv3_unmanaged" {
   priority                         = each.value.ospfv3_priority
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_ethernet.ethernet_unmanaged,
     iosxe_ospf.ospf,
     iosxe_ospf_vrf.ospf_vrf
@@ -1005,6 +1019,7 @@ resource "iosxe_interface_pim" "ethernet_pim" {
   dr_priority       = each.value.pim_dr_priority
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_system.system,
     iosxe_interface_ethernet.ethernet,
     iosxe_interface_ethernet.ethernet_sub
@@ -1027,6 +1042,7 @@ resource "iosxe_interface_pim" "ethernet_pim_unmanaged" {
   dr_priority       = each.value.pim_dr_priority
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_system.system,
     iosxe_interface_ethernet.ethernet_unmanaged
   ]
@@ -1048,6 +1064,7 @@ resource "iosxe_interface_pim_ipv6" "ethernet_pim_ipv6" {
   dr_priority = each.value.ipv6_pim_dr_priority
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_ethernet.ethernet,
     iosxe_interface_ethernet.ethernet_sub
   ]
@@ -1065,6 +1082,7 @@ resource "iosxe_interface_pim_ipv6" "ethernet_pim_ipv6_unmanaged" {
   dr_priority = each.value.ipv6_pim_dr_priority
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_ethernet.ethernet_unmanaged
   ]
 
@@ -1246,6 +1264,7 @@ resource "iosxe_interface_loopback" "loopback" {
   ip_router_isis                           = each.value.isis_area_tag
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_vrf.vrf,
     iosxe_zone_security.zone_security,
     iosxe_access_list_standard.access_list_standard,
@@ -1265,6 +1284,7 @@ resource "iosxe_interface_mpls" "loopback_mpls" {
   mtu    = each.value.mpls_mtu
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_loopback.loopback
   ]
 }
@@ -1293,6 +1313,7 @@ resource "iosxe_interface_ospf" "loopback_ospf" {
   multi_area_ids                   = each.value.ospf_multi_area_ids
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_loopback.loopback,
     iosxe_ospf.ospf,
     iosxe_ospf_vrf.ospf_vrf
@@ -1317,6 +1338,7 @@ resource "iosxe_interface_ospfv3" "loopback_ospfv3" {
   priority                         = each.value.ospfv3_priority
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_loopback.loopback,
     iosxe_ospf.ospf,
     iosxe_ospf_vrf.ospf_vrf
@@ -1339,6 +1361,7 @@ resource "iosxe_interface_pim" "loopback_pim" {
   dr_priority       = each.value.pim_dr_priority
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_system.system,
     iosxe_interface_loopback.loopback
   ]
@@ -1356,6 +1379,7 @@ resource "iosxe_interface_pim_ipv6" "loopback_pim_ipv6" {
   dr_priority = each.value.ipv6_pim_dr_priority
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_loopback.loopback
   ]
 }
@@ -1369,6 +1393,7 @@ resource "iosxe_interface_isis" "loopback_isis" {
   ipv4_metric_levels = each.value.isis_ipv4_metric_levels
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_loopback.loopback,
     iosxe_isis.isis
   ]
@@ -1384,6 +1409,7 @@ resource "iosxe_interface_isis" "ethernet_isis" {
   ipv4_metric_levels     = each.value.isis_ipv4_metric_levels
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_ethernet.ethernet,
     iosxe_interface_ethernet.ethernet_sub,
     iosxe_isis.isis
@@ -1593,6 +1619,7 @@ resource "iosxe_interface_vlan" "vlan" {
   ip_router_isis                           = each.value.isis_area_tag
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_vrf.vrf,
     iosxe_zone_security.zone_security,
     iosxe_access_list_standard.access_list_standard,
@@ -1612,6 +1639,7 @@ resource "iosxe_interface_mpls" "vlan_mpls" {
   mtu    = each.value.mpls_mtu
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_vlan.vlan
   ]
 }
@@ -1640,6 +1668,7 @@ resource "iosxe_interface_ospf" "vlan_ospf" {
   multi_area_ids                   = each.value.ospf_multi_area_ids
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_vlan.vlan,
     iosxe_ospf.ospf,
     iosxe_ospf_vrf.ospf_vrf
@@ -1664,6 +1693,7 @@ resource "iosxe_interface_ospfv3" "vlan_ospfv3" {
   priority                         = each.value.ospfv3_priority
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_vlan.vlan,
     iosxe_ospf.ospf,
     iosxe_ospf_vrf.ospf_vrf
@@ -1686,6 +1716,7 @@ resource "iosxe_interface_pim" "vlan_pim" {
   dr_priority       = each.value.pim_dr_priority
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_system.system,
     iosxe_interface_vlan.vlan
   ]
@@ -1703,6 +1734,7 @@ resource "iosxe_interface_pim_ipv6" "vlan_pim_ipv6" {
   dr_priority = each.value.ipv6_pim_dr_priority
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_vlan.vlan
   ]
 }
@@ -1717,6 +1749,7 @@ resource "iosxe_interface_isis" "vlan_isis" {
   ipv4_metric_levels     = each.value.isis_ipv4_metric_levels
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_vlan.vlan,
     iosxe_isis.isis
   ]
@@ -2057,6 +2090,7 @@ resource "iosxe_interface_port_channel" "port_channel" {
   ip_verify_unicast_source_allow_default   = each.value.ip_verify_unicast_source_allow_default
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_zone_security.zone_security,
     iosxe_evpn_ethernet_segment.evpn_ethernet_segment,
     iosxe_flow_monitor.flow_monitor,
@@ -2094,6 +2128,7 @@ resource "iosxe_interface_switchport" "port_channel_switchport" {
   host                            = each.value.switchport_host
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_port_channel.port_channel
   ]
 }
@@ -2108,6 +2143,7 @@ resource "iosxe_interface_mpls" "port_channel_mpls" {
   mtu    = each.value.mpls_mtu
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_port_channel.port_channel
   ]
 }
@@ -2136,6 +2172,7 @@ resource "iosxe_interface_ospf" "port_channel_ospf" {
   multi_area_ids                   = each.value.ospf_multi_area_ids
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_port_channel.port_channel,
     iosxe_ospf.ospf,
     iosxe_ospf_vrf.ospf_vrf
@@ -2160,6 +2197,7 @@ resource "iosxe_interface_ospfv3" "port_channel_ospfv3" {
   priority                         = each.value.ospfv3_priority
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_port_channel.port_channel
   ]
 }
@@ -2180,6 +2218,7 @@ resource "iosxe_interface_pim" "port_channel_pim" {
   dr_priority       = each.value.pim_dr_priority
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_system.system,
     iosxe_interface_port_channel.port_channel
   ]
@@ -2197,6 +2236,7 @@ resource "iosxe_interface_pim_ipv6" "port_channel_pim_ipv6" {
   dr_priority = each.value.ipv6_pim_dr_priority
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_port_channel.port_channel
   ]
 }
@@ -2211,6 +2251,7 @@ resource "iosxe_interface_isis" "port_channel_isis" {
   ipv4_metric_levels     = each.value.isis_ipv4_metric_levels
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_port_channel.port_channel,
     iosxe_isis.isis
   ]
@@ -2415,6 +2456,7 @@ resource "iosxe_interface_port_channel_subinterface" "port_channel_subinterface"
   ip_router_isis                  = each.value.isis_area_tag
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_port_channel.port_channel,
     iosxe_vrf.vrf,
     iosxe_zone_security.zone_security,
@@ -2436,6 +2478,7 @@ resource "iosxe_interface_mpls" "port_channel_subinterface_mpls" {
   mtu    = each.value.mpls_mtu
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_port_channel_subinterface.port_channel_subinterface
   ]
 }
@@ -2464,6 +2507,7 @@ resource "iosxe_interface_ospf" "port_channel_subinterface_ospf" {
   multi_area_ids                   = each.value.ospf_multi_area_ids
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_port_channel_subinterface.port_channel_subinterface,
     iosxe_ospf.ospf,
     iosxe_ospf_vrf.ospf_vrf
@@ -2488,6 +2532,7 @@ resource "iosxe_interface_ospfv3" "port_channel_subinterface_ospfv3" {
   priority                         = each.value.ospfv3_priority
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_port_channel_subinterface.port_channel_subinterface,
     iosxe_ospf.ospf,
     iosxe_ospf_vrf.ospf_vrf
@@ -2510,6 +2555,7 @@ resource "iosxe_interface_pim" "port_channel_subinterface_pim" {
   dr_priority       = each.value.pim_dr_priority
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_system.system,
     iosxe_interface_port_channel_subinterface.port_channel_subinterface
   ]
@@ -2525,6 +2571,7 @@ resource "iosxe_interface_isis" "port_channel_subinterface_isis" {
   ipv4_metric_levels     = each.value.isis_ipv4_metric_levels
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_port_channel_subinterface.port_channel_subinterface,
     iosxe_isis.isis
   ]
@@ -2746,6 +2793,7 @@ resource "iosxe_interface_ethernet" "ethernet_subinterface" {
   ip_router_isis                   = each.value.isis_area_tag
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_ethernet.ethernet,
     iosxe_vrf.vrf,
     iosxe_zone_security.zone_security,
@@ -2767,6 +2815,7 @@ resource "iosxe_interface_mpls" "ethernet_subinterface_mpls" {
   mtu    = each.value.mpls_mtu
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_ethernet.ethernet_subinterface
   ]
 }
@@ -2792,6 +2841,7 @@ resource "iosxe_interface_ospf" "ethernet_subinterface_ospf" {
   multi_area_ids                   = each.value.ospf_multi_area_ids
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_ethernet.ethernet_subinterface,
     iosxe_ospf.ospf,
     iosxe_ospf_vrf.ospf_vrf
@@ -2816,6 +2866,7 @@ resource "iosxe_interface_ospfv3" "ethernet_subinterface_ospfv3" {
   priority                         = each.value.ospfv3_priority
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_ethernet.ethernet_subinterface,
     iosxe_ospf.ospf,
     iosxe_ospf_vrf.ospf_vrf
@@ -2838,6 +2889,7 @@ resource "iosxe_interface_pim" "ethernet_subinterface_pim" {
   dr_priority       = each.value.pim_dr_priority
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_system.system,
     iosxe_interface_ethernet.ethernet_subinterface
   ]
@@ -2853,6 +2905,7 @@ resource "iosxe_interface_isis" "ethernet_subinterface_isis" {
   ipv4_metric_levels     = each.value.isis_ipv4_metric_levels
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_ethernet.ethernet_subinterface,
     iosxe_isis.isis
   ]
@@ -2905,7 +2958,7 @@ resource "iosxe_interface_nve" "nve" {
   vnis     = each.value.vnis
   vni_vrfs = each.value.vni_vrfs
 
-  depends_on = [iosxe_vrf.vrf]
+  depends_on = [iosxe_cli.cli_pre_9, iosxe_vrf.vrf]
 }
 
 ##### TUNNELS #####
@@ -3154,6 +3207,7 @@ resource "iosxe_interface_tunnel" "tunnel" {
   ip_router_isis                         = each.value.isis_area_tag
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_vrf.vrf,
     iosxe_zone_security.zone_security,
     iosxe_access_list_standard.access_list_standard,
@@ -3189,6 +3243,7 @@ resource "iosxe_interface_ospf" "tunnel_ospf" {
   multi_area_ids                   = each.value.ospf_multi_area_ids
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_tunnel.tunnel,
     iosxe_ospf.ospf,
     iosxe_ospf_vrf.ospf_vrf
@@ -3213,6 +3268,7 @@ resource "iosxe_interface_ospfv3" "tunnel_ospfv3" {
   priority                         = each.value.ospfv3_priority
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_tunnel.tunnel,
     iosxe_ospf.ospf,
     iosxe_ospf_vrf.ospf_vrf
@@ -3235,6 +3291,7 @@ resource "iosxe_interface_pim" "tunnel_pim" {
   dr_priority       = each.value.pim_dr_priority
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_system.system,
     iosxe_interface_tunnel.tunnel
   ]
@@ -3252,6 +3309,7 @@ resource "iosxe_interface_pim_ipv6" "tunnel_pim_ipv6" {
   dr_priority = each.value.ipv6_pim_dr_priority
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_tunnel.tunnel
   ]
 }

@@ -51,4 +51,8 @@ resource "iosxe_wireless_mesh_profile" "wireless_mesh_profile" {
   multicast_mode     = each.value.multicast_mode
   range              = each.value.range
   security_mode      = each.value.security_mode
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }

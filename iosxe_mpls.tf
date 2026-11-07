@@ -15,4 +15,8 @@ resource "iosxe_mpls" "mpls" {
   label_mode_all_vrfs_bgp_vpnv6_per_prefix    = try(local.device_config[each.value.name].mpls.label_mode_all_vrfs_bgp_vpnv6_per_prefix, null)
   label_mode_all_vrfs_bgp_vpnv6_per_ce        = try(local.device_config[each.value.name].mpls.label_mode_all_vrfs_bgp_vpnv6_per_ce, null)
   label_mode_all_vrfs_bgp_vpnv6_vrf_conn_aggr = try(local.device_config[each.value.name].mpls.label_mode_all_vrfs_bgp_vpnv6_vrf_conn_aggr, null)
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }

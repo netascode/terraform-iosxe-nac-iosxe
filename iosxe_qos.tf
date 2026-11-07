@@ -3,4 +3,8 @@ resource "iosxe_qos" "qos" {
   device   = each.value.name
 
   queue_softmax_multiplier = try(local.device_config[each.value.name].qos.queue_softmax_multiplier, null)
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }

@@ -122,4 +122,8 @@ resource "iosxe_eem" "eem" {
   scheduler_applet_thread_class_number  = each.value.scheduler_applet_thread_class_number
   detector_routing_bootup_delay         = each.value.detector_routing_bootup_delay
   applets                               = each.value.applets
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }
