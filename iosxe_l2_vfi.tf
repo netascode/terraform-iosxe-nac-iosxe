@@ -9,4 +9,8 @@ resource "iosxe_l2_vfi" "l2_vfi" {
     ip_address    = neighbor.ip_address
     encapsulation = try(neighbor.encapsulation, null)
   }]
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }

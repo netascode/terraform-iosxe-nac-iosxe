@@ -21,4 +21,8 @@ resource "iosxe_large_community_list_expanded" "large_community_list_expanded" {
 
   name    = each.value.name
   entries = each.value.entries
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }

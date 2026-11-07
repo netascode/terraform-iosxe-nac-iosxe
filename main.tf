@@ -50,15 +50,141 @@ resource "local_sensitive_file" "model" {
 }
 
 locals {
+  cli_templates_pre = { for order in range(10) : order => flatten([
+    for device in local.devices : [
+      for template in try(device.cli_templates, []) : {
+        key     = format("%s/%s", device.name, template.name)
+        device  = device.name
+        content = template.content
+      } if try(template.stage, "post") == "pre" && try(template.order, 0) == order
+    ]
+  ]) }
+
   cli_templates = { for order in range(10) : order => flatten([
     for device in local.devices : [
       for template in try(device.cli_templates, []) : {
         key     = format("%s/%s", device.name, template.name)
         device  = device.name
         content = template.content
-      } if try(template.order, 0) == order
+      } if try(template.stage, "post") == "post" && try(template.order, 0) == order
     ]
   ]) }
+}
+
+resource "iosxe_cli" "cli_pre_0" {
+  for_each = { for e in local.cli_templates_pre[0] : e.key => e }
+  device   = each.value.device
+
+  cli = each.value.content
+  raw = true
+}
+
+resource "iosxe_cli" "cli_pre_1" {
+  for_each = { for e in local.cli_templates_pre[1] : e.key => e }
+  device   = each.value.device
+
+  cli = each.value.content
+  raw = true
+
+  depends_on = [
+    iosxe_cli.cli_pre_0
+  ]
+}
+
+resource "iosxe_cli" "cli_pre_2" {
+  for_each = { for e in local.cli_templates_pre[2] : e.key => e }
+  device   = each.value.device
+
+  cli = each.value.content
+  raw = true
+
+  depends_on = [
+    iosxe_cli.cli_pre_1
+  ]
+}
+
+resource "iosxe_cli" "cli_pre_3" {
+  for_each = { for e in local.cli_templates_pre[3] : e.key => e }
+  device   = each.value.device
+
+  cli = each.value.content
+  raw = true
+
+  depends_on = [
+    iosxe_cli.cli_pre_2
+  ]
+}
+
+resource "iosxe_cli" "cli_pre_4" {
+  for_each = { for e in local.cli_templates_pre[4] : e.key => e }
+  device   = each.value.device
+
+  cli = each.value.content
+  raw = true
+
+  depends_on = [
+    iosxe_cli.cli_pre_3
+  ]
+}
+
+resource "iosxe_cli" "cli_pre_5" {
+  for_each = { for e in local.cli_templates_pre[5] : e.key => e }
+  device   = each.value.device
+
+  cli = each.value.content
+  raw = true
+
+  depends_on = [
+    iosxe_cli.cli_pre_4
+  ]
+}
+
+resource "iosxe_cli" "cli_pre_6" {
+  for_each = { for e in local.cli_templates_pre[6] : e.key => e }
+  device   = each.value.device
+
+  cli = each.value.content
+  raw = true
+
+  depends_on = [
+    iosxe_cli.cli_pre_5
+  ]
+}
+
+resource "iosxe_cli" "cli_pre_7" {
+  for_each = { for e in local.cli_templates_pre[7] : e.key => e }
+  device   = each.value.device
+
+  cli = each.value.content
+  raw = true
+
+  depends_on = [
+    iosxe_cli.cli_pre_6
+  ]
+}
+
+resource "iosxe_cli" "cli_pre_8" {
+  for_each = { for e in local.cli_templates_pre[8] : e.key => e }
+  device   = each.value.device
+
+  cli = each.value.content
+  raw = true
+
+  depends_on = [
+    iosxe_cli.cli_pre_7
+  ]
+}
+
+resource "iosxe_cli" "cli_pre_9" {
+  for_each = { for e in local.cli_templates_pre[9] : e.key => e }
+  device   = each.value.device
+
+  cli = each.value.content
+  raw = true
+
+  depends_on = [
+    iosxe_cli.cli_pre_8
+  ]
 }
 
 resource "iosxe_cli" "cli_0" {

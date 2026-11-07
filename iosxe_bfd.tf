@@ -45,6 +45,10 @@ resource "iosxe_bfd_template_single_hop" "bfd_template_single_hop" {
   dampening_unsuppress_time                = each.value.dampening_unsuppress_time
   dampening_suppress_time                  = each.value.dampening_suppress_time
   dampening_max_suppressing_time           = each.value.dampening_max_suppressing_time
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }
 
 locals {
@@ -104,6 +108,10 @@ resource "iosxe_bfd_template_multi_hop" "bfd_template_multi_hop" {
   dampening_max_suppressing_time           = each.value.dampening_max_suppressing_time
   dampening_threshold                      = each.value.dampening_threshold
   dampening_down_monitoring                = each.value.dampening_down_monitoring
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }
 
 resource "iosxe_bfd" "bfd" {
@@ -169,6 +177,7 @@ resource "iosxe_bfd" "bfd" {
   slow_timers = try(local.device_config[each.value.name].bfd.slow_timers, null)
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_vrf.vrf,
     iosxe_bfd_template_single_hop.bfd_template_single_hop,
     iosxe_bfd_template_multi_hop.bfd_template_multi_hop

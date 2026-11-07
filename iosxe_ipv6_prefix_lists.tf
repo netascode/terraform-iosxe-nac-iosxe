@@ -33,4 +33,8 @@ resource "iosxe_ipv6_prefix_list" "ipv6_prefix_list" {
 
   prefixes                = each.value.prefixes
   prefix_list_description = each.value.prefix_list_description
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }

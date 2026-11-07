@@ -145,7 +145,7 @@ resource "iosxe_ospfv3" "ospfv3" {
   log_adjacency_changes         = each.value.log_adjacency_changes
   log_adjacency_changes_detail  = each.value.log_adjacency_changes_detail
 
-  depends_on = [iosxe_system.system]
+  depends_on = [iosxe_cli.cli_pre_9, iosxe_system.system]
 }
 
 resource "iosxe_ospfv3_address_family_ipv4_vrf" "ospfv3_af_ipv4_vrf" {
@@ -190,6 +190,7 @@ resource "iosxe_ospfv3_address_family_ipv4_vrf" "ospfv3_af_ipv4_vrf" {
   areas                                                = each.value.areas
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_ospfv3.ospfv3,
     iosxe_vrf.vrf,
     iosxe_system.system
@@ -238,6 +239,7 @@ resource "iosxe_ospfv3_address_family_ipv6_vrf" "ospfv3_af_ipv6_vrf" {
   areas                                                = each.value.areas
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_ospfv3.ospfv3,
     iosxe_vrf.vrf,
     iosxe_system.system

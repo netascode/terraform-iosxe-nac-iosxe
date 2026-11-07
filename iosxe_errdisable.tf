@@ -58,4 +58,8 @@ resource "iosxe_errdisable" "errdisable" {
   recovery_cause_unicast_flood        = try(local.device_config[each.value.name].errdisable.recovery_cause.unicast_flood, null)
   recovery_cause_vmps                 = try(local.device_config[each.value.name].errdisable.recovery_cause.vmps, null)
   recovery_cause_loopdetect           = try(local.device_config[each.value.name].errdisable.recovery_cause.loopdetect, null)
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }

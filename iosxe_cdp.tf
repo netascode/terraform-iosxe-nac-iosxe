@@ -14,4 +14,8 @@ resource "iosxe_cdp" "cdp" {
     trust           = try(tlv.trust, null)
     version         = try(tlv.version, null)
   }]
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }

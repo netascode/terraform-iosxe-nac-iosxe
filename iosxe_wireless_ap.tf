@@ -192,7 +192,7 @@ resource "iosxe_wireless_ap_join_profile" "wireless_ap_join_profile" {
   tcp_adjust_mss_size                                   = each.value.tcp_adjust_mss_size
   ble_scan                                              = each.value.ble_scan
 
-  depends_on = [iosxe_wireless_mesh_profile.wireless_mesh_profile]
+  depends_on = [iosxe_cli.cli_pre_9, iosxe_wireless_mesh_profile.wireless_mesh_profile]
 }
 
 locals {
@@ -225,6 +225,7 @@ resource "iosxe_wireless_site_tag" "wireless_site_tag" {
   flex_profile    = each.value.flex_profile
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_wireless_ap_join_profile.wireless_ap_join_profile,
     iosxe_wireless_flex_profile.wireless_flex_profile,
   ]

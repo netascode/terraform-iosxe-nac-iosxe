@@ -29,5 +29,9 @@ resource "iosxe_isis" "isis" {
   metric_style_transition   = each.value.metric_style_transition
   log_adjacency_changes     = each.value.log_adjacency_changes
   log_adjacency_changes_all = each.value.log_adjacency_changes_all
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }
 

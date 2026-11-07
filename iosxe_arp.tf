@@ -33,6 +33,7 @@ resource "iosxe_arp" "arp" {
   inspection_vlan                     = try(local.device_config[each.value.name].arp.inspection_vlan, null)
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_vlan.vlan,
   ]
 }

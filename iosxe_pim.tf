@@ -64,6 +64,7 @@ resource "iosxe_pim" "pim" {
   }]
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_system.system,
     iosxe_interface_pim.loopback_pim,
     iosxe_access_list_standard.access_list_standard,

@@ -27,6 +27,10 @@ resource "iosxe_vlan" "vlan" {
   private_vlan_primary   = each.value.private_vlan_primary
   remote_span            = each.value.remote_span
   shutdown               = each.value.shutdown
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }
 
 locals {
@@ -49,7 +53,7 @@ resource "iosxe_vlan" "vlan_private_association" {
   vlan_id                  = each.value.id
   private_vlan_association = each.value.private_vlan_association
 
-  depends_on = [iosxe_vlan.vlan]
+  depends_on = [iosxe_cli.cli_pre_9, iosxe_vlan.vlan]
 }
 
 locals {
@@ -85,6 +89,7 @@ resource "iosxe_vlan_configuration" "vlan_configuration" {
   evpn_instance_profile_protected = each.value.evpn_instance_profile_protected
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_evpn_instance.evpn_instance,
     iosxe_evpn.evpn
   ]
@@ -117,6 +122,7 @@ resource "iosxe_vlan_access_map" "vlan_access_map" {
   match_ipv6_address = each.value.match_ipv6_address
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_access_list_standard.access_list_standard,
     iosxe_access_list_extended.access_list_extended
   ]
@@ -141,6 +147,10 @@ resource "iosxe_vlan_filter" "vlan_filter" {
 
   word       = each.value.word
   vlan_lists = each.value.vlan_lists
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }
 
 locals {
@@ -162,4 +172,8 @@ resource "iosxe_vlan_group" "vlan_group" {
 
   name       = each.value.name
   vlan_lists = each.value.vlan_lists
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }

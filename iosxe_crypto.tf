@@ -30,6 +30,7 @@ resource "iosxe_crypto_ipsec_profile" "crypto_ipsec_profile" {
   set_security_association_lifetime_seconds_legacy = each.value.set_security_association_lifetime_seconds_legacy
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_crypto_ikev2_profile.crypto_ikev2_profile,
     iosxe_crypto_ipsec_transform_set.crypto_ipsec_transform_set
   ]
@@ -59,6 +60,10 @@ resource "iosxe_crypto_ipsec_transform_set" "crypto_ipsec_transform_set" {
   esp         = each.value.esp
   esp_hmac    = each.value.esp_hmac
   mode_tunnel = each.value.mode_tunnel
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }
 
 resource "iosxe_crypto_ikev2" "crypto_ikev2" {
@@ -70,6 +75,10 @@ resource "iosxe_crypto_ikev2" "crypto_ikev2" {
   dpd_retry_interval = try(local.device_config[each.value.name].crypto.ikev2.dpd_retry, null)
   nat_keepalive      = try(local.device_config[each.value.name].crypto.ikev2.nat_keepalive, null)
   http_url_cert      = try(local.device_config[each.value.name].crypto.ikev2.http_url_certificate_lookup, null)
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }
 
 locals {
@@ -154,6 +163,7 @@ resource "iosxe_crypto_ikev2_profile" "crypto_ikev2_profile" {
   pki_trustpoints                               = each.value.pki_trustpoints
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_vrf.vrf,
     iosxe_crypto_ikev2_keyring.crypto_ikev2_keyring,
     iosxe_crypto_pki.crypto_pki
@@ -198,6 +208,10 @@ resource "iosxe_crypto_ikev2_keyring" "crypto_ikev2_keyring" {
   device   = each.value.device
   name     = each.value.name
   peers    = each.value.peers
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }
 
 locals {
@@ -232,6 +246,7 @@ resource "iosxe_crypto_ikev2_policy" "crypto_ikev2_policy" {
   match_inbound_only     = each.value.match_inbound_only
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_vrf.vrf,
     iosxe_crypto_ikev2_proposal.crypto_ikev2_proposal
   ]
@@ -305,6 +320,10 @@ resource "iosxe_crypto_ikev2_proposal" "crypto_ikev2_proposal" {
   prf_sha256             = each.value.prf_sha256
   prf_sha384             = each.value.prf_sha384
   prf_sha512             = each.value.prf_sha512
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }
 
 resource "iosxe_crypto_pki" "crypto_pki" {
@@ -324,6 +343,10 @@ resource "iosxe_crypto_pki" "crypto_pki" {
     subject_name          = try(tp.subject_name, null)
     usage                 = try(tp.usage, null)
   }]
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }
 
 resource "iosxe_crypto" "crypto_engine" {
@@ -331,6 +354,10 @@ resource "iosxe_crypto" "crypto_engine" {
   device   = each.value.name
 
   engine_compliance_shield_disable = try(local.device_config[each.value.name].crypto.engine.compliance_shield_disable, null)
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }
 
 locals {
@@ -453,6 +480,7 @@ resource "iosxe_crypto_gdoi" "crypto_gdoi" {
   client_transport_encrypt_key                   = each.value.client_transport_encrypt_key
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_access_list_extended.access_list_extended,
     iosxe_access_list_standard.access_list_standard,
     iosxe_crypto_ikev2_profile.crypto_ikev2_profile,
@@ -490,6 +518,7 @@ resource "iosxe_crypto_map_gdoi" "crypto_map_gdoi" {
   set_group       = each.value.set_group
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_crypto_gdoi.crypto_gdoi
   ]
 }

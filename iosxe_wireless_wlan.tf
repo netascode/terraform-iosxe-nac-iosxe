@@ -85,6 +85,10 @@ resource "iosxe_wireless_wlan_profile" "wireless_wlan_profile" {
   mac_filtering                         = each.value.mac_filtering
   load_balance                          = each.value.load_balance
   wmm                                   = each.value.wmm
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }
 
 locals {
@@ -176,6 +180,7 @@ resource "iosxe_wireless_policy_profile" "wireless_policy_profile" {
   http_tlv_caching          = each.value.http_tlv_caching
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_wireless_wlan_profile.wireless_wlan_profile,
   ]
 }
@@ -189,6 +194,7 @@ resource "iosxe_wireless_policy_tag" "wireless_policy_tag" {
   wlan_policies = each.value.wlan_policies
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_wireless_policy_profile.wireless_policy_profile,
     iosxe_wireless_wlan_profile.wireless_wlan_profile,
   ]

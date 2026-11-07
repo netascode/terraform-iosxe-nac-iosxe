@@ -122,4 +122,8 @@ resource "iosxe_parameter_map" "parameter_map" {
   udp_idle_time                      = each.value.udp_idle_time
   udp_idle_time_ageout               = each.value.udp_idle_time_ageout
   zone_mismatch_drop                 = each.value.zone_mismatch_drop
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }

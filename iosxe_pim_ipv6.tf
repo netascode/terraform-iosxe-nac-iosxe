@@ -14,6 +14,7 @@ resource "iosxe_pim_ipv6" "pim_ipv6" {
   }]
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_system.system,
     iosxe_access_list_ipv6.access_list_ipv6,
     iosxe_vrf.vrf

@@ -73,6 +73,7 @@ resource "iosxe_ntp" "ntp" {
   } if try(e.trusted, null) != null && try(e.trusted, null) == true && try(tonumber(e.number), null) > 0 && try(tonumber(e.number), null) < 65536]
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_vrf.vrf,
     iosxe_interface_ethernet.ethernet,
     iosxe_interface_ethernet.ethernet_sub,

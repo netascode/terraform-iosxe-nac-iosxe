@@ -181,4 +181,8 @@ resource "iosxe_vrf" "vrf" {
   ipv4_mdt_overlay_use_bgp_spt_only                       = each.value.ipv4_mdt_overlay_use_bgp_spt_only
   ipv4_mdt_data_multicast                                 = each.value.ipv4_mdt_data_multicast
   ipv4_mdt_data_threshold                                 = each.value.ipv4_mdt_data_threshold
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }

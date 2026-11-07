@@ -17,4 +17,8 @@ resource "iosxe_switch" "switch" {
 
   number    = each.value.number
   provision = each.value.provision
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }

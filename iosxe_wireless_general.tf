@@ -8,6 +8,7 @@ resource "iosxe_wireless_system" "wireless_system" {
   )
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_vlan.vlan,
     iosxe_interface_ethernet.ethernet,
     iosxe_interface_port_channel.port_channel,

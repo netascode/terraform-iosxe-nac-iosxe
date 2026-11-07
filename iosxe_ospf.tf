@@ -293,7 +293,7 @@ resource "iosxe_ospf" "ospf" {
   summary_addresses                                        = each.value.summary_addresses
   areas                                                    = each.value.areas
 
-  depends_on = [iosxe_system.system]
+  depends_on = [iosxe_cli.cli_pre_9, iosxe_system.system]
 }
 
 resource "iosxe_ospf_vrf" "ospf_vrf" {
@@ -364,6 +364,7 @@ resource "iosxe_ospf_vrf" "ospf_vrf" {
   areas                                                    = each.value.areas
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_vrf.vrf,
     iosxe_system.system
   ]

@@ -236,6 +236,7 @@ resource "iosxe_interface_hsrp" "hsrp" {
   standby_list                  = each.value.standby_list
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_ethernet.ethernet,
     iosxe_interface_ethernet.ethernet_sub,
     iosxe_interface_vlan.vlan,
@@ -264,6 +265,7 @@ resource "iosxe_interface_hsrp" "hsrp_unmanaged" {
   standby_list                  = each.value.standby_list
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_ethernet.ethernet_unmanaged
   ]
 

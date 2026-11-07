@@ -42,4 +42,8 @@ resource "iosxe_wireless_flex_profile" "wireless_flex_profile" {
   predownload         = each.value.predownload
   vlan_names          = each.value.vlan_names
   acl_policies        = each.value.acl_policies
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }

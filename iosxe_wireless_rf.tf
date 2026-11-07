@@ -156,6 +156,10 @@ resource "iosxe_wireless_rf_profile" "wireless_rf_profile" {
   trap_threshold_clients         = each.value.trap_threshold_clients
   trap_threshold_interference    = each.value.trap_threshold_interference
   trap_threshold_noise           = each.value.trap_threshold_noise
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }
 
 resource "iosxe_wireless_rf_tag" "wireless_rf_tag" {
@@ -169,6 +173,7 @@ resource "iosxe_wireless_rf_tag" "wireless_rf_tag" {
   rf_policy_6ghz  = each.value.rf_policy_6ghz
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_wireless_rf_profile.wireless_rf_profile,
   ]
 }
