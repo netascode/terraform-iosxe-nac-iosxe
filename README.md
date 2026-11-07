@@ -54,7 +54,7 @@ module "iosxe" {
 | <a name="input_save_config"></a> [save\_config](#input\_save\_config) | Write changes to startup-config on all devices. | `bool` | `false` | no |
 | <a name="input_template_directories"></a> [template\_directories](#input\_template\_directories) | List of paths to directories containing template files. | `list(string)` | `[]` | no |
 | <a name="input_template_files"></a> [template\_files](#input\_template\_files) | List of paths to template files. | `list(string)` | `[]` | no |
-| <a name="input_write_model_file"></a> [write\_model\_file](#input\_write\_model\_file) | Write the full model including all resolved templates to a single YAML file. Value is a path pointing to the file to be created. | `string` | `""` | no |
+| <a name="input_write_model_file"></a> [write\_model\_file](#input\_write\_model\_file) | Write the rendered data model to a single YAML file, e.g. for validation, testing and troubleshooting. Value is a path relative to the root module. Set to an empty string to disable. | `string` | `"model.yaml"` | no |
 | <a name="input_yaml_directories"></a> [yaml\_directories](#input\_yaml\_directories) | List of paths to YAML directories. | `list(string)` | `[]` | no |
 | <a name="input_yaml_files"></a> [yaml\_files](#input\_yaml\_files) | List of paths to YAML files. | `list(string)` | `[]` | no |
 ## Outputs

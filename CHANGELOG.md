@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Write the rendered data model to `model.yaml` by default (`write_model_file`), with a header marking it as generated; set `write_model_file = ""` to disable
 - Add `stage` attribute to CLI templates (`iosxe.templates[].stage`, `iosxe.devices[].cli_templates[].stage`) to apply CLI templates before (`pre`) or after (`post`, default) the modeled configuration
 - Fix tunnel `ip_nhrp_maps` failing to plan with provider 1.2.0 (`attribute "nbma_ipv4s" is required`): each entry's `nbma_ipv4` is now wrapped into the provider's `nbma_ipv4s` list. The data model is unchanged
 - BREAKING CHANGE: Rename the parameter-map type inspect data model key from `policy.parameter_maps` to `policy.parameter_maps_inspect` to match the nac-iosxe schema (the previous key was never accepted by the schema)
