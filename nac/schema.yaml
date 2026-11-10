@@ -1,5 +1,6 @@
 ---
 iosxe: include('iosxe', required=False)
+defaults: any(required=False)
 ---
 iosxe:
   global: include('global', required=False)
