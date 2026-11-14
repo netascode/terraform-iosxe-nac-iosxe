@@ -343,6 +343,7 @@ aaa_usernames:
 access_lists:
   standard: list(include('access_lists_standard'), required=False, primary_key='name')
   extended: list(include('access_lists_extended'), required=False, primary_key='name')
+  ipv6: list(include('access_lists_ipv6'), required=False, primary_key='name')
   role_based: list(include('access_lists_role_based'), required=False, primary_key='name')
   as_path: list(include('as_path_access_list'), required=False, primary_key='number')
 
@@ -402,6 +403,52 @@ access_lists_extended_entries_destination:
   any: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
   host: any(ip(), regex("^.*[\$\%]\{.*$"), required=False)
   object_group: str(required=False)
+  fqdn_group: str(required=False)
+  port_type: any(enum('equal', 'greater_than', 'lesser_than', 'range'), regex("^.*[\$\%]\{.*$"), required=False)
+  port: any(int(), regex("^.*[\$\%]\{.*$"), str(), required=False)
+  additional_equal_ports: any(list(int(), max=9), regex("^.*[\$\%]\{.*$"), required=False)
+  port_range_from: any(int(), regex("^.*[\$\%]\{.*$"), required=False)
+  port_range_to: any(int(), regex("^.*[\$\%]\{.*$"), required=False)
+
+access_lists_ipv6:
+  name: str()
+  entries: list(include('access_lists_ipv6_entries'), required=False, primary_key='sequence')
+
+access_lists_ipv6_entries:
+  sequence: any(int(), regex("^.*[\$\%]\{.*$"))
+  remark: str(required=False)
+  action: any(enum('deny', 'permit'), regex("^.*[\$\%]\{.*$"), required=False)
+  protocol: any(enum('ahp', 'esp', 'hbh', 'icmp', 'ipv6', 'pcp', 'sctp', 'tcp', 'udp'), int(min=0, max=255), regex("^.*[\$\%]\{.*$"), required=False)
+  source: include('access_lists_ipv6_entries_source', required=False)
+  destination: include('access_lists_ipv6_entries_destination', required=False)
+  tcp_flags: any(list(enum('ack', 'fin', 'psh', 'rst', 'syn', 'urg'), regex("^.*[\$\%]\{.*$")), required=False)
+  established: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  fragments: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  dscp: any(enum('af11', 'af12', 'af13', 'af21', 'af22', 'af23', 'af31', 'af32', 'af33', 'af41', 'af42', 'af43', 'cs1', 'cs2', 'cs3', 'cs4', 'cs5', 'cs6', 'cs7', 'default', 'dscp', 'ef', 'precedence'), int(min=0, max=63), regex("^.*[\$\%]\{.*$"), required=False)
+  icmp_message_type: any(enum('beyond-scope', 'destination-unreachable', 'dhaad-reply', 'dhaad-request', 'echo-reply', 'echo-request', 'header', 'hop-limit', 'mld-query', 'mld-reduction', 'mld-report', 'mpd-advertisement', 'mpd-solicitation', 'nd-na', 'nd-ns', 'next-header', 'no-admin', 'no-route', 'packet-too-big', 'parameter-option', 'parameter-problem', 'port-unreachable', 'reassembly-timeout', 'redirect', 'reject-route', 'renum-command', 'renum-result', 'renum-seq-number', 'router-advertisement', 'router-renumbering', 'router-solicitation', 'source-policy', 'time-exceeded', 'unreachable'), int(min=0, max=255), regex("^.*[\$\%]\{.*$"), required=False)
+  icmp_message_code: any(int(min=0, max=255), regex("^.*[\$\%]\{.*$"), required=False)
+  log: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  log_input: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+
+access_lists_ipv6_entries_source:
+  any: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  host: str(required=False)
+  prefix: any(ip(version=6), regex("^.*[\$\%]\{.*$"), required=False)
+  address: any(ip(version=6), regex("^.*[\$\%]\{.*$"), required=False)
+  wildcard_bits: any(ip(version=6), regex("^.*[\$\%]\{.*$"), required=False)
+  fqdn_group: str(required=False)
+  port_type: any(enum('equal', 'greater_than', 'lesser_than', 'range'), regex("^.*[\$\%]\{.*$"), required=False)
+  port: any(int(), regex("^.*[\$\%]\{.*$"), str(), required=False)
+  additional_equal_ports: any(list(int(), max=9), regex("^.*[\$\%]\{.*$"), required=False)
+  port_range_from: any(int(), regex("^.*[\$\%]\{.*$"), required=False)
+  port_range_to: any(int(), regex("^.*[\$\%]\{.*$"), required=False)
+
+access_lists_ipv6_entries_destination:
+  any: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  host: str(required=False)
+  prefix: any(ip(version=6), regex("^.*[\$\%]\{.*$"), required=False)
+  address: any(ip(version=6), regex("^.*[\$\%]\{.*$"), required=False)
+  wildcard_bits: any(ip(version=6), regex("^.*[\$\%]\{.*$"), required=False)
   fqdn_group: str(required=False)
   port_type: any(enum('equal', 'greater_than', 'lesser_than', 'range'), regex("^.*[\$\%]\{.*$"), required=False)
   port: any(int(), regex("^.*[\$\%]\{.*$"), str(), required=False)
