@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Add `aaa.eap_profiles` (`eap profile`) using the `iosxe_eap_profile` resource and `policy.parameter_map_webauth_global` (`parameter-map type webauth global` virtual IPv4/IPv6 address) using the `iosxe_parameter_map_webauth_global` resource; configuring the global web authentication parameter map converts the device to IBNS 2.0
 - Write the rendered data model to `model.yaml` by default (`write_model_file`), with a header marking it as generated; set `write_model_file = ""` to disable
 - Add `stage` attribute to CLI templates (`iosxe.templates[].stage`, `iosxe.devices[].cli_templates[].stage`) to apply CLI templates before (`pre`) or after (`post`, default) the modeled configuration
 - Fix tunnel `ip_nhrp_maps` failing to plan with provider 1.2.0 (`attribute "nbma_ipv4s" is required`): each entry's `nbma_ipv4` is now wrapped into the provider's `nbma_ipv4s` list. The data model is unchanged
