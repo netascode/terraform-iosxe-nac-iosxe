@@ -37,4 +37,8 @@ resource "iosxe_mdt_subscription" "mdt_subscription" {
   update_policy_on_change = each.value.update_policy_on_change
   filter_xpath            = each.value.filter_xpath
   receivers               = each.value.receivers
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }

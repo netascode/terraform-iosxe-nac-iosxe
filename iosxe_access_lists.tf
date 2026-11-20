@@ -30,6 +30,10 @@ resource "iosxe_access_list_standard" "access_list_standard" {
 
   name    = each.value.name
   entries = each.value.entries
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }
 
 locals {
@@ -114,7 +118,7 @@ resource "iosxe_access_list_extended" "access_list_extended" {
   name    = each.value.name
   entries = each.value.entries
 
-  depends_on = [iosxe_object_group.object_group]
+  depends_on = [iosxe_cli.cli_pre_9, iosxe_object_group.object_group]
 }
 
 locals {
@@ -139,6 +143,10 @@ resource "iosxe_as_path_access_list" "as_path_access_list" {
 
   name    = each.value.name
   entries = each.value.entries
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }
 
 locals {
@@ -204,4 +212,8 @@ resource "iosxe_access_list_role_based" "access_list_role_based" {
 
   name    = each.value.name
   entries = each.value.entries
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }

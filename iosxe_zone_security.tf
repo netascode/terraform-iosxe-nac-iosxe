@@ -24,4 +24,8 @@ resource "iosxe_zone_security" "zone_security" {
   vpns = each.value.vpns == null ? null : [for e in each.value.vpns : {
     id = e.id
   }]
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }

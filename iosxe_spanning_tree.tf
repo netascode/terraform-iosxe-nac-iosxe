@@ -41,4 +41,8 @@ resource "iosxe_spanning_tree" "spanning_tree" {
       id = tostring(id)
     }
   ]
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }

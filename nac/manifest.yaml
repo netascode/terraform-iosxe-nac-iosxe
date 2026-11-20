@@ -1,0 +1,12 @@
+schema: 1
+tools:
+  nac-validate: 2.1.0
+  nac-test: 2.1.0
+config:
+  render:
+    resource: local_sensitive_file.model
+    output: model.yaml
+  env:
+    required:
+    - IOSXE_USERNAME
+    - IOSXE_PASSWORD

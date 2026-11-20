@@ -60,6 +60,7 @@ resource "iosxe_flow_exporter" "flow_exporter" {
   ttl                                   = each.value.ttl
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_loopback.loopback
   ]
 }
@@ -96,6 +97,7 @@ resource "iosxe_flow_monitor" "flow_monitor" {
   record                 = each.value.record
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_flow_exporter.flow_exporter,
     iosxe_flow_record.flow_record
   ]
@@ -205,4 +207,8 @@ resource "iosxe_flow_record" "flow_record" {
   collect_timestamp_absolute_first                     = each.value.collect_timestamp_absolute_first
   collect_timestamp_absolute_last                      = each.value.collect_timestamp_absolute_last
   collect_transport_tcp_flags                          = each.value.collect_transport_tcp_flags
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }

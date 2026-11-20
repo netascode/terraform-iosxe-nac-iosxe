@@ -80,6 +80,10 @@ resource "iosxe_class_map" "class_map" {
   match_protocol                                 = each.value.match_protocol
   match_class_map                                = each.value.match_class_map
   description                                    = each.value.description
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }
 
 resource "iosxe_class_map" "class_map_nested" {
@@ -113,6 +117,7 @@ resource "iosxe_class_map" "class_map_nested" {
   description                                    = each.value.description
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_class_map.class_map
   ]
 }
@@ -191,6 +196,7 @@ resource "iosxe_policy_map" "policy_map" {
   classes     = each.value.classes
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_class_map.class_map,
     iosxe_class_map.class_map_nested,
     iosxe_parameter_map.parameter_map
@@ -208,6 +214,7 @@ resource "iosxe_policy_map" "policy_map_nested" {
   classes     = each.value.classes
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_class_map.class_map,
     iosxe_class_map.class_map_nested,
     iosxe_parameter_map.parameter_map,
@@ -286,6 +293,7 @@ resource "iosxe_policy_map_event" "policy_map_event" {
   class_numbers = each.value.class_numbers
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_policy_map.policy_map,
     iosxe_policy_map.policy_map_nested
   ]

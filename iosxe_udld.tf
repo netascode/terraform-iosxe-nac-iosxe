@@ -6,4 +6,8 @@ resource "iosxe_udld" "udld" {
   enable            = try(local.device_config[each.value.name].udld.enable, null)
   message_time      = try(local.device_config[each.value.name].udld.message_time, null)
   recovery_interval = try(local.device_config[each.value.name].udld.recovery_interval, null)
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }

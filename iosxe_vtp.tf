@@ -31,6 +31,7 @@ resource "iosxe_vtp" "vtp" {
   version                  = try(local.device_config[each.value.name].vtp.version, null)
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_ethernet.ethernet,
     iosxe_interface_ethernet.ethernet_sub,
     iosxe_interface_loopback.loopback,

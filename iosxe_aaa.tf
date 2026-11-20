@@ -47,6 +47,7 @@ resource "iosxe_aaa" "aaa" {
   }]
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_loopback.loopback,
     iosxe_interface_port_channel.port_channel,
     iosxe_interface_port_channel_subinterface.port_channel_subinterface,
@@ -144,6 +145,7 @@ resource "iosxe_aaa_accounting" "aaa_accounting" {
   dot1x_default_start_stop_group_logger    = try(local.device_config[each.value.name].aaa.accounting.dot1x_default_start_stop_group_logger, null)
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_aaa.aaa,
   ]
 }
@@ -233,6 +235,7 @@ resource "iosxe_aaa_authentication" "aaa_authentication" {
   enable_default_group4_none   = try(local.device_config[each.value.name].aaa.authentication.enable_defaults[3], null) != null ? (try(local.device_config[each.value.name].aaa.authentication.enable_defaults[3].method, null) == "none") : null
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_aaa.aaa,
   ]
 }
@@ -322,6 +325,7 @@ resource "iosxe_aaa_authorization" "aaa_authorization" {
   }]
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_aaa.aaa,
   ]
 }
@@ -373,6 +377,7 @@ resource "iosxe_radius" "radius" {
   pac_key_encryption               = each.value.pac_key_encryption
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_aaa.aaa
   ]
 }
@@ -402,6 +407,7 @@ resource "iosxe_radius_server" "radius_server" {
   ]
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_aaa.aaa
   ]
 }
@@ -435,6 +441,7 @@ resource "iosxe_tacacs" "tacacs" {
   key          = each.value.key
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_aaa.aaa
   ]
 }
@@ -452,6 +459,9 @@ resource "iosxe_tacacs_server" "tacacs_server" {
   encryption                   = try(local.device_config[each.value.name].aaa.tacacs.encryption, null)
   attribute_allow_unknown      = try(local.device_config[each.value.name].aaa.tacacs.attribute_allow_unknown, null)
 
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }
 
 locals {
@@ -483,4 +493,49 @@ resource "iosxe_username" "username" {
   password            = each.value.password
   secret_encryption   = each.value.secret_encryption
   secret              = each.value.secret
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
+}
+
+locals {
+  eap_profiles = flatten([
+    for device in local.devices : [
+      for eap_profile in try(local.device_config[device.name].aaa.eap_profiles, []) : {
+        key            = format("%s/%s", device.name, eap_profile.name)
+        device         = device.name
+        name           = eap_profile.name
+        description    = try(eap_profile.description, null)
+        pki_trustpoint = try(eap_profile.pki_trustpoint, null)
+        methods        = try(eap_profile.methods, null)
+      }
+    ]
+  ])
+}
+
+resource "iosxe_eap_profile" "eap_profile" {
+  for_each = { for e in local.eap_profiles : e.key => e }
+  device   = each.value.device
+
+  name           = each.value.name
+  description    = each.value.description
+  pki_trustpoint = each.value.pki_trustpoint
+  # Explicit-set rule: when methods is present, every method is set to true or
+  # false so that methods removed from the list are removed from the device.
+  # When methods is absent, the methods are not managed (null).
+  # The data model token "fast" maps to method_fast (YANG method/fast-config);
+  # every other token maps to method_<token>.
+  method_fast     = each.value.methods == null ? null : contains(each.value.methods, "fast")
+  method_gtc      = each.value.methods == null ? null : contains(each.value.methods, "gtc")
+  method_leap     = each.value.methods == null ? null : contains(each.value.methods, "leap")
+  method_md5      = each.value.methods == null ? null : contains(each.value.methods, "md5")
+  method_mschapv2 = each.value.methods == null ? null : contains(each.value.methods, "mschapv2")
+  method_peap     = each.value.methods == null ? null : contains(each.value.methods, "peap")
+  method_tls      = each.value.methods == null ? null : contains(each.value.methods, "tls")
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+    iosxe_crypto_pki.crypto_pki,
+  ]
 }

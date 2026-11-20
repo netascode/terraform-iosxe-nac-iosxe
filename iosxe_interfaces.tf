@@ -22,6 +22,9 @@ resource "iosxe_interface_bdi" "bdi" {
   mac_address = each.value.mac_address
   ip_mtu      = each.value.ip_mtu
 
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }
 
 ##### ETHERNETS #####
@@ -80,10 +83,24 @@ locals {
           address    = addr
           link_local = true
         }]
-        ipv6_address_autoconfig_default = try(int.ipv6.address_autoconfig_default, null)
-        ipv6_address_dhcp               = try(int.ipv6.address_dhcp, null)
-        ipv6_mtu                        = try(int.ipv6.mtu, null)
-        ipv6_nd_ra_suppress_all         = try(int.ipv6.nd_ra_suppress_all, null)
+        ipv6_address_autoconfig_default  = try(int.ipv6.address_autoconfig_default, null)
+        ipv6_address_dhcp                = try(int.ipv6.address_dhcp, null)
+        ipv6_mtu                         = try(int.ipv6.mtu, null)
+        ipv6_nd_ra_suppress_all          = try(int.ipv6.nd_ra_suppress_all, null)
+        ipv6_dhcp_client_pd              = try(int.ipv6.dhcp_client_pd, null)
+        ipv6_dhcp_client_pd_rapid_commit = try(int.ipv6.dhcp_client_pd_rapid_commit, null)
+        ipv6_dhcp_relay_trust            = try(int.ipv6.dhcp_relay_trust, null)
+        ipv6_dhcp_relay_option_vpn       = try(int.ipv6.dhcp_relay_option_vpn, null)
+        ipv6_dhcp_servers = try(length(int.ipv6.dhcp_servers) == 0, true) ? null : [for srv in int.ipv6.dhcp_servers : {
+          pool_name    = try(srv.pool_name, null)
+          allow_hint   = try(srv.allow_hint, null)
+          rapid_commit = try(srv.rapid_commit, null)
+          preference   = try(srv.preference, null)
+        }]
+        ipv6_dhcp_relay_destinations = try(length(int.ipv6.dhcp_relay_destinations) == 0, true) ? null : [for rd in int.ipv6.dhcp_relay_destinations : {
+          address   = try(rd.address, null)
+          interface = try(rd.interface, null)
+        }]
         ipv6_flow_monitors = try(length(int.ipv6.flow_monitors) == 0, true) ? null : [for fm in int.ipv6.flow_monitors : {
           name      = try(fm.name, null)
           direction = try(fm.direction, null)
@@ -373,6 +390,12 @@ resource "iosxe_interface_ethernet" "ethernet" {
   ipv6_link_local_addresses                       = each.value.ipv6_link_local_addresses
   ipv6_mtu                                        = each.value.ipv6_mtu
   ipv6_nd_ra_suppress_all                         = each.value.ipv6_nd_ra_suppress_all
+  ipv6_dhcp_client_pd                             = each.value.ipv6_dhcp_client_pd
+  ipv6_dhcp_client_pd_rapid_commit                = each.value.ipv6_dhcp_client_pd_rapid_commit
+  ipv6_dhcp_relay_trust                           = each.value.ipv6_dhcp_relay_trust
+  ipv6_dhcp_relay_option_vpn                      = each.value.ipv6_dhcp_relay_option_vpn
+  ipv6_dhcp_servers                               = each.value.ipv6_dhcp_servers
+  ipv6_dhcp_relay_destinations                    = each.value.ipv6_dhcp_relay_destinations
   ipv6_flow_monitors                              = each.value.ipv6_flow_monitors
   bfd_enable                                      = each.value.bfd_enable
   bfd_template                                    = each.value.bfd_template
@@ -470,6 +493,7 @@ resource "iosxe_interface_ethernet" "ethernet" {
   ip_router_isis                                  = each.value.isis_area_tag
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_vrf.vrf,
     iosxe_zone_security.zone_security,
     iosxe_access_list_standard.access_list_standard,
@@ -526,6 +550,12 @@ resource "iosxe_interface_ethernet" "ethernet_sub" {
   ipv6_link_local_addresses                       = each.value.ipv6_link_local_addresses
   ipv6_mtu                                        = each.value.ipv6_mtu
   ipv6_nd_ra_suppress_all                         = each.value.ipv6_nd_ra_suppress_all
+  ipv6_dhcp_client_pd                             = each.value.ipv6_dhcp_client_pd
+  ipv6_dhcp_client_pd_rapid_commit                = each.value.ipv6_dhcp_client_pd_rapid_commit
+  ipv6_dhcp_relay_trust                           = each.value.ipv6_dhcp_relay_trust
+  ipv6_dhcp_relay_option_vpn                      = each.value.ipv6_dhcp_relay_option_vpn
+  ipv6_dhcp_servers                               = each.value.ipv6_dhcp_servers
+  ipv6_dhcp_relay_destinations                    = each.value.ipv6_dhcp_relay_destinations
   ipv6_flow_monitors                              = each.value.ipv6_flow_monitors
   bfd_enable                                      = each.value.bfd_enable
   bfd_template                                    = each.value.bfd_template
@@ -623,6 +653,7 @@ resource "iosxe_interface_ethernet" "ethernet_sub" {
   ip_router_isis                                  = each.value.isis_area_tag
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_vrf.vrf,
     iosxe_zone_security.zone_security,
     iosxe_access_list_standard.access_list_standard,
@@ -680,6 +711,12 @@ resource "iosxe_interface_ethernet" "ethernet_unmanaged" {
   ipv6_link_local_addresses                       = each.value.ipv6_link_local_addresses
   ipv6_mtu                                        = each.value.ipv6_mtu
   ipv6_nd_ra_suppress_all                         = each.value.ipv6_nd_ra_suppress_all
+  ipv6_dhcp_client_pd                             = each.value.ipv6_dhcp_client_pd
+  ipv6_dhcp_client_pd_rapid_commit                = each.value.ipv6_dhcp_client_pd_rapid_commit
+  ipv6_dhcp_relay_trust                           = each.value.ipv6_dhcp_relay_trust
+  ipv6_dhcp_relay_option_vpn                      = each.value.ipv6_dhcp_relay_option_vpn
+  ipv6_dhcp_servers                               = each.value.ipv6_dhcp_servers
+  ipv6_dhcp_relay_destinations                    = each.value.ipv6_dhcp_relay_destinations
   ipv6_flow_monitors                              = each.value.ipv6_flow_monitors
   bfd_enable                                      = each.value.bfd_enable
   bfd_template                                    = each.value.bfd_template
@@ -776,6 +813,7 @@ resource "iosxe_interface_ethernet" "ethernet_unmanaged" {
   service_instances                               = each.value.service_instances
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_vrf.vrf,
     iosxe_zone_security.zone_security,
     iosxe_access_list_standard.access_list_standard,
@@ -824,6 +862,7 @@ resource "iosxe_interface_switchport" "ethernet_switchport" {
   host                            = each.value.switchport_host
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_vrf.vrf,
     iosxe_dot1x.dot1x,
     iosxe_aaa_authentication.aaa_authentication
@@ -860,6 +899,7 @@ resource "iosxe_interface_switchport" "ethernet_switchport_unmanaged" {
   host                            = each.value.switchport_host
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_vrf.vrf,
     iosxe_dot1x.dot1x,
     iosxe_aaa_authentication.aaa_authentication
@@ -880,6 +920,7 @@ resource "iosxe_interface_mpls" "ethernet_mpls" {
   mtu    = each.value.mpls_mtu
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_ethernet.ethernet,
     iosxe_interface_ethernet.ethernet_sub
   ]
@@ -895,6 +936,7 @@ resource "iosxe_interface_mpls" "ethernet_mpls_unmanaged" {
   mtu    = each.value.mpls_mtu
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_ethernet.ethernet_unmanaged
   ]
 
@@ -927,6 +969,7 @@ resource "iosxe_interface_ospf" "ethernet_ospf" {
   ttl_security_hops                = each.value.ospf_ttl_security_hops
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_ethernet.ethernet,
     iosxe_interface_ethernet.ethernet_sub,
     iosxe_ospf.ospf,
@@ -958,6 +1001,7 @@ resource "iosxe_interface_ospf" "ethernet_ospf_unmanaged" {
   ttl_security_hops                = each.value.ospf_ttl_security_hops
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_ethernet.ethernet_unmanaged,
     iosxe_ospf.ospf,
     iosxe_ospf_vrf.ospf_vrf
@@ -986,6 +1030,7 @@ resource "iosxe_interface_ospfv3" "ethernet_ospfv3" {
   priority                         = each.value.ospfv3_priority
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_ethernet.ethernet,
     iosxe_interface_ethernet.ethernet_sub,
     iosxe_ospf.ospf,
@@ -1011,6 +1056,7 @@ resource "iosxe_interface_ospfv3" "ethernet_ospfv3_unmanaged" {
   priority                         = each.value.ospfv3_priority
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_ethernet.ethernet_unmanaged,
     iosxe_ospf.ospf,
     iosxe_ospf_vrf.ospf_vrf
@@ -1037,6 +1083,7 @@ resource "iosxe_interface_pim" "ethernet_pim" {
   dr_priority       = each.value.pim_dr_priority
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_system.system,
     iosxe_interface_ethernet.ethernet,
     iosxe_interface_ethernet.ethernet_sub
@@ -1059,6 +1106,7 @@ resource "iosxe_interface_pim" "ethernet_pim_unmanaged" {
   dr_priority       = each.value.pim_dr_priority
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_system.system,
     iosxe_interface_ethernet.ethernet_unmanaged
   ]
@@ -1080,6 +1128,7 @@ resource "iosxe_interface_pim_ipv6" "ethernet_pim_ipv6" {
   dr_priority = each.value.ipv6_pim_dr_priority
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_ethernet.ethernet,
     iosxe_interface_ethernet.ethernet_sub
   ]
@@ -1097,6 +1146,7 @@ resource "iosxe_interface_pim_ipv6" "ethernet_pim_ipv6_unmanaged" {
   dr_priority = each.value.ipv6_pim_dr_priority
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_ethernet.ethernet_unmanaged
   ]
 
@@ -1144,10 +1194,24 @@ locals {
           address    = addr
           link_local = true
         }]
-        ipv6_address_autoconfig_default = try(int.ipv6.address_autoconfig_default, null)
-        ipv6_address_dhcp               = try(int.ipv6.address_dhcp, null)
-        ipv6_mtu                        = try(int.ipv6.mtu, null)
-        ipv6_nd_ra_suppress_all         = try(int.ipv6.nd_ra_suppress_all, null)
+        ipv6_address_autoconfig_default  = try(int.ipv6.address_autoconfig_default, null)
+        ipv6_address_dhcp                = try(int.ipv6.address_dhcp, null)
+        ipv6_mtu                         = try(int.ipv6.mtu, null)
+        ipv6_nd_ra_suppress_all          = try(int.ipv6.nd_ra_suppress_all, null)
+        ipv6_dhcp_client_pd              = try(int.ipv6.dhcp_client_pd, null)
+        ipv6_dhcp_client_pd_rapid_commit = try(int.ipv6.dhcp_client_pd_rapid_commit, null)
+        ipv6_dhcp_relay_trust            = try(int.ipv6.dhcp_relay_trust, null)
+        ipv6_dhcp_relay_option_vpn       = try(int.ipv6.dhcp_relay_option_vpn, null)
+        ipv6_dhcp_servers = try(length(int.ipv6.dhcp_servers) == 0, true) ? null : [for srv in int.ipv6.dhcp_servers : {
+          pool_name    = try(srv.pool_name, null)
+          allow_hint   = try(srv.allow_hint, null)
+          rapid_commit = try(srv.rapid_commit, null)
+          preference   = try(srv.preference, null)
+        }]
+        ipv6_dhcp_relay_destinations = try(length(int.ipv6.dhcp_relay_destinations) == 0, true) ? null : [for rd in int.ipv6.dhcp_relay_destinations : {
+          address   = try(rd.address, null)
+          interface = try(rd.interface, null)
+        }]
         source_templates = try(length(int.source_templates) == 0, true) ? null : [for st in int.source_templates : {
           template_name = try(st.name, null)
           merge         = try(st.merge, null)
@@ -1254,10 +1318,17 @@ resource "iosxe_interface_loopback" "loopback" {
   ipv6_address_dhcp                        = each.value.ipv6_address_dhcp
   ipv6_mtu                                 = each.value.ipv6_mtu
   ipv6_nd_ra_suppress_all                  = each.value.ipv6_nd_ra_suppress_all
+  ipv6_dhcp_client_pd                      = each.value.ipv6_dhcp_client_pd
+  ipv6_dhcp_client_pd_rapid_commit         = each.value.ipv6_dhcp_client_pd_rapid_commit
+  ipv6_dhcp_relay_trust                    = each.value.ipv6_dhcp_relay_trust
+  ipv6_dhcp_relay_option_vpn               = each.value.ipv6_dhcp_relay_option_vpn
+  ipv6_dhcp_servers                        = each.value.ipv6_dhcp_servers
+  ipv6_dhcp_relay_destinations             = each.value.ipv6_dhcp_relay_destinations
   arp_timeout                              = each.value.arp_timeout
   ip_router_isis                           = each.value.isis_area_tag
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_vrf.vrf,
     iosxe_zone_security.zone_security,
     iosxe_access_list_standard.access_list_standard,
@@ -1277,6 +1348,7 @@ resource "iosxe_interface_mpls" "loopback_mpls" {
   mtu    = each.value.mpls_mtu
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_loopback.loopback
   ]
 }
@@ -1305,6 +1377,7 @@ resource "iosxe_interface_ospf" "loopback_ospf" {
   multi_area_ids                   = each.value.ospf_multi_area_ids
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_loopback.loopback,
     iosxe_ospf.ospf,
     iosxe_ospf_vrf.ospf_vrf
@@ -1329,6 +1402,7 @@ resource "iosxe_interface_ospfv3" "loopback_ospfv3" {
   priority                         = each.value.ospfv3_priority
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_loopback.loopback,
     iosxe_ospf.ospf,
     iosxe_ospf_vrf.ospf_vrf
@@ -1351,6 +1425,7 @@ resource "iosxe_interface_pim" "loopback_pim" {
   dr_priority       = each.value.pim_dr_priority
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_system.system,
     iosxe_interface_loopback.loopback
   ]
@@ -1368,6 +1443,7 @@ resource "iosxe_interface_pim_ipv6" "loopback_pim_ipv6" {
   dr_priority = each.value.ipv6_pim_dr_priority
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_loopback.loopback
   ]
 }
@@ -1381,6 +1457,7 @@ resource "iosxe_interface_isis" "loopback_isis" {
   ipv4_metric_levels = each.value.isis_ipv4_metric_levels
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_loopback.loopback,
     iosxe_isis.isis
   ]
@@ -1396,6 +1473,7 @@ resource "iosxe_interface_isis" "ethernet_isis" {
   ipv4_metric_levels     = each.value.isis_ipv4_metric_levels
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_ethernet.ethernet,
     iosxe_interface_ethernet.ethernet_sub,
     iosxe_isis.isis
@@ -1452,10 +1530,24 @@ locals {
           address    = addr
           link_local = true
         }]
-        ipv6_address_autoconfig_default       = try(int.ipv6.address_autoconfig_default, null)
-        ipv6_address_dhcp                     = try(int.ipv6.address_dhcp, null)
-        ipv6_mtu                              = try(int.ipv6.mtu, null)
-        ipv6_nd_ra_suppress_all               = try(int.ipv6.nd_ra_suppress_all, null)
+        ipv6_address_autoconfig_default  = try(int.ipv6.address_autoconfig_default, null)
+        ipv6_address_dhcp                = try(int.ipv6.address_dhcp, null)
+        ipv6_mtu                         = try(int.ipv6.mtu, null)
+        ipv6_nd_ra_suppress_all          = try(int.ipv6.nd_ra_suppress_all, null)
+        ipv6_dhcp_client_pd              = try(int.ipv6.dhcp_client_pd, null)
+        ipv6_dhcp_client_pd_rapid_commit = try(int.ipv6.dhcp_client_pd_rapid_commit, null)
+        ipv6_dhcp_relay_trust            = try(int.ipv6.dhcp_relay_trust, null)
+        ipv6_dhcp_relay_option_vpn       = try(int.ipv6.dhcp_relay_option_vpn, null)
+        ipv6_dhcp_servers = try(length(int.ipv6.dhcp_servers) == 0, true) ? null : [for srv in int.ipv6.dhcp_servers : {
+          pool_name    = try(srv.pool_name, null)
+          allow_hint   = try(srv.allow_hint, null)
+          rapid_commit = try(srv.rapid_commit, null)
+          preference   = try(srv.preference, null)
+        }]
+        ipv6_dhcp_relay_destinations = try(length(int.ipv6.dhcp_relay_destinations) == 0, true) ? null : [for rd in int.ipv6.dhcp_relay_destinations : {
+          address   = try(rd.address, null)
+          interface = try(rd.interface, null)
+        }]
         bfd_enable                            = try(int.bfd.enable, null)
         bfd_template                          = try(int.bfd.template, null)
         bfd_local_address                     = try(int.bfd.local_address, null)
@@ -1574,6 +1666,12 @@ resource "iosxe_interface_vlan" "vlan" {
   ipv6_link_local_addresses                = each.value.ipv6_link_local_addresses
   ipv6_mtu                                 = each.value.ipv6_mtu
   ipv6_nd_ra_suppress_all                  = each.value.ipv6_nd_ra_suppress_all
+  ipv6_dhcp_client_pd                      = each.value.ipv6_dhcp_client_pd
+  ipv6_dhcp_client_pd_rapid_commit         = each.value.ipv6_dhcp_client_pd_rapid_commit
+  ipv6_dhcp_relay_trust                    = each.value.ipv6_dhcp_relay_trust
+  ipv6_dhcp_relay_option_vpn               = each.value.ipv6_dhcp_relay_option_vpn
+  ipv6_dhcp_servers                        = each.value.ipv6_dhcp_servers
+  ipv6_dhcp_relay_destinations             = each.value.ipv6_dhcp_relay_destinations
   bfd_enable                               = each.value.bfd_enable
   bfd_template                             = each.value.bfd_template
   bfd_local_address                        = each.value.bfd_local_address
@@ -1585,6 +1683,7 @@ resource "iosxe_interface_vlan" "vlan" {
   ip_router_isis                           = each.value.isis_area_tag
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_vrf.vrf,
     iosxe_zone_security.zone_security,
     iosxe_access_list_standard.access_list_standard,
@@ -1604,6 +1703,7 @@ resource "iosxe_interface_mpls" "vlan_mpls" {
   mtu    = each.value.mpls_mtu
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_vlan.vlan
   ]
 }
@@ -1632,6 +1732,7 @@ resource "iosxe_interface_ospf" "vlan_ospf" {
   multi_area_ids                   = each.value.ospf_multi_area_ids
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_vlan.vlan,
     iosxe_ospf.ospf,
     iosxe_ospf_vrf.ospf_vrf
@@ -1656,6 +1757,7 @@ resource "iosxe_interface_ospfv3" "vlan_ospfv3" {
   priority                         = each.value.ospfv3_priority
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_vlan.vlan,
     iosxe_ospf.ospf,
     iosxe_ospf_vrf.ospf_vrf
@@ -1678,6 +1780,7 @@ resource "iosxe_interface_pim" "vlan_pim" {
   dr_priority       = each.value.pim_dr_priority
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_system.system,
     iosxe_interface_vlan.vlan
   ]
@@ -1695,6 +1798,7 @@ resource "iosxe_interface_pim_ipv6" "vlan_pim_ipv6" {
   dr_priority = each.value.ipv6_pim_dr_priority
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_vlan.vlan
   ]
 }
@@ -1709,6 +1813,7 @@ resource "iosxe_interface_isis" "vlan_isis" {
   ipv4_metric_levels     = each.value.isis_ipv4_metric_levels
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_vlan.vlan,
     iosxe_isis.isis
   ]
@@ -1756,10 +1861,24 @@ locals {
           global  = try(addr.global, false)
           vrf     = try(addr.vrf, null)
         }]
-        ipv6_enable             = try(int.ipv6.enable, null)
-        ipv6_mtu                = try(int.ipv6.mtu, null)
-        ipv6_nd_ra_suppress_all = try(int.ipv6.nd_ra_suppress_all, null)
-        ipv6_address_dhcp       = try(int.ipv6.address_dhcp, null)
+        ipv6_enable                      = try(int.ipv6.enable, null)
+        ipv6_mtu                         = try(int.ipv6.mtu, null)
+        ipv6_nd_ra_suppress_all          = try(int.ipv6.nd_ra_suppress_all, null)
+        ipv6_dhcp_client_pd              = try(int.ipv6.dhcp_client_pd, null)
+        ipv6_dhcp_client_pd_rapid_commit = try(int.ipv6.dhcp_client_pd_rapid_commit, null)
+        ipv6_dhcp_relay_trust            = try(int.ipv6.dhcp_relay_trust, null)
+        ipv6_dhcp_relay_option_vpn       = try(int.ipv6.dhcp_relay_option_vpn, null)
+        ipv6_dhcp_servers = try(length(int.ipv6.dhcp_servers) == 0, true) ? null : [for srv in int.ipv6.dhcp_servers : {
+          pool_name    = try(srv.pool_name, null)
+          allow_hint   = try(srv.allow_hint, null)
+          rapid_commit = try(srv.rapid_commit, null)
+          preference   = try(srv.preference, null)
+        }]
+        ipv6_dhcp_relay_destinations = try(length(int.ipv6.dhcp_relay_destinations) == 0, true) ? null : [for rd in int.ipv6.dhcp_relay_destinations : {
+          address   = try(rd.address, null)
+          interface = try(rd.interface, null)
+        }]
+        ipv6_address_dhcp = try(int.ipv6.address_dhcp, null)
         ipv6_addresses = try(length(int.ipv6.addresses) == 0, true) ? null : [for addr in int.ipv6.addresses : {
           prefix = try(addr.prefix, null)
           eui_64 = try(addr.eui_64, null)
@@ -1981,6 +2100,12 @@ resource "iosxe_interface_port_channel" "port_channel" {
   ipv6_enable                              = each.value.ipv6_enable
   ipv6_mtu                                 = each.value.ipv6_mtu
   ipv6_nd_ra_suppress_all                  = each.value.ipv6_nd_ra_suppress_all
+  ipv6_dhcp_client_pd                      = each.value.ipv6_dhcp_client_pd
+  ipv6_dhcp_client_pd_rapid_commit         = each.value.ipv6_dhcp_client_pd_rapid_commit
+  ipv6_dhcp_relay_trust                    = each.value.ipv6_dhcp_relay_trust
+  ipv6_dhcp_relay_option_vpn               = each.value.ipv6_dhcp_relay_option_vpn
+  ipv6_dhcp_servers                        = each.value.ipv6_dhcp_servers
+  ipv6_dhcp_relay_destinations             = each.value.ipv6_dhcp_relay_destinations
   ipv6_address_dhcp                        = each.value.ipv6_address_dhcp
   ipv6_addresses                           = each.value.ipv6_addresses
   ipv6_link_local_addresses                = each.value.ipv6_link_local_addresses
@@ -2029,6 +2154,7 @@ resource "iosxe_interface_port_channel" "port_channel" {
   ip_verify_unicast_source_allow_default   = each.value.ip_verify_unicast_source_allow_default
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_zone_security.zone_security,
     iosxe_evpn_ethernet_segment.evpn_ethernet_segment,
     iosxe_flow_monitor.flow_monitor,
@@ -2066,6 +2192,7 @@ resource "iosxe_interface_switchport" "port_channel_switchport" {
   host                            = each.value.switchport_host
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_port_channel.port_channel
   ]
 }
@@ -2080,6 +2207,7 @@ resource "iosxe_interface_mpls" "port_channel_mpls" {
   mtu    = each.value.mpls_mtu
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_port_channel.port_channel
   ]
 }
@@ -2108,6 +2236,7 @@ resource "iosxe_interface_ospf" "port_channel_ospf" {
   multi_area_ids                   = each.value.ospf_multi_area_ids
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_port_channel.port_channel,
     iosxe_ospf.ospf,
     iosxe_ospf_vrf.ospf_vrf
@@ -2132,6 +2261,7 @@ resource "iosxe_interface_ospfv3" "port_channel_ospfv3" {
   priority                         = each.value.ospfv3_priority
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_port_channel.port_channel
   ]
 }
@@ -2152,6 +2282,7 @@ resource "iosxe_interface_pim" "port_channel_pim" {
   dr_priority       = each.value.pim_dr_priority
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_system.system,
     iosxe_interface_port_channel.port_channel
   ]
@@ -2169,6 +2300,7 @@ resource "iosxe_interface_pim_ipv6" "port_channel_pim_ipv6" {
   dr_priority = each.value.ipv6_pim_dr_priority
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_port_channel.port_channel
   ]
 }
@@ -2183,6 +2315,7 @@ resource "iosxe_interface_isis" "port_channel_isis" {
   ipv4_metric_levels     = each.value.isis_ipv4_metric_levels
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_port_channel.port_channel,
     iosxe_isis.isis
   ]
@@ -2387,6 +2520,7 @@ resource "iosxe_interface_port_channel_subinterface" "port_channel_subinterface"
   ip_router_isis                  = each.value.isis_area_tag
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_port_channel.port_channel,
     iosxe_vrf.vrf,
     iosxe_zone_security.zone_security,
@@ -2408,6 +2542,7 @@ resource "iosxe_interface_mpls" "port_channel_subinterface_mpls" {
   mtu    = each.value.mpls_mtu
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_port_channel_subinterface.port_channel_subinterface
   ]
 }
@@ -2436,6 +2571,7 @@ resource "iosxe_interface_ospf" "port_channel_subinterface_ospf" {
   multi_area_ids                   = each.value.ospf_multi_area_ids
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_port_channel_subinterface.port_channel_subinterface,
     iosxe_ospf.ospf,
     iosxe_ospf_vrf.ospf_vrf
@@ -2460,6 +2596,7 @@ resource "iosxe_interface_ospfv3" "port_channel_subinterface_ospfv3" {
   priority                         = each.value.ospfv3_priority
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_port_channel_subinterface.port_channel_subinterface,
     iosxe_ospf.ospf,
     iosxe_ospf_vrf.ospf_vrf
@@ -2482,6 +2619,7 @@ resource "iosxe_interface_pim" "port_channel_subinterface_pim" {
   dr_priority       = each.value.pim_dr_priority
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_system.system,
     iosxe_interface_port_channel_subinterface.port_channel_subinterface
   ]
@@ -2497,6 +2635,7 @@ resource "iosxe_interface_isis" "port_channel_subinterface_isis" {
   ipv4_metric_levels     = each.value.isis_ipv4_metric_levels
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_port_channel_subinterface.port_channel_subinterface,
     iosxe_isis.isis
   ]
@@ -2549,10 +2688,24 @@ locals {
             address    = addr
             link_local = true
           }]
-          ipv6_address_autoconfig_default = try(sub.ipv6.address_autoconfig_default, null)
-          ipv6_address_dhcp               = try(sub.ipv6.address_dhcp, null)
-          ipv6_mtu                        = try(sub.ipv6.mtu, null)
-          ipv6_nd_ra_suppress_all         = try(sub.ipv6.nd_ra_suppress_all, null)
+          ipv6_address_autoconfig_default  = try(sub.ipv6.address_autoconfig_default, null)
+          ipv6_address_dhcp                = try(sub.ipv6.address_dhcp, null)
+          ipv6_mtu                         = try(sub.ipv6.mtu, null)
+          ipv6_nd_ra_suppress_all          = try(sub.ipv6.nd_ra_suppress_all, null)
+          ipv6_dhcp_client_pd              = try(sub.ipv6.dhcp_client_pd, null)
+          ipv6_dhcp_client_pd_rapid_commit = try(sub.ipv6.dhcp_client_pd_rapid_commit, null)
+          ipv6_dhcp_relay_trust            = try(sub.ipv6.dhcp_relay_trust, null)
+          ipv6_dhcp_relay_option_vpn       = try(sub.ipv6.dhcp_relay_option_vpn, null)
+          ipv6_dhcp_servers = try(length(sub.ipv6.dhcp_servers) == 0, true) ? null : [for srv in sub.ipv6.dhcp_servers : {
+            pool_name    = try(srv.pool_name, null)
+            allow_hint   = try(srv.allow_hint, null)
+            rapid_commit = try(srv.rapid_commit, null)
+            preference   = try(srv.preference, null)
+          }]
+          ipv6_dhcp_relay_destinations = try(length(sub.ipv6.dhcp_relay_destinations) == 0, true) ? null : [for rd in sub.ipv6.dhcp_relay_destinations : {
+            address   = try(rd.address, null)
+            interface = try(rd.interface, null)
+          }]
           ipv6_flow_monitors = try(length(sub.ipv6.flow_monitors) == 0, true) ? null : [for fm in sub.ipv6.flow_monitors : {
             name      = try(fm.name, null)
             direction = try(fm.direction, null)
@@ -2643,61 +2796,68 @@ resource "iosxe_interface_ethernet" "ethernet_subinterface" {
   for_each = { for v in local.interfaces_ethernet_subinterfaces : v.key => v }
   device   = each.value.device
 
-  type                            = each.value.type
-  name                            = each.value.name
-  encapsulation_dot1q_vlan_id     = each.value.encapsulation_dot1q_vlan_id
-  description                     = each.value.description
-  shutdown                        = each.value.shutdown
-  ip_proxy_arp                    = each.value.ip_proxy_arp
-  ip_redirects                    = each.value.ip_redirects
-  ip_unreachables                 = each.value.ip_unreachables
-  ip_nat_inside                   = each.value.ip_nat_inside
-  ip_nat_outside                  = each.value.ip_nat_outside
-  zone_member_security            = each.value.zone_member_security
-  vrf_forwarding                  = each.value.vrf_forwarding
-  ipv4_address                    = each.value.ipv4_address
-  ipv4_address_mask               = each.value.ipv4_address_mask
-  ipv4_address_dhcp               = each.value.ipv4_address_dhcp
-  ip_access_group_in_enable       = each.value.ip_access_group_in_enable
-  ip_access_group_in              = each.value.ip_access_group_in
-  ip_access_group_out_enable      = each.value.ip_access_group_out_enable
-  ip_access_group_out             = each.value.ip_access_group_out
-  ip_flow_monitors                = each.value.ip_flow_monitors
-  ip_igmp_version                 = each.value.ip_igmp_version
-  helper_addresses                = each.value.helper_addresses
-  bfd_template                    = each.value.bfd_template
-  bfd_enable                      = each.value.bfd_enable
-  bfd_local_address               = each.value.bfd_local_address
-  bfd_interval                    = each.value.bfd_interval
-  bfd_interval_min_rx             = each.value.bfd_interval_min_rx
-  bfd_interval_multiplier         = each.value.bfd_interval_multiplier
-  bfd_echo                        = each.value.bfd_echo
-  ipv6_enable                     = each.value.ipv6_enable
-  ipv6_mtu                        = each.value.ipv6_mtu
-  ipv6_nd_ra_suppress_all         = each.value.ipv6_nd_ra_suppress_all
-  ipv6_address_dhcp               = each.value.ipv6_address_dhcp
-  ipv6_link_local_addresses       = each.value.ipv6_link_local_addresses
-  ipv6_addresses                  = each.value.ipv6_addresses
-  ipv6_address_autoconfig_default = each.value.ipv6_address_autoconfig_default
-  ipv6_flow_monitors              = each.value.ipv6_flow_monitors
-  arp_timeout                     = each.value.arp_timeout
-  auto_qos_classify               = each.value.auto_qos_classify
-  auto_qos_classify_police        = each.value.auto_qos_classify_police
-  auto_qos_trust                  = each.value.auto_qos_trust
-  auto_qos_trust_cos              = each.value.auto_qos_trust_cos
-  auto_qos_trust_dscp             = each.value.auto_qos_trust_dscp
-  auto_qos_video_cts              = each.value.auto_qos_video_cts
-  auto_qos_video_ip_camera        = each.value.auto_qos_video_ip_camera
-  auto_qos_video_media_player     = each.value.auto_qos_video_media_player
-  auto_qos_voip_cisco_phone       = each.value.auto_qos_voip_cisco_phone
-  auto_qos_voip_cisco_softphone   = each.value.auto_qos_voip_cisco_softphone
-  auto_qos_voip_trust             = each.value.auto_qos_voip_trust
-  trust_device                    = each.value.trust_device
-  ip_arp_inspection_trust         = each.value.ip_arp_inspection_trust
-  ip_arp_inspection_limit_rate    = each.value.ip_arp_inspection_limit_rate
-  ip_router_isis                  = each.value.isis_area_tag
+  type                             = each.value.type
+  name                             = each.value.name
+  encapsulation_dot1q_vlan_id      = each.value.encapsulation_dot1q_vlan_id
+  description                      = each.value.description
+  shutdown                         = each.value.shutdown
+  ip_proxy_arp                     = each.value.ip_proxy_arp
+  ip_redirects                     = each.value.ip_redirects
+  ip_unreachables                  = each.value.ip_unreachables
+  ip_nat_inside                    = each.value.ip_nat_inside
+  ip_nat_outside                   = each.value.ip_nat_outside
+  zone_member_security             = each.value.zone_member_security
+  vrf_forwarding                   = each.value.vrf_forwarding
+  ipv4_address                     = each.value.ipv4_address
+  ipv4_address_mask                = each.value.ipv4_address_mask
+  ipv4_address_dhcp                = each.value.ipv4_address_dhcp
+  ip_access_group_in_enable        = each.value.ip_access_group_in_enable
+  ip_access_group_in               = each.value.ip_access_group_in
+  ip_access_group_out_enable       = each.value.ip_access_group_out_enable
+  ip_access_group_out              = each.value.ip_access_group_out
+  ip_flow_monitors                 = each.value.ip_flow_monitors
+  ip_igmp_version                  = each.value.ip_igmp_version
+  helper_addresses                 = each.value.helper_addresses
+  bfd_template                     = each.value.bfd_template
+  bfd_enable                       = each.value.bfd_enable
+  bfd_local_address                = each.value.bfd_local_address
+  bfd_interval                     = each.value.bfd_interval
+  bfd_interval_min_rx              = each.value.bfd_interval_min_rx
+  bfd_interval_multiplier          = each.value.bfd_interval_multiplier
+  bfd_echo                         = each.value.bfd_echo
+  ipv6_enable                      = each.value.ipv6_enable
+  ipv6_mtu                         = each.value.ipv6_mtu
+  ipv6_nd_ra_suppress_all          = each.value.ipv6_nd_ra_suppress_all
+  ipv6_dhcp_client_pd              = each.value.ipv6_dhcp_client_pd
+  ipv6_dhcp_client_pd_rapid_commit = each.value.ipv6_dhcp_client_pd_rapid_commit
+  ipv6_dhcp_relay_trust            = each.value.ipv6_dhcp_relay_trust
+  ipv6_dhcp_relay_option_vpn       = each.value.ipv6_dhcp_relay_option_vpn
+  ipv6_dhcp_servers                = each.value.ipv6_dhcp_servers
+  ipv6_dhcp_relay_destinations     = each.value.ipv6_dhcp_relay_destinations
+  ipv6_address_dhcp                = each.value.ipv6_address_dhcp
+  ipv6_link_local_addresses        = each.value.ipv6_link_local_addresses
+  ipv6_addresses                   = each.value.ipv6_addresses
+  ipv6_address_autoconfig_default  = each.value.ipv6_address_autoconfig_default
+  ipv6_flow_monitors               = each.value.ipv6_flow_monitors
+  arp_timeout                      = each.value.arp_timeout
+  auto_qos_classify                = each.value.auto_qos_classify
+  auto_qos_classify_police         = each.value.auto_qos_classify_police
+  auto_qos_trust                   = each.value.auto_qos_trust
+  auto_qos_trust_cos               = each.value.auto_qos_trust_cos
+  auto_qos_trust_dscp              = each.value.auto_qos_trust_dscp
+  auto_qos_video_cts               = each.value.auto_qos_video_cts
+  auto_qos_video_ip_camera         = each.value.auto_qos_video_ip_camera
+  auto_qos_video_media_player      = each.value.auto_qos_video_media_player
+  auto_qos_voip_cisco_phone        = each.value.auto_qos_voip_cisco_phone
+  auto_qos_voip_cisco_softphone    = each.value.auto_qos_voip_cisco_softphone
+  auto_qos_voip_trust              = each.value.auto_qos_voip_trust
+  trust_device                     = each.value.trust_device
+  ip_arp_inspection_trust          = each.value.ip_arp_inspection_trust
+  ip_arp_inspection_limit_rate     = each.value.ip_arp_inspection_limit_rate
+  ip_router_isis                   = each.value.isis_area_tag
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_ethernet.ethernet,
     iosxe_vrf.vrf,
     iosxe_zone_security.zone_security,
@@ -2719,6 +2879,7 @@ resource "iosxe_interface_mpls" "ethernet_subinterface_mpls" {
   mtu    = each.value.mpls_mtu
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_ethernet.ethernet_subinterface
   ]
 }
@@ -2744,6 +2905,7 @@ resource "iosxe_interface_ospf" "ethernet_subinterface_ospf" {
   multi_area_ids                   = each.value.ospf_multi_area_ids
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_ethernet.ethernet_subinterface,
     iosxe_ospf.ospf,
     iosxe_ospf_vrf.ospf_vrf
@@ -2768,6 +2930,7 @@ resource "iosxe_interface_ospfv3" "ethernet_subinterface_ospfv3" {
   priority                         = each.value.ospfv3_priority
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_ethernet.ethernet_subinterface,
     iosxe_ospf.ospf,
     iosxe_ospf_vrf.ospf_vrf
@@ -2790,6 +2953,7 @@ resource "iosxe_interface_pim" "ethernet_subinterface_pim" {
   dr_priority       = each.value.pim_dr_priority
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_system.system,
     iosxe_interface_ethernet.ethernet_subinterface
   ]
@@ -2805,6 +2969,7 @@ resource "iosxe_interface_isis" "ethernet_subinterface_isis" {
   ipv4_metric_levels     = each.value.isis_ipv4_metric_levels
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_ethernet.ethernet_subinterface,
     iosxe_isis.isis
   ]
@@ -2857,7 +3022,7 @@ resource "iosxe_interface_nve" "nve" {
   vnis     = each.value.vnis
   vni_vrfs = each.value.vni_vrfs
 
-  depends_on = [iosxe_vrf.vrf]
+  depends_on = [iosxe_cli.cli_pre_9, iosxe_vrf.vrf]
 }
 
 ##### TUNNELS #####
@@ -2905,39 +3070,59 @@ locals {
           address    = addr
           link_local = true
         }]
-        ipv6_address_autoconfig_default = try(int.ipv6.address_autoconfig_default, null)
-        ipv6_address_dhcp               = try(int.ipv6.address_dhcp, null)
-        ipv6_mtu                        = try(int.ipv6.mtu, null)
-        ipv6_nd_ra_suppress_all         = try(int.ipv6.nd_ra_suppress_all, null)
+        ipv6_address_autoconfig_default  = try(int.ipv6.address_autoconfig_default, null)
+        ipv6_address_dhcp                = try(int.ipv6.address_dhcp, null)
+        ipv6_mtu                         = try(int.ipv6.mtu, null)
+        ipv6_nd_ra_suppress_all          = try(int.ipv6.nd_ra_suppress_all, null)
+        ipv6_dhcp_client_pd              = try(int.ipv6.dhcp_client_pd, null)
+        ipv6_dhcp_client_pd_rapid_commit = try(int.ipv6.dhcp_client_pd_rapid_commit, null)
+        ipv6_dhcp_relay_trust            = try(int.ipv6.dhcp_relay_trust, null)
+        ipv6_dhcp_relay_option_vpn       = try(int.ipv6.dhcp_relay_option_vpn, null)
+        ipv6_dhcp_servers = try(length(int.ipv6.dhcp_servers) == 0, true) ? null : [for srv in int.ipv6.dhcp_servers : {
+          pool_name    = try(srv.pool_name, null)
+          allow_hint   = try(srv.allow_hint, null)
+          rapid_commit = try(srv.rapid_commit, null)
+          preference   = try(srv.preference, null)
+        }]
+        ipv6_dhcp_relay_destinations = try(length(int.ipv6.dhcp_relay_destinations) == 0, true) ? null : [for rd in int.ipv6.dhcp_relay_destinations : {
+          address   = try(rd.address, null)
+          interface = try(rd.interface, null)
+        }]
         ipv6_flow_monitors = try(length(int.ipv6.flow_monitors) == 0, true) ? null : [for fm in int.ipv6.flow_monitors : {
           name      = try(fm.name, null)
           direction = try(fm.direction, null)
         }]
-        bfd_enable                      = try(int.bfd.enable, null)
-        bfd_template                    = try(int.bfd.template, null)
-        bfd_local_address               = try(int.bfd.local_address, null)
-        bfd_interval                    = try(int.bfd.interval, null)
-        bfd_interval_min_rx             = try(int.bfd.interval_min_rx, null)
-        bfd_interval_multiplier         = try(int.bfd.interval_multiplier, null)
-        bfd_echo                        = try(int.bfd.echo, null)
-        tunnel_destination_ipv4         = try(int.tunnel_destination_ipv4, null)
-        tunnel_source                   = try(int.tunnel_source, null)
-        tunnel_vrf                      = try(int.tunnel_vrf, null)
-        tunnel_mode_ipsec_ipv4          = try(int.tunnel_mode_ipsec_ipv4, null)
-        tunnel_mode_gre_multipoint      = try(int.tunnel_mode_gre_multipoint, null)
-        tunnel_protection_ipsec_profile = try(int.tunnel_protection_ipsec_profile, null)
-        tunnel_key                      = try(int.tunnel_key, null)
-        tunnel_bandwidth_transmit       = try(int.tunnel_bandwidth_transmit, null)
-        tunnel_bandwidth_receive        = try(int.tunnel_bandwidth_receive, null)
-        ip_nhrp_authentication          = try(int.ip_nhrp_authentication, null)
-        ip_nhrp_network_id              = try(int.ip_nhrp_network_id, null)
+        bfd_enable                             = try(int.bfd.enable, null)
+        bfd_template                           = try(int.bfd.template, null)
+        bfd_local_address                      = try(int.bfd.local_address, null)
+        bfd_interval                           = try(int.bfd.interval, null)
+        bfd_interval_min_rx                    = try(int.bfd.interval_min_rx, null)
+        bfd_interval_multiplier                = try(int.bfd.interval_multiplier, null)
+        bfd_echo                               = try(int.bfd.echo, null)
+        tunnel_destination_ipv4                = try(int.tunnel_destination_ipv4, null)
+        tunnel_source                          = try(int.tunnel_source, null)
+        tunnel_vrf                             = try(int.tunnel_vrf, null)
+        tunnel_mode_ipsec_ipv4                 = try(int.tunnel_mode_ipsec_ipv4, null)
+        tunnel_mode_gre_multipoint             = try(int.tunnel_mode_gre_multipoint, null)
+        tunnel_protection_ipsec_profile        = try(int.tunnel_protection_ipsec_profile, null)
+        tunnel_protection_ipsec_profile_legacy = try(int.tunnel_protection_ipsec_profile_legacy, null)
+        tunnel_key                             = try(int.tunnel_key, null)
+        tunnel_bandwidth_transmit              = try(int.tunnel_bandwidth_transmit, null)
+        tunnel_bandwidth_receive               = try(int.tunnel_bandwidth_receive, null)
+        ip_nhrp_authentication                 = try(int.ip_nhrp_authentication, null)
+        ip_nhrp_network_id                     = try(int.ip_nhrp_network_id, null)
         ip_nhrp_nhs = try(length(int.ip_nhrp_nhs) == 0, true) ? null : [for nhs in int.ip_nhrp_nhs : {
           ipv4 = try(nhs.ipv4, null)
+          # IOS-XE applies one NBMA per NHS, so the data model holds a single address; the provider models the YANG list.
+          nbma_ipv4s = try(nhs.nbma_ipv4, null) == null ? null : [{ ipv4 = nhs.nbma_ipv4 }]
         }]
         ip_nhrp_maps = try(length(int.ip_nhrp_maps) == 0, true) ? null : [for m in int.ip_nhrp_maps : {
           dest_ipv4 = try(m.dest_ipv4, null)
-          nbma_ipv4 = try(m.nbma_ipv4, null)
+          # IOS-XE applies one NBMA per map destination, so the data model holds a single address; the provider models the YANG list.
+          nbma_ipv4s = try(m.nbma_ipv4, null) == null ? null : [{ ipv4 = m.nbma_ipv4 }]
         }]
+        ip_nhrp_map_multicast_dynamic         = try(int.ip_nhrp_map_multicast_dynamic, null)
+        ip_nhrp_map_multicast_nbma_ipv4       = try(int.ip_nhrp_map_multicast_nbma_ipv4, null)
         ip_nhrp_redirect                      = try(int.ip_nhrp_redirect, null)
         ip_nhrp_shortcut                      = try(int.ip_nhrp_shortcut, null)
         mpls_nhrp                             = try(int.mpls_nhrp, null)
@@ -3003,6 +3188,7 @@ locals {
         ipv6_pim_bsr_border                     = try(int.ipv6.pim.bsr_border, null)
         ipv6_pim_dr_priority                    = try(int.ipv6.pim.dr_priority, null)
         ip_igmp_version                         = try(int.igmp.version, null)
+        isis_area_tag                           = try(int.isis.area_tag, null)
       }
     ]
   ])
@@ -3012,76 +3198,88 @@ resource "iosxe_interface_tunnel" "tunnel" {
   for_each = { for v in local.interfaces_tunnels : v.key => v }
   device   = each.value.device
 
-  name                             = each.value.name
-  description                      = each.value.description
-  shutdown                         = each.value.shutdown
-  vrf_forwarding                   = each.value.vrf_forwarding
-  ipv4_address                     = each.value.ipv4_address
-  ipv4_address_mask                = each.value.ipv4_address_mask
-  ipv4_address_dhcp                = each.value.ipv4_address_dhcp
-  ip_proxy_arp                     = each.value.ip_proxy_arp
-  ip_dhcp_relay_source_interface   = each.value.ip_dhcp_relay_source_interface
-  helper_addresses                 = each.value.helper_addresses
-  ip_access_group_in               = each.value.ip_access_group_in
-  ip_access_group_in_enable        = each.value.ip_access_group_in_enable
-  ip_access_group_out              = each.value.ip_access_group_out
-  ip_access_group_out_enable       = each.value.ip_access_group_out_enable
-  ip_flow_monitors                 = each.value.ip_flow_monitors
-  ip_redirects                     = each.value.ip_redirects
-  ip_unreachables                  = each.value.ip_unreachables
-  ip_nat_inside                    = each.value.ip_nat_inside
-  ip_nat_outside                   = each.value.ip_nat_outside
-  zone_member_security             = each.value.zone_member_security
-  unnumbered                       = each.value.unnumbered
-  ipv6_enable                      = each.value.ipv6_enable
-  ipv6_addresses                   = each.value.ipv6_addresses
-  ipv6_link_local_addresses        = each.value.ipv6_link_local_addresses
-  ipv6_address_autoconfig_default  = each.value.ipv6_address_autoconfig_default
-  ipv6_address_dhcp                = each.value.ipv6_address_dhcp
-  ipv6_mtu                         = each.value.ipv6_mtu
-  ipv6_nd_ra_suppress_all          = each.value.ipv6_nd_ra_suppress_all
-  ipv6_flow_monitors               = each.value.ipv6_flow_monitors
-  bfd_enable                       = each.value.bfd_enable
-  bfd_template                     = each.value.bfd_template
-  bfd_local_address                = each.value.bfd_local_address
-  bfd_interval                     = each.value.bfd_interval
-  bfd_interval_min_rx              = each.value.bfd_interval_min_rx
-  bfd_interval_multiplier          = each.value.bfd_interval_multiplier
-  bfd_echo                         = each.value.bfd_echo
-  tunnel_destination_ipv4          = each.value.tunnel_destination_ipv4
-  tunnel_source                    = each.value.tunnel_source
-  tunnel_vrf                       = each.value.tunnel_vrf
-  tunnel_mode_ipsec_ipv4           = each.value.tunnel_mode_ipsec_ipv4
-  tunnel_mode_gre_multipoint       = each.value.tunnel_mode_gre_multipoint
-  tunnel_protection_ipsec_profile  = each.value.tunnel_protection_ipsec_profile
-  tunnel_key                       = each.value.tunnel_key
-  tunnel_bandwidth_transmit        = each.value.tunnel_bandwidth_transmit
-  tunnel_bandwidth_receive         = each.value.tunnel_bandwidth_receive
-  ip_nhrp_authentication           = each.value.ip_nhrp_authentication
-  ip_nhrp_network_id               = each.value.ip_nhrp_network_id
-  ip_nhrp_nhs                      = each.value.ip_nhrp_nhs
-  ip_nhrp_maps                     = each.value.ip_nhrp_maps
-  ip_nhrp_redirect                 = each.value.ip_nhrp_redirect
-  ip_nhrp_shortcut                 = each.value.ip_nhrp_shortcut
-  mpls_nhrp                        = each.value.mpls_nhrp
-  bandwidth                        = each.value.bandwidth
-  service_policy_input             = each.value.service_policy_input
-  service_policy_output            = each.value.service_policy_output
-  arp_timeout                      = each.value.arp_timeout
-  ip_mtu                           = each.value.ip_mtu
-  load_interval                    = each.value.load_interval
-  snmp_trap_link_status            = each.value.snmp_trap_link_status
-  logging_event_link_status_enable = each.value.logging_event_link_status_enable
-  ip_igmp_version                  = each.value.ip_igmp_version
+  name                                   = each.value.name
+  description                            = each.value.description
+  shutdown                               = each.value.shutdown
+  vrf_forwarding                         = each.value.vrf_forwarding
+  ipv4_address                           = each.value.ipv4_address
+  ipv4_address_mask                      = each.value.ipv4_address_mask
+  ipv4_address_dhcp                      = each.value.ipv4_address_dhcp
+  ip_proxy_arp                           = each.value.ip_proxy_arp
+  ip_dhcp_relay_source_interface         = each.value.ip_dhcp_relay_source_interface
+  helper_addresses                       = each.value.helper_addresses
+  ip_access_group_in                     = each.value.ip_access_group_in
+  ip_access_group_in_enable              = each.value.ip_access_group_in_enable
+  ip_access_group_out                    = each.value.ip_access_group_out
+  ip_access_group_out_enable             = each.value.ip_access_group_out_enable
+  ip_flow_monitors                       = each.value.ip_flow_monitors
+  ip_redirects                           = each.value.ip_redirects
+  ip_unreachables                        = each.value.ip_unreachables
+  ip_nat_inside                          = each.value.ip_nat_inside
+  ip_nat_outside                         = each.value.ip_nat_outside
+  zone_member_security                   = each.value.zone_member_security
+  unnumbered                             = each.value.unnumbered
+  ipv6_enable                            = each.value.ipv6_enable
+  ipv6_addresses                         = each.value.ipv6_addresses
+  ipv6_link_local_addresses              = each.value.ipv6_link_local_addresses
+  ipv6_address_autoconfig_default        = each.value.ipv6_address_autoconfig_default
+  ipv6_address_dhcp                      = each.value.ipv6_address_dhcp
+  ipv6_mtu                               = each.value.ipv6_mtu
+  ipv6_nd_ra_suppress_all                = each.value.ipv6_nd_ra_suppress_all
+  ipv6_dhcp_client_pd                    = each.value.ipv6_dhcp_client_pd
+  ipv6_dhcp_client_pd_rapid_commit       = each.value.ipv6_dhcp_client_pd_rapid_commit
+  ipv6_dhcp_relay_trust                  = each.value.ipv6_dhcp_relay_trust
+  ipv6_dhcp_relay_option_vpn             = each.value.ipv6_dhcp_relay_option_vpn
+  ipv6_dhcp_servers                      = each.value.ipv6_dhcp_servers
+  ipv6_dhcp_relay_destinations           = each.value.ipv6_dhcp_relay_destinations
+  ipv6_flow_monitors                     = each.value.ipv6_flow_monitors
+  bfd_enable                             = each.value.bfd_enable
+  bfd_template                           = each.value.bfd_template
+  bfd_local_address                      = each.value.bfd_local_address
+  bfd_interval                           = each.value.bfd_interval
+  bfd_interval_min_rx                    = each.value.bfd_interval_min_rx
+  bfd_interval_multiplier                = each.value.bfd_interval_multiplier
+  bfd_echo                               = each.value.bfd_echo
+  tunnel_destination_ipv4                = each.value.tunnel_destination_ipv4
+  tunnel_source                          = each.value.tunnel_source
+  tunnel_vrf                             = each.value.tunnel_vrf
+  tunnel_mode_ipsec_ipv4                 = each.value.tunnel_mode_ipsec_ipv4
+  tunnel_mode_gre_multipoint             = each.value.tunnel_mode_gre_multipoint
+  tunnel_protection_ipsec_profile        = each.value.tunnel_protection_ipsec_profile
+  tunnel_protection_ipsec_profile_legacy = each.value.tunnel_protection_ipsec_profile_legacy
+  tunnel_key                             = each.value.tunnel_key
+  tunnel_bandwidth_transmit              = each.value.tunnel_bandwidth_transmit
+  tunnel_bandwidth_receive               = each.value.tunnel_bandwidth_receive
+  ip_nhrp_authentication                 = each.value.ip_nhrp_authentication
+  ip_nhrp_network_id                     = each.value.ip_nhrp_network_id
+  ip_nhrp_nhs                            = each.value.ip_nhrp_nhs
+  ip_nhrp_maps                           = each.value.ip_nhrp_maps
+  ip_nhrp_map_multicast_dynamic          = each.value.ip_nhrp_map_multicast_dynamic
+  ip_nhrp_map_multicast_nbma_ipv4        = each.value.ip_nhrp_map_multicast_nbma_ipv4
+  ip_nhrp_redirect                       = each.value.ip_nhrp_redirect
+  ip_nhrp_shortcut                       = each.value.ip_nhrp_shortcut
+  mpls_nhrp                              = each.value.mpls_nhrp
+  bandwidth                              = each.value.bandwidth
+  service_policy_input                   = each.value.service_policy_input
+  service_policy_output                  = each.value.service_policy_output
+  arp_timeout                            = each.value.arp_timeout
+  ip_mtu                                 = each.value.ip_mtu
+  load_interval                          = each.value.load_interval
+  snmp_trap_link_status                  = each.value.snmp_trap_link_status
+  logging_event_link_status_enable       = each.value.logging_event_link_status_enable
+  ip_igmp_version                        = each.value.ip_igmp_version
+  ip_router_isis                         = each.value.isis_area_tag
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_vrf.vrf,
     iosxe_zone_security.zone_security,
     iosxe_access_list_standard.access_list_standard,
     iosxe_access_list_extended.access_list_extended,
     iosxe_crypto_ipsec_profile.crypto_ipsec_profile,
     iosxe_policy_map.policy_map,
-    iosxe_flow_monitor.flow_monitor
+    iosxe_flow_monitor.flow_monitor,
+    iosxe_isis.isis
   ]
 }
 
@@ -3109,6 +3307,7 @@ resource "iosxe_interface_ospf" "tunnel_ospf" {
   multi_area_ids                   = each.value.ospf_multi_area_ids
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_tunnel.tunnel,
     iosxe_ospf.ospf,
     iosxe_ospf_vrf.ospf_vrf
@@ -3133,6 +3332,7 @@ resource "iosxe_interface_ospfv3" "tunnel_ospfv3" {
   priority                         = each.value.ospfv3_priority
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_tunnel.tunnel,
     iosxe_ospf.ospf,
     iosxe_ospf_vrf.ospf_vrf
@@ -3155,6 +3355,7 @@ resource "iosxe_interface_pim" "tunnel_pim" {
   dr_priority       = each.value.pim_dr_priority
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_system.system,
     iosxe_interface_tunnel.tunnel
   ]
@@ -3172,6 +3373,7 @@ resource "iosxe_interface_pim_ipv6" "tunnel_pim_ipv6" {
   dr_priority = each.value.ipv6_pim_dr_priority
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_tunnel.tunnel
   ]
 }

@@ -24,6 +24,7 @@ resource "iosxe_ipv6_local_pool" "ipv6_local_pool" {
   group         = each.value.group
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_vrf.vrf
   ]
 }

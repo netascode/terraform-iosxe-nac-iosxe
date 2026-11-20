@@ -78,6 +78,7 @@ resource "iosxe_service_template" "service_template" {
   tags                = each.value.tags
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_vlan.vlan,
     iosxe_access_list_standard.access_list_standard,
     iosxe_access_list_extended.access_list_extended

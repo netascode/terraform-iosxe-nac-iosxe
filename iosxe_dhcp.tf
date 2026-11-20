@@ -111,6 +111,7 @@ resource "iosxe_dhcp" "dhcp" {
   ]
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_vlan.vlan,
     iosxe_vrf.vrf,
     iosxe_ipv6_local_pool.ipv6_local_pool
