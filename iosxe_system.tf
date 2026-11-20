@@ -251,6 +251,9 @@ resource "iosxe_system" "system" {
       number              = try(track_obj.number, null)
       ip_sla_number       = try(track_obj.ip_sla_number, null)
       ip_sla_reachability = try(track_obj.ip_sla_reachability, null)
+      interface_name      = try(track_obj.interface_name, null)
+      interface_protocol  = try(track_obj.interface_protocol, null)
+      interface_routing   = try(track_obj.interface_routing, null)
     }
   ]
 
@@ -277,6 +280,7 @@ resource "iosxe_system" "system" {
   mld_snooping_querier = try(local.device_config[each.value.name].system.ipv6_mld_snooping_querier, null)
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_vrf.vrf,
     iosxe_interface_loopback.loopback,
     iosxe_interface_vlan.vlan,
@@ -307,6 +311,7 @@ resource "iosxe_sla" "sla" {
   ]
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_vrf.vrf,
     iosxe_interface_loopback.loopback,
     iosxe_interface_vlan.vlan,
@@ -324,4 +329,8 @@ resource "iosxe_platform" "platform" {
   punt_keepalive_settings_fatal_count       = try(local.device_config[each.value.name].system.platform.punt_keepalive_settings_fatal_count, null)
   punt_keepalive_settings_transmit_interval = try(local.device_config[each.value.name].system.platform.punt_keepalive_settings_transmit_interval, null)
   punt_keepalive_settings_warning_count     = try(local.device_config[each.value.name].system.platform.punt_keepalive_settings_warning_count, null)
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }

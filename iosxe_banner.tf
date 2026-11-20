@@ -6,4 +6,8 @@ resource "iosxe_banner" "banner" {
   login_banner          = try(local.device_config[each.value.name].banner.login, null)
   prompt_timeout_banner = try(local.device_config[each.value.name].banner.prompt_timeout, null)
   motd_banner           = try(local.device_config[each.value.name].banner.motd, null)
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }

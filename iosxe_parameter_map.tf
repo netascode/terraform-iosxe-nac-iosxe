@@ -1,7 +1,7 @@
 locals {
   parameter_maps = flatten([
     for device in local.devices : [
-      for pm in try(local.device_config[device.name].policy.parameter_maps, []) : {
+      for pm in try(local.device_config[device.name].policy.parameter_maps_inspect, []) : {
         key                                = format("%s/%s", device.name, pm.name)
         device                             = device.name
         name                               = try(pm.name, null)
@@ -122,6 +122,10 @@ resource "iosxe_parameter_map" "parameter_map" {
   udp_idle_time                      = each.value.udp_idle_time
   udp_idle_time_ageout               = each.value.udp_idle_time_ageout
   zone_mismatch_drop                 = each.value.zone_mismatch_drop
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }
 
 ##### WEB AUTHENTICATION #####

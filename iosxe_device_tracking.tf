@@ -43,4 +43,8 @@ resource "iosxe_device_tracking" "device_tracking" {
       medium_type_wireless                        = try(policy.medium_type_wireless, null)
     }
   ]
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }

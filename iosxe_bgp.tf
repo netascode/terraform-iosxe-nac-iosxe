@@ -2,7 +2,8 @@ resource "iosxe_bgp" "bgp" {
   for_each = { for device in local.devices : device.name => device if try(local.device_config[device.name].routing.bgp, null) != null }
   device   = each.value.name
 
-  asn                  = try(local.device_config[each.value.name].routing.bgp.as_number, null)
+  asn                  = try(tostring(local.device_config[each.value.name].routing.bgp.as_number), null)
+  asnotation_dot       = try(local.device_config[each.value.name].routing.bgp.asnotation_dot, null)
   default_ipv4_unicast = try(local.device_config[each.value.name].routing.bgp.default_ipv4_unicast, null)
   log_neighbor_changes = try(local.device_config[each.value.name].routing.bgp.log_neighbor_changes, null)
   router_id_loopback   = try(local.device_config[each.value.name].routing.bgp.router_id_interface_type, null) == "Loopback" ? try(local.device_config[each.value.name].routing.bgp.router_id_interface_id, null) : null
@@ -11,6 +12,7 @@ resource "iosxe_bgp" "bgp" {
   bgp_update_delay     = try(local.device_config[each.value.name].routing.bgp.update_delay, null)
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_loopback.loopback,
     iosxe_system.system
   ]
@@ -57,6 +59,7 @@ resource "iosxe_bgp_peer_session_template" "bgp_peer_session_template" {
   ao_accept_mismatch_connections   = each.value.ao_accept_mismatch_connections
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_bgp.bgp,
     iosxe_interface_loopback.loopback
   ]
@@ -147,6 +150,7 @@ resource "iosxe_bgp_neighbor" "bgp_neighbor" {
   ao_accept_mismatch_connections            = each.value.ao_accept_mismatch_connections
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_bgp.bgp,
     iosxe_bgp_peer_session_template.bgp_peer_session_template,
     iosxe_bgp_address_family_ipv4.bgp_address_family_ipv4
@@ -186,7 +190,7 @@ resource "iosxe_bgp_peer_policy_template" "bgp_peer_policy_template" {
   as_override_split_horizon = each.value.as_override_split_horizon
   route_maps                = each.value.route_maps
 
-  depends_on = [iosxe_route_map.route_map]
+  depends_on = [iosxe_cli.cli_pre_9, iosxe_route_map.route_map]
 }
 
 resource "iosxe_bgp_address_family_ipv4" "bgp_address_family_ipv4" {
@@ -229,6 +233,7 @@ resource "iosxe_bgp_address_family_ipv4" "bgp_address_family_ipv4" {
   ipv4_unicast_maximum_paths_ibgp = try(local.device_config[each.value.name].routing.bgp.address_family.ipv4_unicast.ipv4_unicast_maximum_paths_ibgp, null)
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_access_list_standard.access_list_standard,
     iosxe_access_list_extended.access_list_extended
   ]
@@ -251,8 +256,24 @@ resource "iosxe_bgp_address_family_ipv6" "bgp_address_family_ipv6" {
     route_map = try(net.route_map, null)
     backdoor  = try(net.backdoor, null)
   }]
+  ipv6_unicast_aggregate_addresses = try(length(local.device_config[each.value.name].routing.bgp.address_family.ipv6_unicast.aggregate_addresses) == 0, true) ? null : [for agg in local.device_config[each.value.name].routing.bgp.address_family.ipv6_unicast.aggregate_addresses : {
+    ipv6_address = try(agg.address, null)
+  }]
+  ipv6_unicast_admin_distances = try(length(local.device_config[each.value.name].routing.bgp.address_family.ipv6_unicast.admin_distances) == 0, true) ? null : [for ad in local.device_config[each.value.name].routing.bgp.address_family.ipv6_unicast.admin_distances : {
+    distance            = try(ad.distance, null)
+    source_ipv6_address = try(ad.source_ipv6_address, null)
+    prefix_list_name    = try(ad.prefix_list_name, null)
+  }]
+  ipv6_unicast_distance_bgp_external = try(local.device_config[each.value.name].routing.bgp.address_family.ipv6_unicast.distance_bgp_external, null)
+  ipv6_unicast_distance_bgp_internal = try(local.device_config[each.value.name].routing.bgp.address_family.ipv6_unicast.distance_bgp_internal, null)
+  ipv6_unicast_distance_bgp_local    = try(local.device_config[each.value.name].routing.bgp.address_family.ipv6_unicast.distance_bgp_local, null)
+  ipv6_unicast_maximum_paths_ebgp    = try(local.device_config[each.value.name].routing.bgp.address_family.ipv6_unicast.maximum_paths_ebgp, null)
+  ipv6_unicast_maximum_paths_ibgp    = try(local.device_config[each.value.name].routing.bgp.address_family.ipv6_unicast.maximum_paths_ibgp, null)
 
-
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+    iosxe_ipv6_prefix_list.ipv6_prefix_list
+  ]
 }
 
 resource "iosxe_bgp_address_family_l2vpn" "bgp_address_family_l2vpn" {
@@ -263,6 +284,10 @@ resource "iosxe_bgp_address_family_l2vpn" "bgp_address_family_l2vpn" {
   af_name                   = "evpn"
   rewrite_evpn_rt_asn       = try(local.device_config[each.value.name].routing.bgp.address_family.l2vpn_evpn.rewrite_evpn_rt_asn, null)
   bgp_nexthop_trigger_delay = try(local.device_config[each.value.name].routing.bgp.address_family.l2vpn_evpn.bgp_nexthop_trigger_delay, null)
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }
 
 resource "iosxe_bgp_address_family_ipv4_mvpn" "bgp_address_family_ipv4_mvpn" {
@@ -271,6 +296,10 @@ resource "iosxe_bgp_address_family_ipv4_mvpn" "bgp_address_family_ipv4_mvpn" {
 
   asn     = iosxe_bgp.bgp[each.value.name].asn
   af_name = "mvpn"
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }
 
 resource "iosxe_bgp_address_family_vpnv4" "bgp_address_family_vpnv4" {
@@ -279,6 +308,10 @@ resource "iosxe_bgp_address_family_vpnv4" "bgp_address_family_vpnv4" {
 
   asn     = iosxe_bgp.bgp[each.value.name].asn
   af_name = "unicast"
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }
 
 resource "iosxe_bgp_address_family_vpnv6" "bgp_address_family_vpnv6" {
@@ -287,6 +320,10 @@ resource "iosxe_bgp_address_family_vpnv6" "bgp_address_family_vpnv6" {
 
   asn     = iosxe_bgp.bgp[each.value.name].asn
   af_name = "unicast"
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }
 
 resource "iosxe_bgp_address_family_ipv4_vrf" "bgp_address_family_ipv4_vrf" {
@@ -337,6 +374,7 @@ resource "iosxe_bgp_address_family_ipv4_vrf" "bgp_address_family_ipv4_vrf" {
   }]
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_vrf.vrf,
     iosxe_access_list_standard.access_list_standard,
     iosxe_access_list_extended.access_list_extended
@@ -367,6 +405,7 @@ resource "iosxe_bgp_address_family_ipv6_vrf" "bgp_address_family_ipv6_vrf" {
   }]
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_vrf.vrf
   ]
 }
@@ -411,6 +450,7 @@ resource "iosxe_bgp_ipv4_unicast_neighbor" "bgp_ipv4_unicast_neighbor" {
   inherit_peer_policy         = each.value.inherit_peer_policy
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_bgp_neighbor.bgp_neighbor,
     iosxe_bgp_address_family_ipv4.bgp_address_family_ipv4
   ]
@@ -454,6 +494,7 @@ resource "iosxe_bgp_ipv6_unicast_neighbor" "bgp_ipv6_unicast_neighbor" {
   route_maps                  = each.value.route_maps
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_bgp_neighbor.bgp_neighbor,
     iosxe_bgp_address_family_ipv6.bgp_address_family_ipv6
   ]
@@ -495,6 +536,7 @@ resource "iosxe_bgp_l2vpn_evpn_neighbor" "bgp_l2vpn_evpn_neighbor" {
   route_maps             = each.value.route_maps
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_bgp_neighbor.bgp_neighbor,
     iosxe_bgp_address_family_l2vpn.bgp_address_family_l2vpn,
     iosxe_route_map.route_map
@@ -525,7 +567,7 @@ resource "iosxe_bgp_ipv4_mvpn_neighbor" "bgp_ipv4_mvpn_neighbor" {
   activate       = each.value.activate
   send_community = each.value.send_community
 
-  depends_on = [iosxe_bgp_neighbor.bgp_neighbor]
+  depends_on = [iosxe_cli.cli_pre_9, iosxe_bgp_neighbor.bgp_neighbor]
 }
 
 locals {
@@ -630,6 +672,7 @@ resource "iosxe_bgp_ipv4_unicast_vrf_neighbor" "bgp_ipv4_unicast_vrf_neighbor" {
   advertisement_interval                    = each.value.advertisement_interval
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_vrf.vrf,
     iosxe_bgp_address_family_ipv4_vrf.bgp_address_family_ipv4_vrf
   ]
@@ -680,6 +723,7 @@ resource "iosxe_bgp_bmp_server" "bgp_bmp_server" {
   update_source_vlan                 = each.value.update_source_vlan
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_bgp.bgp
   ]
 }

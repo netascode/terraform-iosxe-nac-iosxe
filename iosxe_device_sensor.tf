@@ -56,4 +56,8 @@ resource "iosxe_device_sensor" "device_sensor" {
   filter_spec_lldp_excludes = try(length(local.device_config[each.value.name].device_sensor.filter_spec_lldp_excludes) == 0, true) ? null : [for lldp_exclude in local.device_config[each.value.name].device_sensor.filter_spec_lldp_excludes : {
     name = try(lldp_exclude, null)
   }]
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }

@@ -114,6 +114,7 @@ resource "iosxe_interface_vrrp_v2" "vrrp_v2" {
   shutdown                  = each.value.shutdown
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_ethernet.ethernet,
     iosxe_interface_ethernet.ethernet_sub,
     iosxe_interface_vlan.vlan,
@@ -141,6 +142,7 @@ resource "iosxe_interface_vrrp_v2" "vrrp_v2_unmanaged" {
   shutdown                  = each.value.shutdown
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_ethernet.ethernet_unmanaged
   ]
 

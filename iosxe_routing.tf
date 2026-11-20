@@ -77,8 +77,10 @@ resource "iosxe_static_route" "static_route" {
   next_hops_with_track = each.value.next_hops_with_track
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_ethernet.ethernet,
     iosxe_interface_ethernet.ethernet_sub,
+    iosxe_interface_ethernet.ethernet_subinterface,
     iosxe_interface_loopback.loopback,
     iosxe_interface_vlan.vlan,
     iosxe_interface_port_channel.port_channel,
@@ -97,8 +99,10 @@ resource "iosxe_static_routes_vrf" "static_routes_vrf" {
   routes = each.value.routes
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_ethernet.ethernet,
     iosxe_interface_ethernet.ethernet_sub,
+    iosxe_interface_ethernet.ethernet_subinterface,
     iosxe_interface_loopback.loopback,
     iosxe_interface_vlan.vlan,
     iosxe_interface_port_channel.port_channel,

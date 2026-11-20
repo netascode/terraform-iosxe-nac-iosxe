@@ -27,6 +27,7 @@ resource "iosxe_dot1x" "dot1x" {
   ]
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_aaa.aaa,
     iosxe_aaa_authentication.aaa_authentication
   ]

@@ -20,6 +20,10 @@ resource "iosxe_community_list_standard" "community_list_standard" {
   name           = each.value.name
   deny_entries   = each.value.deny_entries
   permit_entries = each.value.permit_entries
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }
 
 locals {
@@ -45,4 +49,8 @@ resource "iosxe_community_list_expanded" "community_list_expanded" {
 
   name    = each.value.name
   entries = each.value.entries
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }

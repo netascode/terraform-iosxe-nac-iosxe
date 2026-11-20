@@ -46,9 +46,9 @@ Configuring `policy.parameter_map_webauth_global` (or any other web authenticati
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.9.0 |
-| <a name="requirement_iosxe"></a> [iosxe](#requirement\_iosxe) | >= 1.0.0 |
+| <a name="requirement_iosxe"></a> [iosxe](#requirement\_iosxe) | >= 1.2.0 |
 | <a name="requirement_local"></a> [local](#requirement\_local) | >= 2.5.0, < 3.0.0 |
-| <a name="requirement_utils"></a> [utils](#requirement\_utils) | >= 2.0.2, < 3.0.0 |
+| <a name="requirement_utils"></a> [utils](#requirement\_utils) | >= 2.1.0, < 3.0.0 |
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -60,7 +60,7 @@ Configuring `policy.parameter_map_webauth_global` (or any other web authenticati
 | <a name="input_save_config"></a> [save\_config](#input\_save\_config) | Write changes to startup-config on all devices. | `bool` | `false` | no |
 | <a name="input_template_directories"></a> [template\_directories](#input\_template\_directories) | List of paths to directories containing template files. | `list(string)` | `[]` | no |
 | <a name="input_template_files"></a> [template\_files](#input\_template\_files) | List of paths to template files. | `list(string)` | `[]` | no |
-| <a name="input_write_model_file"></a> [write\_model\_file](#input\_write\_model\_file) | Write the full model including all resolved templates to a single YAML file. Value is a path pointing to the file to be created. | `string` | `""` | no |
+| <a name="input_write_model_file"></a> [write\_model\_file](#input\_write\_model\_file) | Write the rendered data model to a single YAML file, e.g. for validation, testing and troubleshooting. Value is a path relative to the root module. Set to an empty string to disable. | `string` | `"model.yaml"` | no |
 | <a name="input_yaml_directories"></a> [yaml\_directories](#input\_yaml\_directories) | List of paths to YAML directories. | `list(string)` | `[]` | no |
 | <a name="input_yaml_files"></a> [yaml\_files](#input\_yaml\_files) | List of paths to YAML files. | `list(string)` | `[]` | no |
 ## Outputs
@@ -75,6 +75,7 @@ No outputs.
 | [iosxe_aaa_authentication.aaa_authentication](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/aaa_authentication) | resource |
 | [iosxe_aaa_authorization.aaa_authorization](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/aaa_authorization) | resource |
 | [iosxe_access_list_extended.access_list_extended](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/access_list_extended) | resource |
+| [iosxe_access_list_ipv6.access_list_ipv6](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/access_list_ipv6) | resource |
 | [iosxe_access_list_role_based.access_list_role_based](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/access_list_role_based) | resource |
 | [iosxe_access_list_standard.access_list_standard](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/access_list_standard) | resource |
 | [iosxe_arp.arp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/arp) | resource |
@@ -115,11 +116,22 @@ No outputs.
 | [iosxe_cli.cli_7](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/cli) | resource |
 | [iosxe_cli.cli_8](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/cli) | resource |
 | [iosxe_cli.cli_9](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/cli) | resource |
+| [iosxe_cli.cli_pre_0](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/cli) | resource |
+| [iosxe_cli.cli_pre_1](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/cli) | resource |
+| [iosxe_cli.cli_pre_2](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/cli) | resource |
+| [iosxe_cli.cli_pre_3](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/cli) | resource |
+| [iosxe_cli.cli_pre_4](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/cli) | resource |
+| [iosxe_cli.cli_pre_5](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/cli) | resource |
+| [iosxe_cli.cli_pre_6](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/cli) | resource |
+| [iosxe_cli.cli_pre_7](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/cli) | resource |
+| [iosxe_cli.cli_pre_8](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/cli) | resource |
+| [iosxe_cli.cli_pre_9](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/cli) | resource |
 | [iosxe_clock.clock](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/clock) | resource |
 | [iosxe_commit.commit](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/commit) | resource |
 | [iosxe_community_list_expanded.community_list_expanded](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/community_list_expanded) | resource |
 | [iosxe_community_list_standard.community_list_standard](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/community_list_standard) | resource |
 | [iosxe_crypto.crypto_engine](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/crypto) | resource |
+| [iosxe_crypto_gdoi.crypto_gdoi](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/crypto_gdoi) | resource |
 | [iosxe_crypto_ikev2.crypto_ikev2](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/crypto_ikev2) | resource |
 | [iosxe_crypto_ikev2_keyring.crypto_ikev2_keyring](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/crypto_ikev2_keyring) | resource |
 | [iosxe_crypto_ikev2_policy.crypto_ikev2_policy](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/crypto_ikev2_policy) | resource |
@@ -127,6 +139,7 @@ No outputs.
 | [iosxe_crypto_ikev2_proposal.crypto_ikev2_proposal](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/crypto_ikev2_proposal) | resource |
 | [iosxe_crypto_ipsec_profile.crypto_ipsec_profile](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/crypto_ipsec_profile) | resource |
 | [iosxe_crypto_ipsec_transform_set.crypto_ipsec_transform_set](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/crypto_ipsec_transform_set) | resource |
+| [iosxe_crypto_map_gdoi.crypto_map_gdoi](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/crypto_map_gdoi) | resource |
 | [iosxe_crypto_pki.crypto_pki](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/crypto_pki) | resource |
 | [iosxe_cts.cts](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/cts) | resource |
 | [iosxe_device_sensor.device_sensor](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/device_sensor) | resource |
@@ -149,6 +162,8 @@ No outputs.
 | [iosxe_interface_ethernet.ethernet_sub](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_ethernet) | resource |
 | [iosxe_interface_ethernet.ethernet_subinterface](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_ethernet) | resource |
 | [iosxe_interface_ethernet.ethernet_unmanaged](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_ethernet) | resource |
+| [iosxe_interface_hsrp.hsrp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_hsrp) | resource |
+| [iosxe_interface_hsrp.hsrp_unmanaged](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_hsrp) | resource |
 | [iosxe_interface_isis.ethernet_isis](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_isis) | resource |
 | [iosxe_interface_isis.ethernet_subinterface_isis](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_isis) | resource |
 | [iosxe_interface_isis.loopback_isis](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/interface_isis) | resource |
@@ -209,11 +224,13 @@ No outputs.
 | [iosxe_isis.isis](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/isis) | resource |
 | [iosxe_key_chain.key_chain](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/key_chain) | resource |
 | [iosxe_l2_vfi.l2_vfi](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/l2_vfi) | resource |
+| [iosxe_large_community_list_expanded.large_community_list_expanded](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/large_community_list_expanded) | resource |
 | [iosxe_license.license](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/license) | resource |
 | [iosxe_line.line](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/line) | resource |
 | [iosxe_lldp.lldp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/lldp) | resource |
 | [iosxe_logging.logging](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/logging) | resource |
 | [iosxe_mdt_subscription.mdt_subscription](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/mdt_subscription) | resource |
+| [iosxe_monitor_session.monitor_session](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/monitor_session) | resource |
 | [iosxe_mpls.mpls](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/mpls) | resource |
 | [iosxe_msdp.msdp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/msdp) | resource |
 | [iosxe_multicast.multicast](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/multicast) | resource |
@@ -222,6 +239,9 @@ No outputs.
 | [iosxe_object_group.object_group](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/object_group) | resource |
 | [iosxe_ospf.ospf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/ospf) | resource |
 | [iosxe_ospf_vrf.ospf_vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/ospf_vrf) | resource |
+| [iosxe_ospfv3.ospfv3](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/ospfv3) | resource |
+| [iosxe_ospfv3_address_family_ipv4_vrf.ospfv3_af_ipv4_vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/ospfv3_address_family_ipv4_vrf) | resource |
+| [iosxe_ospfv3_address_family_ipv6_vrf.ospfv3_af_ipv6_vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/ospfv3_address_family_ipv6_vrf) | resource |
 | [iosxe_parameter_map.parameter_map](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/parameter_map) | resource |
 | [iosxe_parameter_map_webauth_global.parameter_map_webauth_global](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/parameter_map_webauth_global) | resource |
 | [iosxe_pim.pim](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/pim) | resource |
@@ -258,6 +278,16 @@ No outputs.
 | [iosxe_vlan_group.vlan_group](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/vlan_group) | resource |
 | [iosxe_vrf.vrf](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/vrf) | resource |
 | [iosxe_vtp.vtp](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/vtp) | resource |
+| [iosxe_wireless_ap_join_profile.wireless_ap_join_profile](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/wireless_ap_join_profile) | resource |
+| [iosxe_wireless_flex_profile.wireless_flex_profile](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/wireless_flex_profile) | resource |
+| [iosxe_wireless_mesh_profile.wireless_mesh_profile](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/wireless_mesh_profile) | resource |
+| [iosxe_wireless_policy_profile.wireless_policy_profile](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/wireless_policy_profile) | resource |
+| [iosxe_wireless_policy_tag.wireless_policy_tag](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/wireless_policy_tag) | resource |
+| [iosxe_wireless_rf_profile.wireless_rf_profile](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/wireless_rf_profile) | resource |
+| [iosxe_wireless_rf_tag.wireless_rf_tag](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/wireless_rf_tag) | resource |
+| [iosxe_wireless_site_tag.wireless_site_tag](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/wireless_site_tag) | resource |
+| [iosxe_wireless_system.wireless_system](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/wireless_system) | resource |
+| [iosxe_wireless_wlan_profile.wireless_wlan_profile](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/wireless_wlan_profile) | resource |
 | [iosxe_zone_pair_security.zone_pair_security](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/zone_pair_security) | resource |
 | [iosxe_zone_security.zone_security](https://registry.terraform.io/providers/CiscoDevNet/iosxe/latest/docs/resources/zone_security) | resource |
 | [local_sensitive_file.model](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/sensitive_file) | resource |

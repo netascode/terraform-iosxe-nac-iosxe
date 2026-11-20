@@ -13,4 +13,8 @@ resource "iosxe_license" "license" {
   accept_user                         = try(local.device_config[each.value.name].license.accept_eula, null)
   udi_pid                             = try(local.device_config[each.value.name].license.udi_pid, null)
   udi_sn                              = try(local.device_config[each.value.name].license.udi_sn, null)
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }

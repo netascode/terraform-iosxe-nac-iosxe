@@ -27,4 +27,8 @@ resource "iosxe_clock" "clock" {
   summer_time_recurring_end_month     = try(local.device_config[each.value.name].clock.summer_time.recurring.end_month, null)
   summer_time_recurring_end_time      = try(replace(local.device_config[each.value.name].clock.summer_time.recurring.end_time, "/^0(\\d)/", "$1"), null)
   summer_time_recurring_offset        = try(local.device_config[each.value.name].clock.summer_time.recurring.offset, null)
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }
