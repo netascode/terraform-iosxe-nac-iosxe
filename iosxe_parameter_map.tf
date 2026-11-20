@@ -155,5 +155,5 @@ resource "iosxe_parameter_map_webauth_global" "parameter_map_webauth_global" {
 
   # Convert to IBNS 2.0 only after iosxe_system (authentication/access-session
   # mac-move and related settings) has been applied.
-  depends_on = [iosxe_system.system]
+  depends_on = [iosxe_cli.cli_pre_9, iosxe_system.system]
 }

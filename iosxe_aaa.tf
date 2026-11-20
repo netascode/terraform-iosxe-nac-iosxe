@@ -535,6 +535,7 @@ resource "iosxe_eap_profile" "eap_profile" {
   method_tls      = each.value.methods == null ? null : contains(each.value.methods, "tls")
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_crypto_pki.crypto_pki,
   ]
 }
