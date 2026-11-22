@@ -2,16 +2,15 @@ locals {
   vlans = flatten([
     for device in local.devices : [
       for vlan in try(local.device_config[device.name].vlan.vlans, []) : {
-        key                      = format("%s/%s", device.name, vlan.id)
-        device                   = device.name
-        id                       = try(vlan.id, local.defaults.iosxe.configuration.vlan.vlans.id, null)
-        name                     = try(vlan.name, local.defaults.iosxe.configuration.vlan.vlans.name, null)
-        private_vlan_association = try(vlan.private_vlan_association, local.defaults.iosxe.configuration.vlan.vlans.private_vlan_association, null)
-        private_vlan_community   = try(vlan.private_vlan_community, local.defaults.iosxe.configuration.vlan.vlans.private_vlan_community, null)
-        private_vlan_isolated    = try(vlan.private_vlan_isolated, local.defaults.iosxe.configuration.vlan.vlans.private_vlan_isolated, null)
-        private_vlan_primary     = try(vlan.private_vlan_primary, local.defaults.iosxe.configuration.vlan.vlans.private_vlan_primary, null)
-        remote_span              = try(vlan.remote_span, local.defaults.iosxe.configuration.vlan.vlans.remote_span, null)
-        shutdown                 = try(vlan.shutdown, local.defaults.iosxe.configuration.vlan.vlans.shutdown, null)
+        key                    = format("%s/%s", device.name, vlan.id)
+        device                 = device.name
+        id                     = try(vlan.id, null)
+        name                   = try(vlan.name, null)
+        private_vlan_community = try(vlan.private_vlan_community, null)
+        private_vlan_isolated  = try(vlan.private_vlan_isolated, null)
+        private_vlan_primary   = try(vlan.private_vlan_primary, null)
+        remote_span            = try(vlan.remote_span, null)
+        shutdown               = try(vlan.shutdown, null)
       }
     ]
   ])
@@ -21,14 +20,40 @@ resource "iosxe_vlan" "vlan" {
   for_each = { for e in local.vlans : e.key => e }
   device   = each.value.device
 
+  vlan_id                = each.value.id
+  name                   = each.value.name
+  private_vlan_community = each.value.private_vlan_community
+  private_vlan_isolated  = each.value.private_vlan_isolated
+  private_vlan_primary   = each.value.private_vlan_primary
+  remote_span            = each.value.remote_span
+  shutdown               = each.value.shutdown
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
+}
+
+locals {
+  vlan_private_associations = flatten([
+    for device in local.devices : [
+      for vlan in try(local.device_config[device.name].vlan.vlans, []) : {
+        key                      = format("%s/%s", device.name, vlan.id)
+        device                   = device.name
+        id                       = vlan.id
+        private_vlan_association = try(vlan.private_vlan_association, null)
+      } if try(vlan.private_vlan_association, null) != null
+    ]
+  ])
+}
+
+resource "iosxe_vlan" "vlan_private_association" {
+  for_each = { for e in local.vlan_private_associations : e.key => e }
+  device   = each.value.device
+
   vlan_id                  = each.value.id
-  name                     = each.value.name
   private_vlan_association = each.value.private_vlan_association
-  private_vlan_community   = each.value.private_vlan_community
-  private_vlan_isolated    = each.value.private_vlan_isolated
-  private_vlan_primary     = each.value.private_vlan_primary
-  remote_span              = each.value.remote_span
-  shutdown                 = each.value.shutdown
+
+  depends_on = [iosxe_cli.cli_pre_9, iosxe_vlan.vlan]
 }
 
 locals {
@@ -37,14 +62,14 @@ locals {
       for vlan in try(local.device_config[device.name].vlan.vlans, []) : {
         key                             = format("%s/%s", device.name, vlan.id)
         device                          = device.name
-        id                              = try(vlan.id, local.defaults.iosxe.configuration.vlan.vlans.id, null)
-        vni                             = try(vlan.vni, local.defaults.iosxe.configuration.vlan.vlans.vni, null)
-        access_vfi                      = try(vlan.access_vfi, local.defaults.iosxe.configuration.vlan.vlans.access_vfi, null)
-        evpn_instance                   = try(vlan.evpn_instance, local.defaults.iosxe.configuration.vlan.vlans.evpn_instance, null)
-        evpn_instance_vni               = try(vlan.evpn_instance_vni, local.defaults.iosxe.configuration.vlan.vlans.evpn_instance_vni, null)
-        evpn_instance_protected         = try(vlan.evpn_instance_protected, local.defaults.iosxe.configuration.vlan.vlans.evpn_instance_protected, null)
-        evpn_instance_profile           = try(vlan.evpn_instance_profile, local.defaults.iosxe.configuration.vlan.vlans.evpn_instance_profile, null)
-        evpn_instance_profile_protected = try(vlan.evpn_instance_profile_protected, local.defaults.iosxe.configuration.vlan.vlans.evpn_instance_profile_protected, null)
+        id                              = try(vlan.id, null)
+        vni                             = try(vlan.vni, null)
+        access_vfi                      = try(vlan.access_vfi, null)
+        evpn_instance                   = try(vlan.evpn_instance, null)
+        evpn_instance_vni               = try(vlan.evpn_instance_vni, null)
+        evpn_instance_protected         = try(vlan.evpn_instance_protected, null)
+        evpn_instance_profile           = try(vlan.evpn_instance_profile, null)
+        evpn_instance_profile_protected = try(vlan.evpn_instance_profile_protected, null)
       }
     ]
   ])
@@ -64,8 +89,9 @@ resource "iosxe_vlan_configuration" "vlan_configuration" {
   evpn_instance_profile_protected = each.value.evpn_instance_profile_protected
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_evpn_instance.evpn_instance,
-    iosxe_evpn_profile.evpn_profile
+    iosxe_evpn.evpn
   ]
 }
 
@@ -75,11 +101,11 @@ locals {
       for amap in try(local.device_config[device.name].vlan.access_maps, []) : {
         key                = format("%s/%s", device.name, amap.name)
         device             = device.name
-        name               = try(amap.name, local.defaults.iosxe.configuration.vlan.access_maps.name, null)
-        sequence           = try(amap.sequence, local.defaults.iosxe.configuration.vlan.access_maps.sequence, null)
-        action             = try(amap.action, local.defaults.iosxe.configuration.vlan.access_maps.action, null)
-        match_ip_address   = try(amap.match_ipv4_addresses, local.defaults.iosxe.configuration.vlan.access_maps.match_ipv4_addresses, null)
-        match_ipv6_address = try(amap.match_ipv6_addresses, local.defaults.iosxe.configuration.vlan.access_maps.match_ipv6_addresses, null)
+        name               = try(amap.name, null)
+        sequence           = try(amap.sequence, null)
+        action             = try(amap.action, null)
+        match_ip_address   = try(amap.match_ipv4_addresses, null)
+        match_ipv6_address = try(amap.match_ipv6_addresses, null)
       }
     ]
   ])
@@ -96,6 +122,7 @@ resource "iosxe_vlan_access_map" "vlan_access_map" {
   match_ipv6_address = each.value.match_ipv6_address
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_access_list_standard.access_list_standard,
     iosxe_access_list_extended.access_list_extended
   ]
@@ -107,8 +134,8 @@ locals {
       for filter in try(local.device_config[device.name].vlan.filters, []) : {
         key        = format("%s/%s", device.name, filter.name)
         device     = device.name
-        word       = try(filter.name, local.defaults.iosxe.configuration.vlan.filters.name, null)
-        vlan_lists = try(filter.vlan_lists, local.defaults.iosxe.configuration.vlan.filters.vlan_lists, null)
+        word       = try(filter.name, null)
+        vlan_lists = try(filter.vlan_lists, null)
       }
     ]
   ])
@@ -120,6 +147,10 @@ resource "iosxe_vlan_filter" "vlan_filter" {
 
   word       = each.value.word
   vlan_lists = each.value.vlan_lists
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }
 
 locals {
@@ -128,8 +159,8 @@ locals {
       for group in try(local.device_config[device.name].vlan.groups, []) : {
         key        = format("%s/%s", device.name, group.name)
         device     = device.name
-        name       = try(group.name, local.defaults.iosxe.configuration.vlan.groups.name, null)
-        vlan_lists = try(group.vlan_lists, local.defaults.iosxe.configuration.vlan.groups.vlan_lists, null)
+        name       = try(group.name, null)
+        vlan_lists = try(group.vlan_lists, null)
       }
     ]
   ])
@@ -141,4 +172,8 @@ resource "iosxe_vlan_group" "vlan_group" {
 
   name       = each.value.name
   vlan_lists = each.value.vlan_lists
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
 }

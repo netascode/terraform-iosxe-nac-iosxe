@@ -1,64 +1,64 @@
 locals {
   parameter_maps = flatten([
     for device in local.devices : [
-      for pm in try(local.device_config[device.name].policy.parameter_maps, []) : {
+      for pm in try(local.device_config[device.name].policy.parameter_maps_inspect, []) : {
         key                                = format("%s/%s", device.name, pm.name)
         device                             = device.name
-        name                               = try(pm.name, local.defaults.iosxe.configuration.policy.parameter_maps.name, null)
-        type                               = try(pm.type, local.defaults.iosxe.configuration.policy.parameter_maps.type, null)
-        alert                              = try(pm.alert, local.defaults.iosxe.configuration.policy.parameter_maps.alert, null)
-        application_inspect_dns            = try(pm.application_inspect_dns, local.defaults.iosxe.configuration.policy.parameter_maps.application_inspect_dns, null)
-        application_inspect_exec           = try(pm.application_inspect_exec, local.defaults.iosxe.configuration.policy.parameter_maps.application_inspect_exec, null)
-        application_inspect_ftp            = try(pm.application_inspect_ftp, local.defaults.iosxe.configuration.policy.parameter_maps.application_inspect_ftp, null)
-        application_inspect_gtp            = try(pm.application_inspect_gtp, local.defaults.iosxe.configuration.policy.parameter_maps.application_inspect_gtp, null)
-        application_inspect_h323           = try(pm.application_inspect_h323, local.defaults.iosxe.configuration.policy.parameter_maps.application_inspect_h323, null)
-        application_inspect_http           = try(pm.application_inspect_http, local.defaults.iosxe.configuration.policy.parameter_maps.application_inspect_http, null)
-        application_inspect_imap           = try(pm.application_inspect_imap, local.defaults.iosxe.configuration.policy.parameter_maps.application_inspect_imap, null)
-        application_inspect_login          = try(pm.application_inspect_login, local.defaults.iosxe.configuration.policy.parameter_maps.application_inspect_login, null)
-        application_inspect_msrpc          = try(pm.application_inspect_msrpc, local.defaults.iosxe.configuration.policy.parameter_maps.application_inspect_msrpc, null)
-        application_inspect_netbios        = try(pm.application_inspect_netbios, local.defaults.iosxe.configuration.policy.parameter_maps.application_inspect_netbios, null)
-        application_inspect_pop3           = try(pm.application_inspect_pop3, local.defaults.iosxe.configuration.policy.parameter_maps.application_inspect_pop3, null)
-        application_inspect_rtsp           = try(pm.application_inspect_rtsp, local.defaults.iosxe.configuration.policy.parameter_maps.application_inspect_rtsp, null)
-        application_inspect_shell          = try(pm.application_inspect_shell, local.defaults.iosxe.configuration.policy.parameter_maps.application_inspect_shell, null)
-        application_inspect_sip            = try(pm.application_inspect_sip, local.defaults.iosxe.configuration.policy.parameter_maps.application_inspect_sip, null)
-        application_inspect_skinny         = try(pm.application_inspect_skinny, local.defaults.iosxe.configuration.policy.parameter_maps.application_inspect_skinny, null)
-        application_inspect_smtp           = try(pm.application_inspect_smtp, local.defaults.iosxe.configuration.policy.parameter_maps.application_inspect_smtp, null)
-        application_inspect_sunrpc         = try(pm.application_inspect_sunrpc, local.defaults.iosxe.configuration.policy.parameter_maps.application_inspect_sunrpc, null)
-        application_inspect_tftp           = try(pm.application_inspect_tftp, local.defaults.iosxe.configuration.policy.parameter_maps.application_inspect_tftp, null)
-        audit_trail                        = try(pm.audit_trail, local.defaults.iosxe.configuration.policy.parameter_maps.audit_trail, null)
-        dns_timeout                        = try(pm.dns_timeout, local.defaults.iosxe.configuration.policy.parameter_maps.dns_timeout, null)
-        icmp_idle_time                     = try(pm.icmp_idle_time, local.defaults.iosxe.configuration.policy.parameter_maps.icmp_idle_time, null)
-        icmp_idle_time_ageout              = try(pm.icmp_idle_time_ageout, local.defaults.iosxe.configuration.policy.parameter_maps.icmp_idle_time_ageout, null)
-        icmp_unreachable_allow             = try(pm.icmp_unreachable_allow, local.defaults.iosxe.configuration.policy.parameter_maps.icmp_unreachable_allow, null)
-        log_dropped_packets                = try(pm.log_dropped_packets, local.defaults.iosxe.configuration.policy.parameter_maps.log_dropped_packets, null)
-        log_flow                           = try(pm.log_flow, local.defaults.iosxe.configuration.policy.parameter_maps.log_flow, null)
-        max_incomplete_high                = try(pm.max_incomplete_high, local.defaults.iosxe.configuration.policy.parameter_maps.max_incomplete_high, null)
-        max_incomplete_low                 = try(pm.max_incomplete_low, local.defaults.iosxe.configuration.policy.parameter_maps.max_incomplete_low, null)
-        one_minute_high                    = try(pm.one_minute_high, local.defaults.iosxe.configuration.policy.parameter_maps.one_minute_high, null)
-        one_minute_low                     = try(pm.one_minute_low, local.defaults.iosxe.configuration.policy.parameter_maps.one_minute_low, null)
-        sessions_maximum                   = try(pm.sessions_maximum, local.defaults.iosxe.configuration.policy.parameter_maps.sessions_maximum, null)
-        sessions_packet                    = try(pm.sessions_packet, local.defaults.iosxe.configuration.policy.parameter_maps.sessions_packet, null)
-        sessions_rate_high                 = try(pm.sessions_rate_high, local.defaults.iosxe.configuration.policy.parameter_maps.sessions_rate_high, null)
-        sessions_rate_high_time            = try(pm.sessions_rate_high_time, local.defaults.iosxe.configuration.policy.parameter_maps.sessions_rate_high_time, null)
-        sessions_rate_low                  = try(pm.sessions_rate_low, local.defaults.iosxe.configuration.policy.parameter_maps.sessions_rate_low, null)
-        sessions_rate_low_time             = try(pm.sessions_rate_low_time, local.defaults.iosxe.configuration.policy.parameter_maps.sessions_rate_low_time, null)
-        tcp_finwait_time                   = try(pm.tcp_finwait_time, local.defaults.iosxe.configuration.policy.parameter_maps.tcp_finwait_time, null)
-        tcp_finwait_time_ageout            = try(pm.tcp_finwait_time_ageout, local.defaults.iosxe.configuration.policy.parameter_maps.tcp_finwait_time_ageout, null)
-        tcp_half_close_reset_off           = try(pm.tcp_half_close_reset_off, local.defaults.iosxe.configuration.policy.parameter_maps.tcp_half_close_reset_off, null)
-        tcp_half_open_reset_off            = try(pm.tcp_half_open_reset_off, local.defaults.iosxe.configuration.policy.parameter_maps.tcp_half_open_reset_off, null)
-        tcp_idle_reset_off                 = try(pm.tcp_idle_reset_off, local.defaults.iosxe.configuration.policy.parameter_maps.tcp_idle_reset_off, null)
-        tcp_idle_time                      = try(pm.tcp_idle_time, local.defaults.iosxe.configuration.policy.parameter_maps.tcp_idle_time, null)
-        tcp_idle_time_ageout               = try(pm.tcp_idle_time_ageout, local.defaults.iosxe.configuration.policy.parameter_maps.tcp_idle_time_ageout, null)
-        tcp_max_incomplete_host            = try(pm.tcp_max_incomplete_host, local.defaults.iosxe.configuration.policy.parameter_maps.tcp_max_incomplete_host, null)
-        tcp_max_incomplete_host_block_time = try(pm.tcp_max_incomplete_host_block_time, local.defaults.iosxe.configuration.policy.parameter_maps.tcp_max_incomplete_host_block_time, null)
-        tcp_synwait_time                   = try(pm.tcp_synwait_time, local.defaults.iosxe.configuration.policy.parameter_maps.tcp_synwait_time, null)
-        tcp_synwait_time_ageout            = try(pm.tcp_synwait_time_ageout, local.defaults.iosxe.configuration.policy.parameter_maps.tcp_synwait_time_ageout, null)
-        tcp_window_scale_enforcement_loose = try(pm.tcp_window_scale_enforcement_loose, local.defaults.iosxe.configuration.policy.parameter_maps.tcp_window_scale_enforcement_loose, null)
-        udp_half_open_idle_time            = try(pm.udp_half_open_idle_time, local.defaults.iosxe.configuration.policy.parameter_maps.udp_half_open_idle_time, null)
-        udp_half_open_idle_time_ageout     = try(pm.udp_half_open_idle_time_ageout, local.defaults.iosxe.configuration.policy.parameter_maps.udp_half_open_idle_time_ageout, null)
-        udp_idle_time                      = try(pm.udp_idle_time, local.defaults.iosxe.configuration.policy.parameter_maps.udp_idle_time, null)
-        udp_idle_time_ageout               = try(pm.udp_idle_time_ageout, local.defaults.iosxe.configuration.policy.parameter_maps.udp_idle_time_ageout, null)
-        zone_mismatch_drop                 = try(pm.zone_mismatch_drop, local.defaults.iosxe.configuration.policy.parameter_maps.zone_mismatch_drop, null)
+        name                               = try(pm.name, null)
+        type                               = try(pm.type, null)
+        alert                              = try(pm.alert, null)
+        application_inspect_dns            = try(pm.application_inspect_dns, null)
+        application_inspect_exec           = try(pm.application_inspect_exec, null)
+        application_inspect_ftp            = try(pm.application_inspect_ftp, null)
+        application_inspect_gtp            = try(pm.application_inspect_gtp, null)
+        application_inspect_h323           = try(pm.application_inspect_h323, null)
+        application_inspect_http           = try(pm.application_inspect_http, null)
+        application_inspect_imap           = try(pm.application_inspect_imap, null)
+        application_inspect_login          = try(pm.application_inspect_login, null)
+        application_inspect_msrpc          = try(pm.application_inspect_msrpc, null)
+        application_inspect_netbios        = try(pm.application_inspect_netbios, null)
+        application_inspect_pop3           = try(pm.application_inspect_pop3, null)
+        application_inspect_rtsp           = try(pm.application_inspect_rtsp, null)
+        application_inspect_shell          = try(pm.application_inspect_shell, null)
+        application_inspect_sip            = try(pm.application_inspect_sip, null)
+        application_inspect_skinny         = try(pm.application_inspect_skinny, null)
+        application_inspect_smtp           = try(pm.application_inspect_smtp, null)
+        application_inspect_sunrpc         = try(pm.application_inspect_sunrpc, null)
+        application_inspect_tftp           = try(pm.application_inspect_tftp, null)
+        audit_trail                        = try(pm.audit_trail, null)
+        dns_timeout                        = try(pm.dns_timeout, null)
+        icmp_idle_time                     = try(pm.icmp_idle_time, null)
+        icmp_idle_time_ageout              = try(pm.icmp_idle_time_ageout, null)
+        icmp_unreachable_allow             = try(pm.icmp_unreachable_allow, null)
+        log_dropped_packets                = try(pm.log_dropped_packets, null)
+        log_flow                           = try(pm.log_flow, null)
+        max_incomplete_high                = try(pm.max_incomplete_high, null)
+        max_incomplete_low                 = try(pm.max_incomplete_low, null)
+        one_minute_high                    = try(pm.one_minute_high, null)
+        one_minute_low                     = try(pm.one_minute_low, null)
+        sessions_maximum                   = try(pm.sessions_maximum, null)
+        sessions_packet                    = try(pm.sessions_packet, null)
+        sessions_rate_high                 = try(pm.sessions_rate_high, null)
+        sessions_rate_high_time            = try(pm.sessions_rate_high_time, null)
+        sessions_rate_low                  = try(pm.sessions_rate_low, null)
+        sessions_rate_low_time             = try(pm.sessions_rate_low_time, null)
+        tcp_finwait_time                   = try(pm.tcp_finwait_time, null)
+        tcp_finwait_time_ageout            = try(pm.tcp_finwait_time_ageout, null)
+        tcp_half_close_reset_off           = try(pm.tcp_half_close_reset_off, null)
+        tcp_half_open_reset_off            = try(pm.tcp_half_open_reset_off, null)
+        tcp_idle_reset_off                 = try(pm.tcp_idle_reset_off, null)
+        tcp_idle_time                      = try(pm.tcp_idle_time, null)
+        tcp_idle_time_ageout               = try(pm.tcp_idle_time_ageout, null)
+        tcp_max_incomplete_host            = try(pm.tcp_max_incomplete_host, null)
+        tcp_max_incomplete_host_block_time = try(pm.tcp_max_incomplete_host_block_time, null)
+        tcp_synwait_time                   = try(pm.tcp_synwait_time, null)
+        tcp_synwait_time_ageout            = try(pm.tcp_synwait_time_ageout, null)
+        tcp_window_scale_enforcement_loose = try(pm.tcp_window_scale_enforcement_loose, null)
+        udp_half_open_idle_time            = try(pm.udp_half_open_idle_time, null)
+        udp_half_open_idle_time_ageout     = try(pm.udp_half_open_idle_time_ageout, null)
+        udp_idle_time                      = try(pm.udp_idle_time, null)
+        udp_idle_time_ageout               = try(pm.udp_idle_time_ageout, null)
+        zone_mismatch_drop                 = try(pm.zone_mismatch_drop, null)
       }
     ]
   ])
@@ -122,4 +122,38 @@ resource "iosxe_parameter_map" "parameter_map" {
   udp_idle_time                      = each.value.udp_idle_time
   udp_idle_time_ageout               = each.value.udp_idle_time_ageout
   zone_mismatch_drop                 = each.value.zone_mismatch_drop
+
+  depends_on = [
+    iosxe_cli.cli_pre_9,
+  ]
+}
+
+##### WEB AUTHENTICATION #####
+# WARNING (IBNS 2.0): configuring any web authentication parameter map,
+# including the global map below, converts the device to IBNS 2.0 (new-style)
+# session management. IOS-XE rewrites `authentication mac-move` as
+# `access-session mac-move`, removes the `ip admission` defaults and creates
+# default `service-template`s. The conversion happens over NETCONF as well as
+# the CLI and cannot be reversed from the CLI; destroying these resources does
+# not undo it. After the first apply, values read from the device may drift
+# against `system` attributes managed in iosxe_system.tf
+# (authentication_mac_move_*, access_session_mac_move_deny) and against
+# `service_templates`. The module does not try to prevent this.
+
+resource "iosxe_parameter_map_webauth_global" "parameter_map_webauth_global" {
+  # Created only when at least one attribute has a non-null value. Counting
+  # keys alone would let a block such as `{virtual_ip_ipv4: null}` create the
+  # resource, and any write triggers the irreversible IBNS 2.0 conversion.
+  for_each = {
+    for device in local.devices : device.name => device
+    if try(local.device_config[device.name].policy.parameter_map_webauth_global.virtual_ip_ipv4, null) != null || try(local.device_config[device.name].policy.parameter_map_webauth_global.virtual_ip_ipv6, null) != null
+  }
+  device = each.value.name
+
+  virtual_ip_ipv4 = try(local.device_config[each.value.name].policy.parameter_map_webauth_global.virtual_ip_ipv4, null)
+  virtual_ip_ipv6 = try(local.device_config[each.value.name].policy.parameter_map_webauth_global.virtual_ip_ipv6, null)
+
+  # Convert to IBNS 2.0 only after iosxe_system (authentication/access-session
+  # mac-move and related settings) has been applied.
+  depends_on = [iosxe_cli.cli_pre_9, iosxe_system.system]
 }

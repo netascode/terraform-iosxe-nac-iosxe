@@ -8,7 +8,7 @@ locals {
         member_vni = try(bd.member_vni, null)
         member_interfaces = try(length(bd.member_interfaces) == 0, true) ? null : [for mi in bd.member_interfaces : {
           interface = try(mi.name, null)
-          service_instance = [{
+          service_instances = [{
             instance_id = try(mi.service_instance, null)
           }]
         }]
@@ -26,6 +26,7 @@ resource "iosxe_bridge_domain" "bridge_domain" {
   member_interfaces = each.value.member_interfaces
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_interface_ethernet.ethernet,
     iosxe_interface_ethernet.ethernet_sub
   ]

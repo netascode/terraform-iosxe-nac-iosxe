@@ -1,10 +1,7 @@
 defaults:
   iosxe:
     templates:
+      stage: post
       order: 0
     devices:
       managed: true
-      configuration:
-        interfaces:
-          ethernets:
-            managed: true

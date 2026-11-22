@@ -1,3 +1,136 @@
+## Unreleased
+
+- Add 802.1X/MAB/WebAuth authentication order and priority (`authentication_order_*`, `authentication_priority_*`) and authentication event fail action (`authentication_event_fail_action_authorize_vlan`, `authentication_event_fail_action_next_method`) to `interfaces.ethernets[].network_access_control` using the `iosxe_interface_ethernet` resource
+- Add `aaa.eap_profiles` (`eap profile`) using the `iosxe_eap_profile` resource and `policy.parameter_map_webauth_global` (`parameter-map type webauth global` virtual IPv4/IPv6 address) using the `iosxe_parameter_map_webauth_global` resource; configuring the global web authentication parameter map converts the device to IBNS 2.0
+- Write the rendered data model to `model.yaml` by default (`write_model_file`), with a header marking it as generated; set `write_model_file = ""` to disable
+- Add `stage` attribute to CLI templates (`iosxe.templates[].stage`, `iosxe.devices[].cli_templates[].stage`) to apply CLI templates before (`pre`) or after (`post`, default) the modeled configuration
+- Fix tunnel `ip_nhrp_maps` failing to plan with provider 1.2.0 (`attribute "nbma_ipv4s" is required`): each entry's `nbma_ipv4` is now wrapped into the provider's `nbma_ipv4s` list. The data model is unchanged
+- BREAKING CHANGE: Rename the parameter-map type inspect data model key from `policy.parameter_maps` to `policy.parameter_maps_inspect` to match the nac-iosxe schema (the previous key was never accepted by the schema)
+- Add `tunnel_protection_ipsec_profile_legacy` and IS-IS (`isis.area_tag`, `ip router isis <tag>`) to `interfaces.tunnels`
+- Add `iosxe_crypto_gdoi` resource mapping for GET VPN GDOI group configuration (`crypto gdoi group`), including key server (server local address, rekey, SA IPsec, redundancy, PFS, G-IKEv2) and group member (client protocol gdoi/gikev2, bypass-policy, PFS, fail-close revert, recovery-check interval, registration interface, rekey encryption/hash ciphers, transform-sets, transport-encrypt-key, status active-sa track)
+- Add `iosxe_crypto_map_gdoi` resource mapping for GET VPN crypto map GDOI binding (`crypto map <name> <seq> gdoi / set group <group>`)
+- Add PKI certificate authentication support to `crypto.ikev2.profiles`: `authentication_local_rsa_sig`, `authentication_remote_rsa_sig`, `authentication_local_ecdsa_sig`, `authentication_remote_ecdsa_sig`, `pki_trustpoints` (list with `name` and `uses`), and `match_certificate_maps`
+- Add EIGRP `af_interfaces` (`af-interface <name>` with `passive-interface` and `split-horizon`) to `iosxe_eigrp` and `iosxe_eigrp_vrf`
+- Add `wireless.management_interface_type`/`management_interface_id` (C9800 `wireless management interface <name>`) using the `iosxe_wireless_system` resource
+- Add `wireless.mesh_profiles` (`wireless profile mesh`) using the `iosxe_wireless_mesh_profile` resource; AP join profiles now depend on mesh profiles
+- Add `wireless.site_tags` (`wireless tag site`) using the `iosxe_wireless_site_tag` resource
+- Add `wireless.ap_join_profiles` (`ap profile <name>`) using the `iosxe_wireless_ap_join_profile` resource
+- Add `wireless.rf_tags` (`wireless tag rf`) using the `iosxe_wireless_rf_tag` resource
+- Add `wireless.flex_profiles` (`wireless profile flex`) using the `iosxe_wireless_flex_profile` resource
+- Add `wireless.rf_profiles` (`ap dot11 <band> rf-profile`) using the `iosxe_wireless_rf_profile` resource
+- Add `wireless.policy_profiles` (`wireless profile policy`) and `wireless.policy_tags` (`wireless tag policy`) using the `iosxe_wireless_policy_profile` and `iosxe_wireless_policy_tag` resources
+- Add `wireless.wlan_profiles` (C9800 `wlan <name> <id> <ssid>`) using the `iosxe_wireless_wlan_profile` resource
+- Add interface IPv6 DHCP mappings (`ipv6.dhcp_servers`, `dhcp_client_pd`, `dhcp_client_pd_rapid_commit`, `dhcp_relay_destinations`, `dhcp_relay_trust`, `dhcp_relay_option_vpn`) to ethernet (including subinterfaces), loopback, VLAN, port-channel and tunnel interfaces
+- Add HSRP (`standby`) on ethernet, VLAN, port-channel, port-channel subinterface and BDI interfaces using the `iosxe_interface_hsrp` resource: `hsrp_version`, `hsrp_bfd`, `hsrp_delay_*`, `hsrp_mac_refresh`, `hsrp_use_bia*`, `hsrp_redirect_*` and the `hsrp` group list
+- Add `routing.ospfv3_processes` with `address_family_ipv4_vrfs` and `address_family_ipv6_vrfs` using the `iosxe_ospfv3`, `iosxe_ospfv3_address_family_ipv4_vrf` and `iosxe_ospfv3_address_family_ipv6_vrf` resources
+- Add `access_lists.ipv6` (`ipv6 access-list <name>`) using the `iosxe_access_list_ipv6` resource. Route maps, SNMP and PIM IPv6, which reference IPv6 ACLs by name, now depend on it
+- Add `monitor_sessions` (`monitor session <id> source|destination interface ...`) using the `iosxe_monitor_session` resource
+- Add EVPN instance `vlan_based.auto_route_target_legacy`, `route_target_legacy`, `route_target_both_legacy`, `route_target_import_legacy` and `route_target_export_legacy` mappings for the IOS-XE 17.12 single-value route-target YANG paths (obsolete in 17.15 and later)
+- Add `large_community_lists.expanded` (`ip large-community-list expanded <name> permit|deny <regex>`) using the `iosxe_large_community_list_expanded` resource
+- Add `snmp_server.trap_source_type`/`trap_source_id` (`snmp-server trap-source`), `traps.bgp_cbgp2_state_changes`, `traps.bgp_cbgp2_threshold_prefix`, `traps.ospfv3_errors` and `traps.ospfv3_state_change` mappings
+- Fix `snmp_server.source_interface_informs_type` and `source_interface_traps_type` value `HundredGigabitEthernet` being ignored: the module compared against `HundredGigE`, which the schema does not accept
+- Add `logging.rate_limit` (`type`: `all` | `console` | `console-all`, `rate`, `except_severity`) for `logging rate-limit ... [except <severity>]`. `logging.rate_limit_all` is deprecated in favor of `rate_limit` with `type: all`, and still works when `rate_limit` is not set
+- Add BGP IPv6 unicast address family `aggregate_addresses`, `admin_distances`, `distance_bgp_external`/`_internal`/`_local` and `maximum_paths_ebgp`/`_ibgp` mappings
+- Add BGP `asnotation_dot` mapping (`bgp asnotation dot`) and pass `routing.bgp.as_number` to the provider as a string so asdot values such as `64111.56369` are accepted
+- Add `interface_name`, `interface_protocol` and `interface_routing` mappings to `system.track_objects` for interface object tracking (`track <n> interface <name> line-protocol | ip routing | ipv6 routing`)
+- Add EIGRP `stub_connected` and `stub_summary` mappings to `iosxe_eigrp` and `iosxe_eigrp_vrf` for `eigrp stub connected` and `eigrp stub summary`
+- Require `CiscoDevNet/iosxe` provider `>= 1.2.0`, the first release with the NHRP NHS-NBMA and multicast map attributes used by the tunnel interface mappings. Run `terraform init -upgrade` to pick it up
+- Add `nbma_ipv4` to tunnel `ip_nhrp_nhs` entries (wrapped into the provider's `nbma_ipv4s` list) and add `ip_nhrp_map_multicast_dynamic` and `ip_nhrp_map_multicast_nbma_ipv4` tunnel interface mappings
+- Add EVPN profile `re_originate_route_type5` mapping for L2VPN EVPN profile route-type 5 re-origination
+- Fix static route resources missing a dependency on ethernet subinterfaces defined under `interfaces.ethernets[].subinterfaces`
+- Fix EIGRP resources missing dependencies on `iosxe_system`, `iosxe_vrf`, and interface resources, which caused `%Must enable IP routing first` when `system.ip_routing` was enabled in the same apply
+- Fix `bridge_domain` member_interfaces `service_instances` attribute name (was incorrectly `service_instance` singular, causing the provider to silently drop the service-instance binding)
+
+## 1.0.0
+
+- BREAKING CHANGE: Consolidate the `license.accept_agreement`, `license.accept_end`, and `license.accept_user` provider mappings into a single `license.accept_eula` attribute
+- BREAKING CHANGE: Remove obsolete `license.feature_name`, `license.feature_port_bulk`, `license.feature_port_onegig`, `license.feature_port_b_6xonegig`, and `license.feature_port_tengig` attribute mappings
+- BREAKING CHANGE: Rename AAA policy-map event actions `authenticate_using_aaa_authc_list`/`authenticate_using_aaa_authz_list` to `..._legacy`, and add support for `authenticate_using_authc_list`, `authenticate_using_authz_list`, and `authenticate_using_aaa_config`
+- Add IS-IS module support for ethernet, VLAN, port-channel, and port-channel subinterfaces
+- Add module support for additional policy-map features
+- Add support for disabled VLANs in spanning-tree configuration
+- Add spanning-tree VLAN range support, expanding `vlans.ranges` into individual per-VLAN provider entries
+- Add port-channel and tunnel interface support to `interface_groups`
+- Add PIM support for tunnel interfaces
+- Add BGP BMP server support
+- Add IPv4 and IPv6 flow monitor support for tunnel interfaces
+- Add device-tracking (global and policy) module support
+- Add flow monitor support for port-channel interfaces and subinterfaces
+- Add IP SFTP username/password resource support
+- Add `bfd`, `dead_interval`, `hello_interval`, `mtu_ignore`, and `priority` mappings to tunnel OSPFv3 interfaces
+- Add FQDN object-group module support and extended ACL FQDN-group references
+- Add range expansion support for ethernet and port-channel interfaces
+- Add SHA-2 authentication mapping for SNMPv3 users
+- Add `match_result_type_success` to the class-map resource
+- Add `address_dhcp` mapping for all interface types
+- Add zone-based firewall module support (class-map type inspect, policy-map type inspect, parameter-maps, zone security, and zone-pair security)
+- Add `additional_equal_ports` support to access-list source entries
+- Add IPv6 prefix-list module support and fix BGP IPv6 neighbor route-maps
+- Add `mtu`/`ip_mtu` to port-channel, loopback, VLAN, port-channel subinterface, and BDI resources
+- Add `evpn_ethernet_segments_legacy` to port-channel interfaces
+- Add `relay_bootp_ignore` to the DHCP module
+- Add route-map and metric support to BGP redistribute connected/static
+- Add lifetime and interface attributes to the crypto module
+- Add `key_chain` module support
+- Add `iosxe_dhcp_pool` module support
+- Add `iosxe_ipv6_local_pool` and IPv6 DHCP pool module support
+- Add OSPF `non_passive_interfaces` module support
+- Add `bandwidth`, tunnel bandwidth, and service-policy attributes to tunnel interfaces
+- Add `match_access_group_index` support for numbered ACLs in class-maps
+- Add `service_policy` pass-through for policy-map actions
+- Add OSPF authentication attributes to interface resources
+- Add password attributes to `line_aux` entries
+- Add ethernet subinterface locals and resources
+- Add `interface_group_policy` for merge/replace control
+- Wire spanning-tree portfast and BPDU-guard attributes for port-channel interfaces
+- Add switchport voice VLAN support to the interface module
+- Add OSPF redistribute options, distribute-list, and default-information-originate support
+- Add StackWise Virtual module support
+- Add the AAA authorization console attribute
+- Add power redundancy and automatic line-card recovery support to the system module
+- Add `mac_address_table_aging_time` to the system module
+- Add switch provisioning module support
+- Add QoS module support (`queue-softmax-multiplier`)
+- Add service object-group module support
+- Add BGP TCP-AO support to BGP neighbors and peer-session templates
+- Add uRPF attributes to interface resources
+- Add NHRP and GRE multipoint tunnel support
+- Add EIGRP named-mode module resources
+- Add `iosxe_interface_vrrp_v2` module support
+- Add username/password passthrough to the provider block
+- Fix `trunk_allowed_vlans` handling in templates
+- Work around SNMP host idempotency drift caused by the write-only `community_or_user` attribute
+- Add missing CTS dependency ordering
+- Fix MPLS YAML data lookup paths to match schema attribute names
+- Fix HCL construction of OSPF areas for port-channel interfaces
+- Add `depends_on` for the IPsec profile in the tunnel interface resource
+- Fix `aaa_authentication.enable_defaults_legacy` failing on IOS-XE 17.12.x
+- Fix the `eui_64` attribute to match the schema and provider resource definition
+- Normalize `accounting.connections` to never set a default leaf
+- Fix AAA dot1x methods index mapping and attribute handling
+- Add missing `iosxe_vrf.vrf` dependency to `iosxe_snmp_server`
+- Remove a duplicate broadcast attribute from `accounting.commands`
+- Translate `port_security_aging_type` between the schema enum and the provider's boolean attribute
+- Fix VLAN key generation to use `filter.name` instead of `filter.word`
+- Add a system dependency to PIM interface resources
+- Remove interface dependencies from the system resource's `depends_on`
+- Fix missing dot1x and AAA dependencies in the ethernet interface resource
+- Gate `icmp_msg_code` on a numeric `icmp_message_type` to fix idempotency drift
+- Add missing `iosxe_vrf.vrf` dependency to `iosxe_aaa`
+- Remove the standalone `auto_qos_voip` mapping
+- Suppress the logging console mapping when `console_severity` is set
+- Remove unsupported `wait_start` attributes from AAA accounting
+- Add `depends_on` between ethernet sub-interfaces and their parent interfaces
+- Add a port-channel dependency to the ethernet resource's `depends_on`
+- Split nested class-maps into a separate resource for dependency ordering
+- Add `depends_on` for `zone_security` and `policy_map` in zone-pair security
+- Add `iosxe_flow_monitor` to the tunnel interface's `depends_on`
+- Add `depends_on` for the object-group referenced by extended access-list entries
+- Split `private_vlan_association` into a separate resource for dependency ordering
+- Order hierarchical service-policy references in policy-maps
+- Use a `descriptions` list instead of the obsolete `description` leaf in route-maps
+- Replace `keys(int)` with `try()` for dynamic type compatibility in interface resources
+
 ## 0.1.0
 
 - Initial release

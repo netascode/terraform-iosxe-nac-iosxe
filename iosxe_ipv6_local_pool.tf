@@ -6,9 +6,9 @@ locals {
         device = device.name
 
         name          = pool.name
-        start_address = try(pool.start_address, local.defaults.iosxe.configuration.ipv6_local_pools.start_address, null)
-        prefix_length = try(pool.prefix_length, local.defaults.iosxe.configuration.ipv6_local_pools.prefix_length, null)
-        group         = try(pool.group, local.defaults.iosxe.configuration.ipv6_local_pools.group, null)
+        start_address = try(pool.start_address, null)
+        prefix_length = try(pool.prefix_length, null)
+        group         = try(pool.group, null)
       }
     ]
   ])
@@ -24,6 +24,7 @@ resource "iosxe_ipv6_local_pool" "ipv6_local_pool" {
   group         = each.value.group
 
   depends_on = [
+    iosxe_cli.cli_pre_9,
     iosxe_vrf.vrf
   ]
 }
