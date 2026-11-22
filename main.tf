@@ -299,6 +299,7 @@ resource "iosxe_cli" "cli_0" {
     iosxe_policy_map.policy_map,
     iosxe_policy_map_event.policy_map_event,
     iosxe_prefix_list.prefix_list,
+    iosxe_privilege.privilege,
     iosxe_radius.radius,
     iosxe_radius_server.radius_server,
     iosxe_route_map.route_map,
