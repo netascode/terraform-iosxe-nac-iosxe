@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Add `aaa.privilege_command_mappings` (`privilege <mode> level <level> <command>`) using the `iosxe_privilege` resource, one resource per device and mode. Any change to a mode's mappings recreates the mode, and removed commands return to their default level
 - Add 802.1X/MAB/WebAuth authentication order and priority (`authentication_order_*`, `authentication_priority_*`) and authentication event fail action (`authentication_event_fail_action_authorize_vlan`, `authentication_event_fail_action_next_method`) to `interfaces.ethernets[].network_access_control` using the `iosxe_interface_ethernet` resource
 - Add `aaa.eap_profiles` (`eap profile`) using the `iosxe_eap_profile` resource and `policy.parameter_map_webauth_global` (`parameter-map type webauth global` virtual IPv4/IPv6 address) using the `iosxe_parameter_map_webauth_global` resource; configuring the global web authentication parameter map converts the device to IBNS 2.0
 - Write the rendered data model to `model.yaml` by default (`write_model_file`), with a header marking it as generated; set `write_model_file = ""` to disable
