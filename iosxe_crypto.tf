@@ -486,7 +486,6 @@ resource "iosxe_crypto_gdoi" "crypto_gdoi" {
     iosxe_crypto_ikev2_profile.crypto_ikev2_profile,
     iosxe_crypto_ipsec_profile.crypto_ipsec_profile,
     iosxe_crypto_ipsec_transform_set.crypto_ipsec_transform_set,
-    iosxe_interface_ethernet.ethernet,
     iosxe_interface_loopback.loopback,
     iosxe_interface_vlan.vlan
   ]
