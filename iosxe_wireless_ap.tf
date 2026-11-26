@@ -14,31 +14,37 @@ locals {
     "8" = "aes"
   }
 
-  # Device defaults for profile settings (C9800-CL 17.18, get-config with-defaults
-  # report-all on a new profile). The controller omits a non-boolean leaf at its
+  # Device defaults for profile settings (C9800-CL 17.15 and 17.18, get-config
+  # with-defaults report-all on a new profile). The controller omits a non-boolean leaf at its
   # default from get-config, so a value equal to its default is sent as null and
   # the device keeps its default; otherwise each one shows a diff on every plan.
   wireless_ap_join_profile_device_defaults = {
-    association_limit                                 = 0
-    capwap_retransmit_count                           = 5
-    capwap_retransmit_interval                        = 3
-    capwap_timers_discovery_timeout                   = 10
-    capwap_timers_heartbeat_timeout                   = 30
-    capwap_timers_primary_discovery_timeout           = 120
-    capwap_window_size                                = 1
-    dot1x_eap_type                                    = "dot1x-eap-fast"
-    mesh_profile                                      = "default-mesh-profile"
-    rogue_detection_min_rssi                          = -90
-    rogue_detection_min_transient_time                = 0
-    rogue_detection_report_interval                   = 10
-    statistics_ap_radio_monitoring_sampling_interval  = 720
-    statistics_ap_system_monitoring_sampling_interval = 30
-    statistics_ap_system_monitoring_stats_interval    = 300
-    statistics_traffic_distribution_interval          = 300
-    stats_timer                                       = 180
-    syslog_facility                                   = "facility-kern"
-    syslog_level                                      = "syslog-level-information"
-    tcp_adjust_mss_size                               = 1250
+    association_limit                                     = 0
+    capwap_retransmit_count                               = 5
+    capwap_retransmit_interval                            = 3
+    capwap_timers_discovery_timeout                       = 10
+    capwap_timers_fast_heartbeat_timeout                  = 0
+    capwap_timers_heartbeat_timeout                       = 30
+    capwap_timers_primary_discovery_timeout               = 120
+    capwap_timers_primed_join_timeout                     = 0
+    capwap_window_size                                    = 1
+    dot1x_eap_type                                        = "dot1x-eap-fast"
+    mesh_profile                                          = "default-mesh-profile"
+    rogue_detection_min_rssi                              = -90
+    rogue_detection_min_transient_time                    = 0
+    rogue_detection_report_interval                       = 10
+    statistics_ap_radio_monitoring_sampling_interval      = 720
+    statistics_ap_system_monitoring_alarm_hold_time       = 6
+    statistics_ap_system_monitoring_alarm_retransmit_time = 0
+    statistics_ap_system_monitoring_cpu_threshold         = 0
+    statistics_ap_system_monitoring_mem_threshold         = 0
+    statistics_ap_system_monitoring_sampling_interval     = 30
+    statistics_ap_system_monitoring_stats_interval        = 300
+    statistics_traffic_distribution_interval              = 300
+    stats_timer                                           = 180
+    syslog_facility                                       = "facility-kern"
+    syslog_level                                          = "syslog-level-information"
+    tcp_adjust_mss_size                                   = 1250
   }
 
   wireless_ap_join_profiles = flatten([
@@ -71,9 +77,9 @@ locals {
         capwap_retransmit_count              = try(prof.capwap_retransmit_count, null) == local.wireless_ap_join_profile_device_defaults.capwap_retransmit_count ? null : try(prof.capwap_retransmit_count, null)
         capwap_retransmit_interval           = try(prof.capwap_retransmit_interval, null) == local.wireless_ap_join_profile_device_defaults.capwap_retransmit_interval ? null : try(prof.capwap_retransmit_interval, null)
         capwap_timers_discovery_timeout      = try(prof.capwap_timers_discovery_timeout, null) == local.wireless_ap_join_profile_device_defaults.capwap_timers_discovery_timeout ? null : try(prof.capwap_timers_discovery_timeout, null)
-        capwap_timers_fast_heartbeat_timeout = try(prof.capwap_timers_fast_heartbeat_timeout, null)
+        capwap_timers_fast_heartbeat_timeout = try(prof.capwap_timers_fast_heartbeat_timeout, null) == local.wireless_ap_join_profile_device_defaults.capwap_timers_fast_heartbeat_timeout ? null : try(prof.capwap_timers_fast_heartbeat_timeout, null)
         capwap_timers_heartbeat_timeout      = try(prof.capwap_timers_heartbeat_timeout, null) == local.wireless_ap_join_profile_device_defaults.capwap_timers_heartbeat_timeout ? null : try(prof.capwap_timers_heartbeat_timeout, null)
-        capwap_timers_primed_join_timeout    = try(prof.capwap_timers_primed_join_timeout, null)
+        capwap_timers_primed_join_timeout    = try(prof.capwap_timers_primed_join_timeout, null) == local.wireless_ap_join_profile_device_defaults.capwap_timers_primed_join_timeout ? null : try(prof.capwap_timers_primed_join_timeout, null)
         capwap_fallback                      = try(prof.capwap_fallback, null)
 
         # N+1 attributes
@@ -105,10 +111,10 @@ locals {
 
         statistics_ap_system_monitoring_enable                = try(prof.statistics_ap_system_monitoring_enable, null)
         statistics_ap_system_monitoring_alarm_enable          = try(prof.statistics_ap_system_monitoring_alarm_enable, null)
-        statistics_ap_system_monitoring_alarm_hold_time       = try(prof.statistics_ap_system_monitoring_alarm_hold_time, null)
-        statistics_ap_system_monitoring_alarm_retransmit_time = try(prof.statistics_ap_system_monitoring_alarm_retransmit_time, null)
-        statistics_ap_system_monitoring_cpu_threshold         = try(prof.statistics_ap_system_monitoring_cpu_threshold, null)
-        statistics_ap_system_monitoring_mem_threshold         = try(prof.statistics_ap_system_monitoring_mem_threshold, null)
+        statistics_ap_system_monitoring_alarm_hold_time       = try(prof.statistics_ap_system_monitoring_alarm_hold_time, null) == local.wireless_ap_join_profile_device_defaults.statistics_ap_system_monitoring_alarm_hold_time ? null : try(prof.statistics_ap_system_monitoring_alarm_hold_time, null)
+        statistics_ap_system_monitoring_alarm_retransmit_time = try(prof.statistics_ap_system_monitoring_alarm_retransmit_time, null) == local.wireless_ap_join_profile_device_defaults.statistics_ap_system_monitoring_alarm_retransmit_time ? null : try(prof.statistics_ap_system_monitoring_alarm_retransmit_time, null)
+        statistics_ap_system_monitoring_cpu_threshold         = try(prof.statistics_ap_system_monitoring_cpu_threshold, null) == local.wireless_ap_join_profile_device_defaults.statistics_ap_system_monitoring_cpu_threshold ? null : try(prof.statistics_ap_system_monitoring_cpu_threshold, null)
+        statistics_ap_system_monitoring_mem_threshold         = try(prof.statistics_ap_system_monitoring_mem_threshold, null) == local.wireless_ap_join_profile_device_defaults.statistics_ap_system_monitoring_mem_threshold ? null : try(prof.statistics_ap_system_monitoring_mem_threshold, null)
         statistics_ap_system_monitoring_sampling_interval     = try(prof.statistics_ap_system_monitoring_sampling_interval, null) == local.wireless_ap_join_profile_device_defaults.statistics_ap_system_monitoring_sampling_interval ? null : try(prof.statistics_ap_system_monitoring_sampling_interval, null)
         statistics_ap_system_monitoring_stats_interval        = try(prof.statistics_ap_system_monitoring_stats_interval, null) == local.wireless_ap_join_profile_device_defaults.statistics_ap_system_monitoring_stats_interval ? null : try(prof.statistics_ap_system_monitoring_stats_interval, null)
         statistics_traffic_distribution                       = try(prof.statistics_traffic_distribution, null)
