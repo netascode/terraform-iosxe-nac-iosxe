@@ -140,6 +140,7 @@ locals {
         service_policy_input             = try(int.service_policy_input, null)
         service_policy_output            = try(int.service_policy_output, null)
         load_interval                    = try(int.load_interval, null)
+        crypto_map                       = try(int.crypto_map, null)
         snmp_trap_link_status            = try(int.snmp_trap_link_status, null)
         logging_event_link_status_enable = try(int.logging_event_link_status, null)
         device_tracking                  = try(int.device_tracking, null)
@@ -429,6 +430,7 @@ resource "iosxe_interface_ethernet" "ethernet" {
   service_policy_input                            = each.value.service_policy_input
   service_policy_output                           = each.value.service_policy_output
   load_interval                                   = each.value.load_interval
+  crypto_map                                      = each.value.crypto_map
   snmp_trap_link_status                           = each.value.snmp_trap_link_status
   logging_event_link_status_enable                = each.value.logging_event_link_status_enable
   device_tracking                                 = each.value.device_tracking
@@ -505,7 +507,8 @@ resource "iosxe_interface_ethernet" "ethernet" {
     iosxe_aaa_authentication.aaa_authentication,
     iosxe_isis.isis,
     iosxe_interface_switchport.ethernet_switchport,
-    iosxe_interface_port_channel.port_channel
+    iosxe_interface_port_channel.port_channel,
+    iosxe_crypto_map_gdoi.crypto_map_gdoi
   ]
 }
 
@@ -589,6 +592,7 @@ resource "iosxe_interface_ethernet" "ethernet_sub" {
   service_policy_input                            = each.value.service_policy_input
   service_policy_output                           = each.value.service_policy_output
   load_interval                                   = each.value.load_interval
+  crypto_map                                      = each.value.crypto_map
   snmp_trap_link_status                           = each.value.snmp_trap_link_status
   logging_event_link_status_enable                = each.value.logging_event_link_status_enable
   device_tracking                                 = each.value.device_tracking
@@ -665,7 +669,8 @@ resource "iosxe_interface_ethernet" "ethernet_sub" {
     iosxe_aaa_authentication.aaa_authentication,
     iosxe_isis.isis,
     iosxe_interface_switchport.ethernet_switchport,
-    iosxe_interface_ethernet.ethernet
+    iosxe_interface_ethernet.ethernet,
+    iosxe_crypto_map_gdoi.crypto_map_gdoi
   ]
 }
 
@@ -750,6 +755,7 @@ resource "iosxe_interface_ethernet" "ethernet_unmanaged" {
   service_policy_input                            = each.value.service_policy_input
   service_policy_output                           = each.value.service_policy_output
   load_interval                                   = each.value.load_interval
+  crypto_map                                      = each.value.crypto_map
   snmp_trap_link_status                           = each.value.snmp_trap_link_status
   logging_event_link_status_enable                = each.value.logging_event_link_status_enable
   device_tracking                                 = each.value.device_tracking
@@ -824,7 +830,8 @@ resource "iosxe_interface_ethernet" "ethernet_unmanaged" {
     iosxe_dot1x.dot1x,
     iosxe_aaa_authentication.aaa_authentication,
     iosxe_interface_switchport.ethernet_switchport_unmanaged,
-    iosxe_interface_port_channel.port_channel
+    iosxe_interface_port_channel.port_channel,
+    iosxe_crypto_map_gdoi.crypto_map_gdoi
   ]
 
   lifecycle {
@@ -1556,6 +1563,7 @@ locals {
         bfd_interval_multiplier               = try(int.bfd.interval_multiplier, null)
         bfd_echo                              = try(int.bfd.echo, null)
         load_interval                         = try(int.load_interval, null)
+        crypto_map                            = try(int.crypto_map, null)
         snmp_trap_link_status                 = try(int.snmp_trap_link_status, null)
         logging_event_link_status_enable      = try(int.logging_event_link_status, null)
         mpls_ip                               = try(int.mpls.ip, null)
@@ -1680,6 +1688,7 @@ resource "iosxe_interface_vlan" "vlan" {
   bfd_interval_multiplier                  = each.value.bfd_interval_multiplier
   bfd_echo                                 = each.value.bfd_echo
   load_interval                            = each.value.load_interval
+  crypto_map                               = each.value.crypto_map
   ip_router_isis                           = each.value.isis_area_tag
 
   depends_on = [
@@ -1909,6 +1918,7 @@ locals {
         bpduguard_disable                = try(int.spanning_tree.bpduguard_disable, null)
         arp_timeout                      = try(int.arp_timeout, null)
         load_interval                    = try(int.load_interval, null)
+        crypto_map                       = try(int.crypto_map, null)
         snmp_trap_link_status            = try(int.snmp_trap_link_status, null)
         logging_event_link_status_enable = try(int.logging_event_link_status, null)
         device_tracking                  = try(int.device_tracking, null)
@@ -2128,6 +2138,7 @@ resource "iosxe_interface_port_channel" "port_channel" {
   bpduguard_disable                        = each.value.bpduguard_disable
   arp_timeout                              = each.value.arp_timeout
   load_interval                            = each.value.load_interval
+  crypto_map                               = each.value.crypto_map
   snmp_trap_link_status                    = each.value.snmp_trap_link_status
   logging_event_link_status_enable         = each.value.logging_event_link_status_enable
   device_tracking                          = each.value.device_tracking
@@ -2158,7 +2169,8 @@ resource "iosxe_interface_port_channel" "port_channel" {
     iosxe_zone_security.zone_security,
     iosxe_evpn_ethernet_segment.evpn_ethernet_segment,
     iosxe_flow_monitor.flow_monitor,
-    iosxe_isis.isis
+    iosxe_isis.isis,
+    iosxe_crypto_map_gdoi.crypto_map_gdoi
   ]
 }
 
@@ -2719,6 +2731,7 @@ locals {
           bfd_echo                              = try(sub.bfd.echo, null)
           encapsulation_dot1q_vlan_id           = try(sub.encapsulation_dot1q_vlan_id, null)
           arp_timeout                           = try(sub.arp_timeout, null)
+          crypto_map                            = try(sub.crypto_map, null)
           auto_qos_classify                     = try(sub.auto_qos.classify, null)
           auto_qos_classify_police              = try(sub.auto_qos.classify_police, null)
           auto_qos_trust                        = try(sub.auto_qos.trust, null)
@@ -2840,6 +2853,7 @@ resource "iosxe_interface_ethernet" "ethernet_subinterface" {
   ipv6_address_autoconfig_default  = each.value.ipv6_address_autoconfig_default
   ipv6_flow_monitors               = each.value.ipv6_flow_monitors
   arp_timeout                      = each.value.arp_timeout
+  crypto_map                       = each.value.crypto_map
   auto_qos_classify                = each.value.auto_qos_classify
   auto_qos_classify_police         = each.value.auto_qos_classify_police
   auto_qos_trust                   = each.value.auto_qos_trust
@@ -2865,7 +2879,8 @@ resource "iosxe_interface_ethernet" "ethernet_subinterface" {
     iosxe_access_list_extended.access_list_extended,
     iosxe_flow_monitor.flow_monitor,
     iosxe_policy_map.policy_map,
-    iosxe_isis.isis
+    iosxe_isis.isis,
+    iosxe_crypto_map_gdoi.crypto_map_gdoi
   ]
 }
 
@@ -3132,6 +3147,7 @@ locals {
         bandwidth                             = try(int.bandwidth, null)
         ip_mtu                                = try(int.ip_mtu, null)
         load_interval                         = try(int.load_interval, null)
+        crypto_map                            = try(int.crypto_map, null)
         snmp_trap_link_status                 = try(int.snmp_trap_link_status, null)
         logging_event_link_status_enable      = try(int.logging_event_link_status_enable, null)
         ospf_authentication_key_chain         = try(int.ospf.authentication_key_chain, null)
@@ -3265,6 +3281,7 @@ resource "iosxe_interface_tunnel" "tunnel" {
   arp_timeout                            = each.value.arp_timeout
   ip_mtu                                 = each.value.ip_mtu
   load_interval                          = each.value.load_interval
+  crypto_map                             = each.value.crypto_map
   snmp_trap_link_status                  = each.value.snmp_trap_link_status
   logging_event_link_status_enable       = each.value.logging_event_link_status_enable
   ip_igmp_version                        = each.value.ip_igmp_version
@@ -3279,7 +3296,8 @@ resource "iosxe_interface_tunnel" "tunnel" {
     iosxe_crypto_ipsec_profile.crypto_ipsec_profile,
     iosxe_policy_map.policy_map,
     iosxe_flow_monitor.flow_monitor,
-    iosxe_isis.isis
+    iosxe_isis.isis,
+    iosxe_crypto_map_gdoi.crypto_map_gdoi
   ]
 }
 
