@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Fix a perpetual diff on `wireless.policy_profiles` when `session_timeout`, `idle_timeout` or `exclusionlist_timeout` is set to its device default: the value is now sent as null, like the AP join profile settings
 - Fix a perpetual diff on `wireless.ap_join_profiles` when `capwap_timers_fast_heartbeat_timeout`, `capwap_timers_primed_join_timeout`, `statistics_ap_system_monitoring_alarm_hold_time`, `statistics_ap_system_monitoring_alarm_retransmit_time`, `statistics_ap_system_monitoring_cpu_threshold` or `statistics_ap_system_monitoring_mem_threshold` is set to its device default: the value is now sent as null, like the other defaulted profile settings
 - Add 802.1X/MAB/WebAuth authentication order and priority (`authentication_order_*`, `authentication_priority_*`) and authentication event fail action (`authentication_event_fail_action_authorize_vlan`, `authentication_event_fail_action_next_method`) to `interfaces.ethernets[].network_access_control` using the `iosxe_interface_ethernet` resource
 - Add `aaa.eap_profiles` (`eap profile`) using the `iosxe_eap_profile` resource and `policy.parameter_map_webauth_global` (`parameter-map type webauth global` virtual IPv4/IPv6 address) using the `iosxe_parameter_map_webauth_global` resource; configuring the global web authentication parameter map converts the device to IBNS 2.0
