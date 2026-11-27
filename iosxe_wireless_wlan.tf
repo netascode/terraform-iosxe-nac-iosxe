@@ -7,6 +7,10 @@ locals {
   wireless_wlan_p2p_map = { drop = "p2p-blocking-action-drop", "forward-upstream" = "p2p-blocking-action-fwdup" }
   wireless_wlan_wmm_map = { allowed = "apf-vap-wme-allowed", require = "apf-vap-wme-required", disabled = "apf-vap-wme-disabled" }
   wireless_wlan_psk_map = { ascii = null, hex = "key-hex" }
+  # pmf-options defaults to apf-vap-pmf-disabled, which the device omits from
+  # get-config, so PMF disabled is expressed by leaving security_pmf unset.
+  wireless_wlan_pmf_map  = { mandatory = "apf-vap-pmf-required", optional = "apf-vap-pmf-optional" }
+  wireless_wlan_band_map = { "24ghz" = "dot11-2-dot-4-ghz-band", "5ghz" = "dot11-5-ghz-band", "6ghz" = "dot11-6-ghz-band" }
 
   wireless_wlan_profiles = flatten([
     for device in local.devices : [
@@ -21,20 +25,29 @@ locals {
         ccx_aironet_ie = try(wlan.ccx_aironet_iesupport, null)
         peer_blocking  = try(local.wireless_wlan_p2p_map[wlan.peer_blocking], null)
 
-        # security_wpa_akm -> six provider booleans (explicit-set rule)
-        security_wpa_akm_dot1x    = try(contains(wlan.security_wpa_akm, "dot1x") ? true : false, null)
-        security_wpa_akm_ft_dot1x = try(contains(wlan.security_wpa_akm, "ft-dot1x") ? true : false, null)
-        security_wpa_akm_psk      = try(contains(wlan.security_wpa_akm, "psk") ? true : false, null)
-        security_wpa_akm_ft_psk   = try(contains(wlan.security_wpa_akm, "ft-psk") ? true : false, null)
-        security_wpa_akm_sae      = try(contains(wlan.security_wpa_akm, "sae") ? true : false, null)
-        security_wpa_akm_ft_sae   = try(contains(wlan.security_wpa_akm, "ft-sae") ? true : false, null)
+        # security_wpa_akm -> twelve provider booleans (explicit-set rule)
+        security_wpa_akm_dot1x          = try(contains(wlan.security_wpa_akm, "dot1x") ? true : false, null)
+        security_wpa_akm_ft_dot1x       = try(contains(wlan.security_wpa_akm, "ft-dot1x") ? true : false, null)
+        security_wpa_akm_psk            = try(contains(wlan.security_wpa_akm, "psk") ? true : false, null)
+        security_wpa_akm_ft_psk         = try(contains(wlan.security_wpa_akm, "ft-psk") ? true : false, null)
+        security_wpa_akm_sae            = try(contains(wlan.security_wpa_akm, "sae") ? true : false, null)
+        security_wpa_akm_ft_sae         = try(contains(wlan.security_wpa_akm, "ft-sae") ? true : false, null)
+        security_wpa_akm_dot1x_sha256   = try(contains(wlan.security_wpa_akm, "dot1x-sha256") ? true : false, null)
+        security_wpa_akm_owe            = try(contains(wlan.security_wpa_akm, "owe") ? true : false, null)
+        security_wpa_akm_suite_b        = try(contains(wlan.security_wpa_akm, "suiteb") ? true : false, null)
+        security_wpa_akm_suite_b_192    = try(contains(wlan.security_wpa_akm, "suiteb-192") ? true : false, null)
+        security_wpa_akm_sae_ext_key    = try(contains(wlan.security_wpa_akm, "sae-ext-key") ? true : false, null)
+        security_wpa_akm_ft_sae_ext_key = try(contains(wlan.security_wpa_akm, "ft-sae-ext-key") ? true : false, null)
 
         # security_wpa_wpa2_ciphers -> three provider booleans (explicit-set rule)
         security_wpa_wpa2_ciphers_aes     = try(contains(wlan.security_wpa_wpa2_ciphers, "aes") ? true : false, null)
         security_wpa_wpa2_ciphers_gcmp128 = try(contains(wlan.security_wpa_wpa2_ciphers, "gcmp128") ? true : false, null)
         security_wpa_wpa2_ciphers_gcmp256 = try(contains(wlan.security_wpa_wpa2_ciphers, "gcmp256") ? true : false, null)
 
+        security_wpa                          = try(wlan.security_wpa, null)
+        security_wpa_wpa2                     = try(wlan.security_wpa_wpa2, null)
         security_wpa_wpa3                     = try(wlan.security_wpa_wpa3, null)
+        security_pmf                          = try(local.wireless_wlan_pmf_map[wlan.security_pmf], null)
         security_wpa_psk_key_format           = try(local.wireless_wlan_psk_map[wlan.security_wpa_psk_key_format], null)
         security_wpa_psk_key_encryption       = try(wlan.security_wpa_psk_key, null) != null ? "clear" : null
         security_wpa_psk_key                  = try(wlan.security_wpa_psk_key, null)
@@ -47,6 +60,14 @@ locals {
         mac_filtering                         = try(wlan.mac_filtering, null)
         load_balance                          = try(wlan.load_balance, null)
         wmm                                   = try(local.wireless_wlan_wmm_map[wlan.wmm], null)
+        radio_policies = try(length(wlan.radio_policy) == 0, true) ? null : [
+          for b in wlan.radio_policy : { band = local.wireless_wlan_band_map[b] }
+        ]
+        bss_transition                 = try(wlan.bss_transition, null)
+        bss_max_idle                   = try(wlan.bssmaxidle, null)
+        dms                            = try(wlan.dms, null)
+        assisted_roaming_neighbor_list = try(wlan.assisted_roaming_neighbor_list, null)
+        okc                            = try(wlan.okc, null)
       }
     ]
   ])
@@ -69,10 +90,19 @@ resource "iosxe_wireless_wlan_profile" "wireless_wlan_profile" {
   security_wpa_akm_ft_psk               = each.value.security_wpa_akm_ft_psk
   security_wpa_akm_sae                  = each.value.security_wpa_akm_sae
   security_wpa_akm_ft_sae               = each.value.security_wpa_akm_ft_sae
+  security_wpa_akm_dot1x_sha256         = each.value.security_wpa_akm_dot1x_sha256
+  security_wpa_akm_owe                  = each.value.security_wpa_akm_owe
+  security_wpa_akm_suite_b              = each.value.security_wpa_akm_suite_b
+  security_wpa_akm_suite_b_192          = each.value.security_wpa_akm_suite_b_192
+  security_wpa_akm_sae_ext_key          = each.value.security_wpa_akm_sae_ext_key
+  security_wpa_akm_ft_sae_ext_key       = each.value.security_wpa_akm_ft_sae_ext_key
   security_wpa_wpa2_ciphers_aes         = each.value.security_wpa_wpa2_ciphers_aes
   security_wpa_wpa2_ciphers_gcmp128     = each.value.security_wpa_wpa2_ciphers_gcmp128
   security_wpa_wpa2_ciphers_gcmp256     = each.value.security_wpa_wpa2_ciphers_gcmp256
+  security_wpa                          = each.value.security_wpa
+  security_wpa_wpa2                     = each.value.security_wpa_wpa2
   security_wpa_wpa3                     = each.value.security_wpa_wpa3
+  security_pmf                          = each.value.security_pmf
   security_wpa_psk_key_format           = each.value.security_wpa_psk_key_format
   security_wpa_psk_key_encryption       = each.value.security_wpa_psk_key_encryption
   security_wpa_psk_key                  = each.value.security_wpa_psk_key
@@ -85,6 +115,12 @@ resource "iosxe_wireless_wlan_profile" "wireless_wlan_profile" {
   mac_filtering                         = each.value.mac_filtering
   load_balance                          = each.value.load_balance
   wmm                                   = each.value.wmm
+  radio_policies                        = each.value.radio_policies
+  bss_transition                        = each.value.bss_transition
+  bss_max_idle                          = each.value.bss_max_idle
+  dms                                   = each.value.dms
+  assisted_roaming_neighbor_list        = each.value.assisted_roaming_neighbor_list
+  okc                                   = each.value.okc
 
   depends_on = [
     iosxe_cli.cli_pre_9,
