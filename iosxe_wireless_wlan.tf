@@ -94,6 +94,16 @@ resource "iosxe_wireless_wlan_profile" "wireless_wlan_profile" {
 locals {
   wireless_pp_anchor_map = { 1 = "export-anchor-primary", 2 = "export-anchor-secondary", 3 = "export-anchor-tertiary" }
 
+  # Policy profile timeout defaults (Cisco-IOS-XE-wireless-wlan-cfg, 17.15 and
+  # 17.18). The controller omits a leaf at its default from get-config, so a
+  # value equal to its default is sent as null and the device keeps its default;
+  # otherwise each one shows a diff on every plan.
+  wireless_policy_profile_device_defaults = {
+    session_timeout       = 28800
+    idle_timeout          = 300
+    exclusionlist_timeout = 60
+  }
+
   wireless_policy_profiles = flatten([
     for device in local.devices : [
       for pp in try(local.device_config[device.name].wireless.policy_profiles, []) : {
@@ -109,9 +119,9 @@ locals {
         aaa_override          = try(pp.aaa_override, null)
         nac                   = try(pp.nac, null)
         nac_type              = try(pp.nac, false) ? "nac-support-radius" : null
-        session_timeout       = try(pp.session_timeout, null)
-        idle_timeout          = try(pp.idle_timeout, null)
-        exclusionlist_timeout = try(pp.exclusionlist_timeout, null)
+        session_timeout       = try(pp.session_timeout, null) == local.wireless_policy_profile_device_defaults.session_timeout ? null : try(pp.session_timeout, null)
+        idle_timeout          = try(pp.idle_timeout, null) == local.wireless_policy_profile_device_defaults.idle_timeout ? null : try(pp.idle_timeout, null)
+        exclusionlist_timeout = try(pp.exclusionlist_timeout, null) == local.wireless_policy_profile_device_defaults.exclusionlist_timeout ? null : try(pp.exclusionlist_timeout, null)
         ipv4_acl              = try(pp.ipv4_acl, null)
         ipv6_acl              = try(pp.ipv6_acl, null)
         service_policy_input  = try(pp.service_policy_input, null)
