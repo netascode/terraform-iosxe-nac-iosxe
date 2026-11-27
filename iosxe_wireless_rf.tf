@@ -44,6 +44,7 @@ locals {
     trap_threshold_clients         = 12
     trap_threshold_interference    = 10
     trap_threshold_noise           = -70
+    trap_threshold_utilization     = 80
   }
 
   wireless_rf_profiles = flatten([
@@ -84,6 +85,7 @@ locals {
         trap_threshold_clients         = try(p.trap_threshold_clients, null) == local.wireless_rf_yang_defaults.trap_threshold_clients ? null : try(p.trap_threshold_clients, null)
         trap_threshold_interference    = try(p.trap_threshold_interference, null) == local.wireless_rf_yang_defaults.trap_threshold_interference ? null : try(p.trap_threshold_interference, null)
         trap_threshold_noise           = try(p.trap_threshold_noise, null) == local.wireless_rf_yang_defaults.trap_threshold_noise ? null : try(p.trap_threshold_noise, null)
+        trap_threshold_utilization     = try(p.trap_threshold_utilization, null) == local.wireless_rf_yang_defaults.trap_threshold_utilization ? null : try(p.trap_threshold_utilization, null)
 
         dca_allowed_channels = try(length(p.dca_channels_allowed) == 0, true) ? null : [
           for ch in try(p.dca_channels_allowed, []) : {
@@ -156,6 +158,7 @@ resource "iosxe_wireless_rf_profile" "wireless_rf_profile" {
   trap_threshold_clients         = each.value.trap_threshold_clients
   trap_threshold_interference    = each.value.trap_threshold_interference
   trap_threshold_noise           = each.value.trap_threshold_noise
+  trap_threshold_utilization     = each.value.trap_threshold_utilization
 
   depends_on = [
     iosxe_cli.cli_pre_9,

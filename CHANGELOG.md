@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Add `trap_threshold_utilization` (`trap-threshold utilization`) to `wireless.rf_profiles` using the `iosxe_wireless_rf_profile` resource; the device default (80) is sent as null, like the other RF profile thresholds
 - Fix a perpetual diff on `wireless.policy_profiles` when `session_timeout`, `idle_timeout` or `exclusionlist_timeout` is set to its device default: the value is now sent as null, like the AP join profile settings
 - Fix a perpetual diff on `wireless.ap_join_profiles` when `capwap_timers_fast_heartbeat_timeout`, `capwap_timers_primed_join_timeout`, `statistics_ap_system_monitoring_alarm_hold_time`, `statistics_ap_system_monitoring_alarm_retransmit_time`, `statistics_ap_system_monitoring_cpu_threshold` or `statistics_ap_system_monitoring_mem_threshold` is set to its device default: the value is now sent as null, like the other defaulted profile settings
 - Add 802.1X/MAB/WebAuth authentication order and priority (`authentication_order_*`, `authentication_priority_*`) and authentication event fail action (`authentication_event_fail_action_authorize_vlan`, `authentication_event_fail_action_next_method`) to `interfaces.ethernets[].network_access_control` using the `iosxe_interface_ethernet` resource
