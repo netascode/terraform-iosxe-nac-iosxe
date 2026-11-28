@@ -147,6 +147,7 @@ aaa:
   radius: include('aaa_radius', required=False)
   tacacs: include('aaa_tacacs', required=False)
   usernames: list(include('aaa_usernames'), required=False, primary_key='name')
+  eap_profiles: list(include('aaa_eap_profiles'), required=False, primary_key='name')
 
 aaa_radius_dynamic_author_clients:
   ip: any(ip(), regex("^.*[\$\%]\{.*$"))
@@ -340,9 +341,16 @@ aaa_usernames:
   secret_encryption: any(enum('0', '5', '8', '9'), regex("^.*[\$\%]\{.*$"), required=False)
   secret: str(required=False)
 
+aaa_eap_profiles:
+  name: any(regex('^[^;=]{1,63}$'), regex("^.*[\$\%]\{.*$"))
+  description: str(required=False)
+  methods: any(list(enum('fast', 'gtc', 'leap', 'md5', 'mschapv2', 'peap', 'tls')), regex("^.*[\$\%]\{.*$"), required=False)
+  pki_trustpoint: str(required=False)
+
 access_lists:
   standard: list(include('access_lists_standard'), required=False, primary_key='name')
   extended: list(include('access_lists_extended'), required=False, primary_key='name')
+  ipv6: list(include('access_lists_ipv6'), required=False, primary_key='name')
   role_based: list(include('access_lists_role_based'), required=False, primary_key='name')
   as_path: list(include('as_path_access_list'), required=False, primary_key='number')
 
@@ -402,6 +410,52 @@ access_lists_extended_entries_destination:
   any: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
   host: any(ip(), regex("^.*[\$\%]\{.*$"), required=False)
   object_group: str(required=False)
+  fqdn_group: str(required=False)
+  port_type: any(enum('equal', 'greater_than', 'lesser_than', 'range'), regex("^.*[\$\%]\{.*$"), required=False)
+  port: any(int(), regex("^.*[\$\%]\{.*$"), str(), required=False)
+  additional_equal_ports: any(list(int(), max=9), regex("^.*[\$\%]\{.*$"), required=False)
+  port_range_from: any(int(), regex("^.*[\$\%]\{.*$"), required=False)
+  port_range_to: any(int(), regex("^.*[\$\%]\{.*$"), required=False)
+
+access_lists_ipv6:
+  name: str()
+  entries: list(include('access_lists_ipv6_entries'), required=False, primary_key='sequence')
+
+access_lists_ipv6_entries:
+  sequence: any(int(), regex("^.*[\$\%]\{.*$"))
+  remark: str(required=False)
+  action: any(enum('deny', 'permit'), regex("^.*[\$\%]\{.*$"), required=False)
+  protocol: any(enum('ahp', 'esp', 'hbh', 'icmp', 'ipv6', 'pcp', 'sctp', 'tcp', 'udp'), int(min=0, max=255), regex("^.*[\$\%]\{.*$"), required=False)
+  source: include('access_lists_ipv6_entries_source', required=False)
+  destination: include('access_lists_ipv6_entries_destination', required=False)
+  tcp_flags: any(list(enum('ack', 'fin', 'psh', 'rst', 'syn', 'urg'), regex("^.*[\$\%]\{.*$")), required=False)
+  established: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  fragments: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  dscp: any(enum('af11', 'af12', 'af13', 'af21', 'af22', 'af23', 'af31', 'af32', 'af33', 'af41', 'af42', 'af43', 'cs1', 'cs2', 'cs3', 'cs4', 'cs5', 'cs6', 'cs7', 'default', 'dscp', 'ef', 'precedence'), int(min=0, max=63), regex("^.*[\$\%]\{.*$"), required=False)
+  icmp_message_type: any(enum('beyond-scope', 'destination-unreachable', 'dhaad-reply', 'dhaad-request', 'echo-reply', 'echo-request', 'header', 'hop-limit', 'mld-query', 'mld-reduction', 'mld-report', 'mpd-advertisement', 'mpd-solicitation', 'nd-na', 'nd-ns', 'next-header', 'no-admin', 'no-route', 'packet-too-big', 'parameter-option', 'parameter-problem', 'port-unreachable', 'reassembly-timeout', 'redirect', 'reject-route', 'renum-command', 'renum-result', 'renum-seq-number', 'router-advertisement', 'router-renumbering', 'router-solicitation', 'source-policy', 'time-exceeded', 'unreachable'), int(min=0, max=255), regex("^.*[\$\%]\{.*$"), required=False)
+  icmp_message_code: any(int(min=0, max=255), regex("^.*[\$\%]\{.*$"), required=False)
+  log: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  log_input: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+
+access_lists_ipv6_entries_source:
+  any: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  host: str(required=False)
+  prefix: any(ip(version=6), regex("^.*[\$\%]\{.*$"), required=False)
+  address: any(ip(version=6), regex("^.*[\$\%]\{.*$"), required=False)
+  wildcard_bits: any(ip(version=6), regex("^.*[\$\%]\{.*$"), required=False)
+  fqdn_group: str(required=False)
+  port_type: any(enum('equal', 'greater_than', 'lesser_than', 'range'), regex("^.*[\$\%]\{.*$"), required=False)
+  port: any(int(), regex("^.*[\$\%]\{.*$"), str(), required=False)
+  additional_equal_ports: any(list(int(), max=9), regex("^.*[\$\%]\{.*$"), required=False)
+  port_range_from: any(int(), regex("^.*[\$\%]\{.*$"), required=False)
+  port_range_to: any(int(), regex("^.*[\$\%]\{.*$"), required=False)
+
+access_lists_ipv6_entries_destination:
+  any: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  host: str(required=False)
+  prefix: any(ip(version=6), regex("^.*[\$\%]\{.*$"), required=False)
+  address: any(ip(version=6), regex("^.*[\$\%]\{.*$"), required=False)
+  wildcard_bits: any(ip(version=6), regex("^.*[\$\%]\{.*$"), required=False)
   fqdn_group: str(required=False)
   port_type: any(enum('equal', 'greater_than', 'lesser_than', 'range'), regex("^.*[\$\%]\{.*$"), required=False)
   port: any(int(), regex("^.*[\$\%]\{.*$"), str(), required=False)
@@ -539,7 +593,8 @@ routing:
   static_routes: list(include('routing_static_routes'), required=False)
 
 routing_bgp:
-  as_number: any(int(), regex("^.*[\$\%]\{.*$"))
+  as_number: any(int(), regex('^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])\.(0|[1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$'), regex("^.*[\$\%]\{.*$"))
+  asnotation_dot: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
   router_id: any(ip(), regex("^.*[\$\%]\{.*$"), required=False)
   router_id_interface_type: any(enum('Loopback'), regex("^.*[\$\%]\{.*$"), required=False)
   router_id_interface_id: any(str(), int(min=0), required=False)
@@ -655,7 +710,7 @@ bgp_address_family_ipv4_unicast_vrfs_networks:
 
 bgp_address_family_ipv4_unicast_vrfs_neighbors:
   ip: any(ip(), regex("^.*[\$\%]\{.*$"))
-  remote_as: any(int(), regex("^.*[\$\%]\{.*$"))
+  remote_as: any(int(), regex('^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])\.(0|[1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$'), regex("^.*[\$\%]\{.*$"))
   description: str(required=False)
   shutdown: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
   cluster_id: any(ip(), regex("^.*[\$\%]\{.*$"), required=False)
@@ -674,7 +729,7 @@ bgp_address_family_ipv4_unicast_vrfs_neighbors:
   fall_over_maximum_metric_route_map: str(required=False)
   disable_connected_check: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
   ttl_security_hops: any(int(min=0, max=254), regex("^.*[\$\%]\{.*$"), required=False)
-  local_as: any(int(), regex("^.*[\$\%]\{.*$"), required=False)
+  local_as: any(int(), regex('^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])\.(0|[1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$'), regex("^.*[\$\%]\{.*$"), required=False)
   local_as_no_prepend: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
   local_as_replace_as: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
   local_as_dual_as: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
@@ -807,7 +862,7 @@ bgp_address_family_l2vpn_evpn:
 
 bgp_neighbors:
   ip: any(ip(), regex("^.*[\$\%]\{.*$"))
-  remote_as: any(int(), regex("^.*[\$\%]\{.*$"), required=False)
+  remote_as: any(int(), regex('^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])\.(0|[1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$'), regex("^.*[\$\%]\{.*$"), required=False)
   description: str(required=False)
   shutdown: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
   cluster_id: any(ip(), regex("^.*[\$\%]\{.*$"), required=False)
@@ -820,7 +875,7 @@ bgp_neighbors:
   fall_over_bfd_check_control_plane_failure: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
   fall_over_bfd_strict_mode: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
   fall_over_maximum_metric_route_map: str(required=False)
-  local_as: any(int(), regex("^.*[\$\%]\{.*$"), required=False)
+  local_as: any(int(), regex('^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])\.(0|[1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$'), regex("^.*[\$\%]\{.*$"), required=False)
   local_as_no_prepend: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
   local_as_replace_as: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
   local_as_dual_as: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
@@ -843,7 +898,7 @@ bgp_neighbors:
 
 bgp_peer_session_templates:
   template_name: regex('^[a-zA-Z0-9_-]+$')
-  remote_as: any(int(), regex("^.*[\$\%]\{.*$"), required=False)
+  remote_as: any(int(), regex('^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])\.(0|[1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$'), regex("^.*[\$\%]\{.*$"), required=False)
   description: str(required=False)
   disable_connected_check: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
   ebgp_multihop: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
@@ -965,11 +1020,92 @@ community_lists_standard_entries:
   communities: any(list(str()), regex("^.*[\$\%]\{.*$"))
 
 crypto:
+  gdoi: include('crypto_gdoi', required=False)
+  maps: list(include('crypto_maps'), required=False, primary_key='name,sequence')
   ipsec_profiles: list(include('crypto_ipsec_profiles'), required=False, primary_key='name')
   ipsec_transform_sets: list(include('crypto_ipsec_transform_sets'), required=False, primary_key='name')
   ikev2: include('crypto_ikev2', required=False)
   pki: include('crypto_pki', required=False)
   engine: include('crypto_engine', required=False)
+
+crypto_gdoi:
+  groups: list(include('crypto_gdoi_groups'), required=False, primary_key='name')
+
+crypto_gdoi_groups:
+  name: str()
+  identity_number: any(int(min=0), regex("^.*[\$\%]\{.*$"), required=False)
+  server_address_ipv4: list(any(ip(version=4), regex("^.*[\$\%]\{.*$")), required=False)
+  server_local: include('crypto_gdoi_groups_server_local', required=False)
+  client: include('crypto_gdoi_groups_client', required=False)
+
+crypto_gdoi_groups_server_local:
+  enable: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  address_ipv4: any(ip(version=4), regex("^.*[\$\%]\{.*$"), required=False)
+  gdoi: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  gikev2: str(required=False)
+  pfs: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  authorization_address_ipv4: any(int(min=1, max=99), str(), regex("^.*[\$\%]\{.*$"), required=False)
+  authorization_identity: str(required=False)
+  registration_interface: str(required=False)
+  sa_receive_only: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  rekey: include('crypto_gdoi_groups_server_local_rekey', required=False)
+  redundancy: include('crypto_gdoi_groups_server_local_redundancy', required=False)
+  sa_ipsec: list(include('crypto_gdoi_groups_server_local_sa_ipsec'), required=False, primary_key='sequence')
+
+crypto_gdoi_groups_server_local_rekey:
+  acknowledgement: any(enum('any', 'cisco', 'interoperable'), regex("^.*[\$\%]\{.*$"), required=False)
+  address_ipv4: any(int(min=100, max=199), int(min=2000, max=2699), str(), regex("^.*[\$\%]\{.*$"), required=False)
+  authentication_mypubkey_rsa: str(required=False)
+  lifetime_seconds: any(int(min=300, max=2592000), regex("^.*[\$\%]\{.*$"), required=False)
+  retransmit_seconds: any(int(min=10, max=60), regex("^.*[\$\%]\{.*$"), required=False)
+  retransmit_number: any(int(min=0, max=255), regex("^.*[\$\%]\{.*$"), required=False)
+  retransmit_periodic: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  sig_hash_algorithm: any(enum('sha', 'sha256', 'sha384', 'sha512'), regex("^.*[\$\%]\{.*$"), required=False)
+  transport_unicast: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+
+crypto_gdoi_groups_server_local_redundancy:
+  enable: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  local_priority: any(int(min=0, max=255), regex("^.*[\$\%]\{.*$"), required=False)
+  peer_address_ipv4: list(any(ip(version=4), regex("^.*[\$\%]\{.*$")), required=False)
+  protocol_pdu: any(int(min=1, max=65000), regex("^.*[\$\%]\{.*$"), required=False)
+  protocol_version: any(enum('base', 'optimize'), regex("^.*[\$\%]\{.*$"), required=False)
+
+crypto_gdoi_groups_client:
+  bypass_policy: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  pfs: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  fail_close_revert: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  protocol_gdoi: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  protocol_gikev2: str(required=False)
+  recovery_check_interval: any(int(min=100, max=1000), regex("^.*[\$\%]\{.*$"), required=False)
+  registration_interface: str(required=False)
+  rekey_encryption_3des_cbc: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  rekey_encryption_aes_128: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  rekey_encryption_aes_192: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  rekey_encryption_aes_256: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  rekey_encryption_des_cbc: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  rekey_hash_sha: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  rekey_hash_sha256: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  rekey_hash_sha384: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  rekey_hash_sha512: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  status_active_sa_track: any(int(min=1, max=1000), regex("^.*[\$\%]\{.*$"), required=False)
+  transform_sets: list(str(), required=False)
+  transport_encrypt_key: any(enum('group-key', 'pair-wise-key'), regex("^.*[\$\%]\{.*$"), required=False)
+
+crypto_gdoi_groups_server_local_sa_ipsec:
+  sequence: any(int(min=0, max=65535), regex("^.*[\$\%]\{.*$"))
+  match_address_ipv4: any(int(min=100, max=199), int(min=2000, max=2699), str(), regex("^.*[\$\%]\{.*$"), required=False)
+  profile: str(required=False)
+  replay_counter: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  replay_counter_window_size: any(enum('64', '128', '256', '512', '1024'), regex("^.*[\$\%]\{.*$"), required=False)
+  replay_time: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  replay_time_window_size: any(int(min=1, max=100), regex("^.*[\$\%]\{.*$"), required=False)
+  tag_cts_sgt: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+
+crypto_maps:
+  name: str()
+  sequence: any(int(min=1, max=65535), regex("^.*[\$\%]\{.*$"))
+  gdoi: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  set_group: str(required=False)
 
 crypto_ipsec_profiles:
   name: str()
@@ -999,8 +1135,12 @@ crypto_ikev2:
 
 crypto_ikev2_profiles:
   name: str()
+  authentication_local_ecdsa_sig: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
   authentication_local_pre_share: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  authentication_local_rsa_sig: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  authentication_remote_ecdsa_sig: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
   authentication_remote_pre_share: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  authentication_remote_rsa_sig: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
   config_exchange_request: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
   description: str(required=False)
   dpd_interval: any(int(min=10, max=3600), regex("^.*[\$\%]\{.*$"), required=False)
@@ -1014,12 +1154,14 @@ crypto_ikev2_profiles:
   match_address_local_interface_loopback: list(include('crypto_ikev2_profiles_match_address_local_interface_loopback'), required=False, primary_key='loopback_number')
   match_address_local_interface_loopback_legacy: any(int(min=0, max=2147483647), regex("^.*[\$\%]\{.*$"), required=False)
   match_address_local_ip: any(ip(version=4), regex("^.*[\$\%]\{.*$"), required=False)
+  match_certificate_maps: list(str(), required=False)
   match_fvrf: str(required=False)
   match_fvrf_any: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
   match_identity_remote_ipv4_addresses: list(include('crypto_ikev2_profiles_match_identity_remote_ipv4_addresses'), required=False, primary_key='address')
   match_identity_remote_ipv6_prefixes: list(str(), required=False)
   match_identity_remote_keys: list(str(), required=False)
   match_inbound_only: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  pki_trustpoints: list(include('crypto_ikev2_profiles_pki_trustpoints'), required=False, primary_key='name')
 
 crypto_ikev2_profiles_match_identity_remote_ipv4_addresses:
   address: any(ip(version=4), regex("^.*[\$\%]\{.*$"))
@@ -1027,6 +1169,10 @@ crypto_ikev2_profiles_match_identity_remote_ipv4_addresses:
 
 crypto_ikev2_profiles_match_address_local_interface_loopback:
   loopback_number: any(int(min=0, max=2147483647), regex("^.*[\$\%]\{.*$"))
+
+crypto_ikev2_profiles_pki_trustpoints:
+  name: str()
+  uses: any(enum('sign', 'verify'), regex("^.*[\$\%]\{.*$"), required=False)
 
 crypto_ikev2_keyrings:
   name: str()
@@ -1245,7 +1391,13 @@ dhcp_pools_options:
 
 policy:
   class_maps: list(include('class_maps'), required=False, primary_key='name')
+  parameter_maps_inspect: list(include('parameter_maps_inspect'), required=False, primary_key='name')
   policy_maps: list(include('policy_maps'), required=False, primary_key='name')
+  parameter_map_webauth_global: include('policy_parameter_map_webauth_global', required=False)
+
+policy_parameter_map_webauth_global:
+  virtual_ip_ipv4: any(ip(version=4), regex("^.*[\$\%]\{.*$"), required=False)
+  virtual_ip_ipv6: any(ip(version=6), regex("^.*[\$\%]\{.*$"), required=False)
 
 class_maps:
   name: str()
@@ -1275,6 +1427,62 @@ class_maps_match:
   ip_precedence: any(list(any(enum('critical', 'flash', 'flash-override', 'immediate', 'internet', 'network', 'priority', 'routine'), int(min=0, max=7))), regex("^.*[\$\%]\{.*$"), required=False)
   protocols: any(list(str()), regex("^.*[\$\%]\{.*$"), required=False)
   class_maps: any(list(str()), regex("^.*[\$\%]\{.*$"), required=False)
+
+parameter_maps_inspect:
+  name: str()
+  alert: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  application_inspect_dns: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  application_inspect_exec: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  application_inspect_ftp: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  application_inspect_gtp: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  application_inspect_h323: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  application_inspect_http: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  application_inspect_imap: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  application_inspect_login: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  application_inspect_msrpc: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  application_inspect_netbios: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  application_inspect_pop3: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  application_inspect_rtsp: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  application_inspect_shell: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  application_inspect_sip: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  application_inspect_skinny: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  application_inspect_smtp: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  application_inspect_sunrpc: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  application_inspect_tftp: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  audit_trail: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  dns_timeout: any(int(min=1, max=2147483), regex("^.*[\$\%]\{.*$"), required=False)
+  icmp_idle_time: any(int(min=1, max=2147483), regex("^.*[\$\%]\{.*$"), required=False)
+  icmp_idle_time_ageout: any(int(min=1, max=2147483), regex("^.*[\$\%]\{.*$"), required=False)
+  icmp_unreachable_allow: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  log_dropped_packets: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  log_flow: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  max_incomplete_high: any(int(min=1, max=2147483647), regex("^.*[\$\%]\{.*$"), required=False)
+  max_incomplete_low: any(int(min=1, max=2147483647), regex("^.*[\$\%]\{.*$"), required=False)
+  one_minute_high: any(int(min=1, max=2147483647), regex("^.*[\$\%]\{.*$"), required=False)
+  one_minute_low: any(int(min=1, max=2147483647), regex("^.*[\$\%]\{.*$"), required=False)
+  sessions_maximum: any(int(min=1, max=2147483647), regex("^.*[\$\%]\{.*$"), required=False)
+  sessions_packet: any(int(min=25, max=100), regex("^.*[\$\%]\{.*$"), required=False)
+  sessions_rate_high: any(int(min=1, max=2147483647), regex("^.*[\$\%]\{.*$"), required=False)
+  sessions_rate_high_time: any(int(min=1, max=2147483647), regex("^.*[\$\%]\{.*$"), required=False)
+  sessions_rate_low: any(int(min=1, max=2147483647), regex("^.*[\$\%]\{.*$"), required=False)
+  sessions_rate_low_time: any(int(min=1, max=2147483647), regex("^.*[\$\%]\{.*$"), required=False)
+  tcp_finwait_time: any(int(min=1, max=2147483), regex("^.*[\$\%]\{.*$"), required=False)
+  tcp_finwait_time_ageout: any(int(min=1, max=2147483), regex("^.*[\$\%]\{.*$"), required=False)
+  tcp_half_close_reset_off: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  tcp_half_open_reset_off: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  tcp_idle_reset_off: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  tcp_idle_time: any(int(min=1, max=2147483), regex("^.*[\$\%]\{.*$"), required=False)
+  tcp_idle_time_ageout: any(int(min=1, max=2147483), regex("^.*[\$\%]\{.*$"), required=False)
+  tcp_max_incomplete_host: any(int(min=1, max=4294967295), regex("^.*[\$\%]\{.*$"), required=False)
+  tcp_max_incomplete_host_block_time: any(int(min=0, max=35791), regex("^.*[\$\%]\{.*$"), required=False)
+  tcp_synwait_time: any(int(min=1, max=2147483), regex("^.*[\$\%]\{.*$"), required=False)
+  tcp_synwait_time_ageout: any(int(min=1, max=2147483), regex("^.*[\$\%]\{.*$"), required=False)
+  tcp_window_scale_enforcement_loose: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  udp_half_open_idle_time: any(int(min=1, max=2147483), regex("^.*[\$\%]\{.*$"), required=False)
+  udp_half_open_idle_time_ageout: any(int(min=1, max=2147483), regex("^.*[\$\%]\{.*$"), required=False)
+  udp_idle_time: any(int(min=1, max=2147483), regex("^.*[\$\%]\{.*$"), required=False)
+  udp_idle_time_ageout: any(int(min=1, max=2147483), regex("^.*[\$\%]\{.*$"), required=False)
+  zone_mismatch_drop: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
 
 policy_maps:
   name: str()
@@ -1589,9 +1797,14 @@ evpn_instance_vlan_based:
   replication_type: any(enum('ingress', 'static', 'p2mp', 'mp2mp'), regex("^.*[\$\%]\{.*$"), required=False)
   encapsulation: any(enum('mpls', 'vxlan'), regex("^.*[\$\%]\{.*$"), required=False)
   auto_route_target: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  auto_route_target_legacy: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
   rd: str(required=False)
   route_target_imports: list(str(), required=False)
   route_target_exports: list(str(), required=False)
+  route_target_legacy: str(required=False)
+  route_target_both_legacy: str(required=False)
+  route_target_import_legacy: str(required=False)
+  route_target_export_legacy: str(required=False)
   ip_local_learning_disable: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
   ip_local_learning_enable: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
   default_gateway_advertise: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
@@ -2617,6 +2830,8 @@ snmp_server_traps:
   tty: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
   ospfv3_config_state_change: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
   ospfv3_config_errors: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  ospfv3_state_change_legacy: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  ospfv3_errors_legacy: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
   ospf_config_retransmit: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
   ospf_config_lsa: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
   ospf_nssa_trans_change: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
@@ -3333,6 +3548,29 @@ wireless:
   ap_join_profiles: list(include('wireless_ap_join_profiles'), required=False, primary_key='name')
   rf_profiles: list(include('wireless_rf_profiles'), required=False, primary_key='name')
   wlan_profiles: list(include('wireless_wlan_profiles'), required=False, primary_key='name')
+  policy_profiles: list(include('wireless_policy_profiles'), required=False, primary_key='name')
+  policy_tags: list(include('wireless_policy_tags'), required=False, primary_key='name')
+  rf_tags: list(include('wireless_rf_tags'), required=False, primary_key='name')
+  flex_profiles: list(include('wireless_flex_profiles'), required=False, primary_key='name')
+  mesh_profiles: list(include('wireless_mesh_profiles'), required=False, primary_key='name')
+  site_tags: list(include('wireless_site_tags'), required=False, primary_key='name')
+
+wireless_flex_profiles:
+  name: any(regex('^[!-~]([ -~]*[!-~])?$'), regex("^.*[\$\%]\{.*$"))
+  description: str(required=False)
+  native_vlan_id: any(int(min=1, max=4094), regex("^.*[\$\%]\{.*$"), required=False)
+  arp_caching: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  fallback_radio_shut: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  predownload: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  vlan_names: list(include('wireless_flex_profiles_vlan_names'), required=False, primary_key='name')
+  acl_policies: list(include('wireless_flex_profiles_acl_policies'), required=False, primary_key='name')
+
+wireless_flex_profiles_vlan_names:
+  name: str()
+  vlan_id: any(int(min=1, max=4094), regex("^.*[\$\%]\{.*$"), required=False)
+
+wireless_flex_profiles_acl_policies:
+  name: str()
 
 wireless_wlan_profiles:
   name: any(regex('^[!-~]([ -~]{0,30}[!-~])?$'), regex("^.*[\$\%]\{.*$"))
@@ -3356,6 +3594,49 @@ wireless_wlan_profiles:
   peer_blocking: any(enum('drop', 'forward-upstream'), regex("^.*[\$\%]\{.*$"), required=False)
   ccx_aironet_iesupport: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
   wmm: any(enum('allowed', 'require', 'disabled'), regex("^.*[\$\%]\{.*$"), required=False)
+
+wireless_policy_profiles:
+  name: any(regex('^[!-~]([ -~]{0,30}[!-~])?$'), regex("^.*[\$\%]\{.*$"))
+  description: str(required=False)
+  shutdown: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  vlan: str(required=False)
+  aaa_override: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  accounting_list: str(required=False)
+  session_timeout: any(int(min=0, max=86400), regex("^.*[\$\%]\{.*$"), required=False)
+  idle_timeout: any(int(min=15, max=100000), regex("^.*[\$\%]\{.*$"), required=False)
+  exclusionlist_timeout: any(int(min=0, max=2147483647), regex("^.*[\$\%]\{.*$"), required=False)
+  ipv4_acl: str(required=False)
+  ipv6_acl: str(required=False)
+  ipv4_flow_monitors_input: list(str(), required=False)
+  ipv4_flow_monitors_output: list(str(), required=False)
+  mobility_anchors: list(include('wireless_policy_profiles_mobility_anchors'), required=False, primary_key='ip')
+  nac: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  service_policy_input: str(required=False)
+  service_policy_output: str(required=False)
+  static_ip_mobility: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  dhcp_tlv_caching: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  http_tlv_caching: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+
+wireless_policy_profiles_mobility_anchors:
+  ip: any(ip(), regex("^.*[\$\%]\{.*$"))
+  priority: any(int(min=1, max=3), regex("^.*[\$\%]\{.*$"), required=False)
+
+wireless_policy_tags:
+  name: any(regex('^[!-~]([ -~]*[!-~])?$'), regex("^.*[\$\%]\{.*$"))
+  description: str(required=False)
+  wlan_policies: list(include('wireless_policy_tags_wlan_policies'), max=16, required=False, primary_key='wlan_profile')
+
+wireless_policy_tags_wlan_policies:
+  wlan_profile: str()
+  policy_profile: any(str(min=1, max=32), regex("^.*[\$\%]\{.*$"))
+
+wireless_mesh_profiles:
+  name: any(str(min=1, max=32), regex("^.*[\$\%]\{.*$"))
+  description: str(required=False)
+  convergence: any(enum('fast', 'noise-tolerant-fast', 'standard', 'very-fast'), regex("^.*[\$\%]\{.*$"), required=False)
+  multicast: any(enum('in-only', 'in-out', 'regular'), regex("^.*[\$\%]\{.*$"), required=False)
+  range: any(int(min=150, max=132000), regex("^.*[\$\%]\{.*$"), required=False)
+  security: any(enum('eap', 'psk'), regex("^.*[\$\%]\{.*$"), required=False)
 
 zone_security:
   zones: list(include('zone_security_zones'), required=False, primary_key='name')
@@ -3428,9 +3709,40 @@ ethernets:
   carrier_delay_msec: any(int(min=0, max=1000), regex("^.*[\$\%]\{.*$"), required=False)
   hold_queue_in: any(int(min=0, max=240000), regex("^.*[\$\%]\{.*$"), required=False)
   hold_queue_out: any(int(min=0, max=240000), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_version: any(enum('1', '2'), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_bfd: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_delay_minimum: any(int(min=0, max=10000), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_delay_reload: any(int(min=0, max=10000), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_mac_refresh: any(int(min=0, max=255), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_use_bia: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_use_bia_scope_interface: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_redirect_timers_advertisement: any(int(min=10, max=180), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_redirect_timers_holddown: any(int(min=30, max=3600), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_redirect_unknown: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp: list(include('interface_hsrp'), required=False, primary_key='group_number')
   vrrp_v2: list(include('interface_vrrp_v2'), required=False, primary_key='group_id')
   zone_member_security: str(required=False)
   service_instances: list(include('ethernet_service_instances'), required=False, primary_key='id')
+  subinterfaces: list(include('ethernet_subinterfaces'), required=False, primary_key='id')
+
+ethernet_subinterfaces:
+  id: str()
+  description: str(required=False)
+  shutdown: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  vrf_forwarding: str(required=False)
+  ipv4: include('interface_ipv4', required=False)
+  ipv6: include('interface_ipv6', required=False)
+  bfd: include('interface_bfd', required=False)
+  encapsulation_dot1q_vlan_id: any(int(min=1, max=4094), regex("^.*[\$\%]\{.*$"), required=False)
+  arp_timeout: any(int(min=0, max=2147483), regex("^.*[\$\%]\{.*$"), required=False)
+  auto_qos: include('interface_auto_qos', required=False)
+  mpls: include('interface_mpls', required=False)
+  ospf: include('interface_ospf', required=False)
+  ospfv3: include('interface_ospfv3', required=False)
+  isis: include('interface_isis', required=False)
+  pim: include('interface_pim', required=False)
+  igmp: include('interface_igmp', required=False)
+  zone_member_security: str(required=False)
 
 ethernet_service_instances:
   id: any(int(min=1, max=8000), regex("^.*[\$\%]\{.*$"))
@@ -3656,6 +3968,17 @@ vlans:
   pim: include('interface_pim', required=False)
   igmp: include('interface_igmp', required=False)
   mac_address: any(mac(), regex("^[0-9a-fA-F]{4}\.[0-9a-fA-F]{4}\.[0-9a-fA-F]{4}$"), required=False)
+  hsrp_version: any(enum('1', '2'), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_bfd: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_delay_minimum: any(int(min=0, max=10000), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_delay_reload: any(int(min=0, max=10000), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_mac_refresh: any(int(min=0, max=255), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_use_bia: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_use_bia_scope_interface: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_redirect_timers_advertisement: any(int(min=10, max=180), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_redirect_timers_holddown: any(int(min=30, max=3600), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_redirect_unknown: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp: list(include('interface_hsrp'), required=False, primary_key='group_number')
   vrrp_v2: list(include('interface_vrrp_v2'), required=False, primary_key='group_id')
   zone_member_security: str(required=False)
 
@@ -3730,6 +4053,17 @@ port_channels:
   negotiation_auto: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
   evpn_ethernet_segments: list(include('interface_evpn_ethernet_segments'), required=False, primary_key='es_value')
   evpn_ethernet_segments_legacy: list(include('interface_evpn_ethernet_segments'), required=False, primary_key='es_value')
+  hsrp_version: any(enum('1', '2'), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_bfd: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_delay_minimum: any(int(min=0, max=10000), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_delay_reload: any(int(min=0, max=10000), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_mac_refresh: any(int(min=0, max=255), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_use_bia: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_use_bia_scope_interface: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_redirect_timers_advertisement: any(int(min=10, max=180), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_redirect_timers_holddown: any(int(min=30, max=3600), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_redirect_unknown: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp: list(include('interface_hsrp'), required=False, primary_key='group_number')
   vrrp_v2: list(include('interface_vrrp_v2'), required=False, primary_key='group_id')
   zone_member_security: str(required=False)
 
@@ -3751,6 +4085,17 @@ port_channel_subinterfaces:
   isis: include('interface_isis', required=False)
   pim: include('interface_pim', required=False)
   igmp: include('interface_igmp', required=False)
+  hsrp_version: any(enum('1', '2'), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_bfd: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_delay_minimum: any(int(min=0, max=10000), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_delay_reload: any(int(min=0, max=10000), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_mac_refresh: any(int(min=0, max=255), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_use_bia: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_use_bia_scope_interface: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_redirect_timers_advertisement: any(int(min=10, max=180), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_redirect_timers_holddown: any(int(min=30, max=3600), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_redirect_unknown: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp: list(include('interface_hsrp'), required=False, primary_key='group_number')
   vrrp_v2: list(include('interface_vrrp_v2'), required=False, primary_key='group_id')
   zone_member_security: str(required=False)
 
@@ -3808,6 +4153,34 @@ interface_vrrp_v2_tracks:
   object_id: any(int(min=1, max=1000), regex("^.*[\$\%]\{.*$"))
   decrement: any(int(min=1, max=255), regex("^.*[\$\%]\{.*$"), required=False)
 
+interface_hsrp:
+  group_number: any(int(min=0, max=4095), regex("^.*[\$\%]\{.*$"))
+  ip: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  ip_address: any(ip(), regex("^.*[\$\%]\{.*$"), required=False)
+  ip_secondary_addresses: any(list(ip()), regex("^.*[\$\%]\{.*$"), required=False)
+  ipv6_link_local: str(required=False)
+  ipv6_addresses: any(list(str()), regex("^.*[\$\%]\{.*$"), required=False)
+  priority: any(int(min=0, max=255), regex("^.*[\$\%]\{.*$"), required=False)
+  preempt: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  preempt_delay_minimum: any(int(min=0, max=3600), regex("^.*[\$\%]\{.*$"), required=False)
+  preempt_delay_reload: any(int(min=0, max=3600), regex("^.*[\$\%]\{.*$"), required=False)
+  preempt_delay_sync: any(int(min=0, max=3600), regex("^.*[\$\%]\{.*$"), required=False)
+  timers_hello_interval_seconds: any(int(min=1, max=254), regex("^.*[\$\%]\{.*$"), required=False)
+  timers_hello_interval_msec: any(int(min=15, max=999), regex("^.*[\$\%]\{.*$"), required=False)
+  timers_hold_time_seconds: any(int(min=1, max=255), regex("^.*[\$\%]\{.*$"), required=False)
+  timers_hold_time_msec: any(int(min=50, max=3000), regex("^.*[\$\%]\{.*$"), required=False)
+  authentication_text: str(required=False)
+  authentication_word: str(required=False)
+  mac_address: any(mac(), regex("^[0-9a-fA-F]{4}\.[0-9a-fA-F]{4}\.[0-9a-fA-F]{4}$"), regex("^.*[\$\%]\{.*$"), required=False)
+  name: str(required=False)
+  follow: str(required=False)
+  tracks: list(include('interface_hsrp_tracks'), required=False, primary_key='number')
+
+interface_hsrp_tracks:
+  number: any(int(min=1, max=1000), regex("^.*[\$\%]\{.*$"))
+  decrement: any(int(min=1, max=255), regex("^.*[\$\%]\{.*$"), required=False)
+  shutdown: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+
 interface_isis:
   area_tag: any(str(), regex("^.*[\$\%]\{.*$"), required=False)
   ipv4_metric_levels: list(include('interface_isis_ipv4_metric_levels'), required=False, primary_key='level')
@@ -3816,6 +4189,9 @@ interface_isis:
 interface_isis_ipv4_metric_levels:
   level: any(enum('level-1', 'level-2'), regex("^.*[\$\%]\{.*$"))
   value: any(int(min=1, max=16777214), regex("^.*[\$\%]\{.*$"))
+
+interface_tunnel_isis:
+  area_tag: any(str(), regex("^.*[\$\%]\{.*$"), required=False)
 
 interface_pim:
   passive: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
@@ -3894,6 +4270,22 @@ interface_group_configuration:
   autostate: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
 
 interface_network_access_control:
+  authentication_order_dot1x: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  authentication_order_dot1x_mab: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  authentication_order_dot1x_webauth: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  authentication_order_mab: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  authentication_order_mab_dot1x: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  authentication_order_mab_webauth: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  authentication_order_webauth: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  authentication_priority_dot1x: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  authentication_priority_dot1x_mab: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  authentication_priority_dot1x_webauth: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  authentication_priority_mab: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  authentication_priority_mab_dot1x: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  authentication_priority_mab_webauth: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  authentication_priority_webauth: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  authentication_event_fail_action_authorize_vlan: any(int(min=1, max=4094), regex("^.*[\$\%]\{.*$"), required=False)
+  authentication_event_fail_action_next_method: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
   authentication_periodic: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
   authentication_timer_reauthenticate: any(int(min=1, max=1073741823), regex("^.*[\$\%]\{.*$"), required=False)
   authentication_timer_reauthenticate_server: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
@@ -3950,6 +4342,7 @@ tunnels:
   tunnel_mode_ipsec_ipv4: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
   tunnel_mode_gre_multipoint: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
   tunnel_protection_ipsec_profile: str(required=False)
+  tunnel_protection_ipsec_profile_legacy: str(required=False)
   tunnel_source: str(required=False)
   tunnel_key: any(int(min=0, max=4294967295), regex("^.*[\$\%]\{.*$"), required=False)
   tunnel_bandwidth_transmit: any(int(min=1, max=10000000), regex("^.*[\$\%]\{.*$"), required=False)
@@ -3965,12 +4358,24 @@ tunnels:
   mpls_nhrp: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
   service_policy_input: str(required=False)
   service_policy_output: str(required=False)
+  isis: include('interface_tunnel_isis', required=False)
   zone_member_security: str(required=False)
 
 bdis:
   id: any(int(), regex("^.*[\$\%]\{.*$"))
   mac_address: any(mac(), regex("^[0-9a-fA-F]{4}\.[0-9a-fA-F]{4}\.[0-9a-fA-F]{4}$"), regex("^.*[\$\%]\{.*$"), required=False)
   ip_mtu: any(int(min=68, max=18000), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_version: any(enum('1', '2'), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_bfd: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_delay_minimum: any(int(min=0, max=10000), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_delay_reload: any(int(min=0, max=10000), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_mac_refresh: any(int(min=0, max=255), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_use_bia: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_use_bia_scope_interface: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_redirect_timers_advertisement: any(int(min=10, max=180), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_redirect_timers_holddown: any(int(min=30, max=3600), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp_redirect_unknown: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
+  hsrp: list(include('interface_hsrp'), required=False, primary_key='group_number')
 
 general_vlans:
   ids: any(list(int(min=1, max=4094)), regex("^.*[\$\%]\{.*$"), required=False)
@@ -4256,3 +4661,17 @@ wireless_rf_profiles:
   trap_threshold_clients: any(int(min=1, max=200), regex("^.*[\$\%]\{.*$"), required=False)
   trap_threshold_interference: any(int(min=0, max=100), regex("^.*[\$\%]\{.*$"), required=False)
   trap_threshold_noise: any(int(min=-127, max=0), regex("^.*[\$\%]\{.*$"), required=False)
+
+wireless_rf_tags:
+  name: any(regex('^[!-~]([ -~]*[!-~])?$'), regex("^.*[\$\%]\{.*$"))
+  description: str(required=False)
+  rf_policy_24ghz: any(str(), regex("^.*[\$\%]\{.*$"), required=False)
+  rf_policy_5ghz: any(str(), regex("^.*[\$\%]\{.*$"), required=False)
+  rf_policy_6ghz: any(str(), regex("^.*[\$\%]\{.*$"), required=False)
+
+wireless_site_tags:
+  name: any(str(), regex("^.*[\$\%]\{.*$"))
+  description: str(required=False)
+  ap_join_profile: str(required=False)
+  flex_profile: str(required=False)
+  local_site: any(bool(), regex("^.*[\$\%]\{.*$"), required=False)
